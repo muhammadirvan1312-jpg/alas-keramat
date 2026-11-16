@@ -88,6 +88,8 @@ jobs:
         if: always() && steps.cekproyek.outputs.ada == '1'
         shell: bash
         run: |
+          # Folder dibuat container Unity (root) -> ambil alih kepemilikan agar bisa ditulis
+          sudo chown -R "$(id -u):$(id -g)" Logs build 2>/dev/null || true
           mkdir -p Logs/ci
           LAP=Logs/ci/LAPORAN_CI.md
           {
