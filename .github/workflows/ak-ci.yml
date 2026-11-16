@@ -1,0 +1,131 @@
+# AK CI — kompilasi Unity, Builder 1-klik, Self-Test, foto kualitas (bila bisa), APK uji.
+# Titik awal: Codex WAJIB menjalankan, membaca hasil, dan memperbaiki file ini di Tahap T0-C (docs/tech/18).
+# Secrets wajib: UNITY_LICENSE, UNITY_EMAIL, UNITY_PASSWORD.
+name: AK CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ak-ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  unity:
+    name: Unity — bangun, uji, APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Kosongkan disk runner
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 1
+
+      - name: Lewati bila proyek Unity belum ada
+        id: cekproyek
+        shell: bash
+        run: |
+          if [ -f ProjectSettings/ProjectVersion.txt ]; then echo "ada=1" >> "$GITHUB_OUTPUT"; else echo "ada=0" >> "$GITHUB_OUTPUT"; echo "[AK] ProjectVersion.txt belum ada, job dilewati."; fi
+
+      - name: Python
+        if: steps.cekproyek.outputs.ada == '1'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache aset CC0 & mocap
+        if: steps.cekproyek.outputs.ada == '1'
+        uses: actions/cache@v4
+        with:
+          path: Assets/ThirdParty
+          key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json') }}
+
+      - name: Unduh aset CC0 & mocap sesuai lock
+        if: steps.cekproyek.outputs.ada == '1' && hashFiles('Tools/ambil_aset.py') != ''
+        shell: bash
+        run: |
+          python -m pip install --quiet requests
+          python Tools/ambil_aset.py --semua --keluar Assets/ThirdParty
+
+      - name: Cache Library Unity
+        if: steps.cekproyek.outputs.ada == '1'
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: |
+            Library-Android-
+
+      - name: Unity — Builder + Self-Test + APK
+        id: build
+        if: steps.cekproyek.outputs.ada == '1'
+        continue-on-error: true
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: Android
+          buildMethod: AlasKeramat.EditorTools.NusantaraCI.BuildAndTest
+          allowDirtyBuild: true
+          customParameters: -akLaporan Logs/ci
+
+      - name: Susun laporan CI (selalu)
+        if: always() && steps.cekproyek.outputs.ada == '1'
+        shell: bash
+        run: |
+          mkdir -p Logs/ci
+          LAP=Logs/ci/LAPORAN_CI.md
+          {
+            echo "# LAPORAN CI"
+            echo "- Commit: ${GITHUB_SHA}"
+            echo "- Hasil langkah Unity: ${{ steps.build.outcome }}"
+            echo "- Waktu: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo
+            if [ -f Logs/ci/ringkasan.md ]; then cat Logs/ci/ringkasan.md; else echo "Ringkasan dari NusantaraCI tidak ada (kemungkinan error kompilasi sebelum kode berjalan)."; fi
+            echo
+            echo "## Baris error yang ditemukan"
+            grep -h -E "error CS[0-9]+|Exception|\[AK\]\[GAGAL\]|Scripts have compiler errors" Logs/ci/*.log 2>/dev/null | head -n 80 || true
+          } > "$LAP"
+          cat "$LAP"
+
+      - name: Komit laporan & foto ke cabang PR
+        if: always() && github.event_name == 'pull_request' && steps.cekproyek.outputs.ada == '1'
+        shell: bash
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name "ak-ci-bot"
+          git config user.email "ak-ci-bot@users.noreply.github.com"
+          git add -f Logs/ci/LAPORAN_CI.md Logs/ci/ringkasan.md Logs/foto_kualitas 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Tidak ada laporan baru."; else git commit -m "ci: laporan otomatis [skip ci]" && git push; fi
+
+      - name: Unggah artefak (APK, log, foto)
+        if: always() && steps.cekproyek.outputs.ada == '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: hasil-${{ github.run_number }}
+          path: |
+            build/Android
+            Logs/ci
+            Logs/foto_kualitas
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Tandai gagal bila Unity gagal
+        if: steps.build.outcome == 'failure'
+        run: exit 1

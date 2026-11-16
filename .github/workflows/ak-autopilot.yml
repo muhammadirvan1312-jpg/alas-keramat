@@ -1,0 +1,108 @@
+# AK Autopilot — merangkai tahap T0-C → T11 tanpa campur tangan:
+#   CI hijau di PR  → merge otomatis (squash) → (CI main hijau) → minta Codex mengerjakan tahap berikutnya.
+#   CI merah di PR  → minta Codex memperbaiki (maks 5x per PR) → lebih dari itu: label "butuh-bantuan".
+# Aktif hanya bila variabel repo AUTOPILOT = ON.
+# Secret AUTOPILOT_PAT = fine-grained token milik PEMILIK repo (Issues & Pull requests: Read/Write, Contents: Read/Write)
+#   agar komentar "@codex ..." tercatat atas nama pemilik akun yang terhubung ke Codex.
+# Variabel repo AUTOPILOT_ISSUE = nomor issue "AUTOPILOT" tempat perintah tahap diposting.
+name: AK Autopilot
+
+on:
+  workflow_run:
+    workflows: ["AK CI"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      paksa_tahap:
+        description: "Kirim perintah tahap ini sekarang (mis. T3). Kosongkan untuk membaca docs/PROGRESS.md"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  autopilot:
+    if: ${{ vars.AUTOPILOT == 'ON' }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.AUTOPILOT_PAT }}
+      REPO: ${{ github.repository }}
+      ISSUE: ${{ vars.AUTOPILOT_ISSUE }}
+      MAKS_PERBAIKAN: "5"
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Tentukan aksi
+        shell: bash
+        run: |
+          set -euo pipefail
+          EVENT="${{ github.event_name }}"
+          tahap_berikut() {
+            grep -oE 'AUTOPILOT_TAHAP_BERIKUTNYA:[[:space:]]*[A-Za-z0-9-]+' docs/PROGRESS.md | head -n1 | sed -E 's/.*:[[:space:]]*//' || true
+          }
+          perintah_tahap() {
+            local T="$1"
+            if [ -z "$T" ] || [ "$T" = "SELESAI" ]; then echo "[AK] Tidak ada tahap berikutnya ($T)."; return 0; fi
+            # Cegah duplikat: jangan kirim bila komentar terakhir di issue sudah untuk tahap ini
+            local TERAKHIR
+            TERAKHIR=$(gh issue view "$ISSUE" -R "$REPO" --json comments --jq '.comments[-1].body' 2>/dev/null || echo "")
+            if echo "$TERAKHIR" | grep -q "AUTOPILOT-TAHAP:$T"; then echo "[AK] Perintah $T sudah dikirim."; return 0; fi
+            gh issue comment "$ISSUE" -R "$REPO" --body "@codex Kerjakan **TAHAP $T** proyek ini dari awal sampai lulus. Baca AGENTS.md, docs/PROGRESS.md, docs/tech/18_PIPELINE_CLOUD_OTONOM.md, dan bagian $T di docs/tech/12_TAHAPAN_DAN_PENGUJIAN.md beserta semua dokumen yang diwajibkannya. Patuhi semua Hukum Besi. Perbarui NusantaraMasterBuilder, NusantaraSelfTest, NusantaraCI, dan docs/PROGRESS.md (termasuk baris AUTOPILOT_TAHAP_BERIKUTNYA). Buka satu pull request untuk tahap ini.
+          <!-- AUTOPILOT-TAHAP:$T -->"
+          }
+
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            T="${{ github.event.inputs.paksa_tahap }}"
+            if [ -z "$T" ]; then T=$(tahap_berikut); fi
+            perintah_tahap "$T"
+            exit 0
+          fi
+
+          KESIMPULAN="${{ github.event.workflow_run.conclusion }}"
+          CABANG="${{ github.event.workflow_run.head_branch }}"
+          JENIS="${{ github.event.workflow_run.event }}"
+          PR=$(gh pr list -R "$REPO" --head "$CABANG" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
+          echo "[AK] event=$JENIS cabang=$CABANG kesimpulan=$KESIMPULAN pr=$PR"
+
+          if [ "$JENIS" = "push" ] && [ "$CABANG" = "main" ]; then
+            if [ "$KESIMPULAN" = "success" ]; then
+              perintah_tahap "$(tahap_berikut)"
+              # Rilis uji: lampirkan APK dari run ini bila ada
+              RUN_ID="${{ github.event.workflow_run.id }}"
+              mkdir -p rilis && gh run download "$RUN_ID" -R "$REPO" -D rilis 2>/dev/null || true
+              APK=$(find rilis -name "*.apk" | head -n1 || true)
+              if [ -n "$APK" ]; then
+                TAG="uji-$(date -u +%Y%m%d-%H%M)"
+                gh release create "$TAG" "$APK" -R "$REPO" --prerelease --title "APK uji $TAG" --notes "APK otomatis dari main setelah CI hijau." || true
+              fi
+            else
+              gh issue comment "$ISSUE" -R "$REPO" --body "@codex CI di cabang main GAGAL setelah merge. Baca Logs/ci/LAPORAN_CI.md dan log run ${{ github.event.workflow_run.html_url }}, perbaiki di pull request baru sampai CI hijau."
+            fi
+            exit 0
+          fi
+
+          if [ -z "$PR" ]; then echo "[AK] Bukan PR terbuka, selesai."; exit 0; fi
+
+          if [ "$KESIMPULAN" = "success" ]; then
+            gh pr merge "$PR" -R "$REPO" --squash --delete-branch || gh pr merge "$PR" -R "$REPO" --squash --auto || true
+            exit 0
+          fi
+
+          if [ "$KESIMPULAN" = "failure" ]; then
+            JUMLAH=$(gh pr view "$PR" -R "$REPO" --json comments --jq '[.comments[].body | select(test("AUTOPILOT-PERBAIKAN"))] | length')
+            if [ "$JUMLAH" -ge "$MAKS_PERBAIKAN" ]; then
+              gh pr edit "$PR" -R "$REPO" --add-label "butuh-bantuan" || true
+              gh pr comment "$PR" -R "$REPO" --body "Autopilot berhenti: $JUMLAH kali perbaikan belum lulus. Pemilik repo perlu memeriksa."
+              exit 0
+            fi
+            gh pr comment "$PR" -R "$REPO" --body "@codex CI gagal (percobaan $((JUMLAH+1)) dari $MAKS_PERBAIKAN). Baca Logs/ci/LAPORAN_CI.md di cabang ini dan log ${{ github.event.workflow_run.html_url }}. Perbaiki SEMUA error tanpa merusak fitur lain, perbarui docs/PROGRESS.md, lalu dorong commit ke PR ini.
+          <!-- AUTOPILOT-PERBAIKAN -->"
+          fi
