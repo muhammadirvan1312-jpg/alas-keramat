@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+"""Cek statis C# sebelum PR (docs/tech/18 bagian 5). Keluar 1 bila ada pelanggaran."""
+import os, re, sys
+LARANG = [r"\bTMPro\b", r"\bNavMesh", r"\bAnimator\b", r"using\s+UnityEngine\.InputSystem", r"\bCinemachine\b",
+          r"//\s*TODO", r"NotImplementedException", r"FindObjectOfType\b", r"\brb\.velocity\b"]
+masalah, kelas = [], {}
+for akar, _, files in os.walk("Assets"):
+    if "ThirdParty" in akar:
+        continue
+    for n in files:
+        p = os.path.join(akar, n)
+        if n.endswith(".shader"):
+            if "Fallback" not in open(p, encoding="utf-8").read():
+                masalah.append(p + ": shader tanpa Fallback")
+            continue
+        if not n.endswith(".cs"):
+            continue
+        teks = open(p, encoding="utf-8").read()
+        baris = teks.count("\n") + 1
+        if baris > 900: masalah.append("%s: %d baris (>900)" % (p, baris))
+        if teks.count("{") != teks.count("}"): masalah.append(p + ": kurung kurawal tidak seimbang")
+        for pola in LARANG:
+            if pola == r"\brb\.velocity\b" and "PhysicsCompat" in n: continue
+            if re.search(pola, teks): masalah.append("%s: dilarang %s" % (p, pola))
+        for s in re.findall(r'"[^"\n]*"', teks):
+            if any(ord(c) > 0x2FF for c in s): masalah.append(p + ": simbol non-Latin di string " + s[:40])
+        for k in re.findall(r"\b(?:class|struct|enum|interface)\s+(\w+)", teks):
+            if k in kelas and not re.search(r"\bpartial\b", teks): masalah.append("%s: nama ganda %s (juga %s)" % (p, k, kelas[k]))
+            kelas.setdefault(k, p)
+for m in masalah: print("[AK][GAGAL]", m)
+print("[AK] cek statis: %d masalah" % len(masalah))
+sys.exit(1 if masalah else 0)

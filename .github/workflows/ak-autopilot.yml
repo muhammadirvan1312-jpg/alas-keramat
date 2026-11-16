@@ -33,6 +33,7 @@ jobs:
       REPO: ${{ github.repository }}
       ISSUE: ${{ vars.AUTOPILOT_ISSUE }}
       MAKS_PERBAIKAN: "5"
+      AGEN: ${{ vars.AUTOPILOT_AGEN }}
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -52,6 +53,9 @@ jobs:
           perintah_tahap() {
             local T="$1"
             if [ -z "$T" ] || [ "$T" = "SELESAI" ]; then echo "[AK] Tidak ada tahap berikutnya ($T)."; return 0; fi
+            # Tahap baru hanya dikirim ke Codex bila variabel repo AUTOPILOT_AGEN = codex.
+            # Selain itu tahap dikerjakan per sesi (Claude) dan Autopilot hanya merge + rilis APK.
+            if [ "${AGEN:-}" != "codex" ]; then echo "[AK] AUTOPILOT_AGEN bukan codex, tahap $T menunggu sesi berikutnya."; return 0; fi
             local CB="tahap-$T"
             # Cegah duplikat: sudah ada PR terbuka untuk tahap ini?
             if [ -n "$(gh pr list -R "$REPO" --head "$CB" --state open --json number --jq '.[0].number' 2>/dev/null)" ]; then
