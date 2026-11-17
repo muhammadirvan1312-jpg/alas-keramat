@@ -1,89 +1,101 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 namespace AlasKeramat.EditorTools
 {
-    // Builder 1-klik (idempoten). T0-C: scene minimal "PIPELINE OK". Diperluas mulai T1.
-    public static class NusantaraMasterBuilder
+    // Builder 1-klik & idempoten (H7, docs/tech/11 bagian 9). Langkah dipecah di BuilderSteps.*.cs.
+    public static partial class NusantaraMasterBuilder
     {
         public const string FolderGen = "Assets/Generated";
         public const string PathScene = "Assets/Scenes/AlasKeramat_Main.unity";
         public const string NamaRoot = "[ALAS_KERAMAT_ROOT]";
+        public const string PathLaporan = "Logs/nusantara_build_report.txt";
+        public const string JudulT1 = "ALAS KERAMAT - FONDASI OK";
 
-        [MenuItem("Nusantara Builder/1. BANGUN SELURUH GAME (1-KLIK)")]
-        public static void BuildAll()
+        static readonly List<string> _laporan = new List<string>();
+        static readonly List<string> _gagal = new List<string>();
+
+        [MenuItem("Nusantara Builder/1. BANGUN SELURUH GAME (1-KLIK)", false, 1)]
+        public static void BuildAll() { Bangun(false); }
+
+        [MenuItem("Nusantara Builder/2. Bangun Ulang Cepat (pakai aset yang ada)", false, 2)]
+        public static void BuildQuick() { Bangun(true); }
+
+        [MenuItem("Nusantara Builder/Tahap/Bangun sampai T1", false, 20)]
+        public static void BuildUntilT1() { Bangun(false); }
+
+        [MenuItem("Nusantara Builder/Utilitas/Buka Scene Utama", false, 40)]
+        public static void OpenMainScene()
         {
-            Directory.CreateDirectory(FolderGen);
-            Directory.CreateDirectory("Assets/Scenes");
+            if (File.Exists(PathScene)) UnityEditor.SceneManagement.EditorSceneManager.OpenScene(PathScene);
+            else EditorUtility.DisplayDialog("Alas Keramat", "Scene utama belum ada. Klik 1. BANGUN SELURUH GAME dulu.", "OK");
+        }
+
+        [MenuItem("Nusantara Builder/Utilitas/Tampilkan Laporan Build", false, 41)]
+        public static void ShowReport()
+        {
+            string isi = File.Exists(PathLaporan) ? File.ReadAllText(PathLaporan) : "Laporan belum ada.";
+            EditorUtility.DisplayDialog("Laporan Build", isi.Length > 1500 ? isi.Substring(0, 1500) : isi, "OK");
+        }
+
+        [MenuItem("Nusantara Builder/Utilitas/Hapus Semua Hasil Generate", false, 42)]
+        public static void DeleteGenerated()
+        {
+            if (AssetDatabase.IsValidFolder(FolderGen)) AssetDatabase.DeleteAsset(FolderGen);
             AssetDatabase.Refresh();
-
-            Scene s = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var root = new GameObject(NamaRoot);
-
-            var kam = new GameObject("Kamera", typeof(Camera), typeof(AudioListener));
-            kam.transform.SetParent(root.transform);
-            kam.tag = "MainCamera";
-            var c = kam.GetComponent<Camera>();
-            c.clearFlags = CameraClearFlags.SolidColor;
-            c.backgroundColor = new Color(0.02f, 0.03f, 0.02f);
-
-            var cahaya = new GameObject("Cahaya", typeof(Light));
-            cahaya.transform.SetParent(root.transform);
-            cahaya.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
-            cahaya.GetComponent<Light>().type = LightType.Directional;
-
-            var es = new GameObject("EventSystem", typeof(EventSystem));
-            AddCorrectInputModule(es);
-            es.transform.SetParent(root.transform);
-
-            var kanvas = new GameObject("Kanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            kanvas.transform.SetParent(root.transform);
-            kanvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-            var sc = kanvas.GetComponent<CanvasScaler>();
-            sc.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            sc.referenceResolution = new Vector2(1920, 1080);
-
-            var teks = new GameObject("Judul", typeof(RectTransform), typeof(Text));
-            teks.transform.SetParent(kanvas.transform, false);
-            var rt = teks.GetComponent<RectTransform>();
-            rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
-            rt.offsetMin = rt.offsetMax = Vector2.zero;
-            var t = teks.GetComponent<Text>();
-            t.text = "ALAS KERAMAT - PIPELINE OK";
-            t.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            t.fontSize = 72;
-            t.alignment = TextAnchor.MiddleCenter;
-            t.color = new Color(0.85f, 0.8f, 0.65f);
-
-            EditorSceneManager.SaveScene(s, PathScene);
-            EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(PathScene, true) };
-            AssetDatabase.SaveAssets();
-
-            Directory.CreateDirectory("Logs");
-            File.WriteAllLines("Logs/nusantara_build_report.txt", new List<string> { "Laporan Builder", "scene: " + PathScene, "root: " + NamaRoot });
         }
 
-        public static void AddCorrectInputModule(GameObject esGo)
+        static void Bangun(bool cepat)
         {
-#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-            var t = System.Type.GetType("UnityEngine.InputSystem.UI.InputSystemUIInputModule, Unity.InputSystem");
-            if (t != null)
+            var jam = Stopwatch.StartNew();
+            _laporan.Clear(); _gagal.Clear();
+            _laporan.Add("Laporan Builder Alas Keramat - " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            try
             {
-                var c = esGo.AddComponent(t);
-                var m = t.GetMethod("AssignDefaultActions");
-                if (m != null) m.Invoke(c, null);
-                return;
+                if (!cepat) Langkah("0. Bersihkan Assets/Generated", 0.01f, DeleteGenerated);
+                Langkah("1. Proyek", 0.05f, LangkahProyek);
+                Langkah("2. Aset", 0.30f, () => LangkahAset(cepat));
+                Langkah("3. Dunia uji T1", 0.55f, LangkahDuniaT1);
+                Langkah("6. Sistem", 0.70f, LangkahSistem);
+                Langkah("7. UI", 0.85f, LangkahUI);
+                Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }
-            Debug.LogError("[AK][Input] Proyek memakai Input System (New) tetapi modul UI tidak ditemukan.");
-#else
-            esGo.AddComponent<StandaloneInputModule>();
-#endif
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+            _laporan.Add("Durasi: " + jam.Elapsed.TotalSeconds.ToString("0.0") + " detik");
+            _laporan.Add(_gagal.Count == 0 ? "HASIL: SEMUA LANGKAH LULUS" : "HASIL: GAGAL di " + string.Join(", ", _gagal.ToArray()));
+            Directory.CreateDirectory("Logs");
+            File.WriteAllLines(PathLaporan, _laporan.ToArray());
+            if (!Application.isBatchMode)
+                EditorUtility.DisplayDialog("Alas Keramat", string.Join("\n", _laporan.ToArray()), "OK");
+            if (_gagal.Count > 0) Debug.LogError("[AK][Builder] Langkah GAGAL: " + string.Join(", ", _gagal.ToArray()));
         }
+
+        static void Langkah(string nama, float progres, Action aksi)
+        {
+            EditorUtility.DisplayProgressBar("Nusantara Builder", nama, progres);
+            try
+            {
+                aksi();
+                _laporan.Add("[LULUS] " + nama);
+            }
+            catch (Exception e)
+            {
+                _gagal.Add(nama);
+                _laporan.Add("[GAGAL] " + nama + ": " + e.Message);
+                Debug.LogError("[AK][Builder] Langkah " + nama + " gagal: " + e);
+            }
+        }
+
+        public static bool LastBuildSucceeded { get { return _gagal.Count == 0; } }
+
+        static void Catat(string s) { _laporan.Add("  - " + s); }
     }
 }

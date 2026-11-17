@@ -40,7 +40,7 @@ python3 -m pip install --quiet requests pillow numpy
 if [ -f Tools/ambil_aset.py ]; then python3 Tools/ambil_aset.py --semua --keluar Assets/ThirdParty || echo "[AK] unduh aset dilewati"; fi
 if command -v dotnet >/dev/null 2>&1; then echo "[AK] dotnet tersedia untuk cek sintaks C#"; fi
 ```
-**Allowlist internet agen** (minimal): `api.polyhaven.com`, `dl.polyhaven.org`, `ambientcg.com`, `mocap.cs.cmu.edu`, `raw.githubusercontent.com`, `github.com`. Bila sebuah unduhan dialihkan ke domain lain, Codex mencatat domainnya di `docs/PROGRESS.md` agar pengguna menambahkannya.
+**Allowlist internet agen** (minimal): `api.polyhaven.com, freesound.org, cdn.freesound.org, opengameart.org, kenney.nl`, `dl.polyhaven.org`, `ambientcg.com`, `mocap.cs.cmu.edu`, `raw.githubusercontent.com`, `github.com`. Bila sebuah unduhan dialihkan ke domain lain, Codex mencatat domainnya di `docs/PROGRESS.md` agar pengguna menambahkannya.
 Rahasia (secret) TIDAK pernah dimasukkan ke environment Codex; lisensi Unity hanya ada di GitHub Secrets.
 
 ## 4. Tahap T0-C — Proyek dari Nol (dikerjakan Codex, sebelum T1)
