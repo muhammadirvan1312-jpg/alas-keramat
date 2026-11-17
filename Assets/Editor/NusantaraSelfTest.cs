@@ -111,6 +111,20 @@ namespace AlasKeramat.EditorTools
             cek("Semua 7 cuaca bisa diset", cuacaOk);
             cek("Landmark >= 35 (" + NusantaraMasterBuilder.JumlahLandmark + ")", NusantaraMasterBuilder.JumlahLandmark >= 35);
             cek("Beringin Agung & altar & cerobong ada", GameObject.Find("BeringinAgung") != null && GameObject.Find("Altar") != null && GameObject.Find("Cerobong") != null);
+            var amb = Object.FindFirstObjectByType<AmbienceDirector>();
+            cek("AmbienceDirector ada", amb != null);
+            cek("Emitter ambien >= 1000 (" + (amb != null ? amb.JumlahEmitter : 0) + ")", amb != null && amb.JumlahEmitter >= 1000);
+            int klipAmb = 0;
+            foreach (var nm in ProceduralAudioSynth.KlipAmbien)
+            {
+                var c = AssetDatabase.LoadAssetAtPath<AudioClip>(NusantaraMasterBuilder.FolderAudio + "/" + nm + ".wav");
+                if (c != null && c.length > 0.2f) klipAmb++;
+            }
+            cek("Klip ambien " + klipAmb + "/" + ProceduralAudioSynth.KlipAmbien.Length, klipAmb == ProceduralAudioSynth.KlipAmbien.Length);
+            cek("Bed: pantai siang", AmbienceDirector.PilihBed(Biome.Pantai, 10f) == ProceduralAudioSynth.BedPantai);
+            cek("Bed: hutan dini hari", AmbienceDirector.PilihBed(Biome.HutanCampuran, 2.5f) == ProceduralAudioSynth.BedDini);
+            cek("Bed: Alas Wingit", AmbienceDirector.PilihBed(WorldTerrainGenerator.AlasWingit, 12f) == ProceduralAudioSynth.BedWingit);
+            cek("Bed: hutan Maghrib -> malam", AmbienceDirector.PilihBed(Biome.HutanJatiSelatan, 19f) == ProceduralAudioSynth.BedMalam);
             cek("Tur pratinjau di kamera", Object.FindFirstObjectByType<AlasKeramat.UI.TurPratinjau>() != null);
 
             Directory.CreateDirectory("Logs");

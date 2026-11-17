@@ -148,7 +148,7 @@ namespace AlasKeramat.Core
                 case KlipAmbilItem: b = ResepAmbilItem(sr); break;
                 case KlipAmbilKayu: b = ResepAmbilKayu(sr, ref rng); break;
                 case KlipGuruh: b = ResepGuruh(sr, ref rng); break;
-                default: return null;
+                default: return GenerateAmbien(nama, variasi, out sr);
             }
             Dsp.Finalize(b, sr);
             return b;

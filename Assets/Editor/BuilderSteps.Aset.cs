@@ -118,7 +118,9 @@ namespace AlasKeramat.EditorTools
 
         static void BuatAudio(bool cepat)
         {
-            foreach (var nama in ProceduralAudioSynth.KlipWajib)
+            var semua = new List<string>(ProceduralAudioSynth.KlipWajib);
+            semua.AddRange(ProceduralAudioSynth.KlipAmbien);
+            foreach (var nama in semua)
             {
                 string p = FolderAudio + "/" + nama + ".wav";
                 if (cepat && File.Exists(p)) continue;
@@ -128,15 +130,17 @@ namespace AlasKeramat.EditorTools
                 File.WriteAllBytes(p, WavWriter.Encode(data, sr));
             }
             AssetDatabase.Refresh();
-            foreach (var nama in ProceduralAudioSynth.KlipWajib)
+            foreach (var nama in semua)
             {
                 string p = FolderAudio + "/" + nama + ".wav";
+                bool bed = nama.StartsWith("bed_");
                 var imp = AssetImporter.GetAtPath(p) as AudioImporter;
                 if (imp != null)
                 {
                     var s = imp.defaultSampleSettings;
-                    s.loadType = AudioClipLoadType.DecompressOnLoad;
-                    s.compressionFormat = AudioCompressionFormat.ADPCM;
+                    s.loadType = bed ? AudioClipLoadType.CompressedInMemory : AudioClipLoadType.DecompressOnLoad;
+                    s.compressionFormat = bed ? AudioCompressionFormat.Vorbis : AudioCompressionFormat.ADPCM;
+                    if (bed) s.quality = 0.7f;
                     imp.defaultSampleSettings = s;
                     imp.SaveAndReimport();
                 }
