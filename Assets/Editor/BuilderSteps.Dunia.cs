@@ -184,13 +184,16 @@ namespace AlasKeramat.EditorTools
             go.transform.SetParent(dunia.transform, false);
             go.AddComponent<MeshFilter>().sharedMesh = m;
             var mr = go.AddComponent<MeshRenderer>();
-            mr.sharedMaterial = AirAK("M_Laut", ProcTex.Hex("#1F6B6A55"), ProcTex.Hex("#04202BF0"), 0.12f, new Vector2(0.8f, 0.6f)) ?? MatAir("M_Laut", ProcTex.Hex("#1C4652D9"), 0.92f);
+            var mLaut = AirAK("M_Laut", ProcTex.Hex("#1F6B6A55"), ProcTex.Hex("#04202BF0"), 0.12f, new Vector2(0.8f, 0.6f));
+            if (mLaut == null) mLaut = MatAir("M_Laut", ProcTex.Hex("#1C4652D9"), 0.92f);
+            mr.sharedMaterial = mLaut;
             mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
         static void BuatSungai(GameObject dunia)
         {
-            var mat = AirAK("M_Sungai", ProcTex.Hex("#3D6B4E50"), ProcTex.Hex("#10261CE6"), 0.6f, new Vector2(1f, 0f)) ?? MatAir("M_Sungai", ProcTex.Hex("#2E4A3ECC"), 0.88f);
+            var mat = AirAK("M_Sungai", ProcTex.Hex("#3D6B4E50"), ProcTex.Hex("#10261CE6"), 0.6f, new Vector2(1f, 0f));
+            if (mat == null) mat = MatAir("M_Sungai", ProcTex.Hex("#2E4A3ECC"), 0.88f);
             for (int s = 0; s < WorldTerrainGenerator.SemuaSungai.Length; s++)
             {
                 var titik = WorldTerrainGenerator.SemuaSungai[s];
