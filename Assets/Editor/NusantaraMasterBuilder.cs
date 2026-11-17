@@ -77,6 +77,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7i. Hewan & titik pungut", 0.945f, LangkahHewan);
                 Langkah("7j. Tikar Pandan & zirah", 0.948f, LangkahTikar);
                 Langkah("7k. Panggul & bangun bebas", 0.95f, LangkahBangun);
+                Langkah("7l. Buku Panduan & simpan", 0.952f, LangkahBlueprint);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

@@ -1,0 +1,150 @@
+using AlasKeramat.Core;
+using AlasKeramat.Inventory;
+using AlasKeramat.Player;
+using UnityEngine;
+
+namespace AlasKeramat.Building
+{
+    // Fungsi bangunan blueprint (07 §7.1-7.2) selain api & panci: tidur/istirahat, rak & kereta kayu, penampung hujan, jemuran,
+    // perangkap ayun, obor tengkorak, menara (naik/turun), pintu, kentongan, rakit.
+    public class FungsiBangunan : MonoBehaviour, IInteractable
+    {
+        public const int KapRak = 24, KapKereta = 8, MaksAir = 6, SlotJemur = 6;
+        public const float DetikPerAir = 10f, LamaJemur = 120f, LamaObor = 240f, DamagePerangkap = 200f, JamBangun = 6f, TidurSiang = 2f;
+
+        public BlueprintID Jenis;
+        [SerializeField] Transform[] visual = new Transform[0];
+        [SerializeField] Light lampu;
+        [SerializeField] Transform pintu;
+        [SerializeField] Vector3 titikAtas;
+        public int Stok;
+        public bool Siap = true, Terbuka;
+        public float NyalaSisa;
+        readonly ItemID[] _jemur = new ItemID[SlotJemur];
+        readonly float[] _tJemur = new float[SlotJemur];
+        float _tAir;
+        URPAtmosphereAndWeather _atmos;
+
+        public float HoldDuration { get { return 0f; } }
+        public void Pasang(BlueprintID j, Transform[] vis, Light l, Transform p, Vector3 atas) { Jenis = j; visual = vis; lampu = l; pintu = p; titikAtas = atas; }
+
+        public static ItemID HasilJemur(ItemID id) { return id == ItemID.IkanMatang ? ItemID.IkanKering : id == ItemID.DagingMatang ? ItemID.DagingKering : ItemID.None; }
+
+        void Update()
+        {
+            float dt = Time.deltaTime;
+            if (Jenis == BlueprintID.PenampungHujan)
+            {
+                if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
+                bool hujan = _atmos != null && (_atmos.Cuaca == WeatherState.Gerimis || _atmos.Cuaca == WeatherState.HujanBadai);
+                if (hujan && Stok < MaksAir) { _tAir += dt; if (_tAir >= DetikPerAir) { _tAir = 0f; Stok++; } }
+            }
+            if (Jenis == BlueprintID.JemuranIkan) for (int i = 0; i < SlotJemur; i++) if (_jemur[i] != ItemID.None) _tJemur[i] += dt;
+            if (Jenis == BlueprintID.OborTengkorak && NyalaSisa > 0f) NyalaSisa -= dt;
+            if (lampu != null) { lampu.enabled = NyalaSisa > 0f; if (lampu.enabled) lampu.intensity = 1.8f * (0.9f + 0.2f * Mathf.PerlinNoise(Time.time * 7f, 0.5f)); }
+            if (pintu != null) pintu.localRotation = Quaternion.Slerp(pintu.localRotation, Quaternion.Euler(0f, Terbuka ? 95f : 0f, 0f), dt * 6f);
+            int tampil = Jenis == BlueprintID.JemuranIkan ? Terisi() : Stok;
+            for (int i = 0; i < visual.Length; i++) if (visual[i] != null && visual[i].gameObject.activeSelf != (i < tampil)) visual[i].gameObject.SetActive(i < tampil);
+        }
+
+        int Terisi() { int n = 0; for (int i = 0; i < SlotJemur; i++) if (_jemur[i] != ItemID.None) n++; return n; }
+
+        void OnTriggerEnter(Collider c)
+        {
+            if (Jenis != BlueprintID.PerangkapAyunBambu || !Siap || c.gameObject.layer != GameLayers.Enemy) return;
+            var d = c.GetComponentInParent<IDamageable>();
+            if (d == null) return;
+            d.TakeDamage(new DamageInfo { amount = DamagePerangkap, type = DamageType.Tusuk, point = c.transform.position, direction = transform.forward, source = gameObject, isHeavy = true });
+            Siap = false;
+            if (visual.Length > 0 && visual[0] != null) visual[0].localRotation = Quaternion.Euler(80f, 0f, 0f);
+        }
+
+        public string GetPromptText(GameObject actor)
+        {
+            var inv = GameServices.Get<TikarPandan3DInventory>();
+            var bahu = GameServices.Get<ShoulderLogAndFreeformBuilder>();
+            switch (Jenis)
+            {
+                case BlueprintID.SaungPanggung: return "TIDUR";
+                case BlueprintID.TendaDarurat: return "ISTIRAHAT";
+                case BlueprintID.RakKayu:
+                case BlueprintID.KeretaDorongKayu:
+                    int kap = Jenis == BlueprintID.RakKayu ? KapRak : KapKereta;
+                    if (bahu != null && bahu.Bawa == ShoulderLogAndFreeformBuilder.Muatan.Gelondong && Stok < kap) return (Jenis == BlueprintID.RakKayu ? "TARUH DI RAK (" : "MUAT KAYU (") + Stok + "/" + kap + ")";
+                    return Stok > 0 ? "AMBIL KAYU (" + Stok + ")" : "";
+                case BlueprintID.PenampungHujan:
+                    if (Stok <= 0) return "";
+                    return inv != null && inv.Punya(ItemID.BotolKosong) ? "ISI BOTOL (" + Stok + ")" : "MINUM AIR HUJAN (" + Stok + ")";
+                case BlueprintID.JemuranIkan:
+                    for (int i = 0; i < SlotJemur; i++) if (_jemur[i] != ItemID.None && _tJemur[i] >= LamaJemur) return "AMBIL " + ItemDatabase.Get(HasilJemur(_jemur[i])).displayName.ToUpperInvariant();
+                    if (Terisi() < SlotJemur && inv != null) { if (inv.Punya(ItemID.IkanMatang)) return "JEMUR IKAN MATANG"; if (inv.Punya(ItemID.DagingMatang)) return "JEMUR DAGING MATANG"; }
+                    return "";
+                case BlueprintID.PerangkapAyunBambu: return Siap ? "" : "SETEL ULANG";
+                case BlueprintID.OborTengkorak:
+                    if (NyalaSisa > 0f) return "";
+                    return inv != null && (inv.Punya(ItemID.KorekGas) || inv.Punya(ItemID.Damar)) ? "NYALAKAN OBOR" : "";
+                case BlueprintID.MenaraPengintai: return actor != null && actor.transform.position.y > transform.position.y + 3f ? "TURUN MENARA" : "NAIK MENARA";
+                case BlueprintID.PintuBambu: return Terbuka ? "TUTUP PINTU" : "BUKA PINTU";
+                case BlueprintID.KentonganKemah: return "PUKUL KENTONGAN";
+                case BlueprintID.RakitBambu: return "NAIKI RAKIT";
+                default: return "";
+            }
+        }
+
+        public bool CanInteract(GameObject actor) { return GetPromptText(actor).Length > 0; }
+
+        public void Interact(GameObject actor)
+        {
+            var inv = GameServices.Get<TikarPandan3DInventory>();
+            var bahu = GameServices.Get<ShoulderLogAndFreeformBuilder>();
+            var synth = GameServices.Get<ProceduralAudioSynth>();
+            string p = GetPromptText(actor);
+            switch (Jenis)
+            {
+                case BlueprintID.SaungPanggung: case BlueprintID.TendaDarurat: Tidur(Jenis == BlueprintID.SaungPanggung); return;
+                case BlueprintID.RakKayu: case BlueprintID.KeretaDorongKayu:
+                    if (p.StartsWith("AMBIL")) { if (bahu != null && bahu.Panggul(ShoulderLogAndFreeformBuilder.Muatan.Gelondong, null)) Stok--; else GameEvents.RaiseToast("Bahu sudah penuh"); }
+                    else if (bahu != null) { bahu.Lepaskan(); Stok++; }
+                    return;
+                case BlueprintID.PenampungHujan:
+                    if (p.StartsWith("ISI") && inv.Kurangi(ItemID.BotolKosong, 1)) { inv.Tambah(ItemID.BotolAirBersih, 1); Stok--; GameEvents.RaiseToast("Botol terisi air hujan bersih"); }
+                    else { var v = GameServices.Get<AndiVitalsAndSanity>(); if (v != null) v.Minum(25f, false); Stok--; GameEvents.RaiseToast("Air hujan segar"); }
+                    return;
+                case BlueprintID.JemuranIkan:
+                    for (int i = 0; i < SlotJemur; i++)
+                        if (_jemur[i] != ItemID.None && _tJemur[i] >= LamaJemur) { if (inv.Tambah(HasilJemur(_jemur[i]), 1) > 0) { _jemur[i] = ItemID.None; GameEvents.RaiseToast("Hasil jemuran diambil"); } return; }
+                    var id = inv.Punya(ItemID.IkanMatang) ? ItemID.IkanMatang : ItemID.DagingMatang;
+                    for (int i = 0; i < SlotJemur; i++) if (_jemur[i] == ItemID.None && inv.Kurangi(id, 1)) { _jemur[i] = id; _tJemur[i] = 0f; return; }
+                    return;
+                case BlueprintID.PerangkapAyunBambu: Siap = true; if (visual.Length > 0 && visual[0] != null) visual[0].localRotation = Quaternion.identity; return;
+                case BlueprintID.OborTengkorak:
+                    if (inv.Punya(ItemID.KorekGas) || inv.Kurangi(ItemID.Damar, 1)) NyalaSisa = LamaObor;
+                    return;
+                case BlueprintID.MenaraPengintai:
+                    var cc = actor.GetComponent<CharacterController>();
+                    if (cc != null) cc.enabled = false;
+                    actor.transform.position = p.StartsWith("NAIK") ? transform.TransformPoint(titikAtas) : transform.position + transform.forward * 2.5f + Vector3.up * 0.2f;
+                    if (cc != null) cc.enabled = true;
+                    return;
+                case BlueprintID.PintuBambu: Terbuka = !Terbuka; return;
+                case BlueprintID.KentonganKemah: if (synth != null) synth.PlayKentonganBamboo(transform.position); return;
+                case BlueprintID.RakitBambu: GameEvents.RaiseToast("Rakit siap. Mengayuh rakit dibuka di tahap berikut."); return;
+            }
+        }
+
+        // Tidur: malam -> sampai 06:00; siang -> tidur sebentar 2 jam. Istirahat (tenda) memulihkan tanpa melompat ke pagi bila siang.
+        void Tidur(bool kasur)
+        {
+            var jam = GameServices.Get<TimeOfDayClock>();
+            var v = GameServices.Get<AndiVitalsAndSanity>();
+            if (jam == null) return;
+            float j = jam.Jam;
+            float lama = (j >= 18f || j < JamBangun) ? (j >= 18f ? 24f - j + JamBangun : JamBangun - j) : TidurSiang;
+            jam.Maju(lama);
+            if (v != null) v.Pulihkan(lama, kasur);
+            GameEvents.RaiseToast(lama > TidurSiang ? "Kamu tidur sampai pagi" : "Kamu beristirahat sejenak");
+            var simpan = GameServices.Get<Core.SaveSystem>();
+            if (simpan != null) simpan.Simpan();
+        }
+    }
+}

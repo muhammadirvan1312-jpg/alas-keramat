@@ -306,6 +306,29 @@ namespace AlasKeramat.EditorTools
             }
             finally { Object.DestroyImmediate(ujiB); }
             cek("Pemanggul kayu & tombol LEMPAR/MODE", Object.FindFirstObjectByType<ShoulderLogAndFreeformBuilder>() != null && GameObject.Find("BahuKiri") != null);
+            var tbl = GuidebookBlueprintsAndCooking.Tabel;
+            var idUnik = new HashSet<BlueprintID>(); bool bpOk = tbl.Length == 14;
+            foreach (var bp in tbl) { bpOk &= idUnik.Add(bp.id) && (int)bp.id >= 1 && (int)bp.id <= 14; foreach (var c in bp.cost) bpOk &= AlasKeramat.Inventory.ItemDatabase.Has(c.id) && c.count > 0; }
+            var api = GuidebookBlueprintsAndCooking.Ambil(BlueprintID.ApiUnggun); var saung = GuidebookBlueprintsAndCooking.Ambil(BlueprintID.SaungPanggung);
+            bpOk &= api.cost.Length == 2 && api.cost[0].id == ItemID.Ranting && api.cost[0].count == 6 && api.cost[1].count == 4 && saung.cost[0].count == 10 && saung.cost[2].count == 16;
+            cek("14 blueprint, biaya sesuai 07 §7 (api: ranting 6 + batu 4; saung: kayu 10/ranting 8/daun 16)", bpOk);
+            cek("Masak: ikan mentah 30 s = matang, 50 s = gosong", ApiUnggun.KeadaanMasak(ItemID.IkanMentah, 30f) == ItemID.IkanMatang && ApiUnggun.KeadaanMasak(ItemID.IkanMentah, 50f) == ItemID.MakananGosong && ApiUnggun.KeadaanMasak(ItemID.IkanMentah, 10f) == ItemID.IkanMentah);
+            cek("Jemuran: ikan matang -> ikan kering", FungsiBangunan.HasilJemur(ItemID.IkanMatang) == ItemID.IkanKering);
+            var ujiS = new GameObject("UjiSimpan");
+            try
+            {
+                var invS = ujiS.AddComponent<AlasKeramat.Inventory.TikarPandan3DInventory>();
+                var jamS = ujiS.AddComponent<TimeOfDayClock>();
+                invS.Tambah(ItemID.Batu, 7); invS.Tambah(ItemID.GolokPusaka, 1); jamS.Maju(5.5f);
+                var daftar = new ISaveable[] { invS, jamS };
+                string a = SaveSystem.KeJson(daftar);
+                invS.Kurangi(ItemID.Batu, 5); jamS.Maju(3f);
+                SaveSystem.DariJson(a, daftar);
+                string b = SaveSystem.KeJson(daftar);
+                cek("Simpan -> muat menghasilkan state identik", a.Substring(a.IndexOf("\"data\"")) == b.Substring(b.IndexOf("\"data\"")) && invS.Jumlah(ItemID.Batu) == 7);
+            }
+            finally { Object.DestroyImmediate(ujiS); }
+            cek("Buku Panduan, SaveSystem, penempatan", Object.FindFirstObjectByType<GuidebookBlueprintsAndCooking>() != null && Object.FindFirstObjectByType<SaveSystem>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.BukuPanduanUI>() != null);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)

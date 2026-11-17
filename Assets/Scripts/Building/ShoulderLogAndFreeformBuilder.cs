@@ -79,6 +79,9 @@ namespace AlasKeramat.Building
             return m;
         }
 
+        // Melepas satu kayu ke cetak biru / rak / api (tanpa memunculkan kayu fisik).
+        public Material Lepaskan() { return Jumlah > 0 ? Ambil() : null; }
+
         public void Lempar()
         {
             if (Jumlah <= 0) return;
