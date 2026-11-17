@@ -4,6 +4,8 @@ File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh memba
 ## Status Saat Ini
 AUTOPILOT_TAHAP_BERIKUTNYA: T10
 
+> Serah terima: mulai 18 Nov 2026 dikerjakan ChatGPT, baca `docs/HANDOVER_GPT.md`.
+
 - Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
 - Mode input proyek: default proyek baru; EventSystem memakai AddCorrectInputModule (H3)
