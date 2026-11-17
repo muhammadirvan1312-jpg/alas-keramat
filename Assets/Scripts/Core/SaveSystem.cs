@@ -22,7 +22,7 @@ namespace AlasKeramat.Core
         {
             var hasil = new List<ISaveable>();
             foreach (var mb in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-                if (mb is ISaveable) hasil.Add((ISaveable)mb);
+                if (mb is ISaveable && !string.IsNullOrEmpty(((ISaveable)mb).SaveKey)) hasil.Add((ISaveable)mb);
             return hasil;
         }
 
@@ -44,7 +44,9 @@ namespace AlasKeramat.Core
             if (b == null || b.data == null) return;
             var peta = new Dictionary<string, string>();
             foreach (var e in b.data) peta[e.kunci] = e.json;
-            foreach (var s in daftar)
+            var urut = new List<ISaveable>(daftar);
+            urut.Sort((a,c) => Urutan(a.SaveKey).CompareTo(Urutan(c.SaveKey)));
+            foreach (var s in urut)
             {
                 string j;
                 if (!peta.TryGetValue(s.SaveKey, out j)) continue;
@@ -52,9 +54,14 @@ namespace AlasKeramat.Core
             }
         }
 
+        static int Urutan(string kunci) { return kunci == "dunia" ? 0 : kunci == "posisi_andi" ? 2 : 1; }
+
         public void Simpan()
         {
-            try { File.WriteAllText(Path, KeJson(Kumpulkan())); GameEvents.RaiseToast("Permainan tersimpan"); }
+            try { string isi = KeJson(Kumpulkan());
+                File.WriteAllText(Path + ".tmp", isi);
+                if (File.Exists(Path)) File.Copy(Path, Path + ".bak", true);
+                File.Copy(Path + ".tmp", Path, true); File.Delete(Path + ".tmp"); GameEvents.RaiseToast("Permainan tersimpan"); }
             catch (Exception e) { Debug.LogError("[AK][SaveSystem] Simpan gagal: " + e.Message); }
         }
 

@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace AlasKeramat.EditorTools
 {
-    // Langkah 7l (T6b): Buku Panduan 14 blueprint (panel per kategori), penempatan cetak biru (hantu biru/merah), SaveSystem.
+    // Langkah 7l (T6b): Buku Panduan 26 blueprint (panel per kategori), penempatan cetak biru (hantu biru/merah), SaveSystem.
     public static partial class NusantaraMasterBuilder
     {
         static void LangkahBlueprint()
@@ -34,11 +34,17 @@ namespace AlasKeramat.EditorTools
             var bg = panel.AddComponent<Image>(); bg.color = ProcTex.Hex("#3A2A18E6");
             var jdl = BuatTeks(panel, "Judul", "BUKU PANDUAN", font, 40, new Vector2(0.5f, 1f), new Vector2(0f, -40f), new Vector2(900f, 60f));
             jdl.color = ProcTex.Hex("#F2C14E");
+            var viewport = UIStretch(panel, "DaftarGulir", new Vector2(0f, 0.16f), new Vector2(1f, 0.88f));
+            viewport.AddComponent<RectMask2D>();
+            var scroll = viewport.AddComponent<ScrollRect>(); scroll.horizontal = false;
+            var konten = UIStretch(viewport, "IsiDaftar", new Vector2(0f, 1f), new Vector2(1f, 1f));
+            var kontenRt=(RectTransform)konten.transform; kontenRt.pivot=new Vector2(0.5f,1f); kontenRt.sizeDelta=new Vector2(0f,1450f);
+            scroll.viewport=(RectTransform)viewport.transform; scroll.content=kontenRt;
             Text tx;
             for (int k = 0; k < GuidebookBlueprintsAndCooking.Kategori.Length; k++)
             {
                 string kat = GuidebookBlueprintsAndCooking.Kategori[k];
-                var h = BuatTeks(panel, "Kat" + k, kat.ToUpperInvariant(), font, 28, new Vector2(0f, 1f), new Vector2(150f + k * 300f, -110f), new Vector2(290f, 40f));
+                var h = BuatTeks(konten, "Kat" + k, kat.ToUpperInvariant(), font, 28, new Vector2(0f, 1f), new Vector2(150f + k * 300f, -110f), new Vector2(290f, 40f));
                 h.color = ProcTex.Hex("#E6D7B0");
                 int baris = 0;
                 for (int i = 0; i < GuidebookBlueprintsAndCooking.Tabel.Length; i++)
@@ -47,7 +53,7 @@ namespace AlasKeramat.EditorTools
                     if (d.category != kat) continue;
                     string biaya = "";
                     foreach (var c in d.cost) biaya += (biaya.Length > 0 ? ", " : "") + c.count + " " + ItemDatabase.Get(c.id).displayName;
-                    var b = TombolPanel(panel, "BP_" + d.id, d.displayName, font, Vector2.zero, new Vector2(280f, 110f), ProcTex.Hex("#6B4A2A"), out tx);
+                    var b = TombolPanel(konten, "BP_" + d.id, d.displayName, font, Vector2.zero, new Vector2(280f, 110f), ProcTex.Hex("#6B4A2A"), out tx);
                     var rt = (RectTransform)b.transform; rt.anchorMin = rt.anchorMax = new Vector2(0f, 1f); rt.anchoredPosition = new Vector2(150f + k * 300f, -190f - baris * 125f);
                     tx.fontSize = 22; tx.alignment = TextAnchor.UpperCenter;
                     var bt = BuatTeks(b.gameObject, "Biaya", biaya, font, 16, new Vector2(0.5f, 0f), new Vector2(0f, 30f), new Vector2(270f, 50f));
@@ -73,7 +79,7 @@ namespace AlasKeramat.EditorTools
             ui.Pasang(panel, tempat, bBuku.gameObject);
             EditorUtility.SetDirty(ui);
             panel.SetActive(false); tempat.SetActive(false);
-            Catat("Buku Panduan 14 blueprint, penempatan cetak biru, SaveSystem");
+            Catat("Buku Panduan 26 blueprint, penempatan cetak biru, SaveSystem");
         }
     }
 }

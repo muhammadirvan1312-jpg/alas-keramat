@@ -10,6 +10,9 @@ namespace AlasKeramat.Building
         public const float LamaSup = 40f, JarakApi = 2.2f;
         public static readonly ItemID[] Bahan = { ItemID.DagingMentah, ItemID.DagingMatang, ItemID.IkanMentah, ItemID.IkanMatang, ItemID.Jamur, ItemID.Pisang, ItemID.JaheHutan, ItemID.TelurAyamHutan };
         float _t = -1f;
+        [System.Serializable] class IsiPanciT6 { public float waktu; }
+        public string CaptureIsi() { return JsonUtility.ToJson(new IsiPanciT6 { waktu=_t }); }
+        public void RestoreIsi(string json) { var d=JsonUtility.FromJson<IsiPanciT6>(json); if(d!=null) _t=d.waktu; }
         public float HoldDuration { get { return 0f; } }
 
         bool AdaApi() { return ApiUnggun.AdaApiDekat(transform.position, JarakApi); }

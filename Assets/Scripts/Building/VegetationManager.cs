@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 namespace AlasKeramat.Building
 {
     // Menggambar vegetasi dengan GPU instancing (H10: tanpa GameObject per pohon jauh).
-    public class VegetationManager : MonoBehaviour
+    public class VegetationManager : MonoBehaviour, ISaveable
     {
         public const int MaksBatch = 1023;
         [SerializeField] VegetationData data;
@@ -85,10 +85,23 @@ namespace AlasKeramat.Building
 
         public void Sembunyikan(int id)
         {
+            if (!_siap) Siapkan();
             Vector2Int l;
             if (!_siap || !_letak.TryGetValue(id, out l) || !_hilang.Add(id)) return;
             var m = _mat[l.x][l.y];
             _mat[l.x][l.y] = Matrix4x4.TRS(m.GetColumn(3), m.rotation, Vector3.zero);
+        }
+
+        [System.Serializable] class PohonSimpanT6 { public int[] hilang; }
+        public string SaveKey { get { return "pohon"; } }
+        public string CaptureJson() { var ids = new int[_hilang.Count]; _hilang.CopyTo(ids); System.Array.Sort(ids); return JsonUtility.ToJson(new PohonSimpanT6 { hilang = ids }); }
+        public void RestoreJson(string json)
+        {
+            var d = JsonUtility.FromJson<PohonSimpanT6>(json); if (d == null || d.hilang == null) return;
+            if (!_siap) Siapkan();
+            var lama = new int[_hilang.Count]; _hilang.CopyTo(lama);
+            foreach (int id in lama) Tampilkan(id);
+            foreach (int id in d.hilang) Sembunyikan(id);
         }
 
         public void Tampilkan(int id)

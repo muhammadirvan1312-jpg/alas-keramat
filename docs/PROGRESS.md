@@ -2,7 +2,7 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T6c
+AUTOPILOT_TAHAP_BERIKUTNYA: T7
 
 - Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
@@ -46,6 +46,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T6c
 
 | T6b | 2026-11-17 | Menunggu CI | Building: GuidebookBlueprintsAndCooking (14 blueprint 07 §7 + penempatan hantu biru/merah, putar 15°, rakit hanya di air), CetakBiru (TAMBAH bahan dari tas/bahu, kain kafan menggantikan batik), BangunanBlueprint (objek jadi dari primitif), ApiUnggun (bahan bakar 600 s, ranting +45/kayu +300, cahaya berkedip, hujan x2, badai padam 60 s, 4 tusuk matang 25 s/gosong 40 s, bakar kemenyan), PanciMasak (sup hutan), FungsiBangunan (tidur/istirahat + simpan, rak 24/kereta 8, penampung hujan, jemuran 120 s, perangkap ayun 200, obor tengkorak 240 s, menara naik/turun, pintu, kentongan, rakit); Core: SaveSystem (semua ISaveable ke JSON); Player: Pulihkan saat tidur, hangat dekat api; UI: BukuPanduanUI (tombol BUKU, panel 4 kategori, TANDAI/PUTAR/BATAL) | + cek 14 blueprint & biaya, masak, jemur, simpan->muat identik | Membangun kemah: api unggun, saung, tidur sampai pagi & tersimpan |
 
+| T6c | 2026-11-18 | Ditulis, cek statis lulus; menunggu AK CI | Building: BagianStruktur, ShoulderLogAndFreeformBuilder (+Lanjut/+Simpan), PotongCelah, GuidebookBlueprintsAndCooking (+Lokasi), CetakBiru, BangunanBlueprint (+V3), FungsiBangunan (+V3), IdentitasBangunan, JeratanPunji, ApiUnggun, PanciMasak, VegetationManager, KayuFisik. Core: SimpanDunia, SaveSystem, QuestManager. Player: AndiFPSController (+Dunia), InteraksiAndi, DedenTutorial, CombatAndLeftHandController, AndiVitalsAndSanity. Inventory: WadahItem. UI: TanganTahan, PetiUI, HUDMisi, TouchControls. Editor: BuilderSteps.T6c/Blueprint/Interaksi, NusantaraMasterBuilder, NusantaraSelfTest, PemeriksaanT6c. AI: WildAnimalAI (nama enum internal unik) | Cek statis 0 masalah; self-test Edit Mode ditambahkan: 26 ID unik & item/biaya valid, bongkar -> KayuFisik papan, sudut atap/tangga, struktur/graf/HP/isi peti identik setelah muat dua kali, objek v3 bercollider, urutan M01-M04 & progres paralel | BONGKAR tahan 1 s; ATAP/TANGGA & anak tangga papan; Batu Besar dan Potong Celah 3 tebasan; 12 blueprint v3; peti 40 unit dengan panel transfer; rakit joystick 2,5 m/s + TURUN; simpan dunia, bahu, kayu fisik, koper, pohon, posisi dan misi; SIMPAN/MUAT HUD. Kompilasi/Play/Android belum dijalankan lokal (Unity tidak tersedia). |
+
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
 ## Keputusan Teknis Baru
@@ -57,6 +59,15 @@ Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hid
 - Kelas MonoBehaviour/ScriptableObject WAJIB di file bernama sama dengan kelasnya (VegetationManager.cs, VegetationData.cs) agar bisa diserialisasi Unity; nama file manifest 11 menyesuaikan.
 - T1: tombol uji suara memanggil `ProceduralAudioSynth.PlayByName(string)` lewat persistent listener (tanpa sambungan manual).
 - T1: ikon 20 buah (kayu, batu, ranting, daun, tali, makanan, air, golok, kapak, tombak, busur, panah, obor, senter, peta, buku, api, nyawa, stamina, kewarasan) di `Assets/Generated/Icons/`.
+
+### Keputusan T6c
+- Patung Ngeri memakai Ranting 6 + Tulang 5 sementara: Tulang 4 mengganti PotonganTubuh, Tulang 1 mengganti TopengSekte yang belum tersedia sebagai loot T7. Kembalikan biaya 14 §6 saat loot T7 tersambung.
+- M01-M03 aktif paralel sesuai 04 §3; HUD memprioritaskan ID terkecil. Event QuestAdvanced dikirim sekali per misi selesai. M04 aktif mulai Hari 1 pukul 18, selesai pagi Hari 2 dengan Andi hidup; tidur juga melewati waktu ini.
+- Batu Asah memberi bonus tebas 10% selama 300 detik (sistem durabilitas senjata belum tersedia). Jerat memberi daging hasil buruan; bubu memakai jam game dan stok maksimal 4. API MenangkalTuyul/TakutSekte tersedia untuk integrasi AI T7/T9.
+- Jembatan T6c memilih dua tiang/balok struktur dengan bentang maksimal 15 m; papan collider bisa dilewati. Rumah pohon hanya dapat ditandai dekat Jati/Mahoni hidup. Gerbang mendeteksi pemain/Companion.
+- Save dunia dimuat sebelum posisi Andi, merekonstruksi graf berdasarkan kunci stabil. Isi api/panci/jemuran/peti/stok perangkap ikut disimpan. File cadangan .bak dibuat sebelum penulisan simpan baru.
+- MODE tanpa muatan berganti POTONG CELAH jendela/pintu; tiga TEBAS pada balok memotong kelompok balok setinggi bukaan. MODE saat panggul memilih jenis struktur sesuai muatan. PANGGUL BATU mengambil Batu Besar dari tas (12 batu tersedia dekat spawn).
+- Tipe internal WildAnimalAI.Keadaan diganti KeadaanHewan karena duplikat dengan AndiVitalsAndSanity.Keadaan pada main, sebagaimana dilaporkan cek_statis.py.
 
 ## Masalah Terbuka / Belum Lulus Uji
 _(Daftar checklist yang belum lulus beserta dugaan penyebab.)_
