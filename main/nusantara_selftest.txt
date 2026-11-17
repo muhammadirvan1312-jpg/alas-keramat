@@ -1,6 +1,6 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (542 = 542)
+[LULUS] Idempoten: jumlah objek sama (555 = 555)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
@@ -80,6 +80,11 @@
 [LULUS] Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga 400-6500, 24 sendi bernama (15/15)
 [LULUS] Tahi lalat Andi di bawah mata kiri (02 §2)
 [LULUS] Deden di heli & Ningsih di Sarang
+[LULUS] Pohon rebah menjauhi takikan (tebang dari selatan -> rebah ke utara)
+[LULUS] Takikan seri -> rebah menjauhi Andi
+[LULUS] Hasil kayu 07 §1 (jati 4, aren 3, kelapa 2; HP jati 120)
+[LULUS] Senjata terbaik (golok saja -> tebang 20; + kapak batu -> 28)
+[LULUS] Pool pohon, melee, senjata FP, tombol TEBAS
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas
