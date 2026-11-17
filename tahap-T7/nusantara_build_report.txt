@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-17 23:07:22
+Laporan Builder Alas Keramat - 2026-11-17 23:23:47
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -55,8 +55,12 @@ Laporan Builder Alas Keramat - 2026-11-17 23:07:22
 [LULUS] 7p. Gore, luka & peringatan 18+
   - Senjata jarak: 5 proyektil, 10 model FP, tombol GANTI, cincin suara, 3 titik lumpur
 [LULUS] 7q. Senjata jarak, elak, stealth
+  - Companion: Kang Deden (15 perintah) & Ningsih (Trust 3 tahap), Buku Catatan & menu Ningsih
+[LULUS] 7r. Companion Kang Deden & Ningsih
+  - Teror: TerrorDirector (25 kejadian), WorldEventScheduler, 20 catatan Deden
+[LULUS] 7s. Sutradara Teror & dunia hidup
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 1987
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2050
 [LULUS] 9. Simpan scene
-Durasi: 82.9 detik
+Durasi: 143.2 detik
 HASIL: SEMUA LANGKAH LULUS

@@ -1,6 +1,6 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (1987 = 1987)
+[LULUS] Idempoten: jumlah objek sama (2050 = 2050)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
@@ -61,7 +61,7 @@
 [LULUS] Tepat 1 AudioListener aktif (1)
 [LULUS] Tur pratinjau mati saat Andi ada
 [LULUS] TouchControls & joystick & area geser
-[LULUS] Semua tombol HUD punya handler (12)
+[LULUS] Semua tombol HUD punya handler (36)
 [LULUS] 3 koper berisi item sesuai 03 §9 (3)
 [LULUS] Inventaris menghormati Maks (golok 3 -> 1)
 [LULUS] Radar, toast, interaksi, tangan kiri ada
@@ -117,7 +117,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[GAGAL] A* bertingkat Heli -> Desa ditemukan dengan 4000 node (< 4.000), 0 titik, koridor dilebarkan 1x, 144 ms [diag: tanpa batas True/32289 node, bobot 3 True/25572 node, bertingkat tanpa batas True/5663 (kasar 1767 dari 7770 simpul)]
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 210 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -150,6 +150,25 @@
 [LULUS] Elak 2,5 m / kebal 0,25 s / stamina 12; lumpur x0,7
 [LULUS] Prefab proyektil x5 & model FP senjata jarak
 [LULUS] Tombol GANTI, cincin suara, 3 titik lumpur
+[LULUS] 15 perintah Kang Deden lengkap; tiap penolakan punya alasan
+[LULUS] Syarat perintah: kemah, penampung, rak, cetak biru, struktur rusak, kayu pagar 12
+[LULUS] Jadwal buka perintah: M02 (umum), M04 (kumpul dasar), M05 (semua)
+[LULUS] Teleport hanya di luar pandangan kamera; titik ikuti 4 m di belakang-kiri
+[LULUS] Simulasi Trust Ningsih: tahap 31/70, +2/s maks 15 per perjumpaan, tabel kejadian 08 §3.3
+[LULUS] Pagar keliling: 24 tiang r 12 m dengan celah gerbang
+[LULUS] Hadiah harian Ningsih (sirih x2 / kelapa / ikan x2 / kemenyan)
+[LULUS] Kang Deden & Ningsih: AI + CharacterController
+[LULUS] Buku Catatan (15 tombol) & menu Ningsih (7 tombol)
+[LULUS] Tension 13 §2.1: malam+gelap+Malam Darah+Sanity 50 = 82.5
+[LULUS] Simulasi 20 menit malam: Ringan 9 (>= 6), Sedang 1, Keras 0 (<= 2), tanpa ulang
+[LULUS] Intensitas Ringan: tanpa kejutan Keras (0)
+[LULUS] Katalog 25 kejadian unik dengan syarat
+[LULUS] Jadwal Sekte 24 jam (16 §4.1)
+[LULUS] 20 Catatan Kang Deden: teks & pemicu valid (Hari 1 belum ada catatan)
+[LULUS] Tawa terbalik 13 §4.1 (dekat pelan, jauh keras)
+[LULUS] Kejadian dunia: Hari 4 pesawat terskrip, maks 2 per pagi, jenazah maks 5
+[LULUS] TerrorDirector (sosok, layar kedip) & WorldEventScheduler di scene
+[LULUS] Suara teror prosedural (12 klip)
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas
