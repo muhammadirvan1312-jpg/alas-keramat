@@ -2,7 +2,7 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T4
+AUTOPILOT_TAHAP_BERIKUTNYA: T5
 
 - Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
@@ -33,6 +33,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T4
 | T3d | 2026-11-17 | Menunggu CI | Player: AndiVitalsAndSanity (+.Tubuh): HP + plafon, stamina + cap (sprint/lompat/renang, habis -> tak bisa lari sampai 25), basah & dingin, haus, istirahat, kewarasan (malam gelap, kabut darah, api, cerah), suhu tubuh 24 §1.1 (kedinginan/hipotermia/kepanasan/heatstroke), gizi 4 cadangan, air mentah 35% diare, daging mentah keracunan, kunyit/jamu mengobati, pingsan -> bangun di heli; IDamageable/IVitalAndi/ISaveable; UI: HUDVital (5 bar, plafon, beku, kedip kritis, pendar kewarasan, suhu & basah) | + cek laju 60 s (haus 5,1 / kenyang 3,3 / istirahat 2,1), plafon HP, suhu udara | Bar vital hidup; minum sungai menaikkan haus |
 
 | T3e | 2026-11-17 | Menunggu CI | Core: ProceduralAudioSynth.Foley (langkah 6 permukaan x 3 variasi, napas lelah, detak jantung); Player: FoleyAndi (langkah per jarak & permukaan, mendarat, berenang, napas saat stamina < 30, jantung saat kewarasan/HP < 25); UI: SubtitleSystem (2 baris, antrean, monolog pembuka Andi), SabukCepat (4 slot makanan/obat, ketuk = konsumsi). CI: laporan & foto ke cabang ci-hasil | + cek 20 klip foley, permukaan, komponen, lama subtitle | Langkah terdengar beda di pasir/daun/air, Andi bermonolog saat sadar, bisa makan/minum dari sabuk |
+
+| T4a | 2026-11-17 | Menunggu CI | Core: Kerangka (24 sendi 02 §1.1), CharacterMeshBuilder (loft elips, bola, kotak, kerucut, atlas 8x8), ResepKarakter (12 humanoid: Andi, Deden, Ningsih, Ki Rogo, 5 Sekte, Pocong, Kuntilanak, Genderuwo; aksesori khas: tahi lalat & jam Andi, rompi hi-vis/iket/perban Deden, sanggul/kantil/segel Ningsih, blangkon, topeng Sekte, kafan, rambut panjang); AI: ProceduralAnimator (gait jalan/lari/sprint 02 §1.7, duduk terhuyung, pocong melompat, melayang, galeri, 5 klip, napas, tatap, kedip); Editor: BuilderSteps.Karakter (Andi 2 renderer, Deden di ekor heli, Ningsih di Sarang, Galeri + menu Debug), 3 foto | + cek 1 SMR (Andi 2), segitiga, 24 sendi, tahi lalat, Deden & Ningsih | Karakter prosedural bergerak. Ditunda ke fase poles (T4b): model MakeHuman/MPFB 22, wajah 12 ekspresi + visem, shader kulit/rambut/mata, mocap CMU, bercermin & layar status; hewan dibuat di T5 |
 
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 

@@ -209,6 +209,30 @@ namespace AlasKeramat.EditorTools
             cek("Foley, subtitle, sabuk cepat ada", Object.FindFirstObjectByType<AlasKeramat.Player.FoleyAndi>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.SubtitleSystem>() != null
                 && Object.FindFirstObjectByType<AlasKeramat.UI.SabukCepat>() != null);
             cek("Subtitle: lama tampil min 2,5 s", Mathf.Approximately(AlasKeramat.UI.SubtitleSystem.LamaTampil("Halo"), 2.5f));
+            var semuaAnim = Object.FindObjectsByType<AlasKeramat.AI.ProceduralAnimator>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            int karOk = 0, karTotal = 0; string karGagal = "";
+            foreach (var an in semuaAnim)
+            {
+                karTotal++;
+                var smrs = an.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                bool isAndi = an.name == "ModelAndi";
+                int tri = 0; foreach (var r in smrs) if (r.sharedMesh != null) tri += r.sharedMesh.triangles.Length / 3;
+                bool namaOk = true;
+                foreach (var nm in Kerangka.Nama) if (FindRekursif(an.transform, nm) == null) namaOk = false;
+                bool ok = smrs.Length == (isAndi ? 2 : 1) && tri >= 400 && tri <= 6500 && namaOk;
+                if (ok) karOk++; else karGagal += " " + an.name + "(smr " + smrs.Length + ", tri " + tri + ", nama " + namaOk + ")";
+            }
+            cek("Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga 400-6500, 24 sendi bernama (" + karOk + "/" + karTotal + ")" + karGagal, karTotal >= 14 && karOk == karTotal);
+            var tahi = GameObject.Find("TahiLalat");
+            bool tahiOk = false;
+            if (tahi != null)
+            {
+                var kepalaA = tahi.transform.parent;
+                Vector3 rel = kepalaA.InverseTransformPoint(tahi.transform.position) - new Vector3(0f, 0.085f, 0.01f); // ruang lokal kepala (Andi berputar menghadap heli)
+                tahiOk = Vector3.Distance(rel, new Vector3(-0.036f, -0.014f, 0.081f)) < 0.003f && kepalaA.name == "Head";
+            }
+            cek("Tahi lalat Andi di bawah mata kiri (02 §2)", tahiOk);
+            cek("Deden di heli & Ningsih di Sarang", GameObject.Find("KangDeden") != null && GameObject.Find("Ningsih") != null);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)
@@ -230,5 +254,12 @@ namespace AlasKeramat.EditorTools
         }
 
         static bool GraphicsSettings_DefaultAda() { return UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline != null; }
+    
+        static Transform FindRekursif(Transform t, string nama)
+        {
+            if (t.name == nama) return t;
+            for (int i = 0; i < t.childCount; i++) { var r = FindRekursif(t.GetChild(i), nama); if (r != null) return r; }
+            return null;
+        }
     }
 }
