@@ -1,11 +1,11 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (1519 = 1519)
+[LULUS] Idempoten: jumlah objek sama (1530 = 1530)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
 [LULUS] Tekstur >= 10 (14)
-[LULUS] Material >= 5 (51)
+[LULUS] Material >= 5 (53)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
 [LULUS] WAV >= 8 (52)
@@ -61,7 +61,7 @@
 [LULUS] Tepat 1 AudioListener aktif (1)
 [LULUS] Tur pratinjau mati saat Andi ada
 [LULUS] TouchControls & joystick & area geser
-[LULUS] Semua tombol HUD punya handler (5)
+[LULUS] Semua tombol HUD punya handler (7)
 [LULUS] 3 koper berisi item sesuai 03 §9 (3)
 [LULUS] Inventaris menghormati Maks (golok 3 -> 1)
 [LULUS] Radar, toast, interaksi, tangan kiri ada
@@ -92,6 +92,9 @@
 [LULUS] Rakit di tikar: Bambu + Tali (+ golok) -> Tombak Bambu
 [LULUS] Zirah daun (8) menyerap 8 dari 10 damage
 [LULUS] Panggung tikar, layar tikar, tombol TAS
+[LULUS] Snap tiang -> balok -> papan valid (HP 200/120)
+[LULUS] Integritas BFS: satu tiang hilang tetap berdiri, kedua hilang -> balok & papan runtuh (0/2)
+[LULUS] Pemanggul kayu & tombol LEMPAR/MODE
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas
