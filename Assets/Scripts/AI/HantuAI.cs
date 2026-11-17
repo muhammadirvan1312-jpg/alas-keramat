@@ -123,6 +123,8 @@ namespace AlasKeramat.AI
             if (info.source == null || _combat == null || info.source != _combat.gameObject) senjata = ItemID.None;
             _hp -= info.amount * PengaliDamage(jenis, info.type, senjata, rentan);
             Suara(ProceduralAudioSynth.KlipKenaDaging, 0.6f);
+            var gore = GameServices.Get<GoreSystem>();
+            if (gore != null && jenis != EnemyArchetype.Banaspati) gore.Semburan(info.point, info.direction, info.amount, true, info.isHeavy); // darah hitam hantu (14 §3.3)
             if (_hp <= 0f) { Usir(); return; }
             if (jenis == EnemyArchetype.Kuntilanak && !_setengahHilang && _hp <= _d.hp * 0.5f) { _setengahHilang = true; Ubah(FaseHantu.Hilang); TampakSemua(false); }
         }

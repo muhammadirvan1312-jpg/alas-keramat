@@ -107,6 +107,8 @@ namespace AlasKeramat.UI
             if (!Siap()) return;
             var t = Tunggal();
             var v = GameServices.Get<AndiVitalsAndSanity>();
+            var rkObat = GameServices.Get<AlasKeramat.Player.ReaksiAndi>();
+            if (rkObat != null && rkObat.Obati(t)) { _p.BatalPilih(); _p.Segarkan(); Perbarui(); return; } // T7c: perban/jamu/sirih untuk pendarahan
             if (t != ItemID.None && v != null && v.Konsumsi(t)) GameEvents.RaiseToast("Kamu mengonsumsi " + ItemDatabase.Get(t).displayName);
             _p.BatalPilih(); _p.Segarkan(); Perbarui();
         }

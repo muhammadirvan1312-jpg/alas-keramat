@@ -12,10 +12,13 @@ namespace AlasKeramat.UI
 
         [SerializeField] Image tandaKena;
         [SerializeField] Image vignette;
+        [SerializeField] Image ikonDarah;
+        ReaksiAndi _reaksi;
         float _tKena, _tMerah, _kuatMerah;
         bool _berat;
 
         public void Pasang(Image kena, Image merah) { tandaKena = kena; vignette = merah; }
+        public void PasangIkonDarah(Image ikon) { ikonDarah = ikon; }
 
         void OnEnable() { CombatAndLeftHandController.OnKena += Kena; GameEvents.OnPlayerDamaged += Terluka; Set(tandaKena, 0f); Set(vignette, 0f); }
         void OnDisable() { CombatAndLeftHandController.OnKena -= Kena; GameEvents.OnPlayerDamaged -= Terluka; }
@@ -26,6 +29,13 @@ namespace AlasKeramat.UI
         void Update()
         {
             float dt = Time.unscaledDeltaTime;
+            if (ikonDarah != null)
+            {
+                if (_reaksi == null) _reaksi = GameServices.Get<ReaksiAndi>();
+                bool darah = _reaksi != null && _reaksi.Berdarah;
+                if (ikonDarah.enabled != darah) ikonDarah.enabled = darah;
+                if (darah) { var c = ikonDarah.color; c.a = 0.55f + 0.45f * Mathf.Sin(Time.unscaledTime * 6f); ikonDarah.color = c; } // berdenyut (14 §4)
+            }
             if (_tKena > 0f || (tandaKena != null && tandaKena.color.a > 0f))
             {
                 _tKena = Mathf.Max(0f, _tKena - dt);

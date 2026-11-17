@@ -332,6 +332,7 @@ namespace AlasKeramat.EditorTools
             PemeriksaanT6c.Jalankan(cek);
             PemeriksaanT7.Jalankan(cek);
             PemeriksaanT7.JalankanB(cek);
+            PemeriksaanT7c.Jalankan(cek);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)

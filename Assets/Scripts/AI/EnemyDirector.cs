@@ -17,7 +17,7 @@ namespace AlasKeramat.AI
         public static readonly Vector3 PusatDesa = new Vector3(540f, 0f, 196f), TitikRitualDesa = new Vector3(540f, 0f, 200f), PusatSawit = new Vector3(-520f, 0f, 240f);
 
         public static Difficulty Kesulitan = Difficulty.Normal;
-        public static GoreLevel TingkatGore = GoreLevel.Sedang; // dibaca GoreSystem T7c / Pengaturan T11
+        public static GoreLevel TingkatGore { get { return GoreSystem.Tingkat; } } // H16: sumber tunggal di GoreSystem
 
         [SerializeField] GameObject[] prefab = new GameObject[5]; // indeks = EnemyArchetype 0-4
 

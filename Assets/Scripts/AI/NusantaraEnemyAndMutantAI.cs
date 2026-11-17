@@ -31,7 +31,7 @@ namespace AlasKeramat.AI
         public float Takut { get { return _takut; } set { _takut = Mathf.Clamp(value, 0f, 100f); } }
         public float HP { get { return _hp; } }
         public bool IsAlive { get { return _keadaan != KeadaanSekte.Mati; } }
-        public float HoldDuration { get { return 0f; } }
+        public float HoldDuration { get { return _keadaan == KeadaanSekte.Mati && PromptMayat() == "POTONG" ? LamaPotong : 0f; } }
         public bool Pengintai { get; set; }
         public Vector3[] Rute { get; set; }
         public Vector3 TitikRitual { get; set; }
@@ -343,15 +343,18 @@ namespace AlasKeramat.AI
             Ambil();
             if (_keadaan == KeadaanSekte.Menyerah && _vital != null) _vital.UbahSanity(SanitySerangMenyerah);
             bool penghabisan = _combat != null && _combat.SedangPenghabisan && StatMusuh.Sekte(jenis);
-            _hp -= info.amount;
+            ZonaKena zona; bool putusLengan, putusKaki;
+            float dmg = LukaiZona(info, penghabisan, out zona, out putusLengan, out putusKaki);
+            _hp -= dmg;
             _diserang = true; _sadar = AmbangTerlibat;
             if (info.source != null) _posTerakhir = info.source.transform.position;
             if (info.type == DamageType.Api) Takut += TakutApi;
-            if (_hp <= 0f || penghabisan) { Mati(penghabisan); return; }
-            Suara(ProceduralAudioSynth.KlipKenaDaging, 1f);
+            if (_hp <= 0f || penghabisan) { Mati(penghabisan, info.direction * (info.isHeavy ? 4f : 2f)); return; }
             float r = _hp / _d.hp;
             _tGoyah = Mathf.Max(_tGoyah, LamaReaksi(jenis, info.isHeavy, r));
             if (_keadaan == KeadaanSekte.Terluka || _keadaan == KeadaanSekte.Menyerah) return;
+            if (putusKaki) { Ubah(KeadaanSekte.Terluka); return; }
+            if (putusLengan) { Takut += 30f; Ubah(KeadaanSekte.Lari); return; }
             bool temanDekat = _dir != null && _dir.AdaTemanDekat(this, RadiusTemanMenyerah);
             if (HarusTerluka(r, Random.value)) Ubah(KeadaanSekte.Terluka);
             else if (HarusMenyerah(r, _takut, temanDekat)) Ubah(KeadaanSekte.Menyerah);
@@ -361,7 +364,7 @@ namespace AlasKeramat.AI
 
         public void Diparry() { _tGoyah = 1.2f; Takut += TakutParry; _fase = FaseSerang.Jeda; _jedaSerang = 1.5f; }
 
-        void Mati(bool penghabisan)
+        void Mati(bool penghabisan, Vector3 impuls)
         {
             _hp = 0f;
             LepasToken();
@@ -371,7 +374,9 @@ namespace AlasKeramat.AI
             Ubah(KeadaanSekte.Mati);
             if (_cc != null) _cc.enabled = false;
             if (_anim != null) { _anim.Pose = ProceduralAnimator.PoseTempur.Tidak; _anim.enabled = false; }
-            if (Abu()) Suara(ProceduralAudioSynth.KlipAbu, 1f);
+            if (Abu()) { Suara(ProceduralAudioSynth.KlipAbu, 1f); if (StatMusuh.Sekte(jenis)) _jarahan.Add(new ItemStack { id = ItemID.TopengSekte, count = 1 }); }
+            else MatiGore(impuls);
+            if (prompt != null) prompt.SetActive(PromptMayat().Length > 0);
             if (_dir != null) _dir.LaporMati(this);
             GameEvents.RaiseEnemyKilled(jenis, false);
             if (penghabisan) GameEvents.RaiseToast("Tebasan Penghabisan");
@@ -395,7 +400,8 @@ namespace AlasKeramat.AI
                 if (u >= 1f && _jarahan.Count == 0) gameObject.SetActive(false);
                 return;
             }
-            // Tumbang telentang 0,5 s lalu diam sebagai mayat (ragdoll T7c).
+            if (_ragdoll) return;
+            // Tanpa ragdoll (cadangan): tumbang telentang 0,5 s lalu diam sebagai mayat.
             float t = Mathf.Clamp01(_tState / 0.5f);
             var e = transform.eulerAngles;
             transform.rotation = Quaternion.Euler(Mathf.Lerp(0f, -88f, t * t), e.y, 0f);
@@ -403,18 +409,24 @@ namespace AlasKeramat.AI
             if (transform.position.y > h + 0.25f) transform.position = new Vector3(transform.position.x, Mathf.Max(h + 0.25f, transform.position.y - 3f * dt), transform.position.z);
         }
 
-        public string GetPromptText(GameObject actor) { return _keadaan == KeadaanSekte.Menyerah ? "AMPUNI" : "GELEDAH"; }
+        public string GetPromptText(GameObject actor) { return _keadaan == KeadaanSekte.Menyerah ? "AMPUNI" : PromptMayat(); }
 
         public bool CanInteract(GameObject actor)
         {
-            return _keadaan == KeadaanSekte.Menyerah || (_keadaan == KeadaanSekte.Mati && !_digeledah && _jarahan.Count > 0);
+            return _keadaan == KeadaanSekte.Menyerah || (_keadaan == KeadaanSekte.Mati && PromptMayat().Length > 0);
         }
 
         public void Interact(GameObject actor)
         {
             Ambil();
             if (_keadaan == KeadaanSekte.Menyerah) { Ampuni(); return; }
-            if (_keadaan != KeadaanSekte.Mati || _digeledah) return;
+            if (_keadaan != KeadaanSekte.Mati) return;
+            if (PromptMayat() != "GELEDAH")
+            {
+                InteraksiMayat();
+                if (prompt != null) prompt.SetActive(PromptMayat().Length > 0);
+                return;
+            }
             _digeledah = true;
             var inv = GameServices.Get<TikarPandan3DInventory>();
             var sb = new System.Text.StringBuilder("Dapat: ");
@@ -426,7 +438,7 @@ namespace AlasKeramat.AI
             }
             GameEvents.RaiseToast(sb.ToString());
             _jarahan.Clear();
-            if (prompt != null) prompt.SetActive(false);
+            if (prompt != null) prompt.SetActive(PromptMayat().Length > 0);
             if (Abu()) gameObject.SetActive(false);
         }
 

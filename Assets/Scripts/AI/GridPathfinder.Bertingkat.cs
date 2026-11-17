@@ -5,18 +5,17 @@ using UnityEngine;
 namespace AlasKeramat.AI
 {
     // Pencarian bertingkat untuk jarak jauh (dunia v5 2x2 km): A* di grid kasar 100x100 (blok 20 m) menentukan koridor,
-    // lalu tiap 2 blok dihaluskan dengan A* sel 4 m beranggaran kecil. Total node (kasar + halus) tetap di bawah MaksNode.
+    // lalu A* sel 4 m dijalankan hanya di dalam koridor itu. Total node (kasar + halus) tetap di bawah MaksNode.
     public partial class GridPathfinder
     {
         public const float JarakBertingkat = 150f, BobotKasar = 1.2f;
-        public const int LangkahHalus = 2, AnggaranSegmen = 900;
-
+        
         public static int SegmenGagalTerakhir { get; private set; }
 
         static float[] _gK, _fK;
         static int[] _indukK, _capK, _heapK;
         static int _capAktifK, _ukuranHeapK;
-        static readonly List<Vector3> _koridor = new List<Vector3>(), _segmen = new List<Vector3>();
+        static readonly List<Vector3> _koridor = new List<Vector3>();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetKasar() { _gK = null; _fK = null; _indukK = null; _capK = null; _heapK = null; _capAktifK = 0; _ukuranHeapK = 0; }
@@ -37,34 +36,37 @@ namespace AlasKeramat.AI
             int nK;
             if (!CariKasar(g, dari, ke, _koridor, anggaran / 2, out nK)) { dikunjungi = nK; return false; }
             dikunjungi = nK;
-            Vector3 a = dari;
-            for (int i = LangkahHalus; ; i += LangkahHalus)
+            // A* halus dibatasi koridor (blok kasar jalur +- 1); bila koridor terputus di tingkat halus, lebarkan +- 2.
+            for (int lebar = 1; lebar <= 2; lebar++)
             {
-                bool akhir = i >= _koridor.Count - 1;
-                Vector3 b = akhir ? ke : _koridor[i];
+                TandaiKoridor(lebar);
                 int n;
-                bool ok = Cari(g, a, b, _segmen, Mathf.Min(AnggaranSegmen, Mathf.Max(100, anggaran - dikunjungi)), out n);
+                bool ok = Cari(g, dari, ke, hasil, Mathf.Max(100, anggaran - dikunjungi), out n, _izinBlok);
                 dikunjungi += n;
-                if (!ok && !akhir)
-                {
-                    // Titik koridor jatuh di kantong terputus: lompati ke titik koridor berikutnya.
-                    int j = Mathf.Min(i + LangkahHalus, _koridor.Count - 1);
-                    bool akhir2 = j >= _koridor.Count - 1;
-                    Vector3 b2 = akhir2 ? ke : _koridor[j];
-                    ok = Cari(g, a, b2, _segmen, Mathf.Min(AnggaranSegmen * 2, Mathf.Max(100, anggaran - dikunjungi)), out n);
-                    dikunjungi += n;
-                    if (ok) { b = b2; i = j; akhir = akhir2; }
-                }
-                if (hasil != null)
-                {
-                    if (ok) hasil.AddRange(_segmen);
-                    else { SegmenGagalTerakhir++; hasil.Add(b); } // cadangan: setir langsung + hindar halangan
-                }
-                else if (!ok) SegmenGagalTerakhir++;
-                a = b;
-                if (akhir) break;
+                if (ok) return true;
+                SegmenGagalTerakhir++;
+                if (dikunjungi >= anggaran) break;
             }
-            return true;
+            return false;
+        }
+
+        static bool[] _izinBlok;
+
+        static void TandaiKoridor(int lebar)
+        {
+            int S = SurfaceGrid.SisiKasar;
+            if (_izinBlok == null) _izinBlok = new bool[S * S];
+            System.Array.Clear(_izinBlok, 0, _izinBlok.Length);
+            for (int i = 0; i < _koridor.Count; i++)
+            {
+                int cx, cz; KeKasar(_koridor[i], out cx, out cz);
+                for (int dz = -lebar; dz <= lebar; dz++)
+                    for (int dx = -lebar; dx <= lebar; dx++)
+                    {
+                        int x = cx + dx, z = cz + dz;
+                        if (x >= 0 && z >= 0 && x < S && z < S) _izinBlok[z * S + x] = true;
+                    }
+            }
         }
 
         static void SiapkanKasar()

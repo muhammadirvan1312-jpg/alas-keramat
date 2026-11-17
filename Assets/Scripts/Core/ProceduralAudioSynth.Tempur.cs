@@ -7,8 +7,8 @@ namespace AlasKeramat.Core
     public partial class ProceduralAudioSynth
     {
         public const string KlipParry = "tempur_parry", KlipKenaDaging = "tempur_kena_daging", KlipGeramSekte = "sekte_geram", KlipTeriakSekte = "sekte_teriak",
-            KlipRintihSekte = "sekte_rintih", KlipAbu = "tempur_abu", KlipAyunSekte = "sekte_ayun", KlipMusikTempur = "musik_tempur";
-        public static readonly string[] KlipTempur = { KlipParry, KlipKenaDaging, KlipGeramSekte, KlipTeriakSekte, KlipRintihSekte, KlipAbu, KlipAyunSekte, KlipMusikTempur };
+            KlipRintihSekte = "sekte_rintih", KlipAbu = "tempur_abu", KlipAyunSekte = "sekte_ayun", KlipMusikTempur = "musik_tempur", KlipTebasBasah = "gore_tebas_basah", KlipPutusTulang = "gore_putus_tulang", KlipTubuhJatuh = "gore_tubuh_jatuh";
+        public static readonly string[] KlipTempur = { KlipParry, KlipKenaDaging, KlipGeramSekte, KlipTeriakSekte, KlipRintihSekte, KlipAbu, KlipAyunSekte, KlipMusikTempur, KlipTebasBasah, KlipPutusTulang, KlipTubuhJatuh };
 
         public static float[] GenerateTempur(string nama, int variasi, out int sr)
         {
@@ -25,6 +25,9 @@ namespace AlasKeramat.Core
                 case KlipAbu: b = ResepAbu(sr, ref rng); break;
                 case KlipAyunSekte: b = ResepAyun(sr, ref rng); break;
                 case KlipMusikTempur: b = ResepMusikTempur(sr, ref rng); break;
+                case KlipTebasBasah: b = ResepTebasBasah(sr, ref rng); break;
+                case KlipPutusTulang: b = ResepPutusTulang(sr, ref rng); break;
+                case KlipTubuhJatuh: b = ResepTubuhJatuh(sr, ref rng); break;
                 default: return null;
             }
             Dsp.Finalize(b, sr);
@@ -162,6 +165,49 @@ namespace AlasKeramat.Core
                     if (x == 0f && t > 1.2f) break;
                     b[idx] += x;
                 }
+            }
+            return b;
+        }
+
+        // 14 §9 audio gore.
+        static float[] ResepTebasBasah(int sr, ref Dsp.Rng rng)
+        {
+            var b = Dsp.Buffer(0.3f, sr);
+            var bp = Dsp.Biquad.BP(1200f, 1.1f, sr); var lp = Dsp.Biquad.LP(800f, 0.7f, sr);
+            for (int i = 0; i < b.Length; i++)
+            {
+                float t = (float)i / sr;
+                float debam = Mathf.Sin(Dsp.DuaPi * 110f * t) * Dsp.ExpDecay(t, 0.05f);
+                float kres = bp.Process(rng.White()) * Dsp.AD(t, 0.002f, 0.04f);
+                float basah = Dsp.AM(lp.Process(rng.White()), t, 30f, 0.8f) * Dsp.AD(t, 0.01f, 0.12f);
+                b[i] = debam * 0.9f + kres * 0.7f + basah * 0.6f;
+            }
+            return b;
+        }
+
+        static float[] ResepPutusTulang(int sr, ref Dsp.Rng rng)
+        {
+            var b = Dsp.Buffer(0.35f, sr);
+            var bp = Dsp.Biquad.BP(1500f, 1.3f, sr);
+            float tImp = 0f;
+            for (int i = 0; i < b.Length; i++)
+            {
+                float t = (float)i / sr;
+                float imp = 0f;
+                if (t < 0.08f && t >= tImp) { imp = rng.Range(0.6f, 1f); tImp = t + rng.Range(0.004f, 0.012f); }
+                b[i] = imp + bp.Process(rng.White()) * Dsp.ExpDecay(t, 0.06f) * 0.6f + Mathf.Sin(Dsp.DuaPi * 70f * t) * Dsp.ExpDecay(t, 0.09f);
+            }
+            return b;
+        }
+
+        static float[] ResepTubuhJatuh(int sr, ref Dsp.Rng rng)
+        {
+            var b = Dsp.Buffer(0.5f, sr);
+            var lp = Dsp.Biquad.LP(500f, 0.7f, sr); var hp = Dsp.Biquad.HP(2500f, 0.7f, sr);
+            for (int i = 0; i < b.Length; i++)
+            {
+                float t = (float)i / sr;
+                b[i] = Mathf.Sin(Dsp.DuaPi * Dsp.ExpSweep(90f, 55f, t, 0.2f) * t) * Dsp.ExpDecay(t, 0.12f) + lp.Process(rng.White()) * Dsp.ExpDecay(t, 0.08f) * 0.5f + hp.Process(rng.White()) * Dsp.AD(t, 0.03f, 0.1f) * 0.25f;
             }
             return b;
         }

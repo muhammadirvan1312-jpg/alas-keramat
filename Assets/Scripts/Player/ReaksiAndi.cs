@@ -31,7 +31,10 @@ namespace AlasKeramat.Player
         void Kena(DamageInfo d)
         {
             if (d.type == DamageType.Tenggelam) return;
-            if (_combat != null) _combat.Guncang(HarusJatuh(d.amount) ? 0.3f : 0.15f);
+            if (!Berdarah && PicuPendarahan(d, Random.value)) MulaiPendarahan();
+            var gore = GameServices.Get<GoreSystem>();
+            if (gore != null && d.amount >= 5f && d.source != null) gore.Semburan(d.point, d.direction, d.amount * 0.5f, false, false);
+            if (_combat != null && d.source != null) _combat.Guncang(HarusJatuh(d.amount) ? 0.3f : 0.15f);
             var a = GameServices.Get<ProceduralAudioSynth>();
             if (a != null && d.amount >= 3f) a.Play(ProceduralAudioSynth.KlipKenaDaging, null, AudioCategory.Efek, 0.7f, Random.Range(0.8f, 0.95f), 3);
             if (HarusJatuh(d.amount) && _ctrl != null && _tJatuh <= 0f)
@@ -41,6 +44,49 @@ namespace AlasKeramat.Player
                 _ctrl.InputLihatPx.y -= PitchJatuh / AndiFPSController.SensV;
                 _tJatuh = LamaJatuh;
             }
+        }
+
+        // ---------- Pendarahan (14 §4) ----------
+        public const float PeluangPendarahanTebas = 0.25f, LajuPendarahan = 0.5f;
+        float _tTickDarah, _pengaliDarah = 1f;
+        public bool Berdarah { get; private set; }
+
+        public static bool PicuPendarahan(DamageInfo d, float acak)
+        {
+            return d.type == DamageType.Tebas && d.source != null && d.source.GetComponent<AlasKeramat.AI.NusantaraEnemyAndMutantAI>() != null && acak < PeluangPendarahanTebas;
+        }
+
+        public void MulaiPendarahan()
+        {
+            if (Berdarah) return;
+            Berdarah = true; _pengaliDarah = 1f;
+            GameEvents.RaiseStatusChanged(StatusEffect.Pendarahan);
+            GameEvents.RaiseToast("Kamu berdarah. Pakai perban kain atau jamu.");
+        }
+
+        // Dipanggil UI saat memakai item: PerbanKain/JamuHerbal menghentikan, DaunSirih memperlambat 50%.
+        public bool Obati(ItemID id)
+        {
+            if (!Berdarah || (id != ItemID.PerbanKain && id != ItemID.JamuHerbal && id != ItemID.DaunSirih)) return false;
+            var inv = GameServices.Get<AlasKeramat.Inventory.TikarPandan3DInventory>();
+            if (inv == null || !inv.Kurangi(id, 1)) return false;
+            if (id == ItemID.DaunSirih) { _pengaliDarah = 0.5f; GameEvents.RaiseToast("Daun sirih memperlambat pendarahan"); return true; }
+            Berdarah = false;
+            GameEvents.RaiseStatusChanged(StatusEffect.None);
+            GameEvents.RaiseToast("Pendarahan berhenti");
+            return true;
+        }
+
+        void TickDarah(float dt)
+        {
+            if (!Berdarah) return;
+            _tTickDarah += dt;
+            if (_tTickDarah < 1f) return;
+            _tTickDarah -= 1f;
+            var v = GameServices.Get<AndiVitalsAndSanity>();
+            if (v == null) return;
+            if (!v.IsAlive) { Berdarah = false; return; }
+            v.TakeDamage(new DamageInfo { amount = LajuPendarahan * _pengaliDarah, type = DamageType.Tebas, point = transform.position + Vector3.up, direction = Vector3.down, source = null });
         }
 
         float _tBakar, _dpsBakar, _tTickBakar;
@@ -72,6 +118,7 @@ namespace AlasKeramat.Player
         {
             if (_ctrl == null) return;
             TickBakar(Time.deltaTime);
+            TickDarah(Time.deltaTime);
             if (_tJatuh > 0f)
             {
                 _tJatuh -= Time.deltaTime;
