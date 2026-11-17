@@ -33,6 +33,31 @@ namespace AlasKeramat.AI
             return new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z), z);
         }
 
+        // Grid kasar 100x100 (blok 5x5 sel = 20 m) untuk pencarian bertingkat jarak jauh: blok lewat bila >= 40% selnya lewat.
+        public const int FaktorKasar = 5, SisiKasar = Sisi / FaktorKasar, MinLewatKasar = 10;
+        byte[] _kasar;
+        public byte[] Kasar { get { if (_kasar == null) BangunKasar(); return _kasar; } }
+
+        void BangunKasar()
+        {
+            _kasar = new byte[SisiKasar * SisiKasar];
+            for (int cz = 0; cz < SisiKasar; cz++)
+                for (int cx = 0; cx < SisiKasar; cx++)
+                {
+                    int n = 0;
+                    for (int dz = 0; dz < FaktorKasar; dz++)
+                        for (int dx = 0; dx < FaktorKasar; dx++)
+                            if (_sel[Indeks(cx * FaktorKasar + dx, cz * FaktorKasar + dz)] != Blok) n++;
+                    _kasar[cz * SisiKasar + cx] = n >= MinLewatKasar ? Darat : Blok;
+                }
+        }
+
+        public static Vector3 PusatKasar(int cx, int cz)
+        {
+            float x = Asal + (cx + 0.5f) * UkuranSel * FaktorKasar, z = Asal + (cz + 0.5f) * UkuranSel * FaktorKasar;
+            return new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z), z);
+        }
+
         public byte Ambil(int ix, int iz) { return DiDalam(ix, iz) ? _sel[Indeks(ix, iz)] : Blok; }
         public bool Lewat(int ix, int iz) { return Ambil(ix, iz) != Blok; }
 

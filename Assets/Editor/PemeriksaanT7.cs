@@ -40,7 +40,8 @@ namespace AlasKeramat.EditorTools
                 int node;
                 Vector3 heli = NusantaraMasterBuilder.PosDeden, desa = EnemyDirector.PusatDesa;
                 var jam = System.Diagnostics.Stopwatch.StartNew();
-                bool ada = GridPathfinder.Cari(grid, heli, desa, jalur, GridPathfinder.MaksNode, out node);
+                bool ada = GridPathfinder.CariOtomatis(grid, heli, desa, jalur, GridPathfinder.MaksNode, out node);
+                int segGagal = GridPathfinder.SegmenGagalTerakhir;
                 string diag = "";
                 if (!ada || node >= 4000)
                 {
@@ -50,7 +51,7 @@ namespace AlasKeramat.EditorTools
                     GridPathfinder.BobotHeuristik = simpan;
                     diag = " [diag: tanpa batas " + adaBebas + "/" + nBebas + " node, bobot 3 " + adaW3 + "/" + nW3 + " node]";
                 }
-                cek("A* Heli -> Desa ditemukan dengan " + node + " node (< 4.000), " + jalur.Count + " titik, " + jam.ElapsedMilliseconds + " ms" + diag, ada && node < 4000 && jalur.Count > 0);
+                cek("A* bertingkat Heli -> Desa ditemukan dengan " + node + " node (< 4.000), " + jalur.Count + " titik, segmen gagal " + segGagal + ", " + jam.ElapsedMilliseconds + " ms" + diag, ada && node < 4000 && jalur.Count > 0 && segGagal == 0);
                 bool lurus = GridPathfinder.Cari(grid, heli, heli + new Vector3(8f, 0f, 0f), jalur, GridPathfinder.MaksNode, out node);
                 cek("A* jarak pendek selesai cepat (" + node + " node)", lurus && node < 50);
             }

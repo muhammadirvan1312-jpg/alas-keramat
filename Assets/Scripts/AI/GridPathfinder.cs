@@ -6,7 +6,7 @@ namespace AlasKeramat.AI
 {
     // H6: A* 8-arah di SurfaceGrid (tanpa navigasi bawaan). Heuristik oktil berbobot agar ekspansi node kecil; jalur dihaluskan (string pulling).
     // Satu pencarian dibatasi MaksNode; permintaan dari musuh diantrikan maksimal PencarianPerFrame per frame.
-    public class GridPathfinder : MonoBehaviour
+    public partial class GridPathfinder : MonoBehaviour
     {
         public const int MaksNode = 4000, PencarianPerFrame = 2, RadiusCariLewat = 4, PandangMaks = 40;
         public const float BobotDefault = 2f, Akar2 = 1.41421356f;
@@ -52,7 +52,7 @@ namespace AlasKeramat.AI
                 var p = _antri.Dequeue();
                 int k;
                 bool ok = false;
-                try { ok = Cari(Grid, p.dari, p.ke, p.hasil, MaksNode, out k); }
+                try { ok = CariOtomatis(Grid, p.dari, p.ke, p.hasil, MaksNode, out k); }
                 catch (System.Exception e) { Debug.LogError("[AK][GridPathfinder] Pencarian jalur gagal: " + e.Message); }
                 if (p.selesai != null) p.selesai(ok);
             }
