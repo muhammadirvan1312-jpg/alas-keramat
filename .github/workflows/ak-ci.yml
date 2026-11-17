@@ -60,13 +60,17 @@ jobs:
           python -m pip install --quiet requests
           python Tools/ambil_aset.py --semua --keluar Assets/ThirdParty
 
-      - name: Cache Library Unity
+      # Cache Library dipulihkan dari run terbaru & DISIMPAN ULANG setiap run (termasuk saat gagal),
+      # supaya shader & impor aset tidak dikompilasi ulang dari nol (build APK pertama ±16 menit untuk shader).
+      - name: Pulihkan cache Library Unity
+        id: cachelib
         if: steps.cekproyek.outputs.ada == '1'
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: Library
-          key: Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}
+          key: Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-${{ github.run_id }}
           restore-keys: |
+            Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-
             Library-Android-
 
       - name: Unity — Builder + Self-Test + APK
@@ -83,6 +87,18 @@ jobs:
           buildMethod: AlasKeramat.EditorTools.NusantaraCI.BuildAndTest
           allowDirtyBuild: true
           customParameters: -akLaporan Logs/ci
+
+      - name: Ambil alih kepemilikan file dari container Unity
+        if: always() && steps.cekproyek.outputs.ada == '1'
+        shell: bash
+        run: sudo chown -R "$(id -u):$(id -g)" Library Logs build 2>/dev/null || true
+
+      - name: Simpan cache Library Unity (selalu)
+        if: always() && steps.cekproyek.outputs.ada == '1'
+        uses: actions/cache/save@v4
+        with:
+          path: Library
+          key: Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-${{ github.run_id }}
 
       - name: Susun laporan CI (selalu)
         if: always() && steps.cekproyek.outputs.ada == '1'
