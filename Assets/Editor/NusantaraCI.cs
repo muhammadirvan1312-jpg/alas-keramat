@@ -75,6 +75,8 @@ namespace AlasKeramat.EditorTools
             if (m == null) throw new Exception("metode " + metode + " tidak ditemukan");
             object r = m.Invoke(null, null);
             if (r is bool ok && !ok) throw new Exception(metode + " melaporkan gagal");
+            PropertyInfo status = t.GetProperty("LastBuildSucceeded", BindingFlags.Public | BindingFlags.Static);
+            if (status != null && !(bool)status.GetValue(null)) throw new Exception(metode + " melaporkan langkah GAGAL (lihat Logs/nusantara_build_report.txt)");
         }
 
         static void Langkah(string nama, Action aksi)

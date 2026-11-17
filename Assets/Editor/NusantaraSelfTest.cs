@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using AlasKeramat.Core;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -7,32 +9,74 @@ using UnityEngine.UI;
 
 namespace AlasKeramat.EditorTools
 {
-    // Self-test editor. Mengembalikan true bila semua cek lulus.
+    // Self-test editor (docs/tech/11 bagian 12, pemeriksaan T1 dari docs/tech/12). Hasil di Logs/nusantara_selftest.txt.
     public static class NusantaraSelfTest
     {
-        [MenuItem("Nusantara Builder/Self-Test")]
+        const string PathHasil = "Logs/nusantara_selftest.txt";
+        const int MinTekstur = 10, MinMaterial = 5, MinWav = 8;
+
+        [MenuItem("Nusantara Builder/Utilitas/Jalankan Self-Test", false, 43)]
+        public static void RunFromMenu()
+        {
+            bool ok = RunAll();
+            if (!Application.isBatchMode)
+                EditorUtility.DisplayDialog("Self-Test", ok ? "SEMUA LULUS" : "Ada yang GAGAL. Lihat " + PathHasil, "OK");
+        }
+
+        public static void RunFromCommandLine() { EditorApplication.Exit(RunAll() ? 0 : 1); }
+
         public static bool RunAll()
         {
-            var gagal = new List<string>();
+            var hasil = new List<string>();
+            bool semua = true;
+            System.Action<string, bool> cek = (nama, ok) => { hasil.Add((ok ? "[LULUS] " : "[GAGAL] ") + nama); if (!ok) semua = false; };
+
             NusantaraMasterBuilder.BuildAll();
-            NusantaraMasterBuilder.BuildAll(); // idempoten: dua kali harus identik
+            cek("Builder pertama tanpa langkah gagal", NusantaraMasterBuilder.LastBuildSucceeded);
+            int objek1 = NusantaraMasterBuilder.HitungObjek();
+            NusantaraMasterBuilder.BuildAll();
+            cek("Builder kedua tanpa langkah gagal", NusantaraMasterBuilder.LastBuildSucceeded);
+            int objek2 = NusantaraMasterBuilder.HitungObjek();
+            cek("Idempoten: jumlah objek sama (" + objek1 + " = " + objek2 + ")", objek1 > 0 && objek1 == objek2);
+
             EditorSceneManager.OpenScene(NusantaraMasterBuilder.PathScene);
 
-            Cek(gagal, "satu root", UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsSortMode.None).Count(x => x.name == NusantaraMasterBuilder.NamaRoot && x.parent == null) == 1);
-            Cek(gagal, "satu scene di Build Settings", EditorBuildSettings.scenes.Length == 1 && EditorBuildSettings.scenes[0].path == NusantaraMasterBuilder.PathScene);
-            Cek(gagal, "kamera utama", Camera.main != null);
-            var teks = UnityEngine.Object.FindObjectsByType<Text>(FindObjectsSortMode.None);
-            Cek(gagal, "teks PIPELINE OK", teks.Any(t => t.text.Contains("PIPELINE OK")));
-            Cek(gagal, "font aman", teks.All(t => t.font != null));
+            bool layerOk = true;
+            for (int i = 0; i < NusantaraMasterBuilder.NamaLayer.Length; i++)
+                if (LayerMask.LayerToName(GameLayers.Ground + i) != NusantaraMasterBuilder.NamaLayer[i]) layerOk = false;
+            cek("Layer 6-18 terdaftar", layerOk);
+            var tagAda = new HashSet<string>(UnityEditorInternal.InternalEditorUtility.tags);
+            cek("Semua tag terdaftar", NusantaraMasterBuilder.TagTambahan.All(tagAda.Contains));
 
-            foreach (var g in gagal) Debug.LogError("[AK][GAGAL] self-test: " + g);
-            System.IO.File.WriteAllLines("Logs/nusantara_selftest.txt", gagal.Count == 0 ? new[] { "SEMUA LULUS" } : gagal.ToArray());
-            return gagal.Count == 0;
+            bool urpOk = GraphicsSettings_DefaultAda();
+            for (int i = 0; i < QualitySettings.names.Length; i++) if (QualitySettings.GetRenderPipelineAssetAt(i) == null) urpOk = false;
+            cek("Aset URP terpasang di semua level Quality", urpOk);
+
+            int tex = AssetDatabase.FindAssets("t:Texture2D", new[] { NusantaraMasterBuilder.FolderTex }).Length;
+            cek("Tekstur >= " + MinTekstur + " (" + tex + ")", tex >= MinTekstur);
+            var mats = AssetDatabase.FindAssets("t:Material", new[] { NusantaraMasterBuilder.FolderGen })
+                .Select(g => AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(g))).ToList();
+            cek("Material >= " + MinMaterial + " (" + mats.Count + ")", mats.Count >= MinMaterial);
+            cek("Tidak ada material ber-shader error", mats.All(m => m != null && m.shader != null && !ShaderUtil.ShaderHasError(m.shader) && m.shader.name != "Hidden/InternalErrorShader"));
+            cek("GetSafeFont() tidak null", ProceduralAssetFactory.GetSafeFont() != null);
+            int wav = Directory.Exists(NusantaraMasterBuilder.FolderAudio) ? Directory.GetFiles(NusantaraMasterBuilder.FolderAudio, "*.wav").Length : 0;
+            cek("WAV >= " + MinWav + " (" + wav + ")", wav >= MinWav);
+            cek("Scene tersimpan & terdaftar di Build Settings", File.Exists(NusantaraMasterBuilder.PathScene)
+                && EditorBuildSettings.scenes.Length > 0 && EditorBuildSettings.scenes[0].path == NusantaraMasterBuilder.PathScene);
+            var synth = Object.FindFirstObjectByType<ProceduralAudioSynth>();
+            cek("Synth punya klip dipanggang", synth != null && synth.BakedClipCount >= ProceduralAudioSynth.KlipWajib.Length);
+            var teks = Object.FindObjectsByType<Text>(FindObjectsSortMode.None);
+            cek("Teks judul T1 ada", teks.Any(t => t.text == NusantaraMasterBuilder.JudulT1));
+            cek("5 tombol suara", Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Length >= 5);
+            cek("EventSystem ada", Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() != null);
+            cek("Kamera utama ada", Camera.main != null);
+
+            Directory.CreateDirectory("Logs");
+            File.WriteAllLines(PathHasil, hasil.ToArray());
+            foreach (var h in hasil) if (h.StartsWith("[GAGAL]")) Debug.LogError("[AK][GAGAL] self-test: " + h);
+            return semua;
         }
 
-        static void Cek(List<string> gagal, string nama, bool ok)
-        {
-            if (!ok) gagal.Add(nama);
-        }
+        static bool GraphicsSettings_DefaultAda() { return UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline != null; }
     }
 }
