@@ -24,6 +24,8 @@ namespace AlasKeramat.Player
         public Vector2 InputGerak;      // -1..1 (x samping, y maju)
         public Vector2 InputLihatPx;    // piksel layar yang diakumulasi sejak frame lalu
         public bool MintaLari;
+        public bool LariDiblokir;   // diset AndiVitalsAndSanity saat stamina habis
+        public event System.Action OnLompat;
         public bool Jongkok { get; private set; }
         public bool Berenang { get; private set; }
         public bool Menyelam { get; private set; }
@@ -112,7 +114,7 @@ namespace AlasKeramat.Player
             if (Berenang && Jongkok) Jongkok = false;
 
             float mag = Mathf.Clamp01(InputGerak.magnitude);
-            SedangLari = MintaLari && !Jongkok && InputGerak.y > 0.5f && mag >= JoyPenuh;
+            SedangLari = MintaLari && !LariDiblokir && !Jongkok && InputGerak.y > 0.5f && mag >= JoyPenuh;
             float target = Berenang ? (mag < JoyMati ? 0f : (SedangLari ? RenangCepat : Renang)) : KecepatanTarget(mag, SedangLari, Jongkok);
             Vector2 arah = mag > 0.001f ? InputGerak / Mathf.Max(mag, 1f) : Vector2.zero;
             float faktor = arah.y < 0f ? FaktorMundur : (Mathf.Abs(arah.x) > Mathf.Abs(arah.y) ? FaktorSamping : 1f);
@@ -139,7 +141,7 @@ namespace AlasKeramat.Player
                 Napas = Mathf.Min(NapasMaks, Napas + dt * LajuNapasPulih);
                 if (DiTanah) _sejakTanah = 0f; else _sejakTanah += dt;
                 if (DiTanah && _vy < 0f) _vy = -2f;
-                if (_mintaLompat && _sejakTanah <= Coyote && !Jongkok) { _vy = VLompat; _sejakTanah = Coyote + 1f; }
+                if (_mintaLompat && _sejakTanah <= Coyote && !Jongkok) { _vy = VLompat; _sejakTanah = Coyote + 1f; var h = OnLompat; if (h != null) h(); }
                 _vy -= Gravitasi * dt;
             }
             _mintaLompat = false;

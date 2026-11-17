@@ -122,16 +122,12 @@ jobs:
           } > "$LAP"
           cat "$LAP"
 
-      - name: Komit laporan & foto ke cabang PR
-        if: always() && github.event_name == 'pull_request' && steps.cekproyek.outputs.ada == '1'
+      - name: Simpan laporan ke cabang ci-hasil
+        if: always() && steps.cekproyek.outputs.ada == '1'
         shell: bash
         run: |
           sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config user.name "ak-ci-bot"
-          git config user.email "ak-ci-bot@users.noreply.github.com"
-          git add -f Logs/ci/LAPORAN_CI.md Logs/ci/ringkasan.md Logs/foto_kualitas 2>/dev/null || true
-          if git diff --cached --quiet; then echo "Tidak ada laporan baru."; else git commit -m "ci: laporan otomatis [skip ci]" && git push; fi
+          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/ci/LAPORAN_CI.md Logs/ci/ringkasan.md Logs/nusantara_selftest.txt Logs/nusantara_build_report.txt
 
       - name: Unggah artefak (APK, log, foto)
         if: always() && steps.cekproyek.outputs.ada == '1'
@@ -194,20 +190,13 @@ jobs:
           allowDirtyBuild: true
           customParameters: -akLaporan Logs/ci
 
-      - name: Komit foto ke cabang PR
-        if: always() && github.event_name == 'pull_request'
+      - name: Simpan foto ke cabang ci-hasil
+        if: always()
         shell: bash
         run: |
           sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true
           ls -la Logs/foto_kualitas 2>/dev/null || echo "Tidak ada foto."
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config user.name "ak-ci-bot"
-          git config user.email "ak-ci-bot@users.noreply.github.com"
-          git stash -u -q 2>/dev/null || true
-          git pull -q --rebase origin "${{ github.head_ref }}" || true
-          git stash pop -q 2>/dev/null || true
-          git add -f Logs/foto_kualitas Logs/ci/foto.log 2>/dev/null || true
-          if git diff --cached --quiet; then echo "Tidak ada foto baru."; else git commit -m "ci: foto kualitas [skip ci]" && git push; fi
+          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/foto_kualitas Logs/ci/foto.log
 
       - name: Unggah foto
         if: always()

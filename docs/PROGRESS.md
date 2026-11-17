@@ -2,7 +2,7 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T3b
+AUTOPILOT_TAHAP_BERIKUTNYA: T3e
 
 - Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
@@ -27,6 +27,10 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T3b
 | T3a | 2026-11-17 | Menunggu CI | Player: AndiFPSController (jalan/lari/jongkok/lompat + coyote, berenang & menyelam dasar, napas, damage jatuh via IDamageable, kamera pitch/yaw + head bob, keyboard/mouse hanya ENABLE_LEGACY_INPUT_MANAGER); UI: ZonaJoystick (mengambang, sprint LARI), ZonaGeser, TouchControls, HUDInfo (HARI/jam/label waktu/cuaca + nama zona); Editor: BuilderSteps.Andi (spawn (-4,-424) dekat heli, kamera Andi, tur dimatikan, sprite UI lingkaran) | + 11 cek (Andi, spawn, MainCamera, 1 AudioListener, tur mati, kontrol, handler tombol, HUDInfo, kecepatan 09 §3, sprint, label waktu) | Pertama kali bisa jalan-jalan di hutan dari HP |
 
 | T3b | 2026-11-17 | Menunggu CI | Inventory: TikarPandan3DInventory (model data, Maks per item, simpan JSON), WadahItem (koper & benda lepas, tutup berputar); Player: InteraksiAndi (SphereCast 2,5 m, MINUM AIR), TanganKiri (obor + korek, cahaya berkedip), IVitalAndi (kontrak untuk vitals GPT TUGAS 03); UI: tombol TANGAN kontekstual & OBOR, ToastHUD, RadarGPS (150 m, U berputar, aktif dengan GPS); Editor: BuilderSteps.Interaksi (3 koper 03 §9 x2, puing heli) | + cek 3 koper sesuai isi, Maks inventaris, radar/toast/interaksi, arah radar | Buka koper, ambil golok/GPS/obor, radar menyala, obor menerangi malam, minum di sungai |
+
+| T3c | 2026-11-17 | Menunggu CI | Core: AKPascaProses (eksposur/saturasi/suhu/vignette mengikuti jam & cuaca: siang hangat, Maghrib merah, malam biru gelap, badai kelabu); Editor: BuilderSteps.Pasca (VolumeProfile ACES, color adjustments, white balance, bloom, vignette, split-toning, lift; pasca-proses + FXAA di semua kamera & kamera foto) | + cek volume ACES & bloom, kamera utama pasca-proses, malam lebih gelap & dingin | Warna sinematik, tidak kusam |
+
+| T3d | 2026-11-17 | Menunggu CI | Player: AndiVitalsAndSanity (+.Tubuh): HP + plafon, stamina + cap (sprint/lompat/renang, habis -> tak bisa lari sampai 25), basah & dingin, haus, istirahat, kewarasan (malam gelap, kabut darah, api, cerah), suhu tubuh 24 §1.1 (kedinginan/hipotermia/kepanasan/heatstroke), gizi 4 cadangan, air mentah 35% diare, daging mentah keracunan, kunyit/jamu mengobati, pingsan -> bangun di heli; IDamageable/IVitalAndi/ISaveable; UI: HUDVital (5 bar, plafon, beku, kedip kritis, pendar kewarasan, suhu & basah) | + cek laju 60 s (haus 5,1 / kenyang 3,3 / istirahat 2,1), plafon HP, suhu udara | Bar vital hidup; minum sungai menaikkan haus |
 
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
