@@ -90,7 +90,7 @@ namespace AlasKeramat.AI
         // A* utama. dikunjungi = jumlah node yang diekspansi (untuk self-test anggaran < 4000).
         public static bool Cari(SurfaceGrid g, Vector3 dari, Vector3 ke, List<Vector3> hasil, int maksNode, out int dikunjungi) { return Cari(g, dari, ke, hasil, maksNode, out dikunjungi, null); }
 
-        // izinBlok (opsional): hanya sel yang blok kasarnya diizinkan yang boleh diekspansi (koridor pencarian bertingkat).
+        // izinSimpul (opsional): hanya sel yang wilayahnya ada di koridor yang boleh diekspansi (pencarian bertingkat).
         public static bool Cari(SurfaceGrid g, Vector3 dari, Vector3 ke, List<Vector3> hasil, int maksNode, out int dikunjungi, bool[] izinBlok)
         {
             dikunjungi = 0;
@@ -108,6 +108,7 @@ namespace AlasKeramat.AI
             _g[awal] = 0f; _induk[awal] = -1; _cap[awal] = cap; _f[awal] = Heuristik(sx, sz, tx, tz);
             Dorong(awal);
             var data = g.Data;
+            var simpulSel = izinSimpul != null ? g.SimpulPerSel : null;
             while (_ukuranHeap > 0)
             {
                 int c = Ambil();
@@ -124,7 +125,7 @@ namespace AlasKeramat.AI
                     int n = SurfaceGrid.Indeks(nx, nz);
                     byte s = data[n];
                     if (s == SurfaceGrid.Blok || _cap[n] == capTutup) continue;
-                    if (izinBlok != null && !izinBlok[(nz / SurfaceGrid.FaktorKasar) * SurfaceGrid.SisiKasar + nx / SurfaceGrid.FaktorKasar]) continue;
+                    if (izinSimpul != null && !izinSimpul[simpulSel[n]]) continue;
                     bool diagonal = a >= 4;
                     if (diagonal && (data[SurfaceGrid.Indeks(cx + _dx[a], cz)] == SurfaceGrid.Blok || data[SurfaceGrid.Indeks(cx, cz + _dz[a])] == SurfaceGrid.Blok)) continue; // jangan potong sudut tebing
                     float gBaru = _g[c] + (diagonal ? Akar2 : 1f) * SurfaceGrid.Biaya(s);

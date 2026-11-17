@@ -4,21 +4,22 @@ using UnityEngine;
 
 namespace AlasKeramat.AI
 {
-    // Pencarian bertingkat untuk jarak jauh (dunia v5 2x2 km): A* di grid kasar 100x100 (blok 20 m) menentukan koridor,
-    // lalu A* sel 4 m dijalankan hanya di dalam koridor itu. Total node (kasar + halus) tetap di bawah MaksNode.
+    // Pencarian bertingkat untuk jarak jauh (dunia v5 2x2 km): A* di graf wilayah (blok 20 m dipecah per wilayah terhubung),
+    // lalu A* sel 4 m hanya di dalam wilayah koridor itu (+ tetangga langsung). Total node (kasar + halus) tetap di bawah MaksNode.
     public partial class GridPathfinder
     {
         public const float JarakBertingkat = 150f, BobotKasar = 1.2f;
-        
+
         public static int SegmenGagalTerakhir { get; private set; }
 
         static float[] _gK, _fK;
         static int[] _indukK, _capK, _heapK;
         static int _capAktifK, _ukuranHeapK;
-        static readonly List<Vector3> _koridor = new List<Vector3>();
+        static bool[] _izinSimpul;
+        static readonly List<int> _jalurSimpul = new List<int>();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void ResetKasar() { _gK = null; _fK = null; _indukK = null; _capK = null; _heapK = null; _capAktifK = 0; _ukuranHeapK = 0; }
+        static void ResetKasar() { _gK = null; _fK = null; _indukK = null; _capK = null; _heapK = null; _izinSimpul = null; _capAktifK = 0; _ukuranHeapK = 0; }
 
         // Pilih otomatis: dekat = A* halus, jauh = bertingkat.
         public static bool CariOtomatis(SurfaceGrid g, Vector3 dari, Vector3 ke, List<Vector3> hasil, int anggaran, out int dikunjungi)
@@ -33,84 +34,46 @@ namespace AlasKeramat.AI
             dikunjungi = 0; SegmenGagalTerakhir = 0;
             if (hasil != null) hasil.Clear();
             if (g == null) return false;
-            int nK;
-            if (!CariKasar(g, dari, ke, _koridor, anggaran / 2, out nK)) { dikunjungi = nK; return false; }
-            dikunjungi = nK;
-            // A* halus dibatasi koridor (blok kasar jalur +- 1); bila koridor terputus di tingkat halus, lebarkan +- 2.
-            for (int lebar = 1; lebar <= 2; lebar++)
-            {
-                TandaiKoridor(lebar);
-                int n;
-                bool ok = Cari(g, dari, ke, hasil, Mathf.Max(100, anggaran - dikunjungi), out n, _izinBlok);
-                dikunjungi += n;
-                if (ok) return true;
-                SegmenGagalTerakhir++;
-                if (dikunjungi >= anggaran) break;
-            }
-            return false;
-        }
-
-        static bool[] _izinBlok;
-
-        static void TandaiKoridor(int lebar)
-        {
-            int S = SurfaceGrid.SisiKasar;
-            if (_izinBlok == null) _izinBlok = new bool[S * S];
-            System.Array.Clear(_izinBlok, 0, _izinBlok.Length);
-            for (int i = 0; i < _koridor.Count; i++)
-            {
-                int cx, cz; KeKasar(_koridor[i], out cx, out cz);
-                for (int dz = -lebar; dz <= lebar; dz++)
-                    for (int dx = -lebar; dx <= lebar; dx++)
-                    {
-                        int x = cx + dx, z = cz + dz;
-                        if (x >= 0 && z >= 0 && x < S && z < S) _izinBlok[z * S + x] = true;
-                    }
-            }
-        }
-
-        static void SiapkanKasar()
-        {
-            if (_gK != null) return;
-            int n = SurfaceGrid.SisiKasar * SurfaceGrid.SisiKasar;
-            _gK = new float[n]; _fK = new float[n]; _indukK = new int[n]; _capK = new int[n]; _heapK = new int[n * 8];
-        }
-
-        static void KeKasar(Vector3 p, out int cx, out int cz)
-        {
-            int ix, iz; SurfaceGrid.KeSel(p, out ix, out iz);
-            cx = ix / SurfaceGrid.FaktorKasar; cz = iz / SurfaceGrid.FaktorKasar;
-        }
-
-        static bool LewatKasar(byte[] k, int cx, int cz)
-        {
-            return cx >= 0 && cz >= 0 && cx < SurfaceGrid.SisiKasar && cz < SurfaceGrid.SisiKasar && k[cz * SurfaceGrid.SisiKasar + cx] != SurfaceGrid.Blok;
-        }
-
-        static bool TerdekatKasar(byte[] k, ref int cx, ref int cz)
-        {
-            if (LewatKasar(k, cx, cz)) return true;
-            for (int r = 1; r <= 2; r++)
-                for (int dz = -r; dz <= r; dz++)
-                    for (int dx = -r; dx <= r; dx++)
-                        if (LewatKasar(k, cx + dx, cz + dz)) { cx += dx; cz += dz; return true; }
-            return false;
-        }
-
-        static bool CariKasar(SurfaceGrid g, Vector3 dari, Vector3 ke, List<Vector3> hasil, int maksNode, out int dikunjungi)
-        {
-            dikunjungi = 0; hasil.Clear();
-            SiapkanKasar();
-            var k = g.Kasar;
-            int S = SurfaceGrid.SisiKasar;
             int sx, sz, tx, tz;
-            KeKasar(dari, out sx, out sz); KeKasar(ke, out tx, out tz);
-            if (!TerdekatKasar(k, ref sx, ref sz) || !TerdekatKasar(k, ref tx, ref tz)) return false;
+            SurfaceGrid.KeSel(dari, out sx, out sz); SurfaceGrid.KeSel(ke, out tx, out tz);
+            if (!SelTerdekat(g, sx, sz, out sx, out sz) || !SelTerdekat(g, tx, tz, out tx, out tz)) return false;
+            int a = g.SimpulSel(SurfaceGrid.Indeks(sx, sz)), b = g.SimpulSel(SurfaceGrid.Indeks(tx, tz));
+            int nK;
+            if (!CariSimpul(g, a, b, anggaran / 2, out nK)) { dikunjungi = nK; return false; }
+            dikunjungi = nK;
+            if (_izinSimpul == null || _izinSimpul.Length != g.JumlahSimpul) _izinSimpul = new bool[g.JumlahSimpul];
+            System.Array.Clear(_izinSimpul, 0, _izinSimpul.Length);
+            for (int i = 0; i < _jalurSimpul.Count; i++)
+            {
+                int s = _jalurSimpul[i];
+                _izinSimpul[s] = true;
+                for (int k = g.SisiAwal(s); k < g.SisiAkhir(s); k++) _izinSimpul[g.SisiKe(k)] = true; // longgar 1 wilayah agar jalur lebih lurus
+            }
+            int n;
+            Vector3 awal = SurfaceGrid.PusatSel(sx, sz), akhir = new Vector3(ke.x, 0f, ke.z);
+            bool ok = Cari(g, awal, akhir, hasil, Mathf.Max(100, anggaran - dikunjungi), out n, _izinSimpul);
+            dikunjungi += n;
+            if (!ok) SegmenGagalTerakhir = 1;
+            return ok;
+        }
+
+        static void SiapkanKasar(int n)
+        {
+            if (_gK != null && _gK.Length == n) return;
+            _gK = new float[n]; _fK = new float[n]; _indukK = new int[n]; _capK = new int[n]; _heapK = new int[n * 4];
+        }
+
+        static float HeurK(SurfaceGrid g, int a, int b) { return Vector2.Distance(g.PusatSimpul(a), g.PusatSimpul(b)) * BobotKasar; }
+
+        static bool CariSimpul(SurfaceGrid g, int awal, int tujuan, int maksNode, out int dikunjungi)
+        {
+            dikunjungi = 0; _jalurSimpul.Clear();
+            if (awal < 0 || tujuan < 0) return false;
+            SiapkanKasar(g.JumlahSimpul);
             _capAktifK++;
             int cap = _capAktifK, tutup = -cap;
-            int awal = sz * S + sx, tujuan = tz * S + tx;
             _ukuranHeapK = 0;
-            _gK[awal] = 0f; _indukK[awal] = -1; _capK[awal] = cap; _fK[awal] = HeurK(sx, sz, tx, tz);
+            _gK[awal] = 0f; _indukK[awal] = -1; _capK[awal] = cap; _fK[awal] = HeurK(g, awal, tujuan);
             DorongK(awal);
             while (_ukuranHeapK > 0)
             {
@@ -120,36 +83,23 @@ namespace AlasKeramat.AI
                 dikunjungi++;
                 if (c == tujuan)
                 {
-                    for (int t = c; t >= 0; t = _indukK[t]) hasil.Add(SurfaceGrid.PusatKasar(t % S, t / S));
-                    hasil.Reverse();
+                    for (int t = c; t >= 0; t = _indukK[t]) _jalurSimpul.Add(t);
+                    _jalurSimpul.Reverse();
                     return true;
                 }
                 if (dikunjungi >= maksNode) return false;
-                int cx = c % S, cz = c / S;
-                for (int a = 0; a < 8; a++)
+                Vector2 pc = g.PusatSimpul(c);
+                for (int k = g.SisiAwal(c); k < g.SisiAkhir(c); k++)
                 {
-                    int nx = cx + _dx[a], nz = cz + _dz[a];
-                    if (!LewatKasar(k, nx, nz)) continue;
-                    int n = nz * S + nx;
+                    int n = g.SisiKe(k);
                     if (_capK[n] == tutup) continue;
-                    bool diagonal = a >= 4;
-                    if (!diagonal && !g.LintasKasar(cx, cz, _dx[a], _dz[a])) continue;
-                    if (diagonal && (!LewatKasar(k, nx, cz) || !LewatKasar(k, cx, nz)
-                        || !g.LintasKasar(cx, cz, _dx[a], 0) || !g.LintasKasar(nx, cz, 0, _dz[a])
-                        || !g.LintasKasar(cx, cz, 0, _dz[a]) || !g.LintasKasar(cx, nz, _dx[a], 0))) continue;
-                    float gb = _gK[c] + (diagonal ? Akar2 : 1f);
+                    float gb = _gK[c] + Vector2.Distance(pc, g.PusatSimpul(n));
                     if (_capK[n] == cap && gb >= _gK[n]) continue;
-                    _capK[n] = cap; _gK[n] = gb; _indukK[n] = c; _fK[n] = gb + HeurK(nx, nz, tx, tz);
+                    _capK[n] = cap; _gK[n] = gb; _indukK[n] = c; _fK[n] = gb + HeurK(g, n, tujuan);
                     DorongK(n);
                 }
             }
             return false;
-        }
-
-        static float HeurK(int ax, int az, int bx, int bz)
-        {
-            int dx = Mathf.Abs(ax - bx), dz = Mathf.Abs(az - bz);
-            return (Mathf.Max(dx, dz) + (Akar2 - 1f) * Mathf.Min(dx, dz)) * BobotKasar;
         }
 
         static void DorongK(int n)

@@ -46,6 +46,23 @@ namespace AlasKeramat.Player
             }
         }
 
+        // ---------- Meter suara & kamuflase lumpur (17 §2.4) ----------
+        public const float LamaLumpur = 600f, FaktorLumpur = 0.7f;
+        public float RadiusSuara { get; private set; }
+        public float SisaLumpur { get; private set; }
+        public bool Berlumpur { get { return SisaLumpur > 0f; } }
+
+        public void BalurLumpur() { SisaLumpur = LamaLumpur; GameEvents.RaiseToast("Tubuhmu berlumpur: lebih sulit terlihat (10 menit)"); }
+
+        void TickLumpur(float dt)
+        {
+            if (SisaLumpur <= 0f) return;
+            SisaLumpur -= dt;
+            var cuaca = GameServices.Get<URPAtmosphereAndWeather>();
+            bool hujan = cuaca != null && (cuaca.Cuaca == WeatherState.Gerimis || cuaca.Cuaca == WeatherState.HujanBadai);
+            if ((_ctrl != null && _ctrl.Berenang) || hujan) { SisaLumpur = 0f; GameEvents.RaiseToast("Lumpur di tubuhmu luntur"); }
+        }
+
         // ---------- Pendarahan (14 §4) ----------
         public const float PeluangPendarahanTebas = 0.25f, LajuPendarahan = 0.5f;
         float _tTickDarah, _pengaliDarah = 1f;
@@ -119,6 +136,7 @@ namespace AlasKeramat.Player
             if (_ctrl == null) return;
             TickBakar(Time.deltaTime);
             TickDarah(Time.deltaTime);
+            TickLumpur(Time.deltaTime);
             if (_tJatuh > 0f)
             {
                 _tJatuh -= Time.deltaTime;
@@ -128,6 +146,7 @@ namespace AlasKeramat.Player
             if (_tLangkah > 0f) return;
             _tLangkah = JedaLangkah;
             float r = MeterSuara.RadiusLangkah(_ctrl.SedangLari, _ctrl.Jongkok, _ctrl.KecepatanDatar);
+            RadiusSuara = r;
             if (r > 0f) MeterSuara.Pancar(transform.position, r);
         }
     }

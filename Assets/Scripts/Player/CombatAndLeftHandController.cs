@@ -18,9 +18,13 @@ namespace AlasKeramat.Player
         public static readonly Senjata TanganKosong = new Senjata { id = ItemID.None, ringan = 6f, berat = 12f, tebang = 2f, jangkau = 1.2f, durR = 0.4f, durB = 0.9f, aktifR = 0.12f, aktifB = 0.45f, stamR = 3f, stamB = 8f, tipe = DamageType.Tumpul };
         public static readonly Senjata[] Tabel =
         {
+            new Senjata { id = ItemID.GolokApiPusaka, ringan = 28f, berat = 70f, tebang = 24f, jangkau = 1.8f, durR = 0.45f, durB = 1.0f, aktifR = 0.15f, aktifB = 0.55f, stamR = 5f, stamB = 13f, tipe = DamageType.Tebas },
+            new Senjata { id = ItemID.KerisPusaka, ringan = 30f, berat = 75f, tebang = 10f, jangkau = 1.6f, durR = 0.4f, durB = 0.95f, aktifR = 0.13f, aktifB = 0.5f, stamR = 4f, stamB = 12f, tipe = DamageType.Tebas },
+            new Senjata { id = ItemID.Mandau, ringan = 24f, berat = 56f, tebang = 18f, jangkau = 1.8f, durR = 0.42f, durB = 0.95f, aktifR = 0.14f, aktifB = 0.52f, stamR = 5f, stamB = 13f, tipe = DamageType.Tebas },
             new Senjata { id = ItemID.KapakBaja, ringan = 26f, berat = 60f, tebang = 40f, jangkau = 1.8f, durR = 0.5f, durB = 1.05f, aktifR = 0.15f, aktifB = 0.55f, stamR = 6f, stamB = 15f, tipe = DamageType.Tebas },
             new Senjata { id = ItemID.KapakBatu, ringan = 20f, berat = 48f, tebang = 28f, jangkau = 1.7f, durR = 0.55f, durB = 1.1f, aktifR = 0.15f, aktifB = 0.55f, stamR = 6f, stamB = 15f, tipe = DamageType.Tebas },
-            new Senjata { id = ItemID.GolokPusaka, ringan = 18f, berat = 45f, tebang = 20f, jangkau = 1.8f, durR = 0.45f, durB = 1.0f, aktifR = 0.15f, aktifB = 0.55f, stamR = 5f, stamB = 14f, tipe = DamageType.Tebas }
+            new Senjata { id = ItemID.GolokPusaka, ringan = 18f, berat = 45f, tebang = 20f, jangkau = 1.8f, durR = 0.45f, durB = 1.0f, aktifR = 0.15f, aktifB = 0.55f, stamR = 5f, stamB = 14f, tipe = DamageType.Tebas },
+            new Senjata { id = ItemID.Cangkul, ringan = 14f, berat = 30f, tebang = 8f, jangkau = 1.9f, durR = 0.6f, durB = 1.2f, aktifR = 0.2f, aktifB = 0.6f, stamR = 6f, stamB = 15f, tipe = DamageType.Tumpul }
         };
 
         [SerializeField] Transform[] modelSenjata = new Transform[0]; // urutan sama dengan Tabel; null = tidak ada model
@@ -59,11 +63,21 @@ namespace AlasKeramat.Player
         void PilihSenjata()
         {
             if (_inv == null) _inv = GameServices.Get<TikarPandan3DInventory>();
-            var baru = _inv != null ? Terbaik(id => _inv.Punya(id)) : TanganKosong;
-            if (baru.id == _aktif.id && _tCekSenjata > 0f) return;
-            _aktif = baru;
+            Senjata baru; int jarak = -1;
+            if (_pilihTanganKosong) baru = TanganKosong;
+            else if (_pilihan != ItemID.None && _inv != null && _inv.Punya(_pilihan))
+            {
+                int m = IndeksMelee(_pilihan);
+                if (m >= 0) baru = Tabel[m]; else { jarak = IndeksJarak(_pilihan); baru = TanganKosong; }
+            }
+            else baru = _inv != null ? Terbaik(id => _inv.Punya(id)) : TanganKosong;
+            if (_adaKembalikan) return; // tusukan tombak sedang berlangsung
+            if (baru.id == _aktif.id && jarak == _iJarak && _tCekSenjata > 0f) return;
+            _aktif = baru; _iJarak = jarak;
             for (int i = 0; i < modelSenjata.Length && i < Tabel.Length; i++)
-                if (modelSenjata[i] != null) modelSenjata[i].gameObject.SetActive(Tabel[i].id == _aktif.id);
+                if (modelSenjata[i] != null) modelSenjata[i].gameObject.SetActive(jarak < 0 && Tabel[i].id == _aktif.id);
+            for (int i = 0; i < modelJarak.Length && i < TabelJarak.Length; i++)
+                if (modelJarak[i] != null) modelJarak[i].gameObject.SetActive(jarak == i);
         }
 
         public void Tebas(bool berat)
@@ -78,10 +92,13 @@ namespace AlasKeramat.Player
         {
             _tajam=Mathf.Max(0f,_tajam-Time.deltaTime);
             TickTangkis(Time.deltaTime);
+            TickJarak(Time.deltaTime);
             _tCekSenjata -= Time.deltaTime;
             if (_tCekSenjata <= 0f) { PilihSenjata(); _tCekSenjata = 0.5f; }
 #if ENABLE_LEGACY_INPUT_MANAGER
-            if (Input.GetMouseButtonDown(0)) Tebas(false);
+            if (Input.GetMouseButtonDown(0)) TekanTebas();
+            if (Input.GetMouseButtonUp(0)) LepasTebas();
+            if (Input.GetKeyDown(KeyCode.G)) Ganti();
             if (Input.GetKeyDown(KeyCode.Q)) Tebas(true);
             if (Input.GetMouseButtonDown(1)) TangkisTekan();
             if (Input.GetMouseButtonUp(1)) TangkisLepas();

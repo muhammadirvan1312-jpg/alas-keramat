@@ -7,8 +7,8 @@ namespace AlasKeramat.Core
     public partial class ProceduralAudioSynth
     {
         public const string KlipParry = "tempur_parry", KlipKenaDaging = "tempur_kena_daging", KlipGeramSekte = "sekte_geram", KlipTeriakSekte = "sekte_teriak",
-            KlipRintihSekte = "sekte_rintih", KlipAbu = "tempur_abu", KlipAyunSekte = "sekte_ayun", KlipMusikTempur = "musik_tempur", KlipTebasBasah = "gore_tebas_basah", KlipPutusTulang = "gore_putus_tulang", KlipTubuhJatuh = "gore_tubuh_jatuh";
-        public static readonly string[] KlipTempur = { KlipParry, KlipKenaDaging, KlipGeramSekte, KlipTeriakSekte, KlipRintihSekte, KlipAbu, KlipAyunSekte, KlipMusikTempur, KlipTebasBasah, KlipPutusTulang, KlipTubuhJatuh };
+            KlipRintihSekte = "sekte_rintih", KlipAbu = "tempur_abu", KlipAyunSekte = "sekte_ayun", KlipMusikTempur = "musik_tempur", KlipTebasBasah = "gore_tebas_basah", KlipPutusTulang = "gore_putus_tulang", KlipTubuhJatuh = "gore_tubuh_jatuh", KlipTembak = "senjata_tembak", KlipLepasPanah = "senjata_panah";
+        public static readonly string[] KlipTempur = { KlipParry, KlipKenaDaging, KlipGeramSekte, KlipTeriakSekte, KlipRintihSekte, KlipAbu, KlipAyunSekte, KlipMusikTempur, KlipTebasBasah, KlipPutusTulang, KlipTubuhJatuh, KlipTembak, KlipLepasPanah };
 
         public static float[] GenerateTempur(string nama, int variasi, out int sr)
         {
@@ -28,6 +28,8 @@ namespace AlasKeramat.Core
                 case KlipTebasBasah: b = ResepTebasBasah(sr, ref rng); break;
                 case KlipPutusTulang: b = ResepPutusTulang(sr, ref rng); break;
                 case KlipTubuhJatuh: b = ResepTubuhJatuh(sr, ref rng); break;
+                case KlipTembak: b = ResepTembak(sr, ref rng); break;
+                case KlipLepasPanah: b = ResepLepasPanah(sr, ref rng); break;
                 default: return null;
             }
             Dsp.Finalize(b, sr);
@@ -209,6 +211,30 @@ namespace AlasKeramat.Core
                 float t = (float)i / sr;
                 b[i] = Mathf.Sin(Dsp.DuaPi * Dsp.ExpSweep(90f, 55f, t, 0.2f) * t) * Dsp.ExpDecay(t, 0.12f) + lp.Process(rng.White()) * Dsp.ExpDecay(t, 0.08f) * 0.5f + hp.Process(rng.White()) * Dsp.AD(t, 0.03f, 0.1f) * 0.25f;
             }
+            return b;
+        }
+
+        // Letusan mesiu: transien noise lebar + dentum rendah + gema (reverb pendek).
+        static float[] ResepTembak(int sr, ref Dsp.Rng rng)
+        {
+            var b = Dsp.Buffer(1.2f, sr);
+            var lp = Dsp.Biquad.LP(3500f, 0.7f, sr);
+            for (int i = 0; i < b.Length; i++)
+            {
+                float t = (float)i / sr;
+                b[i] = lp.Process(rng.White()) * Dsp.ExpDecay(t, 0.03f) * 1.2f + Mathf.Sin(Dsp.DuaPi * Dsp.ExpSweep(160f, 45f, t, 0.15f) * t) * Dsp.ExpDecay(t, 0.12f);
+            }
+            Dsp.Schroeder(b, 0.35f, sr);
+            return b;
+        }
+
+        // Tali busur: petikan Karplus-Strong rendah + desir anak panah.
+        static float[] ResepLepasPanah(int sr, ref Dsp.Rng rng)
+        {
+            var b = Dsp.Buffer(0.5f, sr);
+            Dsp.KarplusStrong(b, 0, Mathf.RoundToInt(0.35f * sr), 110f, sr, ref rng, 0.8f);
+            var bp = Dsp.Biquad.BP(2600f, 1f, sr);
+            for (int i = 0; i < b.Length; i++) { float t = (float)i / sr; b[i] += bp.Process(rng.White()) * Dsp.AD(t, 0.02f, 0.15f) * 0.4f; }
             return b;
         }
     }

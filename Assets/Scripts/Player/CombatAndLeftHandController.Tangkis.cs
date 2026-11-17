@@ -58,6 +58,7 @@ namespace AlasKeramat.Player
         public float TerimaSerangan(Vector3 posPenyerang, float damage, bool bisaDiparry, out bool diparry)
         {
             diparry = false;
+            if (Kebal) return 0f; // Elak: kebal 0,25 s (17 §2.2)
             Vector3 ke = posPenyerang - transform.position; ke.y = 0f;
             float sudut = ke.sqrMagnitude < 0.0001f ? 0f : Vector3.Angle(transform.forward, ke);
             int hasil = NilaiTangkis(ParryAktif, _blok, sudut, bisaDiparry && !_tersimpan);

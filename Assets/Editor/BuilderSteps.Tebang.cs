@@ -27,7 +27,7 @@ namespace AlasKeramat.EditorTools
                 var id = CombatAndLeftHandController.Tabel[i].id;
                 var g = Anak(pivot.gameObject, "FP_" + id).transform;
                 BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, 0.12f, 0f), new Vector3(0.035f, 0.2f, 0.035f), kayu);
-                if (id == ItemID.GolokPusaka) BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.5f, 0.02f), new Vector3(0.012f, 0.45f, 0.07f), logam);
+                if (id == ItemID.GolokPusaka || id == ItemID.KerisPusaka || id == ItemID.Mandau || id == ItemID.GolokApiPusaka) BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.5f, 0.02f), new Vector3(0.012f, 0.45f, 0.07f), logam);
                 else BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.32f, 0.06f), new Vector3(0.04f, 0.09f, 0.16f), id == ItemID.KapakBatu ? batu : logam);
                 g.localRotation = Quaternion.Euler(-35f, 0f, 0f);
                 g.gameObject.SetActive(false);

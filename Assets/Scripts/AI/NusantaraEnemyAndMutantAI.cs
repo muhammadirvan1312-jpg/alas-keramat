@@ -49,6 +49,7 @@ namespace AlasKeramat.AI
         AndiVitalsAndSanity _vital;
         CombatAndLeftHandController _combat;
         TanganKiri _kiri;
+        ReaksiAndi _reaksiAndi;
         TimeOfDayClock _jam;
         URPAtmosphereAndWeather _cuaca;
         Renderer[] _rend;
@@ -125,6 +126,7 @@ namespace AlasKeramat.AI
                 if (_keadaan == KeadaanSekte.Patroli || _keadaan == KeadaanSekte.Selidik || _keadaan == KeadaanSekte.Mengintai || _keadaan == KeadaanSekte.Serang) CobaSeret();
             }
             TickLingkungan(dt);
+            TickBakarMusuh(dt);
             if (_keadaan == KeadaanSekte.Mati) return;
             if (_tGoyah > 0f)
             {
@@ -182,6 +184,8 @@ namespace AlasKeramat.AI
                 bool kerucut = DalamKerucut(transform.forward, kepala - mata);
                 bool halang = kerucut && Terhalang(mata, kepala) && Terhalang(mata, pinggul);
                 f = FaktorTerlihat(kerucut, halang, _andi.Jongkok, false, malam, cahaya, badai);
+                if (_reaksiAndi == null) _reaksiAndi = GameServices.Get<ReaksiAndi>();
+                if (_reaksiAndi != null && _reaksiAndi.Berlumpur) f *= ReaksiAndi.FaktorLumpur; // kamuflase lumpur 17 §2.4
             }
             _terlihat = f > 0f;
             if (_terlihat) { _posTerakhir = _andi.transform.position; _tTakTerlihat = 0f; } else _tTakTerlihat += TickPersepsi;

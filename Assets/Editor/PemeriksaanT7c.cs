@@ -79,5 +79,35 @@ namespace AlasKeramat.EditorTools
             cek("GoreSystem + partikel + material percikan/genangan/luka/tutup", sc);
             cek("Layar peringatan 18+ & pilihan gore", Object.FindFirstObjectByType<AlasKeramat.UI.LayarPeringatan>(FindObjectsInactive.Include) != null);
         }
+
+        // T7d: senjata jarak, elak, bunuh senyap, kamuflase lumpur.
+        public static void JalankanD(Action<string, bool> cek)
+        {
+            var C = typeof(AlasKeramat.Player.CombatAndLeftHandController);
+            var busur = AlasKeramat.Player.CombatAndLeftHandController.TabelJarak[AlasKeramat.Player.CombatAndLeftHandController.IndeksJarak(ItemID.BusurBambu)];
+            bool tarik = Mathf.Approximately(AlasKeramat.Player.CombatAndLeftHandController.DamageTarik(busur, 0.4f), 30f) && Mathf.Approximately(AlasKeramat.Player.CombatAndLeftHandController.DamageTarik(busur, 1.2f), 50f)
+                && Mathf.Approximately(AlasKeramat.Player.CombatAndLeftHandController.LajuTarik(busur, 1.2f), 55f);
+            cek("Busur: damage 30 + 0-20 menurut tarikan 0,4-1,2 s, laju 35-55 m/s", tarik);
+            bool unik = true; var set = new System.Collections.Generic.HashSet<ItemID>();
+            foreach (var s in AlasKeramat.Player.CombatAndLeftHandController.TabelJarak) unik &= set.Add(s.id) && s.amunisi != null && s.amunisi.Length > 0 && AlasKeramat.Inventory.ItemDatabase.Has(s.id);
+            foreach (var s in AlasKeramat.Player.CombatAndLeftHandController.Tabel) unik &= set.Add(s.id);
+            cek("Tabel senjata: " + AlasKeramat.Player.CombatAndLeftHandController.TabelJarak.Length + " jarak + " + AlasKeramat.Player.CombatAndLeftHandController.Tabel.Length + " melee, ID unik & terdaftar", unik && C != null);
+            bool senyap = AlasKeramat.Player.CombatAndLeftHandController.BolehSenyap(Vector3.forward, Vector3.back) && AlasKeramat.Player.CombatAndLeftHandController.BolehSenyap(Vector3.forward, new Vector3(0.5f, 0f, -1f))
+                && !AlasKeramat.Player.CombatAndLeftHandController.BolehSenyap(Vector3.forward, Vector3.right) && !AlasKeramat.Player.CombatAndLeftHandController.BolehSenyap(Vector3.forward, Vector3.forward);
+            cek("Bunuh senyap hanya dari belakang (sudut <= 60 derajat)", senyap);
+            cek("Elak 2,5 m / kebal 0,25 s / stamina 12; lumpur x0,7", Mathf.Approximately(AlasKeramat.Player.CombatAndLeftHandController.JarakElak, 2.5f) && Mathf.Approximately(AlasKeramat.Player.CombatAndLeftHandController.LamaElak, 0.25f)
+                && Mathf.Approximately(AlasKeramat.Player.CombatAndLeftHandController.StaminaElak, 12f) && Mathf.Approximately(AlasKeramat.Player.ReaksiAndi.FaktorLumpur, 0.7f));
+            var andi = Object.FindFirstObjectByType<AlasKeramat.Player.CombatAndLeftHandController>();
+            bool pf = andi != null;
+            if (andi != null)
+            {
+                var so = new SerializedObject(andi);
+                var pp = so.FindProperty("prefabProyektil"); var mj = so.FindProperty("modelJarak");
+                pf &= pp != null && pp.arraySize == 5 && mj != null && mj.arraySize == AlasKeramat.Player.CombatAndLeftHandController.TabelJarak.Length;
+                for (int i = 0; pf && i < 5; i++) { var g = pp.GetArrayElementAtIndex(i).objectReferenceValue as GameObject; pf &= g != null && g.GetComponent<ProyektilAK>() != null; }
+            }
+            cek("Prefab proyektil x5 & model FP senjata jarak", pf);
+            cek("Tombol GANTI, cincin suara, 3 titik lumpur", GameObject.Find("TombolGanti") != null && GameObject.Find("CincinSuara") != null && Object.FindObjectsByType<AlasKeramat.Player.TitikLumpur>(FindObjectsSortMode.None).Length == 3);
+        }
     }
 }

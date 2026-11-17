@@ -82,6 +82,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7n. Musuh, jalur & tempur", 0.956f, LangkahMusuh);
                 Langkah("7o. Hantu, raid & totem", 0.958f, LangkahHantu);
                 Langkah("7p. Gore, luka & peringatan 18+", 0.959f, LangkahGore);
+                Langkah("7q. Senjata jarak, elak, stealth", 0.96f, LangkahJarak);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

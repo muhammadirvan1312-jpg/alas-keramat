@@ -13,15 +13,18 @@ namespace AlasKeramat.UI
         [SerializeField] Image tandaKena;
         [SerializeField] Image vignette;
         [SerializeField] Image ikonDarah;
+        [SerializeField] RectTransform cincinSuara;
         ReaksiAndi _reaksi;
         float _tKena, _tMerah, _kuatMerah;
         bool _berat;
 
         public void Pasang(Image kena, Image merah) { tandaKena = kena; vignette = merah; }
         public void PasangIkonDarah(Image ikon) { ikonDarah = ikon; }
+        public void PasangCincinSuara(RectTransform r) { cincinSuara = r; }
 
-        void OnEnable() { CombatAndLeftHandController.OnKena += Kena; GameEvents.OnPlayerDamaged += Terluka; Set(tandaKena, 0f); Set(vignette, 0f); }
-        void OnDisable() { CombatAndLeftHandController.OnKena -= Kena; GameEvents.OnPlayerDamaged -= Terluka; }
+        void KenaJarak() { Kena(false); }
+        void OnEnable() { CombatAndLeftHandController.OnKena += Kena; CombatAndLeftHandController.OnKenaJarak += KenaJarak; GameEvents.OnPlayerDamaged += Terluka; Set(tandaKena, 0f); Set(vignette, 0f); }
+        void OnDisable() { CombatAndLeftHandController.OnKenaJarak -= KenaJarak; CombatAndLeftHandController.OnKena -= Kena; GameEvents.OnPlayerDamaged -= Terluka; }
 
         void Kena(bool berat) { _tKena = LamaKena; _berat = berat; }
         void Terluka(DamageInfo d) { _tMerah = LamaMerah; _kuatMerah = Mathf.Clamp01(0.4f + d.amount / 40f); }
@@ -29,6 +32,14 @@ namespace AlasKeramat.UI
         void Update()
         {
             float dt = Time.unscaledDeltaTime;
+            if (cincinSuara != null)
+            {
+                if (_reaksi == null) _reaksi = GameServices.Get<ReaksiAndi>();
+                float r = _reaksi != null ? _reaksi.RadiusSuara : 0f;
+                float target = 40f + r * 5f; // meter suara di sekitar crosshair (17 §2.4)
+                float now = Mathf.Lerp(cincinSuara.sizeDelta.x, target, dt * 6f);
+                cincinSuara.sizeDelta = new Vector2(now, now);
+            }
             if (ikonDarah != null)
             {
                 if (_reaksi == null) _reaksi = GameServices.Get<ReaksiAndi>();

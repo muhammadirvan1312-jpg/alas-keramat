@@ -51,6 +51,30 @@ namespace AlasKeramat.AI
             }
         }
 
+        float _tBakarMusuh, _dpsBakarMusuh, _tTickBakarMusuh;
+        bool _racun;
+
+        // Api (panah api, suar, golok api) atau racun (panah racun): damage per detik selama lama detik.
+        public void Bakar(float dps, float lama, bool racun)
+        {
+            if (!IsAlive) return;
+            _dpsBakarMusuh = Mathf.Max(racun == _racun ? _dpsBakarMusuh : 0f, dps); _tBakarMusuh = Mathf.Max(_tBakarMusuh, lama); _racun = racun;
+            if (!racun) Takut += TakutApi;
+        }
+
+        public void Goyahkan(float lama) { if (IsAlive) _tGoyah = Mathf.Max(_tGoyah, lama); }
+
+        void TickBakarMusuh(float dt)
+        {
+            if (_tBakarMusuh <= 0f) return;
+            _tBakarMusuh -= dt; _tTickBakarMusuh += dt;
+            if (_tTickBakarMusuh < 1f) return;
+            _tTickBakarMusuh -= 1f;
+            if (WorldTerrainGenerator.IsUnderwater(transform.position + Vector3.up * 0.5f) && !_racun) { _tBakarMusuh = 0f; return; }
+            _hp -= _dpsBakarMusuh;
+            if (_hp <= 0f) Mati(false, Vector3.up);
+        }
+
         SkinnedMeshRenderer SMR() { if (_smr == null) _smr = GetComponentInChildren<SkinnedMeshRenderer>(); return _smr; }
         Transform Tulang(int i) { var s = SMR(); return s != null && s.bones != null && i < s.bones.Length ? s.bones[i] : null; }
 

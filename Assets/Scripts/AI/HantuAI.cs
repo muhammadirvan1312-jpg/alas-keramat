@@ -84,6 +84,7 @@ namespace AlasKeramat.AI
                 float dt = Time.deltaTime;
                 _t += dt;
                 if (_tBakar > 0f) _tBakar -= dt;
+                TickApi(dt);
                 if (_fase == FaseHantu.Diusir) { TickLarut(); return; }
                 if (_andi == null) return;
                 if (jenis == EnemyArchetype.Kuntilanak) TickKuntilanak(dt);
@@ -140,6 +141,18 @@ namespace AlasKeramat.AI
             GameEvents.RaiseToast(NamaTampil(jenis) + " diusir");
             for (int i = 0; i < _d.drop.Length; i++)
                 if (Random.value < _d.peluang[i]) JarahanTanah.Jatuhkan(transform.position + Vector3.up * 0.3f, _d.drop[i], _d.jumlah[i]);
+        }
+
+        float _dpsApi, _tApi, _tTickApi;
+        public void Bakar(float dps, float lama) { if (IsAlive && jenis != EnemyArchetype.Banaspati) { _dpsApi = Mathf.Max(_dpsApi, dps); _tApi = Mathf.Max(_tApi, lama); } }
+
+        void TickApi(float dt)
+        {
+            if (_tApi <= 0f) return;
+            _tApi -= dt; _tTickApi += dt;
+            if (_tTickApi < 1f) return;
+            _tTickApi -= 1f;
+            TakeDamage(new DamageInfo { amount = _dpsApi, type = DamageType.Api, point = transform.position + Vector3.up, direction = Vector3.up, source = null });
         }
 
         public static string NamaTampil(EnemyArchetype j)
