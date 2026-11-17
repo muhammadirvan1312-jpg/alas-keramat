@@ -117,7 +117,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[GAGAL] A* bertingkat Heli -> Desa ditemukan dengan 2000 node (< 4.000), 0 titik, koridor dilebarkan 0x, 287 ms [diag: tanpa batas True/32289 node, bobot 3 True/25572 node]
+[GAGAL] A* bertingkat Heli -> Desa ditemukan dengan 4000 node (< 4.000), 0 titik, koridor dilebarkan 1x, 144 ms [diag: tanpa batas True/32289 node, bobot 3 True/25572 node, bertingkat tanpa batas True/5663 (kasar 1767 dari 7770 simpul)]
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
