@@ -9,11 +9,21 @@ namespace AlasKeramat.UI
     {
         [SerializeField] ZonaJoystick joystick;
         [SerializeField] ZonaGeser geser;
+        [SerializeField] UnityEngine.UI.Image tombolTangan;
+        [SerializeField] UnityEngine.UI.Text labelTangan;
+        [SerializeField] GameObject tombolObor;
+        public const float AlphaTanganRedup = 0.35f, AlphaTanganAktif = 0.95f, DenyutTangan = 3f;
+
+        InteraksiAndi _interaksi;
+        TanganKiri _kiri;
+        string _promptTampil;
+        float _tObor;
 
         AndiFPSController _andi;
         bool _adaJoy;
 
         public void Pasang(ZonaJoystick j, ZonaGeser g) { joystick = j; geser = g; }
+        public void PasangTangan(UnityEngine.UI.Image tangan, UnityEngine.UI.Text label, GameObject obor) { tombolTangan = tangan; labelTangan = label; tombolObor = obor; }
 
         void Awake()
         {
@@ -33,6 +43,32 @@ namespace AlasKeramat.UI
                 _adaJoy = aktif;
             }
             if (geser != null) _andi.InputLihatPx += geser.AmbilDelta() * SkalaLayar();
+            PerbaruiTangan();
+        }
+
+        void PerbaruiTangan()
+        {
+            if (_interaksi == null) _interaksi = GameServices.Get<InteraksiAndi>();
+            if (_kiri == null) _kiri = GameServices.Get<TanganKiri>();
+            if (_interaksi != null && labelTangan != null && _interaksi.Prompt != _promptTampil)
+            {
+                _promptTampil = _interaksi.Prompt;
+                labelTangan.text = _promptTampil;
+            }
+            if (tombolTangan != null)
+            {
+                bool ada = _interaksi != null && _interaksi.AdaTarget;
+                var c = tombolTangan.color;
+                c.a = ada ? AlphaTanganAktif - 0.15f * (0.5f + 0.5f * Mathf.Sin(Time.time * DenyutTangan * Mathf.PI * 2f)) : AlphaTanganRedup;
+                tombolTangan.color = c;
+            }
+            _tObor += Time.deltaTime;
+            if (tombolObor != null && _kiri != null && _tObor > 0.5f)
+            {
+                _tObor = 0f;
+                bool bisa = _kiri.BisaObor();
+                if (tombolObor.activeSelf != bisa) tombolObor.SetActive(bisa);
+            }
         }
 
         // Sensitivitas 09 §3 dinyatakan per piksel referensi 1080p.
@@ -40,5 +76,7 @@ namespace AlasKeramat.UI
 
         public void TekanLompat() { if (_andi != null) _andi.Lompat(); }
         public void TekanJongkok() { if (_andi != null) _andi.ToggleJongkok(); }
+        public void TekanTangan() { if (_interaksi == null) _interaksi = GameServices.Get<InteraksiAndi>(); if (_interaksi != null) _interaksi.Tekan(); }
+        public void TekanObor() { if (_kiri == null) _kiri = GameServices.Get<TanganKiri>(); if (_kiri != null) _kiri.ToggleObor(); }
     }
 }

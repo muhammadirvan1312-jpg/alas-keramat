@@ -26,6 +26,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T3b
 
 | T3a | 2026-11-17 | Menunggu CI | Player: AndiFPSController (jalan/lari/jongkok/lompat + coyote, berenang & menyelam dasar, napas, damage jatuh via IDamageable, kamera pitch/yaw + head bob, keyboard/mouse hanya ENABLE_LEGACY_INPUT_MANAGER); UI: ZonaJoystick (mengambang, sprint LARI), ZonaGeser, TouchControls, HUDInfo (HARI/jam/label waktu/cuaca + nama zona); Editor: BuilderSteps.Andi (spawn (-4,-424) dekat heli, kamera Andi, tur dimatikan, sprite UI lingkaran) | + 11 cek (Andi, spawn, MainCamera, 1 AudioListener, tur mati, kontrol, handler tombol, HUDInfo, kecepatan 09 §3, sprint, label waktu) | Pertama kali bisa jalan-jalan di hutan dari HP |
 
+| T3b | 2026-11-17 | Menunggu CI | Inventory: TikarPandan3DInventory (model data, Maks per item, simpan JSON), WadahItem (koper & benda lepas, tutup berputar); Player: InteraksiAndi (SphereCast 2,5 m, MINUM AIR), TanganKiri (obor + korek, cahaya berkedip), IVitalAndi (kontrak untuk vitals GPT TUGAS 03); UI: tombol TANGAN kontekstual & OBOR, ToastHUD, RadarGPS (150 m, U berputar, aktif dengan GPS); Editor: BuilderSteps.Interaksi (3 koper 03 §9 x2, puing heli) | + cek 3 koper sesuai isi, Maks inventaris, radar/toast/interaksi, arah radar | Buka koper, ambil golok/GPS/obor, radar menyala, obor menerangi malam, minum di sungai |
+
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
 ## Keputusan Teknis Baru
