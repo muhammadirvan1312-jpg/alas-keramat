@@ -243,6 +243,28 @@ namespace AlasKeramat.EditorTools
                 && Mathf.Approximately(AlasKeramat.Player.CombatAndLeftHandController.Terbaik(id => id == ItemID.GolokPusaka || id == ItemID.KapakBatu).tebang, 28f));
             cek("Pool pohon, melee, senjata FP, tombol TEBAS", Object.FindFirstObjectByType<AlasKeramat.Building.PohonInteraktif>() != null && Object.FindFirstObjectByType<AlasKeramat.Player.CombatAndLeftHandController>() != null
                 && GameObject.Find("SenjataFP") != null && Object.FindFirstObjectByType<AlasKeramat.UI.TombolTahan>() != null && AlasKeramat.UI.TombolTahan.Berat(0.5f) && !AlasKeramat.UI.TombolTahan.Berat(0.1f));
+            ItemID[] hid; int[] hn;
+            AlasKeramat.AI.WildAnimalAI.Hasil(ResepHewan.JenisHewan.Rusa, out hid, out hn);
+            bool rusaOk = hid.Length == 3 && hid[0] == ItemID.DagingMentah && hn[0] == 3 && hn[1] == 1 && hn[2] == 2;
+            AlasKeramat.AI.WildAnimalAI.Hasil(ResepHewan.JenisHewan.BabiHutan, out hid, out hn);
+            cek("Hasil buruan 03 §8 (rusa daging 3/kulit 1/tulang 2; babi + tengkorak)", rusaOk && System.Array.IndexOf(hid, ItemID.Tengkorak) >= 0 && hn[0] == 4);
+            var ecoD = Object.FindFirstObjectByType<AlasKeramat.AI.EcosystemDirector>();
+            var hewanT = Object.FindObjectsByType<AlasKeramat.AI.WildAnimalAI>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            int hOk = 0;
+            foreach (var h in hewanT) { bool ok = h.GetComponentsInChildren<SkinnedMeshRenderer>(true).Length == 1 && h.GetComponent<Collider>() != null; foreach (var nm in ResepHewan.Nama) if (FindRekursif(h.transform, nm) == null) ok = false; if (ok) hOk++; }
+            cek("5 template hewan (1 SMR, 17 sendi, collider) (" + hOk + ")", ecoD != null && hOk >= 5);
+            cek("Rusa cocok di hutan jati, tidak di pantai", AlasKeramat.AI.EcosystemDirector.Cocok(ResepHewan.JenisHewan.Rusa, Biome.HutanJatiSelatan) && !AlasKeramat.AI.EcosystemDirector.Cocok(ResepHewan.JenisHewan.Rusa, Biome.Pantai));
+            var fdGo = new GameObject("UjiPungut");
+            try
+            {
+                var fdU = fdGo.AddComponent<AlasKeramat.Building.ForagingDirector>();
+                fdU.Bangkitkan();
+                var adaJenis = new bool[7];
+                for (int i = 0; i < fdU.JumlahTitik; i++) adaJenis[(int)fdU.JenisTitik(i)] = true;
+                bool semuaJenis = true; foreach (var a in adaJenis) semuaJenis &= a;
+                cek("Titik pungut deterministik (" + fdU.JumlahTitik + ", 7 jenis ada)", fdU.JumlahTitik > 1500 && semuaJenis);
+            }
+            finally { Object.DestroyImmediate(fdGo); }
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)
