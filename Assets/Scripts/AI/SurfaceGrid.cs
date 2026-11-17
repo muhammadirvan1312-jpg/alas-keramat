@@ -50,6 +50,37 @@ namespace AlasKeramat.AI
                             if (_sel[Indeks(cx * FaktorKasar + dx, cz * FaktorKasar + dz)] != Blok) n++;
                     _kasar[cz * SisiKasar + cx] = n >= MinLewatKasar ? Darat : Blok;
                 }
+            // Tepi kasar: bit 1 = bisa ke timur (cx+1), bit 2 = bisa ke utara (cz+1) bila ada pasangan sel halus lewat di perbatasan.
+            _tepi = new byte[SisiKasar * SisiKasar];
+            for (int cz = 0; cz < SisiKasar; cz++)
+                for (int cx = 0; cx < SisiKasar; cx++)
+                {
+                    byte b = 0;
+                    if (cx + 1 < SisiKasar)
+                    {
+                        int x0 = cx * FaktorKasar + FaktorKasar - 1;
+                        for (int r = 0; r < FaktorKasar; r++) { int z = cz * FaktorKasar + r; if (_sel[Indeks(x0, z)] != Blok && _sel[Indeks(x0 + 1, z)] != Blok) { b |= 1; break; } }
+                    }
+                    if (cz + 1 < SisiKasar)
+                    {
+                        int z0 = cz * FaktorKasar + FaktorKasar - 1;
+                        for (int r = 0; r < FaktorKasar; r++) { int x = cx * FaktorKasar + r; if (_sel[Indeks(x, z0)] != Blok && _sel[Indeks(x, z0 + 1)] != Blok) { b |= 2; break; } }
+                    }
+                    _tepi[cz * SisiKasar + cx] = b;
+                }
+        }
+
+        byte[] _tepi;
+        public byte[] TepiKasar { get { if (_kasar == null) BangunKasar(); return _tepi; } }
+
+        // Bisa bergerak orthogonal dari blok (cx,cz) ke (cx+dx, cz+dz)?
+        public bool LintasKasar(int cx, int cz, int dx, int dz)
+        {
+            var t = TepiKasar;
+            if (dx == 1) return (t[cz * SisiKasar + cx] & 1) != 0;
+            if (dx == -1) return cx > 0 && (t[cz * SisiKasar + cx - 1] & 1) != 0;
+            if (dz == 1) return (t[cz * SisiKasar + cx] & 2) != 0;
+            return cz > 0 && (t[(cz - 1) * SisiKasar + cx] & 2) != 0;
         }
 
         public static Vector3 PusatKasar(int cx, int cz)

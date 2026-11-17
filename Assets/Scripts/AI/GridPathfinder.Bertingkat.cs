@@ -5,11 +5,11 @@ using UnityEngine;
 namespace AlasKeramat.AI
 {
     // Pencarian bertingkat untuk jarak jauh (dunia v5 2x2 km): A* di grid kasar 100x100 (blok 20 m) menentukan koridor,
-    // lalu tiap 3 blok dihaluskan dengan A* sel 4 m beranggaran kecil. Total node (kasar + halus) tetap di bawah MaksNode.
+    // lalu tiap 2 blok dihaluskan dengan A* sel 4 m beranggaran kecil. Total node (kasar + halus) tetap di bawah MaksNode.
     public partial class GridPathfinder
     {
         public const float JarakBertingkat = 150f, BobotKasar = 1.2f;
-        public const int LangkahHalus = 3, MinAnggaranSegmen = 250;
+        public const int LangkahHalus = 2, AnggaranSegmen = 700;
 
         public static int SegmenGagalTerakhir { get; private set; }
 
@@ -43,7 +43,7 @@ namespace AlasKeramat.AI
                 bool akhir = i >= _koridor.Count - 1;
                 Vector3 b = akhir ? ke : _koridor[i];
                 int n;
-                bool ok = Cari(g, a, b, _segmen, Mathf.Max(MinAnggaranSegmen, anggaran - dikunjungi - MinAnggaranSegmen), out n);
+                bool ok = Cari(g, a, b, _segmen, Mathf.Min(AnggaranSegmen, Mathf.Max(100, anggaran - dikunjungi)), out n);
                 dikunjungi += n;
                 if (hasil != null)
                 {
@@ -121,7 +121,10 @@ namespace AlasKeramat.AI
                     int n = nz * S + nx;
                     if (_capK[n] == tutup) continue;
                     bool diagonal = a >= 4;
-                    if (diagonal && (!LewatKasar(k, nx, cz) || !LewatKasar(k, cx, nz))) continue;
+                    if (!diagonal && !g.LintasKasar(cx, cz, _dx[a], _dz[a])) continue;
+                    if (diagonal && (!LewatKasar(k, nx, cz) || !LewatKasar(k, cx, nz)
+                        || !g.LintasKasar(cx, cz, _dx[a], 0) || !g.LintasKasar(nx, cz, 0, _dz[a])
+                        || !g.LintasKasar(cx, cz, 0, _dz[a]) || !g.LintasKasar(cx, nz, _dx[a], 0))) continue;
                     float gb = _gK[c] + (diagonal ? Akar2 : 1f);
                     if (_capK[n] == cap && gb >= _gK[n]) continue;
                     _capK[n] = cap; _gK[n] = gb; _indukK[n] = c; _fK[n] = gb + HeurK(nx, nz, tx, tz);
