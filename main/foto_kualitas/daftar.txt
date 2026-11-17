@@ -1,4 +1,7 @@
 Perangkat grafis: llvmpipe (LLVM 15.0.7, 256 bits) (OpenGLCore)
+t4_01_galeri_karakter
+t4_02_galeri_dekat
+t4_03_deden_heli
 t2_15_beringin_agung
 t2_14_pabrik_gula
 t2_13_desa_mati
