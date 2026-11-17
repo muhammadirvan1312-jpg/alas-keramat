@@ -1,11 +1,11 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (1530 = 1530)
+[LULUS] Idempoten: jumlah objek sama (1591 = 1591)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
 [LULUS] Tekstur >= 10 (14)
-[LULUS] Material >= 5 (53)
+[LULUS] Material >= 5 (54)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
 [LULUS] WAV >= 8 (52)
@@ -61,7 +61,7 @@
 [LULUS] Tepat 1 AudioListener aktif (1)
 [LULUS] Tur pratinjau mati saat Andi ada
 [LULUS] TouchControls & joystick & area geser
-[LULUS] Semua tombol HUD punya handler (7)
+[LULUS] Semua tombol HUD punya handler (8)
 [LULUS] 3 koper berisi item sesuai 03 §9 (3)
 [LULUS] Inventaris menghormati Maks (golok 3 -> 1)
 [LULUS] Radar, toast, interaksi, tangan kiri ada
@@ -95,6 +95,11 @@
 [LULUS] Snap tiang -> balok -> papan valid (HP 200/120)
 [LULUS] Integritas BFS: satu tiang hilang tetap berdiri, kedua hilang -> balok & papan runtuh (0/2)
 [LULUS] Pemanggul kayu & tombol LEMPAR/MODE
+[LULUS] 14 blueprint, biaya sesuai 07 §7 (api: ranting 6 + batu 4; saung: kayu 10/ranting 8/daun 16)
+[LULUS] Masak: ikan mentah 30 s = matang, 50 s = gosong
+[LULUS] Jemuran: ikan matang -> ikan kering
+[LULUS] Simpan -> muat menghasilkan state identik
+[LULUS] Buku Panduan, SaveSystem, penempatan
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas

@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-17 12:19:35
+Laporan Builder Alas Keramat - 2026-11-17 12:43:39
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -43,8 +43,10 @@ Laporan Builder Alas Keramat - 2026-11-17 12:19:35
 [LULUS] 7j. Tikar Pandan & zirah
   - Bangun bebas: pemanggul kayu, hantu, tombol LEMPAR & MODE
 [LULUS] 7k. Panggul & bangun bebas
+  - Buku Panduan 14 blueprint, penempatan cetak biru, SaveSystem
+[LULUS] 7l. Buku Panduan & simpan
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 1530
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 1591
 [LULUS] 9. Simpan scene
-Durasi: 111.0 detik
+Durasi: 139.2 detik
 HASIL: SEMUA LANGKAH LULUS
