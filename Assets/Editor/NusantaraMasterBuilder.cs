@@ -79,6 +79,12 @@ namespace AlasKeramat.EditorTools
                 Langkah("7k. Panggul & bangun bebas", 0.95f, LangkahBangun);
                 Langkah("7l. Buku Panduan & simpan", 0.952f, LangkahBlueprint);
                 Langkah("7m. Dunia, bangunan & misi", 0.954f, LangkahT6c);
+                Langkah("7n. Musuh, jalur & tempur", 0.956f, LangkahMusuh);
+                Langkah("7o. Hantu, raid & totem", 0.958f, LangkahHantu);
+                Langkah("7p. Gore, luka & peringatan 18+", 0.959f, LangkahGore);
+                Langkah("7q. Senjata jarak, elak, stealth", 0.96f, LangkahJarak);
+                Langkah("7r. Companion Kang Deden & Ningsih", 0.962f, LangkahCompanion);
+                Langkah("7s. Sutradara Teror & dunia hidup", 0.964f, LangkahTeror);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

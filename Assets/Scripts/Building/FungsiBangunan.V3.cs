@@ -15,7 +15,7 @@ namespace AlasKeramat.Building
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetV3() { Semua.Clear(); }
         void OnEnable() { if(!Semua.Contains(this))Semua.Add(this); }
-        void OnDisable() { Semua.Remove(this); }
+        void OnDisable() { Semua.Remove(this); AlasKeramat.AI.ZonaPenangkal.SetObor(this, Vector3.zero, false); }
         public static bool MenangkalTuyul(Vector3 posisi)
         {
             foreach(var f in Semua) if(f!=null && f.Jenis==BlueprintID.MangkukKepiting && (f.transform.position-posisi).sqrMagnitude<=100f)return true;

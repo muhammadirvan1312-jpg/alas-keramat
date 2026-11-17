@@ -42,6 +42,7 @@ namespace AlasKeramat.Building
             }
             if (Jenis == BlueprintID.JemuranIkan) for (int i = 0; i < SlotJemur; i++) if (_jemur[i] != ItemID.None) _tJemur[i] += dt;
             if ((Jenis == BlueprintID.OborTengkorak || Jenis == BlueprintID.LampuMinyak || Jenis == BlueprintID.PatungNgeri) && NyalaSisa > 0f) NyalaSisa -= dt;
+            if (Jenis == BlueprintID.OborTengkorak || Jenis == BlueprintID.PatungNgeri) AlasKeramat.AI.ZonaPenangkal.SetObor(this, transform.position, NyalaSisa > 0f); // T7b: penangkal hantu & raid
             if (lampu != null) { lampu.enabled = NyalaSisa > 0f; if (lampu.enabled) lampu.intensity = 1.8f * (0.9f + 0.2f * Mathf.PerlinNoise(Time.time * 7f, 0.5f)); }
             if (pintu != null) pintu.localRotation = Quaternion.Slerp(pintu.localRotation, Quaternion.Euler(0f, Terbuka ? 95f : 0f, 0f), dt * 6f);
             int tampil = Jenis == BlueprintID.JemuranIkan ? Terisi() : Stok;

@@ -47,6 +47,7 @@ namespace AlasKeramat.UI
             }
             if (geser != null) _andi.InputLihatPx += geser.AmbilDelta() * SkalaLayar();
             PerbaruiTangan();
+            PerbaruiLabelTempur();
         }
 
         void PerbaruiTangan()
@@ -82,7 +83,37 @@ namespace AlasKeramat.UI
         // Sensitivitas 09 §3 dinyatakan per piksel referensi 1080p.
         static float SkalaLayar() { return Screen.height > 0 ? 1080f / Screen.height : 1f; }
 
-        public void TekanLompat() { if (_andi != null) _andi.Lompat(); }
+        public void TekanLompat()
+        {
+            var c = GameServices.Get<CombatAndLeftHandController>();
+            if (c != null && c.BisaElak()) { c.Elak(joystick != null ? joystick.Nilai : Vector2.zero); return; } // 17 §2.2: LOMPAT jadi ELAK
+            if (_andi != null) _andi.Lompat();
+        }
+        public void TekanGanti() { var c = GameServices.Get<CombatAndLeftHandController>(); if (c != null) c.Ganti(); }
+
+        UnityEngine.UI.Text _labelLompat, _labelGanti;
+        float _tLabelTempur;
+        string _isiLompat, _isiGanti;
+
+        void PerbaruiLabelTempur()
+        {
+            _tLabelTempur -= Time.unscaledDeltaTime;
+            if (_tLabelTempur > 0f) return;
+            _tLabelTempur = 0.25f;
+            if (_labelLompat == null || _labelGanti == null)
+                foreach (var t in GetComponentsInChildren<UnityEngine.UI.Text>(true))
+                {
+                    if (t.transform.parent != null && t.transform.parent.name == "TombolLompat") _labelLompat = t;
+                    if (t.transform.parent != null && t.transform.parent.name == "TombolGanti") _labelGanti = t;
+                }
+            var c = GameServices.Get<CombatAndLeftHandController>();
+            if (c == null) return;
+            string l = c.BisaElak() ? "ELAK" : "LOMPAT";
+            if (_labelLompat != null && l != _isiLompat) { _isiLompat = l; _labelLompat.text = l; }
+            int am = c.Amunisi();
+            string g = c.NamaAktif() + (am >= 0 ? " (" + am + ")" : "");
+            if (_labelGanti != null && g != _isiGanti) { _isiGanti = g; _labelGanti.text = g; }
+        }
         public void TekanJongkok() { if (_andi != null) _andi.ToggleJongkok(); }
         public void TekanTangan() { if (_interaksi == null) _interaksi = GameServices.Get<InteraksiAndi>(); if (_interaksi != null) _interaksi.Tekan(); }
         public void TekanLempar() { var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.Lempar(); }

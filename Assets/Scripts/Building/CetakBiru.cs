@@ -11,6 +11,10 @@ namespace AlasKeramat.Building
         public float Bentang = 6f;
         public int[] Terisi = new int[0];
         public float HoldDuration { get { return 0f; } }
+        public static readonly System.Collections.Generic.List<CetakBiru> Semua = new System.Collections.Generic.List<CetakBiru>();
+        void OnEnable() { if (!Semua.Contains(this)) Semua.Add(this); }
+        void OnDisable() { Semua.Remove(this); }
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void ResetSemua() { Semua.Clear(); }
 
         public static CetakBiru Buat(BlueprintID id, Vector3 pos, Quaternion rot, float bentang = 6f)
         {
@@ -71,6 +75,29 @@ namespace AlasKeramat.Building
             while (masuk < perlu && inv != null && inv.Kurangi(id, 1)) masuk++;
             if (id == ItemID.KainBatik) while (masuk < perlu && inv != null && inv.Kurangi(ItemID.KainKafan, 1)) masuk++;
             Terisi[i] += masuk;
+            CekSelesai();
+        }
+
+        // T8: dipakai Kang Deden (Selesaikan Bangunan / setor bahan). Mengembalikan jumlah yang terpakai.
+        public int Kebutuhan(ItemID id)
+        {
+            var d = GuidebookBlueprintsAndCooking.Ambil(Id); int n = 0;
+            for (int i = 0; i < d.cost.Length && i < Terisi.Length; i++) if (d.cost[i].id == id) n += Mathf.Max(0, Kurang(i));
+            return n;
+        }
+
+        public int Isi(ItemID id, int n)
+        {
+            var d = GuidebookBlueprintsAndCooking.Ambil(Id); int pakai = 0;
+            for (int i = 0; i < d.cost.Length && i < Terisi.Length && pakai < n; i++)
+                if (d.cost[i].id == id) { int m = Mathf.Min(n - pakai, Mathf.Max(0, Kurang(i))); Terisi[i] += m; pakai += m; }
+            if (pakai > 0) CekSelesai();
+            return pakai;
+        }
+
+        void CekSelesai()
+        {
+            var d = GuidebookBlueprintsAndCooking.Ambil(Id);
             for (int k = 0; k < d.cost.Length; k++) if (Kurang(k) > 0) return;
             BangunanBlueprint.Bangun(Id, transform.position - Vector3.up * 0.05f, transform.rotation, Bentang);
             GameEvents.RaiseStructureBuilt(Id);

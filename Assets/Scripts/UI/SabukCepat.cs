@@ -64,6 +64,8 @@ namespace AlasKeramat.UI
             if (i < 0 || i >= JumlahSlot || _isi[i] == ItemID.None) return;
             var v = GameServices.Get<AndiVitalsAndSanity>();
             var id = _isi[i];
+            var rkObat = GameServices.Get<AlasKeramat.Player.ReaksiAndi>();
+            if (rkObat != null && rkObat.Obati(id)) { _kotor = true; return; } // T7c: perban/jamu/sirih untuk pendarahan
             if (v != null && v.Konsumsi(id)) GameEvents.RaiseToast("Kamu mengonsumsi " + ItemDatabase.Get(id).displayName);
             _kotor = true;
         }

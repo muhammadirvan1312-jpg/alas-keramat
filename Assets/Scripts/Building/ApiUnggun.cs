@@ -137,6 +137,7 @@ namespace AlasKeramat.Building
                 var v = GameServices.Get<AndiVitalsAndSanity>();
                 if (v != null) v.UbahSanity(20f);
                 GameEvents.RaiseToast("Asap kemenyan menenangkan pikiranmu");
+                AlasKeramat.AI.ZonaPenangkal.TambahKemenyan(transform.position); // T7b: Pocong menjauh 20 m selama 60 s
                 return;
             }
             if (p.StartsWith("MASAK"))

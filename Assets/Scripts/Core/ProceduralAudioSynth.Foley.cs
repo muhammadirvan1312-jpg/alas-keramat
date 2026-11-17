@@ -38,7 +38,7 @@ namespace AlasKeramat.Core
                 b = ResepLangkah(System.Array.IndexOf(PermukaanLangkah, p), sr, ref rng);
                 if (b == null) return null;
             }
-            else return null;
+            else return GenerateTempur(nama, variasi, out sr);
             Dsp.Finalize(b, sr);
             return b;
         }
