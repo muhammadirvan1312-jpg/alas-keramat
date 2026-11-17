@@ -35,8 +35,9 @@ namespace AlasKeramat.Core
         void Update()
         {
             if (_jam == null) return;
-            // Update visual 10x per jam game cukup halus; hindari kerja tiap frame.
-            if (Mathf.Abs(_jam.Jam - _jamTerapan) > 0.02f) Terapkan(_jam.Jam);
+            UpdateCuaca();
+            // Update visual 50x per jam game cukup halus; saat transisi cuaca diperbarui tiap frame.
+            if (Mathf.Abs(_jam.Jam - _jamTerapan) > 0.02f || _transisi < 1f) Terapkan(_jam.Jam);
         }
 
         static Gradient G(params string[] hexPerJam)
@@ -106,6 +107,7 @@ namespace AlasKeramat.Core
                 SafeMaterialFactory.SetF(skybox, "_AtmosphereThickness", maghrib ? 1.9f : 1.0f);
                 SafeMaterialFactory.SetF(skybox, "_SunSize", 0.035f);
             }
+            TerapkanCuaca();
             if (sun != null) RenderSettings.sun = sun.enabled ? sun : moon;
         }
 

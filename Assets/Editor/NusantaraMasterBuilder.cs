@@ -62,6 +62,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("2. Aset", 0.30f, () => LangkahAset(cepat));
                 Langkah("3. Scene & langit", 0.32f, LangkahScene);
                 Langkah("3b. Dunia 2x2 km", 0.35f, LangkahDunia);
+                Langkah("3c. Vegetasi", 0.62f, LangkahVegetasi);
                 Langkah("6. Sistem", 0.70f, LangkahSistem);
                 Langkah("7. UI", 0.85f, LangkahUI);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);

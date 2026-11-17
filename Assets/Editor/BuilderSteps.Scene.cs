@@ -18,7 +18,8 @@ namespace AlasKeramat.EditorTools
 
         static Scene _scene;
         static GameObject _root, _sistem, _ui, _kamera;
-        static Light _sun, _moon;
+        static Light _sun, _moon, _kilat;
+        static Material _matHujan;
         static Material _langit;
 
         static GameObject Anak(GameObject induk, string nama)
@@ -41,6 +42,22 @@ namespace AlasKeramat.EditorTools
             _sun.type = LightType.Directional; _sun.shadows = LightShadows.Soft; _sun.shadowStrength = 0.9f;
             _moon = Anak(cahaya, "Moon").AddComponent<Light>();
             _moon.type = LightType.Directional; _moon.shadows = LightShadows.Soft; _moon.shadowStrength = 0.6f;
+            _kilat = Anak(cahaya, "Kilat").AddComponent<Light>();
+            _kilat.type = LightType.Directional; _kilat.shadows = LightShadows.None; _kilat.color = ProcTex.Hex("#DDE6FF"); _kilat.enabled = false;
+            var pShader = Shader.Find("Universal Render Pipeline/Particles/Unlit");
+            if (pShader != null)
+            {
+                var mh = new Material(pShader) { name = "M_Hujan" };
+                SafeMaterialFactory.SetF(mh, "_Surface", 1f);
+                SafeMaterialFactory.SetF(mh, "_Blend", 0f);
+                SafeMaterialFactory.SetF(mh, "_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                SafeMaterialFactory.SetF(mh, "_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                SafeMaterialFactory.SetF(mh, "_ZWrite", 0f);
+                mh.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); mh.renderQueue = 3000;
+                SafeMaterialFactory.SetC(mh, "_BaseColor", new Color(0.8f, 0.85f, 0.9f, 0.5f));
+                AssetDatabase.CreateAsset(mh, FolderMat + "/M_Hujan.mat");
+                _matHujan = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_Hujan.mat");
+            }
 
             var sky = Shader.Find("Skybox/Procedural");
             if (sky == null) throw new Exception("shader Skybox/Procedural tidak ditemukan");
@@ -67,6 +84,7 @@ namespace AlasKeramat.EditorTools
             _sistem.AddComponent<TimeOfDayClock>();
             var atmos = _sistem.AddComponent<URPAtmosphereAndWeather>();
             atmos.Pasang(_sun, _moon, _langit);
+            atmos.PasangCuaca(_matHujan, _kilat);
             atmos.Terapkan(TimeOfDayClock.JamMulai);
             EditorUtility.SetDirty(atmos);
             var audioGo = Anak(_sistem, "ProceduralAudioSynth");

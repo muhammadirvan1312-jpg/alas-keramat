@@ -97,6 +97,18 @@ namespace AlasKeramat.EditorTools
             cek("Jam dunia maju", jamOk);
             var atmos = Object.FindFirstObjectByType<URPAtmosphereAndWeather>();
             cek("Atmosfer & langit terpasang", atmos != null && RenderSettings.skybox != null);
+            cek("Pohon 8.000-45.000 (" + NusantaraMasterBuilder.JumlahPohon + ")", NusantaraMasterBuilder.JumlahPohon >= 8000 && NusantaraMasterBuilder.JumlahPohon <= 45000);
+            cek("Semak/pakis >= 10.000 (" + NusantaraMasterBuilder.JumlahSemak + ")", NusantaraMasterBuilder.JumlahSemak >= 10000);
+            cek("VegetationManager & data terpasang", Object.FindFirstObjectByType<AlasKeramat.Building.VegetationManager>() != null && Object.FindFirstObjectByType<AlasKeramat.Building.VegetationManager>().Data != null);
+            bool cuacaOk = atmos != null;
+            if (atmos != null)
+                foreach (WeatherState w in System.Enum.GetValues(typeof(WeatherState)))
+                {
+                    try { atmos.SetCuaca(w, true); if (atmos.Cuaca != w) cuacaOk = false; }
+                    catch (System.Exception e) { cuacaOk = false; Debug.LogError("[AK][SelfTest] cuaca " + w + ": " + e.Message); }
+                }
+            if (atmos != null) atmos.SetCuaca(WeatherState.Cerah, true);
+            cek("Semua 7 cuaca bisa diset", cuacaOk);
             cek("Tur pratinjau di kamera", Object.FindFirstObjectByType<AlasKeramat.UI.TurPratinjau>() != null);
 
             Directory.CreateDirectory("Logs");
