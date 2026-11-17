@@ -1,6 +1,6 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (1591 = 1591)
+[LULUS] Idempoten: jumlah objek sama (1687 = 1687)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
@@ -61,7 +61,7 @@
 [LULUS] Tepat 1 AudioListener aktif (1)
 [LULUS] Tur pratinjau mati saat Andi ada
 [LULUS] TouchControls & joystick & area geser
-[LULUS] Semua tombol HUD punya handler (8)
+[LULUS] Semua tombol HUD punya handler (11)
 [LULUS] 3 koper berisi item sesuai 03 §9 (3)
 [LULUS] Inventaris menghormati Maks (golok 3 -> 1)
 [LULUS] Radar, toast, interaksi, tangan kiri ada
@@ -95,11 +95,26 @@
 [LULUS] Snap tiang -> balok -> papan valid (HP 200/120)
 [LULUS] Integritas BFS: satu tiang hilang tetap berdiri, kedua hilang -> balok & papan runtuh (0/2)
 [LULUS] Pemanggul kayu & tombol LEMPAR/MODE
-[LULUS] 14 blueprint, biaya sesuai 07 §7 (api: ranting 6 + batu 4; saung: kayu 10/ranting 8/daun 16)
+[LULUS] 26 blueprint, biaya sesuai 07 §7 (api: ranting 6 + batu 4; saung: kayu 10/ranting 8/daun 16)
 [LULUS] Masak: ikan mentah 30 s = matang, 50 s = gosong
 [LULUS] Jemuran: ikan matang -> ikan kering
 [LULUS] Simpan -> muat menghasilkan state identik
 [LULUS] Buku Panduan, SaveSystem, penempatan
+[LULUS] Atap 20-45 derajat, tangga 25-40 derajat
+[LULUS] Batu HP 500 dan hasil bongkar atap adalah papan
+[LULUS] Bidang atap menghadap atas dari delapan arah
+[LULUS] M02 perlu Jamu DAN Catatan
+[LULUS] M04 menunggu pagi
+[LULUS] Urutan M01 -> M02 -> M03 -> M04, tanpa event ganda
+[LULUS] M03 boleh selesai paralel sementara HUD tetap M01
+[LULUS] Peti memindahkan item tanpa menggandakan
+[LULUS] Simpan -> muat struktur, graf, HP dan isi blueprint identik
+[LULUS] Muat dua kali tidak menggandakan bangunan
+[LULUS] Bongkar wajib tahan satu detik
+[LULUS] Bongkar benar-benar menghasilkan KayuFisik papan
+[LULUS] Semua blueprint v3 menghasilkan objek dan collider
+[LULUS] QuestManager, HUD misi, SimpanDunia dan peti tersambung
+[LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas
