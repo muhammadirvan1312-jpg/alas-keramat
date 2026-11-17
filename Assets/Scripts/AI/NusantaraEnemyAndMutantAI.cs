@@ -185,6 +185,7 @@ namespace AlasKeramat.AI
                 bool kerucut = DalamKerucut(transform.forward, kepala - mata);
                 bool halang = kerucut && Terhalang(mata, kepala) && Terhalang(mata, pinggul);
                 f = FaktorTerlihat(kerucut, halang, _andi.Jongkok, false, malam, cahaya, badai);
+                if (Tertidur()) f *= FaktorTidur;
                 if (_reaksiAndi == null) _reaksiAndi = GameServices.Get<ReaksiAndi>();
                 if (_reaksiAndi != null && _reaksiAndi.Berlumpur) f *= ReaksiAndi.FaktorLumpur; // kamuflase lumpur 17 §2.4
             }
@@ -224,6 +225,8 @@ namespace AlasKeramat.AI
             if (_sadar >= AmbangWaspada || (_adaSelidik && _sadar >= AmbangPenasaran)) { Ubah(KeadaanSekte.Selidik); return; }
             if (WaktuRitual() && _sadar < AmbangPenasaran) { Ubah(KeadaanSekte.Ritual); return; }
             if (_sadar >= AmbangPenasaran) { Hadap(_andi.transform.position - transform.position, dt); Diam(dt); return; } // menoleh penasaran
+            if (Tertidur()) { Diam(dt); if (_anim != null) _anim.Pose = ProceduralAnimator.PoseTempur.Intai; return; } // tidur siang/malam: penjagaan longgar
+            if (_anim != null && _anim.Pose == ProceduralAnimator.PoseTempur.Intai) _anim.Pose = ProceduralAnimator.PoseTempur.Tidak;
             if (Pengintai)
             {
                 if (JarakAndi() <= IntaiMaks + 5f) { Ubah(KeadaanSekte.Mengintai); return; }
@@ -334,11 +337,23 @@ namespace AlasKeramat.AI
             else { Gerak(p, 0.9f, dt, true); if (_anim != null) _anim.Pose = ProceduralAnimator.PoseTempur.Tari; }
         }
 
+        // Penjaga (2 slot pertama regu) tetap bangun saat tidur malam (16 §4.1).
+        bool Tertidur()
+        {
+            if (Pengintai || Rute == null || _dir == null) return false;
+            var k = _dir.KegiatanKini;
+            if (k == EnemyDirector.KegiatanSekte.TidurSiang) return true;
+            if (k != EnemyDirector.KegiatanSekte.Tidur || Asal == null) return false;
+            return System.Array.IndexOf(Asal.rute, Rute) >= 2;
+        }
+
+        public const float FaktorTidur = 0.3f;
+
         bool WaktuRitual()
         {
             if (_jam == null || TitikRitual == Vector3.zero || Pengintai) return false;
             float j = _jam.Jam;
-            return (j >= 19f || j < 4f) && Datar(TitikRitual - _posLahir).magnitude < 160f;
+            return j >= 19f && j < 23f && Datar(TitikRitual - _posLahir).magnitude < 160f; // 16 §4.1: ritual 19-23, lalu tidur
         }
 
         // ---------------- Damage & interaksi ----------------

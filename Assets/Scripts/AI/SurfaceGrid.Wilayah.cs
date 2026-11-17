@@ -12,6 +12,8 @@ namespace AlasKeramat.AI
         int[] _sisiAwal, _sisiTujuan;   // CSR: sisi simpul i = _sisiTujuan[_sisiAwal[i] .. _sisiAwal[i+1])
         Vector2[] _pusatSimpul;         // pusat wilayah dalam satuan sel
         int _jumlahSimpul;
+        int[] _wakilSimpul;             // sel wakil (sel wilayah terdekat ke pusat) - titik jalan kasar yang pasti bisa dilalui
+        public int WakilSimpul(int s) { Siapkan(); return _wakilSimpul[s]; }
 
         public int JumlahSimpul { get { Siapkan(); return _jumlahSimpul; } }
         public int SimpulSel(int indeksSel) { Siapkan(); return _simpulSel[indeksSel]; }
@@ -28,6 +30,8 @@ namespace AlasKeramat.AI
             for (int i = 0; i < JumlahSel; i++) _simpulSel[i] = -1;
             var pusat = new List<Vector2>();
             var tumpuk = new Stack<int>();
+            var anggota = new List<int>(32);
+            var wakilList = new List<int>();
             for (int bz = 0; bz < SisiKasar; bz++)
                 for (int bx = 0; bx < SisiKasar; bx++)
                     for (int dz = 0; dz < FaktorKasar; dz++)
@@ -36,11 +40,11 @@ namespace AlasKeramat.AI
                             int x0 = bx * FaktorKasar + dx, z0 = bz * FaktorKasar + dz, i0 = Indeks(x0, z0);
                             if (_sel[i0] == Blok || _simpulSel[i0] >= 0) continue;
                             int id = pusat.Count; float sx = 0f, sz = 0f; int n = 0;
-                            _simpulSel[i0] = id; tumpuk.Push(i0);
+                            _simpulSel[i0] = id; tumpuk.Push(i0); anggota.Clear();
                             while (tumpuk.Count > 0)
                             {
                                 int c = tumpuk.Pop(); int cx = c % Sisi, cz = c / Sisi;
-                                sx += cx; sz += cz; n++;
+                                sx += cx; sz += cz; n++; anggota.Add(c);
                                 for (int a = 0; a < 4; a++)
                                 {
                                     int nx = cx + (a == 0 ? 1 : a == 1 ? -1 : 0), nz = cz + (a == 2 ? 1 : a == 3 ? -1 : 0);
@@ -50,10 +54,15 @@ namespace AlasKeramat.AI
                                     _simpulSel[ni] = id; tumpuk.Push(ni);
                                 }
                             }
-                            pusat.Add(new Vector2(sx / n, sz / n));
+                            var pc = new Vector2(sx / n, sz / n);
+                            pusat.Add(pc);
+                            int wakil = anggota[0]; float terbaik = float.MaxValue;
+                            foreach (int c in anggota) { float d = (new Vector2(c % Sisi, c / Sisi) - pc).sqrMagnitude; if (d < terbaik) { terbaik = d; wakil = c; } }
+                            wakilList.Add(wakil);
                         }
             _jumlahSimpul = pusat.Count;
             _pusatSimpul = pusat.ToArray();
+            _wakilSimpul = wakilList.ToArray();
             var sisi = new HashSet<long>();
             for (int z = 0; z < Sisi; z++)
                 for (int x = 0; x < Sisi; x++)

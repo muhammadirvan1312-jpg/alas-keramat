@@ -19,6 +19,8 @@ namespace AlasKeramat.AI
         [SerializeField] GameObject prefabJarahan;
         [SerializeField] GameObject prefabBambu;
 
+        public static bool KuntiTerikat; // 13 §4.1: dipaku -> tidak muncul lagi
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void ResetKunti() { KuntiTerikat = false; }
         public GameObject PrefabJarahan { get { return prefabJarahan; } }
         public GameObject PrefabBambu { get { return prefabBambu; } }
         public bool MalamDarah { get; private set; }
@@ -103,7 +105,7 @@ namespace AlasKeramat.AI
                 Vector3 p;
                 if (TitikTersembunyi(a, _andi.transform.forward, Random.Range(JarakPocongMin, JarakPocongMaks), Random.Range(-40f, 40f), out p)) BuatHantu(0, p);
             }
-            if (!_kuntiMalamIni && _malamKuntiDiusir != malam && HitungHantu(EnemyArchetype.Kuntilanak) == 0)
+            if (!KuntiTerikat && !_kuntiMalamIni && _malamKuntiDiusir != malam && HitungHantu(EnemyArchetype.Kuntilanak) == 0)
             {
                 Vector3 sarang = PusatBeringin;
                 if (MalamDarah) sarang = Kemah != Vector3.zero ? Kemah + new Vector3(12f, 0f, 12f) : a + new Vector3(20f, 0f, 20f);
@@ -132,6 +134,14 @@ namespace AlasKeramat.AI
             h.Sarang = pos;
             _hantu.Add(h);
             return h;
+        }
+
+        // T9: dipanggil TerrorDirector (E11/E12/E30): hantu muncul di titik tertentu (0 Pocong, 1 Kuntilanak, 2 Banaspati).
+        public HantuAI PanggilHantu(int idx, Vector3 pos)
+        {
+            if (Aktif >= MaksAktif) return null;
+            pos.y = WorldTerrainGenerator.SampleHeight(pos.x, pos.z) + (idx == 0 ? 0f : idx == 1 ? 2.4f : 1.4f);
+            return BuatHantu(idx, pos);
         }
 
         public void LaporHantuDiusir(HantuAI h)

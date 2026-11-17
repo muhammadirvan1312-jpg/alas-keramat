@@ -69,6 +69,7 @@ namespace AlasKeramat.AI
             _tCek -= dt;
             if (_tCek <= 0f) { _tCek = 1f; CekBergabung(); }
             if (!Bergabung) return; // masih duduk terhuyung di ekor heli (M02)
+            TickCatatan();
             if (_andi == null) return;
             _tGolok -= dt; _tMenunjuk -= dt;
             if (_tKecewa > 0f) { _tKecewa -= dt; if (_anim != null) _anim.Pose = ProceduralAnimator.PoseTempur.Tidak; Menuju(TitikIkuti(_andi.transform.position, _andi.transform.forward, -1f) - _andi.transform.forward * 8f, Jalan, dt); return; }

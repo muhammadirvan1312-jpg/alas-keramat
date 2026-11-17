@@ -8,7 +8,7 @@ namespace AlasKeramat.AI
     // lalu A* sel 4 m hanya di dalam wilayah koridor itu (+ tetangga langsung). Total node (kasar + halus) tetap di bawah MaksNode.
     public partial class GridPathfinder
     {
-        public const float JarakBertingkat = 150f, BobotKasar = 1.5f;
+        public const float JarakBertingkat = 150f, BobotKasar = 2f, JarakHalus = 100f;
         public const int CadanganHalus = 800;
         public static int SimpulKasarTerakhir { get; private set; }
 
@@ -45,20 +45,39 @@ namespace AlasKeramat.AI
             SimpulKasarTerakhir = nK;
             if (!okK) { dikunjungi = nK; return false; }
             dikunjungi = nK;
+            // Haluskan bagian awal (~100 m) dengan A* sel 4 m di dalam koridor; sisanya titik wakil wilayah (dihaluskan saat pencarian ulang 2 s).
+            int ujung = 0; float jarak = 0f;
+            Vector3 sebelum = SurfaceGrid.PusatSel(sx, sz);
+            for (int i = 1; i < _jalurSimpul.Count; i++)
+            {
+                int w = g.WakilSimpul(_jalurSimpul[i]);
+                Vector3 p = SurfaceGrid.PusatSel(w % SurfaceGrid.Sisi, w / SurfaceGrid.Sisi);
+                jarak += Vector3.Distance(new Vector3(p.x, 0f, p.z), new Vector3(sebelum.x, 0f, sebelum.z));
+                sebelum = p; ujung = i;
+                if (jarak >= JarakHalus) break;
+            }
             if (_izinSimpul == null || _izinSimpul.Length != g.JumlahSimpul) _izinSimpul = new bool[g.JumlahSimpul];
             System.Array.Clear(_izinSimpul, 0, _izinSimpul.Length);
-            for (int i = 0; i < _jalurSimpul.Count; i++)
+            for (int i = 0; i <= ujung && i < _jalurSimpul.Count; i++)
             {
                 int s = _jalurSimpul[i];
                 _izinSimpul[s] = true;
-                for (int k = g.SisiAwal(s); k < g.SisiAkhir(s); k++) _izinSimpul[g.SisiKe(k)] = true; // longgar 1 wilayah agar jalur lebih lurus
+                for (int k = g.SisiAwal(s); k < g.SisiAkhir(s); k++) _izinSimpul[g.SisiKe(k)] = true;
             }
+            bool akhirHalus = ujung >= _jalurSimpul.Count - 1;
+            int wu = g.WakilSimpul(_jalurSimpul[ujung]);
+            Vector3 target = akhirHalus ? new Vector3(ke.x, 0f, ke.z) : SurfaceGrid.PusatSel(wu % SurfaceGrid.Sisi, wu / SurfaceGrid.Sisi);
             int n;
-            Vector3 awal = SurfaceGrid.PusatSel(sx, sz), akhir = new Vector3(ke.x, 0f, ke.z);
-            bool ok = Cari(g, awal, akhir, hasil, Mathf.Max(100, anggaran - dikunjungi), out n, _izinSimpul);
+            bool ok = Cari(g, SurfaceGrid.PusatSel(sx, sz), target, hasil, Mathf.Max(100, anggaran - dikunjungi), out n, _izinSimpul);
             dikunjungi += n;
-            if (!ok) SegmenGagalTerakhir = 1;
-            return ok;
+            if (!ok) { SegmenGagalTerakhir = 1; return false; }
+            if (hasil != null)
+                for (int i = ujung + 1; i < _jalurSimpul.Count; i++)
+                {
+                    int w = g.WakilSimpul(_jalurSimpul[i]);
+                    hasil.Add(i == _jalurSimpul.Count - 1 ? new Vector3(ke.x, WorldTerrainGenerator.SampleHeight(ke.x, ke.z), ke.z) : SurfaceGrid.PusatSel(w % SurfaceGrid.Sisi, w / SurfaceGrid.Sisi));
+                }
+            return true;
         }
 
         static void SiapkanKasar(int n)

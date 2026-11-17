@@ -30,7 +30,7 @@ namespace AlasKeramat.Core
                 case KlipTubuhJatuh: b = ResepTubuhJatuh(sr, ref rng); break;
                 case KlipTembak: b = ResepTembak(sr, ref rng); break;
                 case KlipLepasPanah: b = ResepLepasPanah(sr, ref rng); break;
-                default: return null;
+                default: return GenerateTeror(nama, variasi, out sr);
             }
             Dsp.Finalize(b, sr);
             return b;

@@ -84,7 +84,13 @@ namespace AlasKeramat.EditorTools
             SetLayer(go, GameLayers.Enemy);
             var cap = go.AddComponent<CapsuleCollider>();
             cap.height = d.tinggi; cap.radius = 0.32f; cap.center = new Vector3(0f, d.tinggi * 0.5f + (mode == ProceduralAnimator.Mode.Melayang ? 0.45f : 0f), 0f);
-            go.AddComponent<HantuAI>().Pasang(a, null);
+            var h = go.AddComponent<HantuAI>(); h.Pasang(a, null);
+            var tali = new GameObject("TitikInteraksi");
+            tali.transform.SetParent(go.transform, false);
+            tali.layer = GameLayers.Interactable;
+            var sc = tali.AddComponent<SphereCollider>(); sc.isTrigger = true; sc.radius = 1.1f; sc.center = new Vector3(0f, 0.6f, 0f);
+            tali.SetActive(false);
+            h.PasangInteraksi(tali); // T9: LEPAS TALI POCONG / TANCAPKAN PAKU
             return SimpanPrefab(go, "Hantu_" + a);
         }
 

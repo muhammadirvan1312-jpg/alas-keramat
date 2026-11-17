@@ -120,6 +120,7 @@ namespace AlasKeramat.AI
                 CekRegu();
                 CekPengintai();
                 TickMalam();
+                TickJadwal();
                 Despawn(1f);
             }
             ProsesAntrian();
@@ -308,13 +309,13 @@ namespace AlasKeramat.AI
 
         static Vector3 Datar(Vector3 v) { v.y = 0f; return v; }
 
-        [System.Serializable] struct DataDirektur { public float kemarahan; public int dibunuh, diampuni, hantuDiusir, totem; }
-        public string CaptureJson() { return JsonUtility.ToJson(new DataDirektur { kemarahan = Kemarahan, dibunuh = SekteDibunuh, diampuni = SekteDiampuni, hantuDiusir = HantuDiusir, totem = TotemMask }); }
+        [System.Serializable] struct DataDirektur { public float kemarahan; public int dibunuh, diampuni, hantuDiusir, totem; public bool kuntiTerikat; }
+        public string CaptureJson() { return JsonUtility.ToJson(new DataDirektur { kemarahan = Kemarahan, dibunuh = SekteDibunuh, diampuni = SekteDiampuni, hantuDiusir = HantuDiusir, totem = TotemMask, kuntiTerikat = KuntiTerikat }); }
         public void RestoreJson(string json)
         {
             if (string.IsNullOrEmpty(json)) return;
             var d = JsonUtility.FromJson<DataDirektur>(json);
-            Kemarahan = Mathf.Clamp(d.kemarahan, 0f, 100f); SekteDibunuh = d.dibunuh; SekteDiampuni = d.diampuni; HantuDiusir = d.hantuDiusir; TotemMask = d.totem;
+            Kemarahan = Mathf.Clamp(d.kemarahan, 0f, 100f); SekteDibunuh = d.dibunuh; SekteDiampuni = d.diampuni; HantuDiusir = d.hantuDiusir; TotemMask = d.totem; KuntiTerikat = d.kuntiTerikat;
         }
     }
 }

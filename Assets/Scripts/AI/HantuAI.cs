@@ -7,12 +7,12 @@ namespace AlasKeramat.AI
 {
     // 06 §8 (T7b): hantu - Pocong Hutan/Gua (lompat, terjang 6 m), Kuntilanak (bertengger, mengitari, jeritan setrum, tukikan, menghilang
     // ke belakang Andi), Banaspati (mengorbit 6 m lalu menerjang, padam oleh air/hujan, membakar). Hantu tidak mati: HP 0 = "diusir".
-    public partial class HantuAI : MonoBehaviour, IDamageable
+    public partial class HantuAI : MonoBehaviour, IDamageable, IInteractable
     {
         public enum FaseHantu { Diam, Mendekat, Ancang, Terjang, Pulih, Terjungkal, Mengitari, Menjerit, Hilang, Diusir }
 
         public const float PocongIndra = 30f, PocongIndraTakut = 45f, PocongJarakTerjang = 6f, PocongAncang = 0.5f, PocongJangkauTerjang = 3.5f, PocongLamaTerjang = 0.4f;
-        public const float PocongPulih = 1.2f, PocongTerjungkal = 2f, PocongPengaliRentan = 1.5f, PengaliApi = 2f, PengaliKeris = 2f;
+        public const float PocongPulih = 1.2f, PocongTerjungkal = 3.5f, PocongPengaliRentan = 1.5f, PengaliApi = 2f, PengaliKeris = 2f;
         public const float KuntiIndra = 35f, KuntiRadiusKitar = 10f, KuntiJedaJerit = 15f, KuntiAncang = 0.6f, KuntiLajuTukik = 12f, KuntiRentan = 1.5f;
         public const float KuntiLamaSorot = 2f, KuntiHilang = 8f, KuntiTawaMin = 20f, KuntiTawaMaks = 40f, SanityJerit = -5f, LamaSetrum = 1f;
         public const float BanaspatiOrbit = 6f, BanaspatiIndra = 40f, BanaspatiLajuTerjang = 9f, BakarBanaspati = 4f, LamaBakar = 3f;
@@ -22,6 +22,7 @@ namespace AlasKeramat.AI
 
         [SerializeField] EnemyArchetype jenis = EnemyArchetype.PocongHutan;
         [SerializeField] Light cahaya;
+        [SerializeField] GameObject titikInteraksi; // T9: LEPAS TALI POCONG / TANCAPKAN PAKU
 
         public EnemyArchetype Jenis { get { return jenis; } }
         public FaseHantu Fase { get { return _fase; } }
@@ -48,6 +49,7 @@ namespace AlasKeramat.AI
         static void ResetStatis() { Semua.Clear(); }
 
         public void Pasang(EnemyArchetype j, Light l) { jenis = j; cahaya = l; }
+        public void PasangInteraksi(GameObject g) { titikInteraksi = g; }
 
         void Awake()
         {
@@ -85,6 +87,7 @@ namespace AlasKeramat.AI
                 _t += dt;
                 if (_tBakar > 0f) _tBakar -= dt;
                 TickApi(dt);
+                SinkronInteraksi();
                 if (_fase == FaseHantu.Diusir) { TickLarut(); return; }
                 if (_andi == null) return;
                 if (jenis == EnemyArchetype.Kuntilanak) TickKuntilanak(dt);
@@ -127,6 +130,7 @@ namespace AlasKeramat.AI
             var gore = GameServices.Get<GoreSystem>();
             if (gore != null && jenis != EnemyArchetype.Banaspati) gore.Semburan(info.point, info.direction, info.amount, true, info.isHeavy); // darah hitam hantu (14 §3.3)
             if (_hp <= 0f) { Usir(); return; }
+            if ((jenis == EnemyArchetype.PocongHutan || jenis == EnemyArchetype.PocongGua) && info.type == DamageType.Api && _fase != FaseHantu.Terjungkal) Ubah(FaseHantu.Terjungkal); // 13 §4.2: roboh oleh api
             if (jenis == EnemyArchetype.Kuntilanak && !_setengahHilang && _hp <= _d.hp * 0.5f) { _setengahHilang = true; Ubah(FaseHantu.Hilang); TampakSemua(false); }
         }
 
@@ -154,6 +158,52 @@ namespace AlasKeramat.AI
             _tTickApi -= 1f;
             TakeDamage(new DamageInfo { amount = _dpsApi, type = DamageType.Api, point = transform.position + Vector3.up, direction = Vector3.up, source = null });
         }
+
+        // ---------- 13 §4.1-4.2: folklor sebagai mekanik ----------
+        public const float LamaLepasTali = 1.2f, LamaPaku = 0.8f, SanityLepasTali = 8f;
+        public static int ArwahDilepas { get; private set; }
+
+        bool BisaLepasTali { get { return (jenis == EnemyArchetype.PocongHutan || jenis == EnemyArchetype.PocongGua) && _fase == FaseHantu.Terjungkal; } }
+        bool BisaPaku
+        {
+            get
+            {
+                if (jenis != EnemyArchetype.Kuntilanak || _fase != FaseHantu.Pulih) return false;
+                var inv = GameServices.Get<AlasKeramat.Inventory.TikarPandan3DInventory>();
+                return inv != null && inv.Punya(ItemID.PakuBesiKuning);
+            }
+        }
+
+        public float HoldDuration { get { return BisaPaku ? LamaPaku : LamaLepasTali; } }
+        public string GetPromptText(GameObject actor) { return BisaLepasTali ? "LEPAS TALI POCONG" : BisaPaku ? "TANCAPKAN PAKU" : ""; }
+        public bool CanInteract(GameObject actor) { return BisaLepasTali || BisaPaku; }
+
+        public void Interact(GameObject actor)
+        {
+            Ambil();
+            if (BisaLepasTali)
+            {
+                ArwahDilepas++;
+                if (_vital != null) _vital.UbahSanity(SanityLepasTali);
+                JarahanTanah.Jatuhkan(transform.position + Vector3.up * 0.2f, ItemID.Kemenyan, 1);
+                JarahanTanah.Jatuhkan(transform.position + Vector3.right * 0.4f, ItemID.KainKafan, 1);
+                GameEvents.RaiseSubtitle("(Tali kafan terlepas. Pocong itu runtuh menjadi kain kosong.)");
+                Ubah(FaseHantu.Diusir);
+                var dir = GameServices.Get<EnemyDirector>(); if (dir != null) dir.LaporHantuDiusir(this);
+                return;
+            }
+            if (BisaPaku)
+            {
+                var inv = GameServices.Get<AlasKeramat.Inventory.TikarPandan3DInventory>();
+                if (inv == null || !inv.Kurangi(ItemID.PakuBesiKuning, 1)) return;
+                EnemyDirector.KuntiTerikat = true;
+                GameEvents.RaiseSubtitle("(Paku menembus tengkuknya. Jeritannya berhenti. Ia tidak akan kembali.)");
+                Ubah(FaseHantu.Diusir);
+                var dir = GameServices.Get<EnemyDirector>(); if (dir != null) dir.LaporHantuDiusir(this);
+            }
+        }
+
+        void SinkronInteraksi() { if (titikInteraksi != null) { bool aktif = BisaLepasTali || (jenis == EnemyArchetype.Kuntilanak && _fase == FaseHantu.Pulih); if (titikInteraksi.activeSelf != aktif) titikInteraksi.SetActive(aktif); } }
 
         public static string NamaTampil(EnemyArchetype j)
         {
