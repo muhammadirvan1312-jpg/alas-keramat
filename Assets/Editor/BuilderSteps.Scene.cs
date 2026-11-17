@@ -92,7 +92,9 @@ namespace AlasKeramat.EditorTools
             EditorUtility.SetDirty(angin);
             var audioGo = Anak(_sistem, "ProceduralAudioSynth");
             var synth = audioGo.AddComponent<ProceduralAudioSynth>();
-            var nama = ProceduralAudioSynth.KlipWajib;
+            var daftarKlip = new System.Collections.Generic.List<string>(ProceduralAudioSynth.KlipWajib);
+            daftarKlip.AddRange(ProceduralAudioSynth.KlipFoley);
+            var nama = daftarKlip.ToArray();
             var klip = new AudioClip[nama.Length];
             for (int i = 0; i < nama.Length; i++)
             {

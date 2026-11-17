@@ -201,6 +201,14 @@ namespace AlasKeramat.EditorTools
             finally { Object.DestroyImmediate(vGo); }
             cek("Plafon HP 05 §3.1 (lapar 10, haus 10 -> " + AlasKeramat.Player.AndiVitalsAndSanity.PlafonHP(10f, 10f, 50f).ToString("0") + ")", Mathf.Approximately(AlasKeramat.Player.AndiVitalsAndSanity.PlafonHP(10f, 10f, 50f), 100f - 18f - 24f));
             cek("Suhu udara: siang kemarau > malam", AlasKeramat.Player.AndiVitalsAndSanity.SuhuUdara(13f, true, Biome.HutanCampuran, 0f, WeatherState.Cerah) > AlasKeramat.Player.AndiVitalsAndSanity.SuhuUdara(2f, true, Biome.HutanCampuran, 0f, WeatherState.Cerah) + 8f);
+            int foleyOk = 0;
+            foreach (var nm in ProceduralAudioSynth.KlipFoley) { var c = AssetDatabase.LoadAssetAtPath<AudioClip>(NusantaraMasterBuilder.FolderAudio + "/" + nm + ".wav"); if (c != null && c.length > 0.1f) foleyOk++; }
+            cek("Klip foley " + foleyOk + "/" + ProceduralAudioSynth.KlipFoley.Length, foleyOk == ProceduralAudioSynth.KlipFoley.Length);
+            cek("Permukaan langkah: pantai=pasir, air=air, struktur=kayu", AlasKeramat.Player.FoleyAndi.Permukaan(Biome.Pantai, false, false) == SurfaceType.Pasir
+                && AlasKeramat.Player.FoleyAndi.Permukaan(Biome.HutanCampuran, true, false) == SurfaceType.Air && AlasKeramat.Player.FoleyAndi.Permukaan(Biome.Desa, false, true) == SurfaceType.Kayu);
+            cek("Foley, subtitle, sabuk cepat ada", Object.FindFirstObjectByType<AlasKeramat.Player.FoleyAndi>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.SubtitleSystem>() != null
+                && Object.FindFirstObjectByType<AlasKeramat.UI.SabukCepat>() != null);
+            cek("Subtitle: lama tampil min 2,5 s", Mathf.Approximately(AlasKeramat.UI.SubtitleSystem.LamaTampil("Halo"), 2.5f));
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)
