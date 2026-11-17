@@ -1,13 +1,12 @@
 # LAPORAN CI
-- Commit: 21bc2c9a1dd9f262cde4d9a177cd59ae3ee8d501
-- Hasil langkah Unity: cancelled
-- Waktu: 2026-11-17T03:33:22Z
+- Commit: 2166bf69bc8a570bb5650b76fc4185a84364c578
+- Hasil langkah Unity: failure
+- Waktu: 2026-11-17T04:51:26Z
 
 [LULUS] pengaturan pemain
 [LULUS] builder
 [LULUS] self-test
-  foto tersimpan: 4 (llvmpipe (LLVM 15.0.7, 256 bits))
-[LULUS] foto kualitas
+[LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
 [LULUS] build APK
 
 ## Baris error yang ditemukan
