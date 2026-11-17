@@ -6,7 +6,7 @@ namespace AlasKeramat.Player
     // T3a: gerak orang pertama Andi (09 §3): jalan/lari/jongkok/lompat, coyote time, berenang & menyelam dasar,
     // damage jatuh lewat IDamageable di objek yang sama, kamera pitch/yaw + head bob. Input dari TouchControls atau keyboard/mouse.
     [RequireComponent(typeof(CharacterController))]
-    public class AndiFPSController : MonoBehaviour
+    public partial class AndiFPSController : MonoBehaviour
     {
         public const float JalanMaks = 3.4f, Sprint = 6.2f, JongkokMaks = 1.8f, Renang = 2.2f, RenangCepat = 3.2f;
         public const float FaktorMundur = 0.7f, FaktorSamping = 0.9f, Akselerasi = 18f, Perlambatan = 22f;
@@ -42,6 +42,9 @@ namespace AlasKeramat.Player
         Vector3 _vDatar;
         float _vy, _yaw, _pitch, _sejakTanah, _faseBob, _mata = MataBerdiri, _puncakY;
         bool _mintaLompat, _diUdara;
+#if ENABLE_LEGACY_INPUT_MANAGER
+        bool _keyboardGerak;
+#endif
 
         public void Pasang(Transform cam) { kamera = cam; }
         public void Lompat() { _mintaLompat = true; }
@@ -69,7 +72,7 @@ namespace AlasKeramat.Player
             try
             {
                 BacaKeyboardMouse();
-                Gerak(Time.deltaTime);
+                if (!GerakKendaraan(Time.deltaTime)) Gerak(Time.deltaTime);
             }
             catch (System.Exception e) { Debug.LogError("[AK][AndiFPSController] " + e.Message); }
         }
@@ -97,7 +100,8 @@ namespace AlasKeramat.Player
 #if ENABLE_LEGACY_INPUT_MANAGER
             float x = (Input.GetKey(KeyCode.D) ? 1f : 0f) - (Input.GetKey(KeyCode.A) ? 1f : 0f);
             float y = (Input.GetKey(KeyCode.W) ? 1f : 0f) - (Input.GetKey(KeyCode.S) ? 1f : 0f);
-            if (x != 0f || y != 0f) { InputGerak = Vector2.ClampMagnitude(new Vector2(x, y), 1f); MintaLari = Input.GetKey(KeyCode.LeftShift); }
+            if (x != 0f || y != 0f || _keyboardGerak) { InputGerak = Vector2.ClampMagnitude(new Vector2(x, y), 1f); MintaLari = Input.GetKey(KeyCode.LeftShift); }
+            _keyboardGerak = x != 0f || y != 0f;
             if (Input.GetKeyDown(KeyCode.Space)) Lompat();
             if (Input.GetKeyDown(KeyCode.C)) ToggleJongkok();
             if (Input.GetMouseButton(1))

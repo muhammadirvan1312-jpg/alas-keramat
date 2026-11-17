@@ -22,6 +22,7 @@ namespace AlasKeramat.Player
         public float Health { get; private set; } = Maks;
         public float Stamina { get; private set; } = Maks;
         public float Hydration { get; private set; } = 85f;
+        public void IstirahatDuduk(float dt) { Rest = Mathf.Min(Maks, Rest + 0.5f * dt); UbahSanity(0.1f * dt); }
         public float Rest { get; private set; } = 90f;
         public float Sanity { get; private set; } = 85f;
         public float Wetness { get; private set; }

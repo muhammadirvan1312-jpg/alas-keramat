@@ -8,10 +8,11 @@ namespace AlasKeramat.Building
     public class CetakBiru : MonoBehaviour, IInteractable
     {
         public BlueprintID Id;
+        public float Bentang = 6f;
         public int[] Terisi = new int[0];
         public float HoldDuration { get { return 0f; } }
 
-        public static CetakBiru Buat(BlueprintID id, Vector3 pos, Quaternion rot)
+        public static CetakBiru Buat(BlueprintID id, Vector3 pos, Quaternion rot, float bentang = 6f)
         {
             var d = GuidebookBlueprintsAndCooking.Ambil(id);
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -21,7 +22,7 @@ namespace AlasKeramat.Building
             go.transform.localScale = new Vector3(d.footprint.x, 0.1f, d.footprint.y);
             go.GetComponent<MeshRenderer>().sharedMaterial = SafeMaterialFactory.GetCached("CetakBiru", new Color(0.31f, 0.66f, 1f), 0f, 0.1f);
             var c = go.AddComponent<CetakBiru>();
-            c.Id = id; c.Terisi = new int[d.cost.Length];
+            c.Bentang = bentang; c.Id = id; c.Terisi = new int[d.cost.Length];
             return c;
         }
 
@@ -40,7 +41,7 @@ namespace AlasKeramat.Building
                 var id = d.cost[i].id;
                 int n = inv != null ? inv.Jumlah(id) : 0;
                 if (id == ItemID.KainBatik && inv != null) n += inv.Jumlah(ItemID.KainKafan);
-                if (id == ItemID.KayuGelondong && bahu != null && bahu.Bawa == ShoulderLogAndFreeformBuilder.Muatan.Gelondong) n += bahu.Jumlah;
+                if (bahu != null && ((id == ItemID.KayuGelondong && bahu.Bawa == ShoulderLogAndFreeformBuilder.Muatan.Gelondong) || (id == ItemID.PapanKayu && bahu.Bawa == ShoulderLogAndFreeformBuilder.Muatan.Papan))) n += bahu.Jumlah;
                 if (n > 0) { punya = n; return i; }
             }
             return -1;
@@ -65,12 +66,13 @@ namespace AlasKeramat.Building
             var inv = GameServices.Get<TikarPandan3DInventory>();
             var bahu = GameServices.Get<ShoulderLogAndFreeformBuilder>();
             int perlu = Kurang(i), masuk = 0;
-            if (id == ItemID.KayuGelondong && bahu != null) while (masuk < perlu && bahu.Bawa == ShoulderLogAndFreeformBuilder.Muatan.Gelondong && bahu.Jumlah > 0) { bahu.Lepaskan(); masuk++; }
+            var muatan = id == ItemID.PapanKayu ? ShoulderLogAndFreeformBuilder.Muatan.Papan : ShoulderLogAndFreeformBuilder.Muatan.Gelondong;
+            if ((id == ItemID.KayuGelondong || id == ItemID.PapanKayu) && bahu != null) while (masuk < perlu && bahu.Bawa == muatan && bahu.Jumlah > 0) { bahu.Lepaskan(); masuk++; }
             while (masuk < perlu && inv != null && inv.Kurangi(id, 1)) masuk++;
             if (id == ItemID.KainBatik) while (masuk < perlu && inv != null && inv.Kurangi(ItemID.KainKafan, 1)) masuk++;
             Terisi[i] += masuk;
             for (int k = 0; k < d.cost.Length; k++) if (Kurang(k) > 0) return;
-            BangunanBlueprint.Bangun(Id, transform.position - Vector3.up * 0.05f, transform.rotation);
+            BangunanBlueprint.Bangun(Id, transform.position - Vector3.up * 0.05f, transform.rotation, Bentang);
             GameEvents.RaiseStructureBuilt(Id);
             GameEvents.RaiseToast(d.displayName + " selesai dibangun");
             Destroy(gameObject);

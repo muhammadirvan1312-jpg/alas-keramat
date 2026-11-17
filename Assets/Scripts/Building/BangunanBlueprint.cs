@@ -4,7 +4,7 @@ using UnityEngine;
 namespace AlasKeramat.Building
 {
     // Membangun objek jadi dari blueprint dengan primitif & material bercache (runtime, H5). Lantai/tiang = layer Structure; titik interaksi = Interactable.
-    public static class BangunanBlueprint
+    public static partial class BangunanBlueprint
     {
         static readonly Color Kayu = new Color(0.45f, 0.32f, 0.2f), Batu = new Color(0.45f, 0.44f, 0.42f), Daun = new Color(0.36f, 0.42f, 0.2f),
             Bambu = new Color(0.62f, 0.66f, 0.36f), Kain = new Color(0.6f, 0.32f, 0.22f), Tulang = new Color(0.88f, 0.84f, 0.74f), Logam = new Color(0.25f, 0.25f, 0.26f);
@@ -15,7 +15,7 @@ namespace AlasKeramat.Building
             g.transform.SetParent(induk, false);
             g.transform.localPosition = pos; g.transform.localScale = skala; g.transform.localRotation = Quaternion.Euler(rot);
             g.layer = layer;
-            if (!collider) Object.Destroy(g.GetComponent<Collider>());
+            if (!collider) { var c = g.GetComponent<Collider>(); if (Application.isPlaying) Object.Destroy(c); else Object.DestroyImmediate(c); }
             g.GetComponent<MeshRenderer>().sharedMaterial = SafeMaterialFactory.GetCached("BP_" + ColorUtility.ToHtmlStringRGB(w), w, 0f, 0.3f);
             return g;
         }
@@ -35,11 +35,13 @@ namespace AlasKeramat.Building
             return f;
         }
 
-        public static GameObject Bangun(BlueprintID id, Vector3 pos, Quaternion rot)
+        public static GameObject Bangun(BlueprintID id, Vector3 pos, Quaternion rot, float bentang = 6f)
         {
             var root = new GameObject("Bangunan_" + id);
             root.transform.SetPositionAndRotation(pos, rot);
+            var identitas = root.AddComponent<IdentitasBangunan>(); identitas.Id = id; identitas.Bentang = bentang;
             var r = root.transform;
+            if ((int)id >= 15) { BangunV3(root, id); return root; }
             int S = GameLayers.Structure, I = GameLayers.Interactable;
             switch (id)
             {

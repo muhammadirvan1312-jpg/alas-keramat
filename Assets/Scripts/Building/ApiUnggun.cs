@@ -75,6 +75,15 @@ namespace AlasKeramat.Building
             }
         }
 
+        [System.Serializable] class IsiApiT6 { public float bahan, badai; public bool nyala; public ItemID[] masak; public float[] waktu; }
+        public string CaptureIsi() { return JsonUtility.ToJson(new IsiApiT6 { bahan=BahanBakar, badai=_badai, nyala=Menyala, masak=_masak, waktu=_t }); }
+        public void RestoreIsi(string json)
+        {
+            var d=JsonUtility.FromJson<IsiApiT6>(json); if(d==null)return;
+            BahanBakar=d.bahan; _badai=d.badai; Menyala=d.nyala;
+            for(int i=0;i<Tusuk;i++) { _masak[i]=d.masak[i]; _t[i]=d.waktu[i]; }
+        }
+
         int SlotKosong() { for (int i = 0; i < Tusuk; i++) if (_masak[i] == ItemID.None) return i; return -1; }
         int SlotSiap() { for (int i = 0; i < Tusuk; i++) if (_masak[i] != ItemID.None && _t[i] >= Matang) return i; return -1; }
 
@@ -128,6 +137,7 @@ namespace AlasKeramat.Building
                 var v = GameServices.Get<AndiVitalsAndSanity>();
                 if (v != null) v.UbahSanity(20f);
                 GameEvents.RaiseToast("Asap kemenyan menenangkan pikiranmu");
+                AlasKeramat.AI.ZonaPenangkal.TambahKemenyan(transform.position); // T7b: Pocong menjauh 20 m selama 60 s
                 return;
             }
             if (p.StartsWith("MASAK"))

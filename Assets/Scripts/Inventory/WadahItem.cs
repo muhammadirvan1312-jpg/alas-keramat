@@ -5,7 +5,7 @@ using UnityEngine;
 namespace AlasKeramat.Inventory
 {
     // Koper darurat (03 §9 Zona 1) atau benda lepas yang bisa diambil. Tutup koper berputar saat dibuka.
-    public class WadahItem : MonoBehaviour, IInteractable
+    public class WadahItem : MonoBehaviour, IInteractable, ISaveable
     {
         public const float SudutTutupBuka = -110f, LajuTutup = 240f;
 
@@ -16,7 +16,18 @@ namespace AlasKeramat.Inventory
         [SerializeField] bool hilangSetelahDiambil;
         [SerializeField] Transform tutup;
 
-        bool _kosong;
+        public string KunciSimpan = "";
+        bool _kosong, _dibuka;
+        public string SaveKey { get { return KunciSimpan; } }
+        [System.Serializable] class IsiKoperT6 { public int[] jumlah; public int lore; public bool kosong, dibuka; }
+        public string CaptureJson() { return JsonUtility.ToJson(new IsiKoperT6 { jumlah=jumlah, lore=lore, kosong=_kosong, dibuka=_dibuka }); }
+        public void RestoreJson(string json)
+        {
+            var d=JsonUtility.FromJson<IsiKoperT6>(json); if(d==null)return;
+            jumlah=d.jumlah; lore=d.lore; _kosong=d.kosong; _dibuka=d.dibuka;
+            if (hilangSetelahDiambil) gameObject.SetActive(!_kosong);
+            _sudut=_dibuka?SudutTutupBuka:0f; if(tutup!=null)tutup.localRotation=Quaternion.Euler(_sudut,0f,0f);
+        }
         float _sudut;
 
         public bool Kosong { get { return _kosong; } }
@@ -37,6 +48,7 @@ namespace AlasKeramat.Inventory
             if (_kosong) return;
             var inv = GameServices.Get<TikarPandan3DInventory>();
             if (inv == null) { Debug.LogError("[AK][WadahItem] inventaris tidak ada"); return; }
+            if (!_dibuka) { _dibuka=true; var q=GameServices.Get<QuestManager>(); if(q!=null && KunciSimpan.StartsWith("koper_"))q.KoperDibuka(KunciSimpan); }
             var sb = new StringBuilder();
             bool sisa = false;
             for (int i = 0; i < item.Length && i < jumlah.Length; i++)
@@ -61,7 +73,7 @@ namespace AlasKeramat.Inventory
 
         void Update()
         {
-            if (tutup == null || !_kosong || _sudut <= SudutTutupBuka) return;
+            if (tutup == null || !_dibuka || _sudut <= SudutTutupBuka) return;
             _sudut = Mathf.Max(SudutTutupBuka, _sudut - LajuTutup * Time.deltaTime);
             tutup.localRotation = Quaternion.Euler(_sudut, 0f, 0f);
         }

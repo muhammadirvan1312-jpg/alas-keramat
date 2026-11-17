@@ -99,7 +99,7 @@ namespace AlasKeramat.AI
             _tCekPagar -= dt;
             if (_tCekPagar > 0f) return;
             _tCekPagar = 0.25f;
-            if (!_sudahTakutObor && ZonaPenangkal.AdaObor(transform.position, ZonaPenangkal.RadiusRaidObor)) { _sudahTakutObor = true; Takut += TakutObor; }
+            if (!_sudahTakutObor) { float tk = FungsiBangunan.TakutSekte(transform.position); if (tk > 0f) { _sudahTakutObor = true; Takut += tk; } }
             var s = BagianStruktur.Semua;
             bool kena = false; Vector3 dorong = Vector3.zero;
             for (int i = 0; i < s.Count; i++)
