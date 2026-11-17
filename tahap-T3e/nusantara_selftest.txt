@@ -1,0 +1,83 @@
+[LULUS] Builder pertama tanpa langkah gagal
+[LULUS] Builder kedua tanpa langkah gagal
+[LULUS] Idempoten: jumlah objek sama (148 = 148)
+[LULUS] Layer 6-18 terdaftar
+[LULUS] Semua tag terdaftar
+[LULUS] Aset URP terpasang di semua level Quality
+[LULUS] Tekstur >= 10 (14)
+[LULUS] Material >= 5 (24)
+[LULUS] Tidak ada material ber-shader error
+[LULUS] GetSafeFont() tidak null
+[LULUS] WAV >= 8 (52)
+[LULUS] Scene tersimpan & terdaftar di Build Settings
+[LULUS] Synth punya klip dipanggang
+[LULUS] EventSystem ada
+[LULUS] Kamera utama ada
+[LULUS] 16 tile terrain (16)
+[LULUS] Terrain punya 6 lapisan & material URP
+[LULUS] Laut ada
+[LULUS] Sungai ada
+[LULUS] Tinggi (0,-440) = 10.50 ~ 10.5 +- 0.75
+[LULUS] Tinggi (0,-18) = 9.00 ~ 9 +- 0.75
+[LULUS] Tinggi (0,690) = 76.50 ~ 76.5 +- 1.5
+[LULUS] Tinggi (0,-840) = 2.40 ~ 2.4 +- 0.6
+[LULUS] Tinggi (-560,290) = 5.10 ~ 5.1 +- 0.45
+[LULUS] Jurang (0,648) < 30
+[LULUS] Dasar rawa merah (-470,190) < 3
+[LULUS] Laut di tepi (3 titik) < 0
+[LULUS] Bioma Kawah (0,0)
+[LULUS] Bioma Sawit (-520,240)
+[LULUS] Bioma Tebing (0,700)
+[LULUS] Bioma Pabrik Gula (660,-500)
+[LULUS] Bioma Gunung Kapur (-600,660)
+[LULUS] Bioma Ladang Tebu (620,620)
+[LULUS] Bioma Alas Wingit (-760,-40)
+[LULUS] Bioma Laut (-990,0)
+[LULUS] Gunung Kapur menjulang > 120 m
+[LULUS] Jam dunia maju
+[LULUS] Atmosfer & langit terpasang
+[LULUS] Pohon 8.000-45.000 (15453)
+[LULUS] Semak/pakis >= 10.000 (22115)
+[LULUS] VegetationManager & data terpasang
+[LULUS] Semua 7 cuaca bisa diset
+[LULUS] Landmark >= 35 (38)
+[LULUS] Beringin Agung & altar & cerobong ada
+[LULUS] AmbienceDirector ada
+[LULUS] Emitter ambien >= 1000 (1112)
+[LULUS] Klip ambien 23/23
+[LULUS] Bed: pantai siang
+[LULUS] Bed: hutan dini hari
+[LULUS] Bed: Alas Wingit
+[LULUS] Bed: hutan Maghrib -> malam
+[LULUS] Shader AlasKeramat/Daun ada & tanpa error
+[LULUS] Shader AlasKeramat/Kulit ada & tanpa error
+[LULUS] Shader AlasKeramat/Air ada & tanpa error
+[LULUS] Daun pakai shader AK
+[LULUS] Sungai pakai shader air AK
+[LULUS] AKAngin ada
+[LULUS] Andi ada dengan CharacterController
+[LULUS] Andi spawn dekat heli (-4,-424)
+[LULUS] Kamera Andi = MainCamera
+[LULUS] Tepat 1 AudioListener aktif (1)
+[LULUS] Tur pratinjau mati saat Andi ada
+[LULUS] TouchControls & joystick & area geser
+[LULUS] Semua tombol HUD punya handler (4)
+[LULUS] 3 koper berisi item sesuai 03 §9 (3)
+[LULUS] Inventaris menghormati Maks (golok 3 -> 1)
+[LULUS] Radar, toast, interaksi, tangan kiri ada
+[LULUS] Radar: depan = atas (saat menghadap utara & timur)
+[LULUS] Volume global + ACES + bloom
+[LULUS] Kamera utama pakai pasca-proses
+[LULUS] Pasca-proses malam lebih gelap & dingin dari siang
+[LULUS] Vital Andi & bar HUD ada
+[LULUS] Laju vital 60 s sesuai 05 (haus -5.10, kenyang -3.30, istirahat -2.10)
+[LULUS] Plafon HP 05 §3.1 (lapar 10, haus 10 -> 58)
+[LULUS] Suhu udara: siang kemarau > malam
+[LULUS] Klip foley 20/20
+[LULUS] Permukaan langkah: pantai=pasir, air=air, struktur=kayu
+[LULUS] Foley, subtitle, sabuk cepat ada
+[LULUS] Subtitle: lama tampil min 2,5 s
+[LULUS] HUDInfo ada
+[LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
+[LULUS] Sprint: joystick penuh ke atas
+[LULUS] Label waktu: 18:30 = MAGHRIB
