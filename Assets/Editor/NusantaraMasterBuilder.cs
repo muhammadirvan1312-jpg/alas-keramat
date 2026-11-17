@@ -67,6 +67,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("3e. Ambien hidup", 0.68f, LangkahAmbien);
                 Langkah("6. Sistem", 0.70f, LangkahSistem);
                 Langkah("7. UI", 0.85f, LangkahUI);
+                Langkah("7b. Andi & kontrol sentuh", 0.9f, LangkahAndi);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }
             finally

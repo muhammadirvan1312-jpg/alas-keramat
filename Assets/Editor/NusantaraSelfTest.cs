@@ -135,7 +135,31 @@ namespace AlasKeramat.EditorTools
             var mSungai = AssetDatabase.LoadAssetAtPath<Material>(NusantaraMasterBuilder.FolderMat + "/M_Sungai.mat");
             cek("Sungai pakai shader air AK", mSungai != null && mSungai.shader.name == NusantaraMasterBuilder.ShaderAir);
             cek("AKAngin ada", Object.FindFirstObjectByType<AKAngin>() != null);
-            cek("Tur pratinjau di kamera", Object.FindFirstObjectByType<AlasKeramat.UI.TurPratinjau>() != null);
+            var andi = Object.FindFirstObjectByType<AlasKeramat.Player.AndiFPSController>();
+            cek("Andi ada dengan CharacterController", andi != null && andi.GetComponent<CharacterController>() != null);
+            if (andi != null)
+            {
+                var pa = andi.transform.position;
+                cek("Andi spawn dekat heli (" + pa.x.ToString("0") + "," + pa.z.ToString("0") + ")", Mathf.Abs(pa.x - NusantaraMasterBuilder.SpawnAndi.x) < 1f && Mathf.Abs(pa.z - NusantaraMasterBuilder.SpawnAndi.z) < 1f);
+                cek("Kamera Andi = MainCamera", andi.Kamera != null && andi.Kamera.GetComponent<Camera>() != null && Camera.main == andi.Kamera.GetComponent<Camera>());
+            }
+            int listener = 0;
+            foreach (var al in Object.FindObjectsByType<AudioListener>(FindObjectsSortMode.None)) if (al.enabled) listener++;
+            cek("Tepat 1 AudioListener aktif (" + listener + ")", listener == 1);
+            var turA = Object.FindFirstObjectByType<AlasKeramat.UI.TurPratinjau>();
+            cek("Tur pratinjau mati saat Andi ada", turA != null && !turA.enabled);
+            cek("TouchControls & joystick & area geser", Object.FindFirstObjectByType<AlasKeramat.UI.TouchControls>() != null
+                && Object.FindFirstObjectByType<AlasKeramat.UI.ZonaJoystick>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.ZonaGeser>() != null);
+            bool handler = true; int nTombol = 0;
+            foreach (var b in Object.FindObjectsByType<Button>(FindObjectsSortMode.None)) { nTombol++; if (b.onClick.GetPersistentEventCount() == 0) handler = false; }
+            cek("Semua tombol HUD punya handler (" + nTombol + ")", nTombol >= 2 && handler);
+            cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
+            cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
+                && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)
+                && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, true), 1.8f)
+                && AlasKeramat.Player.AndiFPSController.KecepatanTarget(0.1f, false, false) == 0f);
+            cek("Sprint: joystick penuh ke atas", AlasKeramat.UI.ZonaJoystick.PosisiSprint(new Vector2(0f, 1f)) && !AlasKeramat.UI.ZonaJoystick.PosisiSprint(new Vector2(1f, 0f)));
+            cek("Label waktu: 18:30 = MAGHRIB", AlasKeramat.UI.HUDInfo.LabelWaktu(18.5f) == "MAGHRIB");
 
             Directory.CreateDirectory("Logs");
             File.WriteAllLines(PathHasil, hasil.ToArray());
