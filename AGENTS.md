@@ -1,4 +1,4 @@
-# AGENTS.md — "ALAS KERAMAT: SONS OF NUSANTARA" (v4.0)
+# AGENTS.md — "ALAS KERAMAT: SONS OF NUSANTARA" (v5.0)
 # Survival-horror dewasa (18+) open world FPS mobile, terinspirasi loop inti Sons of the Forest, berlatar folklor Nusantara.
 # Runtime: Unity 6 LTS (6000.x) — kompatibel mundur ke Unity 2022.3 LTS — Universal Render Pipeline — Android (HP saja).
 # Simpan file ini di ROOT proyek Unity (sejajar `Assets/`). Folder `docs/` WAJIB ikut disalin di root yang sama.
@@ -17,6 +17,12 @@ Pengguna menjalankan **Codex Cloud** (tugas dipicu dari issue `AUTOPILOT` / kome
 - Di awal SETIAP tugas baca `docs/PROGRESS.md` dan `docs/UMPAN_BALIK.md` (masukan pengguna dari HP; wajib ditindaklanjuti). Di akhir, perbarui baris `AUTOPILOT_TAHAP_BERIKUTNYA:` di PROGRESS (dibaca workflow Autopilot).
 - Gerbang kualitas G1–G4 (18 §6), termasuk **Irisan Vertikal** setelah T7 dan rubrik foto (19 §7).
 - Aturan lokal (UNITY_EXE, Editor.log, skrip cek_kompilasi) di H12 hanya berlaku bila suatu saat dijalankan di komputer lokal.
+
+## BAGIAN 0b — V5 KUALITAS MAKSIMAL (BERLAKU SEKARANG, mengalahkan 01–19)
+- Pengguna memilih **kualitas di atas segalanya**. Baca `docs/gdd/20` (dunia 2×2 km 16 tile + streaming, 12 zona, 6 kompleks bawah tanah, tekstur 2K/4K, mocap ≤ 220 klip, mekanik baru, preset Ultra) dan `docs/gdd/21` (audio v5: rekaman CC0 + prosedural, HRTF-lite, akustik dunia, gelombang hening, suara makhluk, musik adaptif) di SETIAP tahap.
+- Batas di H10 & 11 §7 diganti tabel 20 §1. Audio tidak lagi 100% prosedural: rekaman CC0 wajib sesuai 21 §2 (prosedural = cadangan).
+- Koordinat permukaan 03/16 dikali 2 (20 §2). ID baru 20 §3 & §2.3 ditambahkan ke `SOTFContracts` saat tahap yang memakainya.
+- Tahap kini dikerjakan per sesi (bukan Codex Cloud); Autopilot hanya merge PR hijau + rilis APK. Aturan cloud (Bagian 0) tetap berlaku.
 
 ## BAGIAN 1 — PERAN KAMU & PROFIL PENGGUNA
 
@@ -114,7 +120,7 @@ public static Material CreatePBR(string name, Color albedo, float metallic, floa
 // SetC/SetF/SetT = helper yang mengecek m.HasProperty(nama) sebelum Set.
 ```
 - Builder WAJIB menyimpan semua tekstur (`.png` via `EncodeToPNG` + `AssetDatabase.ImportAsset`), material (`.mat`), mesh (`.asset`), `VolumeProfile`, dan skybox ke `Assets/Generated/...` sehingga shader & keyword ikut ter-include di build Android (material buatan runtime dengan `Shader.Find` bisa tampil PINK di build).
-- Builder menambahkan "Universal Render Pipeline/Lit", "Universal Render Pipeline/Unlit", "Universal Render Pipeline/Particles/Unlit", "Skybox/Procedural" ke *Always Included Shaders* lewat `SerializedObject` pada `GraphicsSettings`.
+- Builder hanya menambahkan "Skybox/Procedural" ke *Always Included Shaders*. **JANGAN** memasukkan shader URP (Lit punya > 1 juta varian, build Android gagal — terbukti di CI T1); shader URP ikut ter-build lewat material `.mat` di `Assets/Generated/`.
 - Runtime hanya boleh membuat material baru via `SafeMaterialFactory` (dengan cache) — terutama untuk instance warna/efek sesaat.
 
 ### H6. AI tanpa NavMesh
@@ -194,6 +200,8 @@ public static Material CreatePBR(string name, Color albedo, float metallic, floa
 | `docs/gdd/16_DUNIA_HIDUP.md` | Ekosistem, lokasi baru, jadwal & sosial Sekte, 13 kejadian dunia, keseharian & catatan Deden, cerita lingkungan | T9 |
 | `docs/gdd/17_EVALUASI_DAN_PENINGKATAN_V3.md` | Rapor v2, senjata/resep/item/blueprint/musuh baru (ID final), stealth, cerita, UI imersif, mode kustom | T6, T7, T8, T10, T11 |
 | `docs/gdd/19_VISUAL_V4_ASET_CC0_DAN_MOCAP.md` | Tekstur/model/HDRI CC0, mocap CMU, Unity Terrain, sinematografi wajah, rubrik foto, 12 money shot (mengalahkan 15) | T0-C, T2, T4, T5, T6, G2 |
+| `docs/gdd/20_V5_KUALITAS_MAKSIMAL.md` | V5: dunia 2×2 km, zona & bawah tanah baru, anggaran Ultra, visual & mekanik baru, pembagian tahap | SETIAP tahap |
+| `docs/gdd/21_AUDIO_V5_HIDUP_DAN_MENAKUTKAN.md` | V5 audio: rekaman CC0, HRTF-lite, akustik, ambien hidup, suara makhluk, musik adaptif, Uji Dengar (G5) | SETIAP tahap |
 | `docs/tech/18_PIPELINE_CLOUD_OTONOM.md` | Codex Cloud + GameCI + Autopilot, T0-C, aturan kerja cloud, gerbang G1–G4, bila macet | SETIAP tugas |
 | `docs/EVALUASI_V4.md` · `docs/UMPAN_BALIK.md` | Rapor jujur & prioritas · masukan pengguna dari HP | Awal setiap tugas |
 | `docs/tech/11_ARSITEKTUR_TEKNIS.md` | Manifest file, namespace, kode kontrak, hierarki scene, Tag/Layer, aset Generated, save JSON, performa, menu Builder | SETIAP tahap |
@@ -239,7 +247,7 @@ Tambahan v3: `Core/TerrorDirector.cs`, `Core/WorldEventScheduler.cs`, `Core/Gore
 - Interface: `IDamageable { void TakeDamage(DamageInfo d); bool IsAlive { get; } }`, `IInteractable { string GetPromptText(GameObject actor); bool CanInteract(GameObject actor); void Interact(GameObject actor); float HoldDuration { get; } }`, `ISaveable { string SaveKey { get; } string CaptureJson(); void RestoreJson(string json); }`.
 - ID item, resep, blueprint, musuh, misi, lore: NILAI INTEGER EKSPLISIT dan FINAL sesuai `docs/gdd/05`, `docs/gdd/17` (tambahan v3) & `docs/tech/11` (jangan diurutkan ulang — save file bergantung padanya).
 - Satuan: 1 unit = 1 meter. Waktu game: 1 detik nyata = 1 menit game (1 hari = 24 menit nyata). Hari 1 jam 08:00 dengan skala waktu 0,65 sampai 18:00 (tutorial).
-- Koordinat dunia final: lihat `docs/gdd/03`. Permukaan X,Z ∈ [-500, 500]. Bawah tanah di Y = -80: UG1 (-300,-80,-300), UG2 (0,-80,-300), UG3 (300,-80,-300). Masuk/keluar gua = fade hitam 1,2 detik + teleport.
+- Koordinat dunia final: `docs/gdd/03` dikali 2 (v5, `docs/gdd/20` §2). Permukaan X,Z ∈ [-1000, 1000]. Bawah tanah di Y = -80: UG1–UG6 sesuai `docs/gdd/20` §2.3. Masuk/keluar gua = fade hitam 1,2 detik + teleport.
 
 ---
 

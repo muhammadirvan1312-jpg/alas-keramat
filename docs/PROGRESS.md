@@ -19,6 +19,7 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T2
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
 ## Keputusan Teknis Baru
+- **v5 (2026-11-17)**: pengguna memilih kualitas maksimal. Dokumen baru `docs/gdd/20` (dunia 2×2 km, 12 zona, UG1–6, tekstur 2K/4K, preset Ultra, mekanik baru) & `docs/gdd/21` (audio v5). Perkiraan APK 1,0–1,6 GB. Tahap T1 yang sedang di PR #3 tetap; penyesuaian v5 untuk T1 (preset grafis 4 tingkat, pool 48 suara, tekstur 1K–2K) dikerjakan di awal T2.
 - Autopilot mode PR-dulu; tahap baru hanya dikirim ke @codex bila variabel repo `AUTOPILOT_AGEN = codex`. Default: dikerjakan per sesi, Autopilot hanya merge PR hijau + rilis APK.
 - PlayerSettings Android diatur NusantaraCI: `com.alaskeramat.game`, Mono, ARMv7, min API 26 (IL2CPP/ARM64 ditunda ke T11).
 - Lock file aset CC0 & mocap masih kosong; diisi mulai T2 (docs/gdd/19).

@@ -31,11 +31,10 @@ namespace AlasKeramat.EditorTools
             GameTags.Campfire, GameTags.WaterSource, GameTags.Effigy, GameTags.GeneratedRoot, GameTags.ZiplineAnchor
         };
 
-        public static readonly string[] ShaderWajib =
-        {
-            "Universal Render Pipeline/Lit", "Universal Render Pipeline/Unlit",
-            "Universal Render Pipeline/Particles/Unlit", "Skybox/Procedural"
-        };
+        // Shader URP TIDAK boleh masuk Always Included (varian > 1 juta, build Android gagal);
+        // URP ikut ter-build lewat material .mat di Assets/Generated.
+        public static readonly string[] ShaderWajib = { "Skybox/Procedural" };
+        const string AwalanUrp = "Universal Render Pipeline/";
 
         static void LangkahProyek()
         {
@@ -113,6 +112,11 @@ namespace AlasKeramat.EditorTools
             if (gs == null || gs.Length == 0) throw new Exception("GraphicsSettings.asset tidak ditemukan");
             var so = new SerializedObject(gs[0]);
             var arr = so.FindProperty("m_AlwaysIncludedShaders");
+            for (int i = arr.arraySize - 1; i >= 0; i--)
+            {
+                var sh0 = arr.GetArrayElementAtIndex(i).objectReferenceValue as Shader;
+                if (sh0 != null && sh0.name.StartsWith(AwalanUrp)) arr.DeleteArrayElementAtIndex(i);
+            }
             foreach (var nama in ShaderWajib)
             {
                 var sh = Shader.Find(nama);
