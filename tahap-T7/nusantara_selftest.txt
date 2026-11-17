@@ -1,11 +1,11 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (1920 = 1920)
+[LULUS] Idempoten: jumlah objek sama (1936 = 1936)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
 [LULUS] Tekstur >= 10 (14)
-[LULUS] Material >= 5 (55)
+[LULUS] Material >= 5 (63)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
 [LULUS] WAV >= 8 (52)
@@ -117,7 +117,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[GAGAL] A* bertingkat Heli -> Desa ditemukan dengan 3116 node (< 4.000), 19 titik, segmen gagal 1, 6 ms
+[GAGAL] A* bertingkat Heli -> Desa ditemukan dengan 4000 node (< 4.000), 0 titik, koridor dilebarkan 2x, 30 ms [diag: tanpa batas True/32289 node, bobot 3 True/25572 node]
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -125,7 +125,7 @@
 [LULUS] Parry 0,25 s (Keris 0,35) dalam kerucut 70, blok -60%, penghabisan x2,5, jatuh bila kena >= 25
 [LULUS] Keputusan Sekte 06 §6 (isyarat pemimpin, intai, serang, gertak, menyerah, lari, reaksi kena)
 [LULUS] Pendengaran: lari 20 / jalan 8 / jongkok 3 / tebang 45 m
-[LULUS] Suara tempur prosedural (8 klip)
+[LULUS] Suara tempur prosedural (11 klip)
 [LULUS] EnemyDirector + 5 prefab Sekte (AI, CharacterController, animasi, layer Enemy)
 [LULUS] GridPathfinder, TANGKIS, ReaksiAndi, TandaTempur, diorama
 [LULUS] Malam Darah Hari 3, 7, 11 (malam 19:00-05:00)
@@ -135,6 +135,15 @@
 [LULUS] Lintasan bambu lempar mendarat tepat (sisa tinggi 0.00 m)
 [LULUS] Prefab hantu (Pocong, Kuntilanak, Banaspati), jarahan, bambu
 [LULUS] 6 Totem Topeng & MusikTempur
+[LULUS] Batas gore 14 §10: decal 64, luka 6, ragdoll 4, prop 12, mayat 12, partikel 300
+[LULUS] Tetes darah 6 + damage/4 (maks 40)
+[LULUS] Tingkat gore: Mati tanpa darah/mayat, Sedang tanpa mutilasi, Penuh semua
+[LULUS] Zona kena 14 §4: kepala x1,8 (melee x1,5), anggota x0,7; tulang putus per zona
+[LULUS] Pendarahan: hanya tebasan Sekte (peluang 25%)
+[LULUS] Mutilasi 5 varian: tulang tersembunyi, prop dari segitiga subtree, sisa utuh (Head:1096 L_UpperArm:132 R_Forearm:72 L_Thigh:132 R_Calf:72)
+[LULUS] Ragdoll 11 tulang & 10 sendi (11/10)
+[LULUS] GoreSystem + partikel + material percikan/genangan/luka/tutup
+[LULUS] Layar peringatan 18+ & pilihan gore
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas
