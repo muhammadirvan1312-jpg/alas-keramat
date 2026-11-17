@@ -91,7 +91,7 @@ namespace AlasKeramat.AI
         public static bool Cari(SurfaceGrid g, Vector3 dari, Vector3 ke, List<Vector3> hasil, int maksNode, out int dikunjungi) { return Cari(g, dari, ke, hasil, maksNode, out dikunjungi, null); }
 
         // izinSimpul (opsional): hanya sel yang wilayahnya ada di koridor yang boleh diekspansi (pencarian bertingkat).
-        public static bool Cari(SurfaceGrid g, Vector3 dari, Vector3 ke, List<Vector3> hasil, int maksNode, out int dikunjungi, bool[] izinBlok)
+        public static bool Cari(SurfaceGrid g, Vector3 dari, Vector3 ke, List<Vector3> hasil, int maksNode, out int dikunjungi, bool[] izinSimpul)
         {
             dikunjungi = 0;
             if (hasil != null) hasil.Clear();
