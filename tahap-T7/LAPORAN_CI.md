@@ -1,14 +1,12 @@
 # LAPORAN CI
-- Commit: 3ccc7de1fe63c6fb64809e503d1866a63a95c4f3
+- Commit: 0de7f464d30140b85bb7cc2d0b7de974cce86d7e
 - Hasil langkah Unity: failure
-- Waktu: 2026-11-17T15:59:05Z
+- Waktu: 2026-11-17T22:57:13Z
 
 [LULUS] pengaturan pemain
 [LULUS] builder
-[GAGAL] self-test: RunAll melaporkan gagal
+[LULUS] self-test
 [LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
 [LULUS] build APK
 
 ## Baris error yang ditemukan
-[Error] [AK][GAGAL] self-test: [GAGAL] A* bertingkat Heli -> Desa ditemukan dengan 2000 node (< 4.000), 0 titik, koridor dilebarkan 0x, 287 ms [diag: tanpa batas True/32289 node, bobot 3 True/25572 node]
-[Error] [AK][GAGAL] self-test: System.Exception: RunAll melaporkan gagal
