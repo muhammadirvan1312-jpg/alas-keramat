@@ -153,6 +153,31 @@ namespace AlasKeramat.EditorTools
             bool handler = true; int nTombol = 0;
             foreach (var b in Object.FindObjectsByType<Button>(FindObjectsSortMode.None)) { nTombol++; if (b.onClick.GetPersistentEventCount() == 0) handler = false; }
             cek("Semua tombol HUD punya handler (" + nTombol + ")", nTombol >= 2 && handler);
+            var koper = Object.FindObjectsByType<AlasKeramat.Inventory.WadahItem>(FindObjectsSortMode.None);
+            int kOk = 0;
+            foreach (var k in koper)
+            {
+                int idx = k.name == "Koper_K1" ? 0 : k.name == "Koper_K2" ? 1 : k.name == "Koper_K3" ? 2 : -1;
+                if (idx < 0) continue;
+                bool sama = k.DaftarItem.Length == NusantaraMasterBuilder.IsiKoper[idx].Length;
+                for (int i = 0; sama && i < k.DaftarItem.Length; i++)
+                    sama = k.DaftarItem[i] == NusantaraMasterBuilder.IsiKoper[idx][i] && k.DaftarJumlah[i] == NusantaraMasterBuilder.JumlahKoper[idx][i];
+                if (sama && k.gameObject.layer == GameLayers.Interactable && k.GetComponent<Collider>() != null) kOk++;
+            }
+            cek("3 koper berisi item sesuai 03 §9 (" + kOk + ")", kOk == 3);
+            var invGo = new GameObject("UjiInventaris");
+            try
+            {
+                var inv = invGo.AddComponent<AlasKeramat.Inventory.TikarPandan3DInventory>();
+                int masuk = inv.Tambah(ItemID.GolokPusaka, 3);
+                cek("Inventaris menghormati Maks (golok 3 -> " + masuk + ")", masuk == AlasKeramat.Inventory.ItemDatabase.MaxCarry(ItemID.GolokPusaka) && inv.Jumlah(ItemID.GolokPusaka) == masuk);
+            }
+            finally { Object.DestroyImmediate(invGo); }
+            cek("Radar, toast, interaksi, tangan kiri ada", Object.FindFirstObjectByType<AlasKeramat.UI.RadarGPS>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.ToastHUD>() != null
+                && Object.FindFirstObjectByType<AlasKeramat.Player.InteraksiAndi>() != null && Object.FindFirstObjectByType<AlasKeramat.Player.TanganKiri>() != null);
+            var rDepan = AlasKeramat.UI.RadarGPS.KeRadar(Vector3.zero, new Vector3(0f, 0f, 50f), 0f);
+            var rPutar = AlasKeramat.UI.RadarGPS.KeRadar(Vector3.zero, new Vector3(50f, 0f, 0f), 90f);
+            cek("Radar: depan = atas (saat menghadap utara & timur)", rDepan.y > 40f && Mathf.Abs(rDepan.x) < 1f && rPutar.y > 40f && Mathf.Abs(rPutar.x) < 1f);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)
