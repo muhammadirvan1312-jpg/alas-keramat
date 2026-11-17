@@ -1,0 +1,73 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+
+namespace AlasKeramat.Core
+{
+    // Simpan/muat (11 §8): mengumpulkan semua ISaveable (jam, vital, inventaris, dunia) ke satu JSON di persistentDataPath.
+    // Dipanggil saat tidur di kasur/tenda dan dari menu. Pencarian ISaveable hanya saat simpan/muat (bukan per frame).
+    public class SaveSystem : MonoBehaviour
+    {
+        public const string NamaBerkas = "alas_keramat_simpan.json";
+        [Serializable] class Entri { public string kunci; public string json; }
+        [Serializable] class Berkas { public int versi = 1; public string waktu; public List<Entri> data = new List<Entri>(); }
+
+        public static string Path { get { return System.IO.Path.Combine(Application.persistentDataPath, NamaBerkas); } }
+        public bool AdaSimpanan { get { return File.Exists(Path); } }
+
+        void Awake() { GameServices.Register(this); }
+
+        static List<ISaveable> Kumpulkan()
+        {
+            var hasil = new List<ISaveable>();
+            foreach (var mb in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (mb is ISaveable) hasil.Add((ISaveable)mb);
+            return hasil;
+        }
+
+        public static string KeJson(IEnumerable<ISaveable> daftar)
+        {
+            var b = new Berkas { waktu = DateTime.UtcNow.ToString("o") };
+            foreach (var s in daftar)
+            {
+                try { b.data.Add(new Entri { kunci = s.SaveKey, json = s.CaptureJson() }); }
+                catch (Exception e) { Debug.LogError("[AK][SaveSystem] Gagal menyimpan " + s.SaveKey + ": " + e.Message); }
+            }
+            b.data.Sort((x, y) => string.CompareOrdinal(x.kunci, y.kunci));
+            return JsonUtility.ToJson(b);
+        }
+
+        public static void DariJson(string json, IEnumerable<ISaveable> daftar)
+        {
+            var b = JsonUtility.FromJson<Berkas>(json);
+            if (b == null || b.data == null) return;
+            var peta = new Dictionary<string, string>();
+            foreach (var e in b.data) peta[e.kunci] = e.json;
+            foreach (var s in daftar)
+            {
+                string j;
+                if (!peta.TryGetValue(s.SaveKey, out j)) continue;
+                try { s.RestoreJson(j); } catch (Exception e) { Debug.LogError("[AK][SaveSystem] Gagal memuat " + s.SaveKey + ": " + e.Message); }
+            }
+        }
+
+        public void Simpan()
+        {
+            try { File.WriteAllText(Path, KeJson(Kumpulkan())); GameEvents.RaiseToast("Permainan tersimpan"); }
+            catch (Exception e) { Debug.LogError("[AK][SaveSystem] Simpan gagal: " + e.Message); }
+        }
+
+        public bool Muat()
+        {
+            try
+            {
+                if (!File.Exists(Path)) return false;
+                DariJson(File.ReadAllText(Path), Kumpulkan());
+                GameEvents.RaiseToast("Permainan dimuat");
+                return true;
+            }
+            catch (Exception e) { Debug.LogError("[AK][SaveSystem] Muat gagal: " + e.Message); return false; }
+        }
+    }
+}

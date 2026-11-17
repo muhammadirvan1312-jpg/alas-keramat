@@ -45,6 +45,19 @@ namespace AlasKeramat.Player
         public void SetDekatApi(bool v) { _dekatApi = v; }
         public void SetBerteduh(bool v) { _berteduh = v; }
         public void SetTidur(bool v) { Tidur = v; }
+        // Tidur/istirahat selama 'jam' jam game (1 jam = 60 s nyata): laju 05 §3.4 & §3.5 dengan pengali tidur, kewarasan maks +30.
+        public void Pulihkan(float jam, bool kasur)
+        {
+            float detik = jam * 60f;
+            Rest = Mathf.Min(Maks, Rest + (kasur ? 3f : 1.5f) * detik);
+            Hydration = Mathf.Max(0f, Hydration - LajuHaus * PengaliTidur * detik);
+            float g = LajuGizi * PengaliTidur * detik;
+            Karbo = Mathf.Max(0f, Karbo - g); Protein = Mathf.Max(0f, Protein - g); Lemak = Mathf.Max(0f, Lemak - g); Vitamin = Mathf.Max(0f, Vitamin - g);
+            Sanity = Mathf.Min(Maks, Sanity + Mathf.Min(30f, SanityTidur * detik));
+            if (Fullness > 40f && Hydration > 40f) Health = Mathf.Min(TargetHealthCeiling, Health + RegenHPTidur * detik);
+            Stamina = MaxStaminaCap;
+        }
+
         public void UbahSanity(float d) { Sanity = Mathf.Clamp(Sanity + d, 0f, Maks); }
 
         public static float PlafonHP(float full, float haus, float rest)
@@ -97,9 +110,9 @@ namespace AlasKeramat.Player
                     renang = _ctrl != null && _ctrl.Berenang,
                     renangCepat = _ctrl != null && _ctrl.Berenang && _ctrl.SedangLari,
                     napasHabis = _ctrl != null && _ctrl.Berenang && _ctrl.Napas <= 0f,
-                    dekatApi = _dekatApi,
+                    dekatApi = _dekatApi || Building.ApiUnggun.AdaApiDekat(transform.position, Building.ApiUnggun.JarakHangat),
                     berteduh = _berteduh || CekAtap(),
-                    cahaya = _dekatApi || (_kiri != null && _kiri.OborMenyala),
+                    cahaya = _dekatApi || Building.ApiUnggun.AdaApiDekat(transform.position, 6f) || (_kiri != null && _kiri.OborMenyala),
                     biome = WorldTerrainGenerator.GetBiome(transform.position.x, transform.position.z)
                 };
                 Tick(k, Time.deltaTime);

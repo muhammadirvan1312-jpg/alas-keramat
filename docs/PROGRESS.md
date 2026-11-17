@@ -2,7 +2,7 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T6b
+AUTOPILOT_TAHAP_BERIKUTNYA: T6c
 
 - Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
@@ -43,6 +43,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T6b
 | T5c | 2026-11-17 | Menunggu CI | Inventory: TikarPanggung (panggung 3D layer InventoryStage + kamera & lampu sendiri, item ditata grid, ketuk = lingkaran rakit, CariResep/Rakit dengan alat wajib & pengganti kain); Player: AndiVitalsAndSanity.Zirah (10 segmen, durabilitas 05 §3.7, daun x2 saat hujan, bambu lemah api, tulang kewarasan -1, jatuh/gaib menembus); UI: TikarUI (RAKIT nama hasil, MAKAN, PAKAI ZIRAH, BATAL, TUTUP, label item mengikuti 3D, R17 butuh api), tombol TAS, 10 kotak zirah di atas bar darah | + cek rakit tombak, serapan zirah, komponen | Merakit 23 resep, makan dari tas, memakai zirah |
 
 | T6a | 2026-11-17 | Menunggu CI | Building: ShoulderLogAndFreeformBuilder (panggul 2 gelondong / 4 papan di bahu kiri, kecepatan x0,85/x0,75, LEMPAR, lepas saat berenang; pratinjau hantu hijau/merah; TIANG di tanah lereng <= 30° atau di atas tiang, BALOK antar 2 tiang <= 3,6 m kelipatan 0,42 m atau pondasi, PAPAN di atas 2 balok sejajar; maks 6 tingkat; SERUT RUNCING 2 pukulan), BagianStruktur (HP 07 §6, tetangga, hancur & runtuh 20 s, 50% kayu), StructureIntegrity (BFS dari simpul tertanam), KayuFisik (papan, BELAH PAPAN 3 pukulan, ambil = panggul); Player: PengaliKecepatan; UI: tombol LEMPAR & MODE | + cek snap & HP, BFS integritas, komponen | Bisa membangun lantai panggung dan pagar runcing |
+
+| T6b | 2026-11-17 | Menunggu CI | Building: GuidebookBlueprintsAndCooking (14 blueprint 07 §7 + penempatan hantu biru/merah, putar 15°, rakit hanya di air), CetakBiru (TAMBAH bahan dari tas/bahu, kain kafan menggantikan batik), BangunanBlueprint (objek jadi dari primitif), ApiUnggun (bahan bakar 600 s, ranting +45/kayu +300, cahaya berkedip, hujan x2, badai padam 60 s, 4 tusuk matang 25 s/gosong 40 s, bakar kemenyan), PanciMasak (sup hutan), FungsiBangunan (tidur/istirahat + simpan, rak 24/kereta 8, penampung hujan, jemuran 120 s, perangkap ayun 200, obor tengkorak 240 s, menara naik/turun, pintu, kentongan, rakit); Core: SaveSystem (semua ISaveable ke JSON); Player: Pulihkan saat tidur, hangat dekat api; UI: BukuPanduanUI (tombol BUKU, panel 4 kategori, TANDAI/PUTAR/BATAL) | + cek 14 blueprint & biaya, masak, jemur, simpan->muat identik | Membangun kemah: api unggun, saung, tidur sampai pagi & tersimpan |
 
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 

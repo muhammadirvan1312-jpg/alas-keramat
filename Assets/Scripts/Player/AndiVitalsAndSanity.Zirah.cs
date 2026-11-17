@@ -13,7 +13,7 @@ namespace AlasKeramat.Player
         public struct Segmen { public ItemID jenis; public float dur, durMaks; }
         readonly List<Segmen> _zirah = new List<Segmen>();
         bool _tulangPernah;
-        public bool DekatApi { get { return _dekatApi; } }
+        public bool DekatApi { get { return _dekatApi || Building.ApiUnggun.AdaApiDekat(transform.position, Building.ApiUnggun.JarakHangat); } }
 
         public int JumlahSegmen { get { return _zirah.Count; } }
         public Segmen AmbilSegmen(int i) { return _zirah[i]; }
