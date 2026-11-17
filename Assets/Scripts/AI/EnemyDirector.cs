@@ -7,8 +7,8 @@ namespace AlasKeramat.AI
 {
     // 06 §7 & §9 (T7a): regu Sekte siang (Desa 4-6 + pemimpin, Sawit 3-4 + Abdi Lumpur), pengintai 1-2 mulai Hari 1 15:00,
     // antrian spawn (maks 12 musuh aktif), despawn > 150 m & tak terlihat 10 s, token penyerang (Normal 2 / Sulit 3),
-    // Kemarahan Sekte 0-100 (mulai 10). Hantu, raid malam & Totem Topeng menyusul T7b.
-    public class EnemyDirector : MonoBehaviour, ISaveable
+    // Kemarahan Sekte 0-100 (mulai 10). Malam (hantu, raid, Malam Darah, totem): EnemyDirector.Malam.cs.
+    public partial class EnemyDirector : MonoBehaviour, ISaveable
     {
         public const int MaksAktif = 12, TokenNormal = 2, TokenSulit = 3;
         public const float JarakAktifRegu = 230f, JarakDespawn = 150f, LamaTakTerlihat = 10f, JarakLepasRegu = 320f;
@@ -53,7 +53,7 @@ namespace AlasKeramat.AI
         public float Kemarahan { get; private set; } = KemarahanAwal;
         public int SekteDibunuh { get; private set; }
         public int SekteDiampuni { get; private set; }
-        public int Aktif { get { int n = 0; for (int i = 0; i < NusantaraEnemyAndMutantAI.Semua.Count; i++) if (NusantaraEnemyAndMutantAI.Semua[i].IsAlive) n++; return n; } }
+        public int Aktif { get { int n = 0; for (int i = 0; i < NusantaraEnemyAndMutantAI.Semua.Count; i++) if (NusantaraEnemyAndMutantAI.Semua[i].IsAlive) n++; for (int i = 0; i < HantuAI.Semua.Count; i++) if (HantuAI.Semua[i].IsAlive) n++; return n; } }
         public IList<Regu> DaftarRegu { get { return _regu; } }
         public string SaveKey { get { return "musuh"; } }
 
@@ -119,6 +119,7 @@ namespace AlasKeramat.AI
                 _tCek = 1f;
                 CekRegu();
                 CekPengintai();
+                TickMalam();
                 Despawn(1f);
             }
             ProsesAntrian();
@@ -307,13 +308,13 @@ namespace AlasKeramat.AI
 
         static Vector3 Datar(Vector3 v) { v.y = 0f; return v; }
 
-        [System.Serializable] struct DataDirektur { public float kemarahan; public int dibunuh, diampuni; }
-        public string CaptureJson() { return JsonUtility.ToJson(new DataDirektur { kemarahan = Kemarahan, dibunuh = SekteDibunuh, diampuni = SekteDiampuni }); }
+        [System.Serializable] struct DataDirektur { public float kemarahan; public int dibunuh, diampuni, hantuDiusir, totem; }
+        public string CaptureJson() { return JsonUtility.ToJson(new DataDirektur { kemarahan = Kemarahan, dibunuh = SekteDibunuh, diampuni = SekteDiampuni, hantuDiusir = HantuDiusir, totem = TotemMask }); }
         public void RestoreJson(string json)
         {
             if (string.IsNullOrEmpty(json)) return;
             var d = JsonUtility.FromJson<DataDirektur>(json);
-            Kemarahan = Mathf.Clamp(d.kemarahan, 0f, 100f); SekteDibunuh = d.dibunuh; SekteDiampuni = d.diampuni;
+            Kemarahan = Mathf.Clamp(d.kemarahan, 0f, 100f); SekteDibunuh = d.dibunuh; SekteDiampuni = d.diampuni; HantuDiusir = d.hantuDiusir; TotemMask = d.totem;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace AlasKeramat.AI
     public partial class GridPathfinder
     {
         public const float JarakBertingkat = 150f, BobotKasar = 1.2f;
-        public const int LangkahHalus = 2, AnggaranSegmen = 700;
+        public const int LangkahHalus = 2, AnggaranSegmen = 900;
 
         public static int SegmenGagalTerakhir { get; private set; }
 
@@ -45,6 +45,16 @@ namespace AlasKeramat.AI
                 int n;
                 bool ok = Cari(g, a, b, _segmen, Mathf.Min(AnggaranSegmen, Mathf.Max(100, anggaran - dikunjungi)), out n);
                 dikunjungi += n;
+                if (!ok && !akhir)
+                {
+                    // Titik koridor jatuh di kantong terputus: lompati ke titik koridor berikutnya.
+                    int j = Mathf.Min(i + LangkahHalus, _koridor.Count - 1);
+                    bool akhir2 = j >= _koridor.Count - 1;
+                    Vector3 b2 = akhir2 ? ke : _koridor[j];
+                    ok = Cari(g, a, b2, _segmen, Mathf.Min(AnggaranSegmen * 2, Mathf.Max(100, anggaran - dikunjungi)), out n);
+                    dikunjungi += n;
+                    if (ok) { b = b2; i = j; akhir = akhir2; }
+                }
                 if (hasil != null)
                 {
                     if (ok) hasil.AddRange(_segmen);

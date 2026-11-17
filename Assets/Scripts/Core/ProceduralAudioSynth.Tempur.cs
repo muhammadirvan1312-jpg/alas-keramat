@@ -7,8 +7,8 @@ namespace AlasKeramat.Core
     public partial class ProceduralAudioSynth
     {
         public const string KlipParry = "tempur_parry", KlipKenaDaging = "tempur_kena_daging", KlipGeramSekte = "sekte_geram", KlipTeriakSekte = "sekte_teriak",
-            KlipRintihSekte = "sekte_rintih", KlipAbu = "tempur_abu", KlipAyunSekte = "sekte_ayun";
-        public static readonly string[] KlipTempur = { KlipParry, KlipKenaDaging, KlipGeramSekte, KlipTeriakSekte, KlipRintihSekte, KlipAbu, KlipAyunSekte };
+            KlipRintihSekte = "sekte_rintih", KlipAbu = "tempur_abu", KlipAyunSekte = "sekte_ayun", KlipMusikTempur = "musik_tempur";
+        public static readonly string[] KlipTempur = { KlipParry, KlipKenaDaging, KlipGeramSekte, KlipTeriakSekte, KlipRintihSekte, KlipAbu, KlipAyunSekte, KlipMusikTempur };
 
         public static float[] GenerateTempur(string nama, int variasi, out int sr)
         {
@@ -24,6 +24,7 @@ namespace AlasKeramat.Core
                 case KlipRintihSekte: b = ResepRintih(sr, ref rng); break;
                 case KlipAbu: b = ResepAbu(sr, ref rng); break;
                 case KlipAyunSekte: b = ResepAyun(sr, ref rng); break;
+                case KlipMusikTempur: b = ResepMusikTempur(sr, ref rng); break;
                 default: return null;
             }
             Dsp.Finalize(b, sr);
@@ -128,6 +129,39 @@ namespace AlasKeramat.Core
                 float t = (float)i / sr, u = Mathf.Sin(Mathf.PI * t / 0.4f);
                 float w = rng.White();
                 b[i] = (bpRendah.Process(w) * (1f - u) + bpTinggi.Process(w) * u) * u * 0.9f;
+            }
+            return b;
+        }
+
+        public static float VolumeKategori(AudioCategory k) { return VolMaster * _volKategori[(int)k]; }
+
+        // Musik tempur dasar (10 §musik, T7): loop 8 s 120 bpm - kendang dung/tak, gong tiap 16 ketuk, bonang pelog (dibuat seamless: ekor dililit ke awal).
+        static readonly float[] Pelog = { 293.7f, 311.1f, 349.2f, 415.3f, 440f, 466.2f, 523.3f };
+        static readonly int[] PolaBonang = { 0, 2, 3, 2, 4, 3, 2, 0, 1, 3, 4, 6, 4, 3, 1, 2 };
+        static float[] ResepMusikTempur(int sr, ref Dsp.Rng rng)
+        {
+            const float bpm = 120f; const int ketuk = 16;
+            float beat = 60f / bpm, lama = ketuk * beat;
+            int n = Mathf.RoundToInt(lama * sr);
+            var b = new float[n];
+            var bpTak = Dsp.Biquad.BP(2200f, 1.5f, sr);
+            for (int k = 0; k < ketuk * 2; k++) // seperdelapan
+            {
+                float t0 = k * beat * 0.5f;
+                bool dung = k % 4 == 0 || k % 8 == 6, tak = k % 2 == 1;
+                int awal = Mathf.RoundToInt(t0 * sr);
+                for (int i = 0; i < sr * 2; i++)
+                {
+                    int idx = (awal + i) % n;
+                    float t = (float)i / sr, x = 0f;
+                    if (dung && t < 0.6f) x += Mathf.Sin(Dsp.DuaPi * Dsp.ExpSweep(130f, 62f, t, 0.12f) * t) * Dsp.ExpDecay(t, 0.16f) * 0.9f;
+                    if (tak && t < 0.1f) x += bpTak.Process(rng.White()) * Dsp.ExpDecay(t, 0.025f) * 0.5f;
+                    float f = Pelog[PolaBonang[(k / 2) % PolaBonang.Length]] * (k % 2 == 0 ? 1f : 2f);
+                    if (k % 2 == 0 && t < 1.2f) x += (Mathf.Sin(Dsp.DuaPi * f * t) + 0.35f * Mathf.Sin(Dsp.DuaPi * f * 2.76f * t) * Dsp.ExpDecay(t, 0.1f)) * Dsp.ExpDecay(t, 0.45f) * 0.22f;
+                    if (k == 0) x += (Mathf.Sin(Dsp.DuaPi * 55f * t) + 0.5f * Mathf.Sin(Dsp.DuaPi * 55f * 2.3f * t) * Dsp.ExpDecay(t, 0.8f)) * Dsp.ExpDecay(t, 1.8f) * 0.6f * (1f + 0.15f * Mathf.Sin(Dsp.DuaPi * 3.2f * t));
+                    if (x == 0f && t > 1.2f) break;
+                    b[idx] += x;
+                }
             }
             return b;
         }

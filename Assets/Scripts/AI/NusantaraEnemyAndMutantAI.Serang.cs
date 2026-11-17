@@ -22,6 +22,7 @@ namespace AlasKeramat.AI
                 case FaseSerang.Dekati:
                     if (_anim != null) _anim.Pose = ProceduralAnimator.PoseTempur.Tidak;
                     if (_jedaSerang <= 0f && d > JarakLompat - 0.5f && d < JarakLompat + 1f && Random.value < 0.25f * dt * 4f) { MulaiFase(FaseSerang.AncangLompat); break; }
+                    if (CobaLempar(d)) { MulaiFase(FaseSerang.AncangLempar); break; }
                     if (d <= Jangkau && _jedaSerang <= 0f) { MulaiFase(FaseSerang.Ancang); Suara(ProceduralAudioSynth.KlipGeramSekte, 0.6f); break; }
                     if (d > Jangkau * 0.8f) Menuju(posAndi, d > 12f ? _d.lari : Mathf.Lerp(_d.jalan * 1.5f, _d.lari, d / 12f), dt);
                     else Diam(dt);
@@ -47,6 +48,11 @@ namespace AlasKeramat.AI
                     if (_anim != null) _anim.Pose = ProceduralAnimator.PoseTempur.Ayun;
                     GerakMentah(_arahLompat * (JarakLompat / LamaLompat), dt);
                     if (_tFase >= LamaLompat) { CobaKenai(_d.damageBerat, Jangkau + 0.3f); Selesai(); }
+                    break;
+                case FaseSerang.AncangLempar:
+                    Diam(dt); Hadap(posAndi - transform.position, dt);
+                    if (_anim != null) _anim.Pose = ProceduralAnimator.PoseTempur.Ancang;
+                    if (_tFase >= AncangLempar) { if (_anim != null) _anim.Pose = ProceduralAnimator.PoseTempur.Ayun; LemparSekarang(); Selesai(); }
                     break;
                 case FaseSerang.Jeda:
                     Diam(dt); Hadap(posAndi - transform.position, dt);

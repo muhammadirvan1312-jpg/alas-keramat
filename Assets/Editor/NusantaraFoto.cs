@@ -28,6 +28,7 @@ namespace AlasKeramat.EditorTools
         // Daftar shot aktif (T2a: dunia). Tahap berikutnya menambah shot (12 money shot 19 §8).
         public static readonly Shot[] ShotAktif =
         {
+            new Shot("t7_02_pocong_kuntilanak_malam", new Vector3(-58f, 1.7f, -312f), new Vector3(-57f, 1.6f, -297f), 21f, 60f),
             new Shot("t7_01_sekte_ritual_desa", new Vector3(533f, 1.7f, 190f), new Vector3(540f, 1.0f, 200f), 10f, 60f),
             new Shot("t4_01_galeri_karakter", new Vector3(56f, 1.7f, -386f), new Vector3(56f, 1.1f, -376f), 10f, 75f),
             new Shot("t4_02_galeri_dekat", new Vector3(50f, 1.6f, -380f), new Vector3(52f, 1.3f, -376f), 10f, 55f),
@@ -101,6 +102,8 @@ namespace AlasKeramat.EditorTools
                 if (galeriFoto != null) galeriFoto.gameObject.SetActive(true);
                 var dioramaFoto = akar != null ? akar.transform.Find(NusantaraMasterBuilder.NamaDiorama) : null;
                 if (dioramaFoto != null) dioramaFoto.gameObject.SetActive(true);
+                var dioHantu = akar != null ? akar.transform.Find(NusantaraMasterBuilder.NamaDioramaHantu) : null;
+                if (dioHantu != null) dioHantu.gameObject.SetActive(true);
                 foreach (var s in ShotAktif)
                 {
                     if (jam.Elapsed.TotalSeconds > BatasDetik) { Log("Anggaran waktu habis, sisa shot dilewati"); break; }

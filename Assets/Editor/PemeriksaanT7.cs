@@ -126,6 +126,50 @@ namespace AlasKeramat.EditorTools
                 && FindTermasukNonaktif(NusantaraMasterBuilder.NamaDiorama));
         }
 
+        // T7b: hantu, Malam Darah, raid, totem, penangkal, bambu lempar, musik tempur.
+        public static void JalankanB(Action<string, bool> cek)
+        {
+            bool md = EnemyDirector.IsMalamDarah(3) && EnemyDirector.IsMalamDarah(7) && EnemyDirector.IsMalamDarah(11) && !EnemyDirector.IsMalamDarah(4) && !EnemyDirector.IsMalamDarah(2)
+                && EnemyDirector.MalamKe(4, 2f) == 3 && EnemyDirector.MalamKe(3, 20f) == 3 && EnemyDirector.JamMalam(19.5f) && !EnemyDirector.JamMalam(12f);
+            cek("Malam Darah Hari 3, 7, 11 (malam 19:00-05:00)", md);
+            bool raid = EnemyDirector.KomposisiRaid(10f, 0.3f).Length == 0 && EnemyDirector.KomposisiRaid(30f, 0.3f).Length == 2 && EnemyDirector.KomposisiRaid(30f, 0.8f).Length == 3
+                && EnemyDirector.KomposisiRaid(50f, 0.8f).Length == 5 && EnemyDirector.KomposisiRaid(70f, 0.1f).Length == 6 && EnemyDirector.KomposisiRaid(90f, 0.5f).Length == 8
+                && Array.IndexOf(EnemyDirector.KomposisiRaid(90f, 0.5f), EnemyArchetype.AbdiButo) >= 0 && Array.IndexOf(EnemyDirector.KomposisiRaid(50f, 0.5f), EnemyArchetype.AbdiWanita) >= 0
+                && Array.IndexOf(EnemyDirector.KomposisiRaid(70f, 0.5f), EnemyArchetype.PemimpinPatroli) >= 0 && Array.IndexOf(EnemyDirector.KomposisiRaid(30f, 0.5f), EnemyArchetype.AbdiWanita) < 0
+                && Mathf.Approximately(EnemyDirector.PeluangRaid(50f), 0.7f) && Mathf.Approximately(EnemyDirector.PeluangRaid(100f), 0.95f) && Mathf.Approximately(EnemyDirector.PeluangRaid(0f), 0.2f);
+            cek("Raid 06 §7: komposisi 0/2-3/4-5/6-7/8 per Kemarahan, peluang clamp(K/100+0,2)", raid);
+            bool hantu = HantuAI.IndraPocong(80f) == 30f && HantuAI.IndraPocong(20f) == 45f
+                && Mathf.Approximately(HantuAI.PengaliDamage(EnemyArchetype.PocongHutan, DamageType.Api, ItemID.None, false), 2f)
+                && Mathf.Approximately(HantuAI.PengaliDamage(EnemyArchetype.Kuntilanak, DamageType.Tebas, ItemID.KerisPusaka, false), 2f)
+                && Mathf.Approximately(HantuAI.PengaliDamage(EnemyArchetype.PocongHutan, DamageType.Tebas, ItemID.None, true), 1.5f)
+                && HantuAI.BanaspatiPadam(true, false) && HantuAI.BanaspatiPadam(false, true) && !HantuAI.BanaspatiPadam(false, false)
+                && EnemyDirector.TargetPocong(false) == 2 && EnemyDirector.TargetPocong(true) == 4;
+            cek("Hantu 06 §8: indra Pocong 30/45, api & Keris x2, rentan x1,5, Banaspati padam hujan/air, Pocong 2/4", hantu);
+            var uji = new GameObject("UjiPenangkal");
+            try
+            {
+                ZonaPenangkal.SetObor(uji, new Vector3(100f, 0f, 100f), true);
+                bool p = ZonaPenangkal.AdaObor(new Vector3(110f, 0f, 100f), 15f) && !ZonaPenangkal.AdaObor(new Vector3(130f, 0f, 100f), 15f);
+                ZonaPenangkal.SetObor(uji, Vector3.zero, false);
+                p &= !ZonaPenangkal.AdaObor(new Vector3(100f, 0f, 100f), 15f);
+                cek("Penangkal: Obor Tengkorak 15 m (hantu) terdaftar & dilepas", p);
+            }
+            finally { Object.DestroyImmediate(uji); }
+            Vector3 v = BambuLempar.KecepatanAwal(Vector3.zero, new Vector3(16f, 0f, 0f));
+            float t = 16f / v.x;
+            cek("Lintasan bambu lempar mendarat tepat (sisa tinggi " + (v.y * t - 0.5f * BambuLempar.Gravitasi * t * t).ToString("0.00") + " m)", Mathf.Abs(v.y * t - 0.5f * BambuLempar.Gravitasi * t * t) < 0.01f);
+            var dir = Object.FindFirstObjectByType<EnemyDirector>();
+            bool pf = dir != null && dir.PrefabJarahan != null && dir.PrefabBambu != null;
+            if (dir != null)
+            {
+                var so = new SerializedObject(dir).FindProperty("prefabHantu");
+                pf &= so != null && so.arraySize == 3;
+                for (int i = 0; pf && i < 3; i++) { var g = so.GetArrayElementAtIndex(i).objectReferenceValue as GameObject; pf &= g != null && g.GetComponent<HantuAI>() != null && g.GetComponent<Collider>() != null; }
+            }
+            cek("Prefab hantu (Pocong, Kuntilanak, Banaspati), jarahan, bambu", pf);
+            cek("6 Totem Topeng & MusikTempur", Object.FindObjectsByType<TotemTopeng>(FindObjectsSortMode.None).Length == 6 && Object.FindFirstObjectByType<MusikTempur>() != null);
+        }
+
         static bool FindTermasukNonaktif(string nama)
         {
             var akar = GameObject.Find(NusantaraMasterBuilder.NamaRoot);

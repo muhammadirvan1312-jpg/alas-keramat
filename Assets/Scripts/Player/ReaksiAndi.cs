@@ -43,9 +43,35 @@ namespace AlasKeramat.Player
             }
         }
 
+        float _tBakar, _dpsBakar, _tTickBakar;
+
+        // Setrum jeritan Kuntilanak (06 §8): gerak terkunci sesaat.
+        public void Setrum(float lama)
+        {
+            if (_ctrl == null || _tJatuh > 0f) return;
+            _pengaliAsal = _ctrl.PengaliKecepatan; _ctrl.PengaliKecepatan = 0f; _tJatuh = lama;
+            if (_combat != null) _combat.Guncang(0.4f);
+        }
+
+        // Terbakar (Banaspati/api): damage per detik; padam bila berenang (lompat ke air).
+        public void Bakar(float dps, float lama) { _dpsBakar = Mathf.Max(_dpsBakar, dps); _tBakar = Mathf.Max(_tBakar, lama); }
+        public bool Terbakar { get { return _tBakar > 0f; } }
+
+        void TickBakar(float dt)
+        {
+            if (_tBakar <= 0f) return;
+            if (_ctrl != null && _ctrl.Berenang) { _tBakar = 0f; GameEvents.RaiseToast("Api padam"); return; }
+            _tBakar -= dt; _tTickBakar += dt;
+            if (_tTickBakar < 1f) return;
+            _tTickBakar -= 1f;
+            var v = GameServices.Get<AndiVitalsAndSanity>();
+            if (v != null) v.TakeDamage(new DamageInfo { amount = _dpsBakar, type = DamageType.Api, point = transform.position + Vector3.up, direction = Vector3.up, source = gameObject });
+        }
+
         void Update()
         {
             if (_ctrl == null) return;
+            TickBakar(Time.deltaTime);
             if (_tJatuh > 0f)
             {
                 _tJatuh -= Time.deltaTime;

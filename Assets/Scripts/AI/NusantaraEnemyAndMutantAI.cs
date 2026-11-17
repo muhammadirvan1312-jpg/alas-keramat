@@ -11,8 +11,8 @@ namespace AlasKeramat.AI
     // Hantu (06 §8), Seret Teman, lempar bambu & raid menyusul T7b; gore/ragdoll T7c.
     public partial class NusantaraEnemyAndMutantAI : MonoBehaviour, IDamageable, IInteractable
     {
-        public enum KeadaanSekte { Patroli, Selidik, Mengintai, Isyarat, Gertak, Serang, Lari, Terluka, Menyerah, Mati, Ritual }
-        enum FaseSerang { Dekati, Ancang, Ayun, AncangLompat, Lompat, Jeda }
+        public enum KeadaanSekte { Patroli, Selidik, Mengintai, Isyarat, Gertak, Serang, Lari, Terluka, Menyerah, Mati, Ritual, Serbu, SeretTeman }
+        enum FaseSerang { Dekati, Ancang, Ayun, AncangLompat, Lompat, Jeda, AncangLempar }
 
         public const float Jangkau = 1.7f, AncangAyun = 0.45f, LamaAyun = 0.25f, MomenKena = 0.1f, AncangLompat = 0.6f, JarakLompat = 3f, LamaLompat = 0.35f;
         public const float JedaSeranganMin = 1.0f, JedaSeranganMaks = 1.8f, KitarMin = 6f, KitarMaks = 9f, KerucutKena = 60f;
@@ -119,7 +119,13 @@ namespace AlasKeramat.AI
             _takut = Mathf.Max(0f, _takut - TurunTakut * dt);
             _jedaSerang -= dt; _tJalur -= dt; _tSuara -= dt;
             _tPersepsi -= dt;
-            if (_tPersepsi <= 0f) { Persepsi(); _tPersepsi = TickPersepsi * (JarakAndi() > 120f ? 3f : 1f); }
+            if (_tPersepsi <= 0f)
+            {
+                Persepsi(); _tPersepsi = TickPersepsi * (JarakAndi() > 120f ? 3f : 1f);
+                if (_keadaan == KeadaanSekte.Patroli || _keadaan == KeadaanSekte.Selidik || _keadaan == KeadaanSekte.Mengintai || _keadaan == KeadaanSekte.Serang) CobaSeret();
+            }
+            TickLingkungan(dt);
+            if (_keadaan == KeadaanSekte.Mati) return;
             if (_tGoyah > 0f)
             {
                 _tGoyah -= dt;
@@ -139,12 +145,15 @@ namespace AlasKeramat.AI
                 case KeadaanSekte.Terluka: TickTerluka(dt); break;
                 case KeadaanSekte.Menyerah: TickMenyerah(dt); break;
                 case KeadaanSekte.Ritual: TickRitual(dt); break;
+                case KeadaanSekte.Serbu: TickSerbu(dt); break;
+                case KeadaanSekte.SeretTeman: TickSeret(dt); break;
             }
         }
 
         public void Ubah(KeadaanSekte k)
         {
             if (k == _keadaan) return;
+            if (_keadaan == KeadaanSekte.SeretTeman) LepasSeret();
             if (_keadaan == KeadaanSekte.Serang) LepasToken();
             _keadaan = k; _tState = 0f; _fase = FaseSerang.Dekati; _tFase = 0f;
             _jalur.Clear(); _iJalur = 0; _tJalur = 0f;
@@ -297,7 +306,8 @@ namespace AlasKeramat.AI
         void TickTerluka(float dt)
         {
             if (_anim != null) _anim.Pose = ProceduralAnimator.PoseTempur.Merangkak;
-            if (_tSuara <= 0f) { Suara(ProceduralAudioSynth.KlipRintihSekte, 0.8f); _tSuara = Random.Range(3.5f, 6f); }
+            if (Diseret) { _vy = 0f; return; }
+            if (_tSuara <= 0f { Suara(ProceduralAudioSynth.KlipRintihSekte, 0.8f); _tSuara = Random.Range(3.5f, 6f); }
             Gerak(TitikMenjauhDari(_andi.transform.position, 10f), 0.4f, dt, true);
         }
 
@@ -355,6 +365,7 @@ namespace AlasKeramat.AI
         {
             _hp = 0f;
             LepasToken();
+            LepasSeret(); _diseretOleh = null;
             _jarahan.Clear();
             for (int i = 0; i < _d.drop.Length; i++) if (Random.value < _d.peluang[i]) _jarahan.Add(new ItemStack { id = _d.drop[i], count = _d.jumlah[i] });
             Ubah(KeadaanSekte.Mati);
