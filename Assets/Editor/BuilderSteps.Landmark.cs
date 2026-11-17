@@ -67,6 +67,13 @@ namespace AlasKeramat.EditorTools
 
         static Texture2D Tex(string nama) { return AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + nama + ".png"); }
 
+        static Material AmbilMat(string nama)
+        {
+            var m = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/" + nama + ".mat");
+            if (m == null) Debug.LogError("[AK][Builder] material tidak ditemukan: " + nama);
+            return m;
+        }
+
         static Mesh Simpan(Mesh m)
         {
             string p = FolderLandmark + "/" + m.name + ".asset";
