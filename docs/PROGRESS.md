@@ -2,7 +2,7 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T6
+AUTOPILOT_TAHAP_BERIKUTNYA: T6b
 
 - Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
@@ -41,6 +41,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T6
 | T5b | 2026-11-17 | Menunggu CI | Core: ResepHewan (kerangka quadruped 17 sendi, mesh loft: rusa bertanduk, kancil, babi hutan bertaring, ayam hutan bersayap & ekor, biawak); AI: WildAnimalAI (merumput/waspada/kabur, jongkok mengurangi deteksi, babi menyeruduk saat dilukai, mati terguling, AMBIL HASIL BURUAN sesuai 03 §8), EcosystemDirector (maks 10 dalam 100 m, kelompok per bioma, hilang > 140 m); Building: ForagingDirector (titik pungut deterministik per bioma 03 §7, pool 40, tumbuh lagi 2 hari), ForagingNode (batu, sirih, kunyit, jahe, jamur, jamur beracun, sarang telur) | + cek hasil buruan, 5 template, kecocokan bioma, titik pungut 7 jenis | Berburu & memungut tanaman obat |
 
 | T5c | 2026-11-17 | Menunggu CI | Inventory: TikarPanggung (panggung 3D layer InventoryStage + kamera & lampu sendiri, item ditata grid, ketuk = lingkaran rakit, CariResep/Rakit dengan alat wajib & pengganti kain); Player: AndiVitalsAndSanity.Zirah (10 segmen, durabilitas 05 §3.7, daun x2 saat hujan, bambu lemah api, tulang kewarasan -1, jatuh/gaib menembus); UI: TikarUI (RAKIT nama hasil, MAKAN, PAKAI ZIRAH, BATAL, TUTUP, label item mengikuti 3D, R17 butuh api), tombol TAS, 10 kotak zirah di atas bar darah | + cek rakit tombak, serapan zirah, komponen | Merakit 23 resep, makan dari tas, memakai zirah |
+
+| T6a | 2026-11-17 | Menunggu CI | Building: ShoulderLogAndFreeformBuilder (panggul 2 gelondong / 4 papan di bahu kiri, kecepatan x0,85/x0,75, LEMPAR, lepas saat berenang; pratinjau hantu hijau/merah; TIANG di tanah lereng <= 30° atau di atas tiang, BALOK antar 2 tiang <= 3,6 m kelipatan 0,42 m atau pondasi, PAPAN di atas 2 balok sejajar; maks 6 tingkat; SERUT RUNCING 2 pukulan), BagianStruktur (HP 07 §6, tetangga, hancur & runtuh 20 s, 50% kayu), StructureIntegrity (BFS dari simpul tertanam), KayuFisik (papan, BELAH PAPAN 3 pukulan, ambil = panggul); Player: PengaliKecepatan; UI: tombol LEMPAR & MODE | + cek snap & HP, BFS integritas, komponen | Bisa membangun lantai panggung dan pagar runcing |
 
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 

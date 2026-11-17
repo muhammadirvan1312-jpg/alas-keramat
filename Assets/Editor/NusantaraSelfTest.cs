@@ -1,3 +1,4 @@
+using AlasKeramat.Building;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -281,6 +282,30 @@ namespace AlasKeramat.EditorTools
             }
             finally { Object.DestroyImmediate(ujiGo); }
             cek("Panggung tikar, layar tikar, tombol TAS", Object.FindFirstObjectByType<AlasKeramat.Inventory.TikarPanggung>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.TikarUI>() != null && GameObject.Find("TombolTas") != null);
+            var ujiB = new GameObject("UjiBangun");
+            try
+            {
+                Vector3 o = new Vector3(0f, -500f, 0f);
+                System.Func<ShoulderLogAndFreeformBuilder.ModeBangun, Vector3, Quaternion, float, bool, AlasKeramat.Building.BagianStruktur> mk = (m, p, r, len, tanam) =>
+                {
+                    var b = ShoulderLogAndFreeformBuilder.Buat(new ShoulderLogAndFreeformBuilder.Rencana { mode = m, pos = p, rot = r, panjang = len, tertanam = tanam, sah = true }, null);
+                    b.transform.SetParent(ujiB.transform, true); return b;
+                };
+                var tA = mk(ShoulderLogAndFreeformBuilder.ModeBangun.Tiang, o, Quaternion.identity, 3.6f, true);
+                var tB = mk(ShoulderLogAndFreeformBuilder.ModeBangun.Tiang, o + Vector3.right * 3f, Quaternion.identity, 3.6f, true);
+                var bal = mk(ShoulderLogAndFreeformBuilder.ModeBangun.Balok, o + new Vector3(1.5f, 1f, 0f), Quaternion.FromToRotation(Vector3.up, Vector3.right), 3f, false);
+                var pap = mk(ShoulderLogAndFreeformBuilder.ModeBangun.Papan, o + new Vector3(1.5f, 1.3f, 0.5f), Quaternion.FromToRotation(Vector3.up, Vector3.forward), 1f, false);
+                bal.Hubungkan(tA); bal.Hubungkan(tB); pap.Hubungkan(bal);
+                bool snap = bal.Jenis == AlasKeramat.Building.BagianStruktur.Tipe.Balok && pap.Jenis == AlasKeramat.Building.BagianStruktur.Tipe.Papan && bal.Tetangga.Count == 3 && Mathf.Approximately(bal.HP, 200f) && Mathf.Approximately(pap.HP, 120f);
+                tA.Tetangga.Remove(bal); bal.Tetangga.Remove(tA);
+                int sisaSatu = AlasKeramat.Building.StructureIntegrity.TakTertopang(new[] { bal }).Count;
+                tB.Tetangga.Remove(bal); bal.Tetangga.Remove(tB);
+                int tanpaTiang = AlasKeramat.Building.StructureIntegrity.TakTertopang(new[] { bal }).Count;
+                cek("Snap tiang -> balok -> papan valid (HP 200/120)", snap);
+                cek("Integritas BFS: satu tiang hilang tetap berdiri, kedua hilang -> balok & papan runtuh (" + sisaSatu + "/" + tanpaTiang + ")", sisaSatu == 0 && tanpaTiang == 2);
+            }
+            finally { Object.DestroyImmediate(ujiB); }
+            cek("Pemanggul kayu & tombol LEMPAR/MODE", Object.FindFirstObjectByType<ShoulderLogAndFreeformBuilder>() != null && GameObject.Find("BahuKiri") != null);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)

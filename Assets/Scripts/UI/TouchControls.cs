@@ -12,6 +12,8 @@ namespace AlasKeramat.UI
         [SerializeField] UnityEngine.UI.Image tombolTangan;
         [SerializeField] UnityEngine.UI.Text labelTangan;
         [SerializeField] GameObject tombolObor;
+        [SerializeField] GameObject tombolLempar, tombolMode;
+        AlasKeramat.Building.ShoulderLogAndFreeformBuilder _pembangun;
         public const float AlphaTanganRedup = 0.35f, AlphaTanganAktif = 0.95f, DenyutTangan = 3f;
 
         InteraksiAndi _interaksi;
@@ -23,6 +25,7 @@ namespace AlasKeramat.UI
         bool _adaJoy;
 
         public void Pasang(ZonaJoystick j, ZonaGeser g) { joystick = j; geser = g; }
+        public void PasangPanggul(GameObject lempar, GameObject mode) { tombolLempar = lempar; tombolMode = mode; }
         public void PasangTangan(UnityEngine.UI.Image tangan, UnityEngine.UI.Text label, GameObject obor) { tombolTangan = tangan; labelTangan = label; tombolObor = obor; }
 
         void Awake()
@@ -62,6 +65,11 @@ namespace AlasKeramat.UI
                 c.a = ada ? AlphaTanganAktif - 0.15f * (0.5f + 0.5f * Mathf.Sin(Time.time * DenyutTangan * Mathf.PI * 2f)) : AlphaTanganRedup;
                 tombolTangan.color = c;
             }
+            if (_pembangun == null) _pembangun = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>();
+            bool bawa = _pembangun != null && _pembangun.Jumlah > 0;
+            if (tombolLempar != null && tombolLempar.activeSelf != bawa) tombolLempar.SetActive(bawa);
+            bool gel = bawa && _pembangun.Bawa == AlasKeramat.Building.ShoulderLogAndFreeformBuilder.Muatan.Gelondong;
+            if (tombolMode != null && tombolMode.activeSelf != gel) tombolMode.SetActive(gel);
             _tObor += Time.deltaTime;
             if (tombolObor != null && _kiri != null && _tObor > 0.5f)
             {
@@ -77,6 +85,8 @@ namespace AlasKeramat.UI
         public void TekanLompat() { if (_andi != null) _andi.Lompat(); }
         public void TekanJongkok() { if (_andi != null) _andi.ToggleJongkok(); }
         public void TekanTangan() { if (_interaksi == null) _interaksi = GameServices.Get<InteraksiAndi>(); if (_interaksi != null) _interaksi.Tekan(); }
+        public void TekanLempar() { var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.Lempar(); }
+        public void TekanModeBangun() { var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.GantiMode(); }
         public void TekanObor() { if (_kiri == null) _kiri = GameServices.Get<TanganKiri>(); if (_kiri != null) _kiri.ToggleObor(); }
     }
 }
