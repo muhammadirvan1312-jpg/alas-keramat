@@ -28,7 +28,13 @@ namespace AlasKeramat.EditorTools
             Langkah("pengaturan pemain", AturPemain);
             Langkah("builder", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraMasterBuilder", "BuildAll"));
             Langkah("self-test", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraSelfTest", "RunAll"));
-            Tulis("[LEWAT] foto: tanpa GPU");
+            if (!NusantaraFoto.AdaPerangkatGrafis) Tulis("[LEWAT] foto: tanpa perangkat grafis (" + SystemInfo.graphicsDeviceType + ")");
+            else Langkah("foto kualitas", () =>
+            {
+                int n = NusantaraFoto.AmbilSemua();
+                Tulis("  foto tersimpan: " + n + " (" + SystemInfo.graphicsDeviceName + ")");
+                if (n <= 0) throw new Exception("tidak ada foto yang berhasil dirender");
+            });
             Langkah("build APK", () => BangunApk(buildPath));
 
             Application.logMessageReceived -= TangkapLog;
