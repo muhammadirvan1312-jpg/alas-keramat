@@ -21,7 +21,6 @@ namespace AlasKeramat.EditorTools
         // Hasil aset yang dipakai langkah scene.
         static readonly Dictionary<string, Material> _mat = new Dictionary<string, Material>();
         static readonly Dictionary<string, AudioClip> _klip = new Dictionary<string, AudioClip>();
-        static Mesh _meshTanah;
 
         struct SpekTex
         {
@@ -49,7 +48,6 @@ namespace AlasKeramat.EditorTools
             BuatTekstur(cepat);
             BuatIkon(cepat);
             BuatMaterial();
-            BuatMesh();
             BuatAudio(cepat);
             AssetDatabase.SaveAssets();
         }
@@ -116,16 +114,6 @@ namespace AlasKeramat.EditorTools
             AssetDatabase.DeleteAsset(p);
             AssetDatabase.CreateAsset(m, p);
             _mat[nama] = AssetDatabase.LoadAssetAtPath<Material>(p);
-        }
-
-        static void BuatMesh()
-        {
-            const float Ukuran = 200f, UlangUV = 40f;
-            const int Segmen = 40;
-            string p = FolderMesh + "/TanahUji.asset";
-            AssetDatabase.DeleteAsset(p);
-            AssetDatabase.CreateAsset(ProcMesh.Grid("TanahUji", Ukuran, Segmen, UlangUV), p);
-            _meshTanah = AssetDatabase.LoadAssetAtPath<Mesh>(p);
         }
 
         static void BuatAudio(bool cepat)

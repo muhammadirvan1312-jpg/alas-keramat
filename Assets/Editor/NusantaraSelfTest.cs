@@ -65,16 +65,50 @@ namespace AlasKeramat.EditorTools
                 && EditorBuildSettings.scenes.Length > 0 && EditorBuildSettings.scenes[0].path == NusantaraMasterBuilder.PathScene);
             var synth = Object.FindFirstObjectByType<ProceduralAudioSynth>();
             cek("Synth punya klip dipanggang", synth != null && synth.BakedClipCount >= ProceduralAudioSynth.KlipWajib.Length);
-            var teks = Object.FindObjectsByType<Text>(FindObjectsSortMode.None);
-            cek("Teks judul T1 ada", teks.Any(t => t.text == NusantaraMasterBuilder.JudulT1));
-            cek("5 tombol suara", Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Length >= 5);
             cek("EventSystem ada", Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() != null);
             cek("Kamera utama ada", Camera.main != null);
+
+            // ---- T2a: dunia ----
+            var terrains = Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None);
+            cek("16 tile terrain (" + terrains.Length + ")", terrains.Length == WorldTerrainGenerator.TileSisi * WorldTerrainGenerator.TileSisi);
+            cek("Terrain punya 6 lapisan & material URP", terrains.Length > 0 && terrains.All(t => t.terrainData != null && t.terrainData.terrainLayers.Length == 6 && t.materialTemplate != null));
+            cek("Laut ada", GameObject.Find("Laut") != null);
+            cek("Sungai ada", GameObject.Find("Sungai_0") != null && GameObject.Find("Sungai_1") != null);
+            CekTinggi(cek, 0f, -440f, 10.5f, 0.75f);
+            CekTinggi(cek, 0f, -18f, 9f, 0.75f);
+            CekTinggi(cek, 0f, 690f, 76.5f, 1.5f);
+            CekTinggi(cek, 0f, -840f, 2.4f, 0.6f);
+            CekTinggi(cek, -560f, 290f, 5.1f, 0.45f);
+            cek("Jurang (0,648) < 30", WorldTerrainGenerator.SampleHeight(0f, 648f) < 30f);
+            cek("Dasar rawa merah (-470,190) < 3", WorldTerrainGenerator.SampleHeight(-470f, 190f) < 3f);
+            cek("Laut di tepi (3 titik) < 0", WorldTerrainGenerator.SampleHeight(-990f, 0f) < 0f && WorldTerrainGenerator.SampleHeight(990f, 0f) < 0f && WorldTerrainGenerator.SampleHeight(0f, 990f) < 0f);
+            cek("Bioma Kawah (0,0)", WorldTerrainGenerator.GetBiome(0f, 0f) == Biome.KawahBeringin);
+            cek("Bioma Sawit (-520,240)", WorldTerrainGenerator.GetBiome(-520f, 240f) == Biome.SawitTerbakar);
+            cek("Bioma Tebing (0,700)", WorldTerrainGenerator.GetBiome(0f, 700f) == Biome.TebingKapur);
+            cek("Bioma Pabrik Gula (660,-500)", WorldTerrainGenerator.GetBiome(660f, -500f) == WorldTerrainGenerator.PabrikGula);
+            cek("Bioma Gunung Kapur (-600,660)", WorldTerrainGenerator.GetBiome(-600f, 660f) == WorldTerrainGenerator.GunungKapur);
+            cek("Bioma Ladang Tebu (620,620)", WorldTerrainGenerator.GetBiome(620f, 620f) == WorldTerrainGenerator.LadangTebu);
+            cek("Bioma Alas Wingit (-760,-40)", WorldTerrainGenerator.GetBiome(-760f, -40f) == WorldTerrainGenerator.AlasWingit);
+            cek("Bioma Laut (-990,0)", WorldTerrainGenerator.GetBiome(-990f, 0f) == Biome.Laut);
+            cek("Gunung Kapur menjulang > 120 m", WorldTerrainGenerator.SampleHeight(-600f, 660f) > 120f);
+            var jam = Object.FindFirstObjectByType<TimeOfDayClock>();
+            bool jamOk = false;
+            if (jam != null) { float a = jam.Jam; jam.Maju(1.5f); jamOk = Mathf.Abs(jam.Jam - (a + 1.5f)) < 0.01f; jam.SetWaktu(TimeOfDayClock.JamMulai, 1); }
+            cek("Jam dunia maju", jamOk);
+            var atmos = Object.FindFirstObjectByType<URPAtmosphereAndWeather>();
+            cek("Atmosfer & langit terpasang", atmos != null && RenderSettings.skybox != null);
+            cek("Tur pratinjau di kamera", Object.FindFirstObjectByType<AlasKeramat.UI.TurPratinjau>() != null);
 
             Directory.CreateDirectory("Logs");
             File.WriteAllLines(PathHasil, hasil.ToArray());
             foreach (var h in hasil) if (h.StartsWith("[GAGAL]")) Debug.LogError("[AK][GAGAL] self-test: " + h);
             return semua;
+        }
+
+        static void CekTinggi(System.Action<string, bool> cek, float x, float z, float harap, float toleransi)
+        {
+            float h = WorldTerrainGenerator.SampleHeight(x, z);
+            cek("Tinggi (" + x + "," + z + ") = " + h.ToString("0.00") + " ~ " + harap + " +- " + toleransi, Mathf.Abs(h - harap) <= toleransi);
         }
 
         static bool GraphicsSettings_DefaultAda() { return UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline != null; }

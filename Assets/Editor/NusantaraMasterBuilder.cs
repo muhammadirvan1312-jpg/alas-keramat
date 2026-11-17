@@ -15,7 +15,7 @@ namespace AlasKeramat.EditorTools
         public const string PathScene = "Assets/Scenes/AlasKeramat_Main.unity";
         public const string NamaRoot = "[ALAS_KERAMAT_ROOT]";
         public const string PathLaporan = "Logs/nusantara_build_report.txt";
-        public const string JudulT1 = "ALAS KERAMAT - FONDASI OK";
+        public const string JudulT1 = "ALAS KERAMAT - DUNIA";
 
         static readonly List<string> _laporan = new List<string>();
         static readonly List<string> _gagal = new List<string>();
@@ -26,8 +26,8 @@ namespace AlasKeramat.EditorTools
         [MenuItem("Nusantara Builder/2. Bangun Ulang Cepat (pakai aset yang ada)", false, 2)]
         public static void BuildQuick() { Bangun(true); }
 
-        [MenuItem("Nusantara Builder/Tahap/Bangun sampai T1", false, 20)]
-        public static void BuildUntilT1() { Bangun(false); }
+        [MenuItem("Nusantara Builder/Tahap/Bangun sampai T2", false, 20)]
+        public static void BuildUntilT2() { Bangun(false); }
 
         [MenuItem("Nusantara Builder/Utilitas/Buka Scene Utama", false, 40)]
         public static void OpenMainScene()
@@ -60,7 +60,8 @@ namespace AlasKeramat.EditorTools
                 if (!cepat) Langkah("0. Bersihkan Assets/Generated", 0.01f, DeleteGenerated);
                 Langkah("1. Proyek", 0.05f, LangkahProyek);
                 Langkah("2. Aset", 0.30f, () => LangkahAset(cepat));
-                Langkah("3. Dunia uji T1", 0.55f, LangkahDuniaT1);
+                Langkah("3. Scene & langit", 0.32f, LangkahScene);
+                Langkah("3b. Dunia 2x2 km", 0.35f, LangkahDunia);
                 Langkah("6. Sistem", 0.70f, LangkahSistem);
                 Langkah("7. UI", 0.85f, LangkahUI);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
