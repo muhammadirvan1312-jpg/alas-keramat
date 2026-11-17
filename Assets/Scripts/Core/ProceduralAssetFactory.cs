@@ -92,6 +92,7 @@ namespace AlasKeramat.Core
     public static class ProcTex
     {
         public const int UkuranDefault = 256;
+        public const float KilauAlbedo = 0.12f;
 
         static float Hash(int x, int y, int seed)
         {
@@ -149,7 +150,8 @@ namespace AlasKeramat.Core
             var t = new Texture2D(size, size, TextureFormat.RGBA32, true);
             t.name = name;
             var px = new Color[size * size];
-            for (int i = 0; i < px.Length; i++) px[i] = g.Evaluate(Mathf.Clamp01(h[i]));
+            // Alpha = smoothness bagi shader Terrain/Lit URP (tanpa mask map). Alpha 1 membuat tanah mengilap seperti cermin.
+            for (int i = 0; i < px.Length; i++) { var c = g.Evaluate(Mathf.Clamp01(h[i])); c.a = KilauAlbedo * (0.6f + 0.8f * h[i]); px[i] = c; }
             t.SetPixels(px);
             t.Apply(true);
             t.wrapMode = TextureWrapMode.Repeat;

@@ -39,6 +39,9 @@ namespace AlasKeramat.EditorTools
             new Shot("t2_09_malam", new Vector3(-40f, 14f, -520f), new Vector3(0f, 4f, -440f), 22f),
             new Shot("t2_10_hutan_dalam", new Vector3(-150f, 1.7f, -250f), new Vector3(-150f, 3f, -200f), 9.5f, 65f),
             new Shot("t2_11_badai", new Vector3(-40f, 20f, -540f), new Vector3(0f, 6f, -440f), 15f, 60f, (int)WeatherState.HujanBadai),
+            new Shot("t2_13_desa_mati", new Vector3(500f, 6f, 150f), new Vector3(550f, 3f, 210f), 16.8f, 60f),
+            new Shot("t2_14_pabrik_gula", new Vector3(600f, 8f, -590f), new Vector3(680f, 15f, -500f), 17.2f, 60f),
+            new Shot("t2_15_beringin_agung", new Vector3(30f, 4f, -60f), new Vector3(0f, 14f, 0f), 18.4f, 70f),
             new Shot("t2_12_hutan_jati", new Vector3(60f, 2f, -330f), new Vector3(20f, 6f, -300f), 8.5f, 65f),
         };
 

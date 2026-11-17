@@ -109,6 +109,8 @@ namespace AlasKeramat.EditorTools
                 }
             if (atmos != null) atmos.SetCuaca(WeatherState.Cerah, true);
             cek("Semua 7 cuaca bisa diset", cuacaOk);
+            cek("Landmark >= 35 (" + NusantaraMasterBuilder.JumlahLandmark + ")", NusantaraMasterBuilder.JumlahLandmark >= 35);
+            cek("Beringin Agung & altar & cerobong ada", GameObject.Find("BeringinAgung") != null && GameObject.Find("Altar") != null && GameObject.Find("Cerobong") != null);
             cek("Tur pratinjau di kamera", Object.FindFirstObjectByType<AlasKeramat.UI.TurPratinjau>() != null);
 
             Directory.CreateDirectory("Logs");

@@ -65,12 +65,12 @@ namespace AlasKeramat.Core
             tintKabut = Color.white;
             switch (w)
             {
-                case WeatherState.Berawan: cahaya = 0.75f; kabut = 0.0006f; hujan = 0f; break;
-                case WeatherState.Gerimis: cahaya = 0.55f; kabut = 0.0022f; hujan = 0.3f; tintKabut = ProcTex.Hex("#B8C0C4"); break;
-                case WeatherState.HujanBadai: cahaya = 0.3f; kabut = 0.0050f; hujan = 1f; tintKabut = ProcTex.Hex("#8A949A"); break;
-                case WeatherState.KabutPagi: cahaya = 0.7f; kabut = 0.0070f; hujan = 0f; tintKabut = ProcTex.Hex("#D8DCDC"); break;
-                case WeatherState.KabutAsap: cahaya = 0.6f; kabut = 0.0060f; hujan = 0f; tintKabut = ProcTex.Hex("#9A7A55"); break;
-                case WeatherState.KabutDarah: cahaya = 0.5f; kabut = 0.0060f; hujan = 0f; tintKabut = ProcTex.Hex("#8A1A14"); break;
+                case WeatherState.Berawan: cahaya = 0.75f; kabut = 0.0003f; hujan = 0f; break;
+                case WeatherState.Gerimis: cahaya = 0.55f; kabut = 0.0012f; hujan = 0.3f; tintKabut = ProcTex.Hex("#B8C0C4"); break;
+                case WeatherState.HujanBadai: cahaya = 0.3f; kabut = 0.0030f; hujan = 1f; tintKabut = ProcTex.Hex("#8A949A"); break;
+                case WeatherState.KabutPagi: cahaya = 0.7f; kabut = 0.0040f; hujan = 0f; tintKabut = ProcTex.Hex("#D8DCDC"); break;
+                case WeatherState.KabutAsap: cahaya = 0.6f; kabut = 0.0035f; hujan = 0f; tintKabut = ProcTex.Hex("#9A7A55"); break;
+                case WeatherState.KabutDarah: cahaya = 0.5f; kabut = 0.0035f; hujan = 0f; tintKabut = ProcTex.Hex("#8A1A14"); break;
                 default: cahaya = 1f; kabut = 0f; hujan = 0f; break;
             }
         }

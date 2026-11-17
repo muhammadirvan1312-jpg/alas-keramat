@@ -7,7 +7,7 @@ namespace AlasKeramat.Core
     {
         public const float SudutUtara = -35f;
         const float IntensitasMatahari = 1.35f, IntensitasBulan = 0.12f;
-        const float KabutSiang = 0.0016f, KabutMalam = 0.0045f, KabutMaghrib = 0.0035f;
+        const float KabutSiang = 0.00055f, KabutMalam = 0.0016f, KabutMaghrib = 0.0012f; // dunia 2 km: jarak pandang siang ~ 1,5 km
 
         [SerializeField] Light sun;
         [SerializeField] Light moon;
@@ -100,7 +100,8 @@ namespace AlasKeramat.Core
             if (skybox != null)
             {
                 RenderSettings.skybox = skybox;
-                Color langit = _warnaLangit.Evaluate(u);
+                // _SkyTint bawaan 0,5 abu; warna penuh membuat langit kuning-hijau. Hanya digeser sebagian ke warna jam.
+                Color langit = Color.Lerp(new Color(0.5f, 0.5f, 0.5f), _warnaLangit.Evaluate(u), maghrib ? 0.75f : 0.25f);
                 SafeMaterialFactory.SetC(skybox, "_SkyTint", langit);
                 SafeMaterialFactory.SetC(skybox, "_GroundColor", Color.Lerp(langit, Color.black, 0.6f));
                 SafeMaterialFactory.SetF(skybox, "_Exposure", Mathf.Lerp(1.25f, 0.08f, Malam01(jam)));

@@ -101,7 +101,7 @@ namespace AlasKeramat.EditorTools
             BuatMat("M_Batu", "batu", Color.white, 0f, 0.25f, SurfaceMode.Opaque);
             BuatMat("M_Beton", "beton", Color.white, 0f, 0.2f, SurfaceMode.Opaque);
             BuatMat("M_LogamKarat", "logam_karat", Color.white, 0.6f, 0.35f, SurfaceMode.Opaque);
-            BuatMat("M_Daun", "daun", Color.white, 0f, 0.35f, SurfaceMode.Cutout);
+            BuatMat("M_Daun", "daun", Color.white, 0f, 0.35f, SurfaceMode.Opaque);
             Catat(_mat.Count + " material");
         }
 
