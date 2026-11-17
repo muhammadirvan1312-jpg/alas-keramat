@@ -9,7 +9,8 @@ namespace AlasKeramat.AI
     public class GridPathfinder : MonoBehaviour
     {
         public const int MaksNode = 4000, PencarianPerFrame = 2, RadiusCariLewat = 4, PandangMaks = 40;
-        public const float BobotHeuristik = 1.3f, Akar2 = 1.41421356f;
+        public const float BobotDefault = 2f, Akar2 = 1.41421356f;
+        public static float BobotHeuristik = BobotDefault; // weighted A*: jalur sedikit kurang optimal, ekspansi node jauh lebih kecil
 
         [SerializeField] TextAsset dataGrid;
 

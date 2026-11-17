@@ -36,8 +36,9 @@ namespace AlasKeramat.AI
         public byte Ambil(int ix, int iz) { return DiDalam(ix, iz) ? _sel[Indeks(ix, iz)] : Blok; }
         public bool Lewat(int ix, int iz) { return Ambil(ix, iz) != Blok; }
 
-        // Biaya masuk sel (dikali jarak langkah). Air sungai = berenang/mengarungi, 4x lebih mahal.
-        public static float Biaya(byte s) { return s == Air ? 4f : 1f; }
+        // Biaya masuk sel (dikali jarak langkah). Air sungai = berenang/mengarungi, 1,5x lebih mahal (biaya besar membuat A* menyisir tepi sungai).
+        public static float Biaya(byte s) { return s == Air ? BiayaAir : 1f; }
+        public const float BiayaAir = 1.5f;
 
         // Klasifikasi satu sel dari tinggi pusat + 4 tetangga (lereng rata-rata 4 m) + permukaan air sungai.
         public static byte Klasifikasi(float h, float hKiri, float hKanan, float hBawah, float hAtas, float? permukaanAir, bool sungai)
