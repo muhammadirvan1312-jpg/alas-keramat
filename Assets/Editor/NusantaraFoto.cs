@@ -74,6 +74,8 @@ namespace AlasKeramat.EditorTools
                 var utama = Camera.main;
                 if (utama != null) { cam.CopyFrom(utama); utama.enabled = false; }
                 cam.allowHDR = true;
+                var dataCam = UnityEngine.Rendering.Universal.CameraExtensions.GetUniversalAdditionalCameraData(cam);
+                if (dataCam != null) dataCam.renderPostProcessing = true;
                 var rt = new RenderTexture(Lebar, Tinggi, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
                 var atmos = UnityEngine.Object.FindFirstObjectByType<URPAtmosphereAndWeather>();
                 var veg = UnityEngine.Object.FindFirstObjectByType<AlasKeramat.Building.VegetationManager>();

@@ -178,6 +178,14 @@ namespace AlasKeramat.EditorTools
             var rDepan = AlasKeramat.UI.RadarGPS.KeRadar(Vector3.zero, new Vector3(0f, 0f, 50f), 0f);
             var rPutar = AlasKeramat.UI.RadarGPS.KeRadar(Vector3.zero, new Vector3(50f, 0f, 0f), 90f);
             cek("Radar: depan = atas (saat menghadap utara & timur)", rDepan.y > 40f && Mathf.Abs(rDepan.x) < 1f && rPutar.y > 40f && Mathf.Abs(rPutar.x) < 1f);
+            var volG = Object.FindFirstObjectByType<UnityEngine.Rendering.Volume>();
+            UnityEngine.Rendering.Universal.Tonemapping tmCek = null; UnityEngine.Rendering.Universal.Bloom blCek = null;
+            cek("Volume global + ACES + bloom", volG != null && volG.isGlobal && volG.sharedProfile != null
+                && volG.sharedProfile.TryGet(out tmCek) && volG.sharedProfile.TryGet(out blCek));
+            var camAndi = Camera.main;
+            cek("Kamera utama pakai pasca-proses", camAndi != null && UnityEngine.Rendering.Universal.CameraExtensions.GetUniversalAdditionalCameraData(camAndi).renderPostProcessing);
+            cek("Pasca-proses malam lebih gelap & dingin dari siang", AKPascaProses.Target(23f, WeatherState.Cerah).x < AKPascaProses.Target(12f, WeatherState.Cerah).x
+                && AKPascaProses.Target(23f, WeatherState.Cerah).z < AKPascaProses.Target(12f, WeatherState.Cerah).z);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)

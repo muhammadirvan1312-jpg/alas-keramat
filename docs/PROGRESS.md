@@ -28,6 +28,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T3b
 
 | T3b | 2026-11-17 | Menunggu CI | Inventory: TikarPandan3DInventory (model data, Maks per item, simpan JSON), WadahItem (koper & benda lepas, tutup berputar); Player: InteraksiAndi (SphereCast 2,5 m, MINUM AIR), TanganKiri (obor + korek, cahaya berkedip), IVitalAndi (kontrak untuk vitals GPT TUGAS 03); UI: tombol TANGAN kontekstual & OBOR, ToastHUD, RadarGPS (150 m, U berputar, aktif dengan GPS); Editor: BuilderSteps.Interaksi (3 koper 03 §9 x2, puing heli) | + cek 3 koper sesuai isi, Maks inventaris, radar/toast/interaksi, arah radar | Buka koper, ambil golok/GPS/obor, radar menyala, obor menerangi malam, minum di sungai |
 
+| T3c | 2026-11-17 | Menunggu CI | Core: AKPascaProses (eksposur/saturasi/suhu/vignette mengikuti jam & cuaca: siang hangat, Maghrib merah, malam biru gelap, badai kelabu); Editor: BuilderSteps.Pasca (VolumeProfile ACES, color adjustments, white balance, bloom, vignette, split-toning, lift; pasca-proses + FXAA di semua kamera & kamera foto) | + cek volume ACES & bloom, kamera utama pasca-proses, malam lebih gelap & dingin | Warna sinematik, tidak kusam |
+
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
 ## Keputusan Teknis Baru
