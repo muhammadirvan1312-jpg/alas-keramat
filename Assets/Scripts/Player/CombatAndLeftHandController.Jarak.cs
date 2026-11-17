@@ -36,6 +36,7 @@ namespace AlasKeramat.Player
         };
 
         public static event System.Action OnKenaJarak; // tanda kena untuk proyektil
+        public static void PicuKenaJarak() { var h = OnKenaJarak; if (h != null) h(); }
 
         [SerializeField] GameObject[] prefabProyektil = new GameObject[5]; // panah, tombak, batu, suar, bom
 

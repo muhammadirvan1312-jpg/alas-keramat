@@ -76,7 +76,7 @@ namespace AlasKeramat.AI
                 }
                 if (_amunisi == ItemID.PanahRacun && ai != null) ai.Bakar(RacunPerDetik, LamaRacun, true);
                 if (_amunisi == ItemID.Batu && ai != null) ai.Goyahkan(GoyahKetapel);
-                var h = CombatAndLeftHandController.OnKenaJarak; if (h != null) h();
+                CombatAndLeftHandController.PicuKenaJarak();
                 transform.SetParent(c.transform, true);
             }
             else if (c != null && c.GetComponentInParent<AlasKeramat.Building.BagianStruktur>() != null && _amunisi == ItemID.PanahApi) ApiStruktur.Nyalakan(c.GetComponentInParent<AlasKeramat.Building.BagianStruktur>().gameObject);
