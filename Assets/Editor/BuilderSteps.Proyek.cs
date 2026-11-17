@@ -91,6 +91,7 @@ namespace AlasKeramat.EditorTools
             urp.shadowDistance = JarakBayangan;
             urp.msaaSampleCount = 1;
             urp.supportsHDR = true;
+            urp.supportsCameraDepthTexture = true; // shader air AK butuh kedalaman (buih tepi, warna dalam)
             AssetDatabase.CreateAsset(urp, PathUrpAsset);
             AssetDatabase.SaveAssets();
 

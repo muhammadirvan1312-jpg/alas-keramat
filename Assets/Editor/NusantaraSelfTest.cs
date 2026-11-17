@@ -125,6 +125,16 @@ namespace AlasKeramat.EditorTools
             cek("Bed: hutan dini hari", AmbienceDirector.PilihBed(Biome.HutanCampuran, 2.5f) == ProceduralAudioSynth.BedDini);
             cek("Bed: Alas Wingit", AmbienceDirector.PilihBed(WorldTerrainGenerator.AlasWingit, 12f) == ProceduralAudioSynth.BedWingit);
             cek("Bed: hutan Maghrib -> malam", AmbienceDirector.PilihBed(Biome.HutanJatiSelatan, 19f) == ProceduralAudioSynth.BedMalam);
+            foreach (var sn in new[] { NusantaraMasterBuilder.ShaderDaun, NusantaraMasterBuilder.ShaderKulit, NusantaraMasterBuilder.ShaderAir })
+            {
+                var sh = Shader.Find(sn);
+                cek("Shader " + sn + " ada & tanpa error", sh != null && !ShaderUtil.ShaderHasError(sh));
+            }
+            var mDaun = AssetDatabase.LoadAssetAtPath<Material>(NusantaraMasterBuilder.FolderMat + "/M_DaunPohon.mat");
+            cek("Daun pakai shader AK", mDaun != null && mDaun.shader.name == NusantaraMasterBuilder.ShaderDaun && mDaun.enableInstancing);
+            var mSungai = AssetDatabase.LoadAssetAtPath<Material>(NusantaraMasterBuilder.FolderMat + "/M_Sungai.mat");
+            cek("Sungai pakai shader air AK", mSungai != null && mSungai.shader.name == NusantaraMasterBuilder.ShaderAir);
+            cek("AKAngin ada", Object.FindFirstObjectByType<AKAngin>() != null);
             cek("Tur pratinjau di kamera", Object.FindFirstObjectByType<AlasKeramat.UI.TurPratinjau>() != null);
 
             Directory.CreateDirectory("Logs");

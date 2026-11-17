@@ -87,6 +87,9 @@ namespace AlasKeramat.EditorTools
             atmos.PasangCuaca(_matHujan, _kilat);
             atmos.Terapkan(TimeOfDayClock.JamMulai);
             EditorUtility.SetDirty(atmos);
+            var angin = _sistem.AddComponent<AKAngin>();
+            angin.Pasang(atmos, WeatherState.Cerah);
+            EditorUtility.SetDirty(angin);
             var audioGo = Anak(_sistem, "ProceduralAudioSynth");
             var synth = audioGo.AddComponent<ProceduralAudioSynth>();
             var nama = ProceduralAudioSynth.KlipWajib;

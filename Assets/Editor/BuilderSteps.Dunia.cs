@@ -183,12 +183,14 @@ namespace AlasKeramat.EditorTools
             go.layer = GameLayers.Water;
             go.transform.SetParent(dunia.transform, false);
             go.AddComponent<MeshFilter>().sharedMesh = m;
-            go.AddComponent<MeshRenderer>().sharedMaterial = MatAir("M_Laut", ProcTex.Hex("#1C4652D9"), 0.92f);
+            var mr = go.AddComponent<MeshRenderer>();
+            mr.sharedMaterial = AirAK("M_Laut", ProcTex.Hex("#1F6B6A55"), ProcTex.Hex("#04202BF0"), 0.12f, new Vector2(0.8f, 0.6f)) ?? MatAir("M_Laut", ProcTex.Hex("#1C4652D9"), 0.92f);
+            mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
         static void BuatSungai(GameObject dunia)
         {
-            var mat = MatAir("M_Sungai", ProcTex.Hex("#2E4A3ECC"), 0.88f);
+            var mat = AirAK("M_Sungai", ProcTex.Hex("#3D6B4E50"), ProcTex.Hex("#10261CE6"), 0.6f, new Vector2(1f, 0f)) ?? MatAir("M_Sungai", ProcTex.Hex("#2E4A3ECC"), 0.88f);
             for (int s = 0; s < WorldTerrainGenerator.SemuaSungai.Length; s++)
             {
                 var titik = WorldTerrainGenerator.SemuaSungai[s];
@@ -222,7 +224,9 @@ namespace AlasKeramat.EditorTools
                 go.layer = GameLayers.Water;
                 go.transform.SetParent(dunia.transform, false);
                 go.AddComponent<MeshFilter>().sharedMesh = mesh;
-                go.AddComponent<MeshRenderer>().sharedMaterial = mat;
+                var mrs = go.AddComponent<MeshRenderer>();
+                mrs.sharedMaterial = mat;
+                mrs.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             }
         }
     }

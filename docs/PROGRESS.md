@@ -2,7 +2,7 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T2e
+AUTOPILOT_TAHAP_BERIKUTNYA: T3
 
 - Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
@@ -21,6 +21,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T2e
 | T2c | 2026-11-17 | Menunggu CI | Core: ProcBangunan (rumah panggung, heli, mercusuar, gedung & cerobong pabrik, mulut gua, altar); Editor: BuilderSteps.Landmark; perbaikan visual dari foto T2a: alpha albedo = smoothness rendah (tanah tidak mengilap), kabut 3x lebih tipis, tint langit | + cek landmark >= 35 | Beringin Agung 28 m, heli rusak, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula + cerobong 38 m, 2 mulut gua, altar |
 
 | T2d | 2026-11-17 | Menunggu CI | GPT (TUGAS 02): ProceduralAudioSynth.Ambien (23 resep: 10 bed loop + 13 one-shot), AmbienceDirector (bed per bioma x waktu silang 4 s, emitter titik, jadwal alam, gelombang hening, burung kaget, snapshot). Claude: BuilderSteps.Ambien (emitter per bioma + titik khusus pabrik/kampung/Wingit), bake WAV ambien (bed Vorbis), hook Generate | + cek director, emitter >= 1000, 23 klip, 4 cek PilihBed | Dunia bersuara: jangkrik, tokek, kedasih, burung hantu, tonggeret, katak rawa, rantai pabrik, radio statis kampung, gamelan samar Alas Wingit |
+
+| T2e | 2026-11-17 | Menunggu CI | GPT (TUGAS 04): shader AlasKeramat/Daun (angin, kibasan, cahaya tembus, variasi warna, instancing), /Kulit (PBR + goyang sinkron), /Air (riak prosedural, kedalaman, fresnel, buih tepi), AKAngin (angin global ikut cuaca). Claude: BuilderSteps.Shader (konversi material, fallback URP/Lit), air laut & sungai tanpa bayangan, URP depth texture aktif | + cek 3 shader tanpa error, material daun & sungai pakai shader AK, AKAngin | Hutan bergoyang ditiup angin (kencang saat badai), daun tembus cahaya, air beriak dengan buih |
 
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
