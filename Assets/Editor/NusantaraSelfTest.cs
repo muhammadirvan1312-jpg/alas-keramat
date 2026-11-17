@@ -233,6 +233,16 @@ namespace AlasKeramat.EditorTools
             }
             cek("Tahi lalat Andi di bawah mata kiri (02 §2)", tahiOk);
             cek("Deden di heli & Ningsih di Sarang", GameObject.Find("KangDeden") != null && GameObject.Find("Ningsih") != null);
+            var cutS = new float[4]; cutS[AlasKeramat.Building.DirectionalTree.Selatan] = 120f;
+            cek("Pohon rebah menjauhi takikan (tebang dari selatan -> rebah ke utara)", AlasKeramat.Building.DirectionalTree.Kuadran(Vector3.back) == AlasKeramat.Building.DirectionalTree.Selatan
+                && Vector3.Dot(AlasKeramat.Building.DirectionalTree.ArahRebah(cutS, Vector3.back), Vector3.forward) > 0.99f);
+            cek("Takikan seri -> rebah menjauhi Andi", Vector3.Dot(AlasKeramat.Building.DirectionalTree.ArahRebah(new float[4], Vector3.right), Vector3.left) > 0.99f);
+            cek("Hasil kayu 07 §1 (jati 4, aren 3, kelapa 2; HP jati 120)", AlasKeramat.Building.DirectionalTree.JumlahKayu(ProcPohon.Jenis.Jati) == 4 && AlasKeramat.Building.DirectionalTree.JumlahKayu(ProcPohon.Jenis.Aren) == 3
+                && AlasKeramat.Building.DirectionalTree.JumlahKayu(ProcPohon.Jenis.Kelapa) == 2 && Mathf.Approximately(AlasKeramat.Building.DirectionalTree.HPTebang(ProcPohon.Jenis.Jati), 120f));
+            cek("Senjata terbaik (golok saja -> tebang 20; + kapak batu -> 28)", Mathf.Approximately(AlasKeramat.Player.CombatAndLeftHandController.Terbaik(id => id == ItemID.GolokPusaka).tebang, 20f)
+                && Mathf.Approximately(AlasKeramat.Player.CombatAndLeftHandController.Terbaik(id => id == ItemID.GolokPusaka || id == ItemID.KapakBatu).tebang, 28f));
+            cek("Pool pohon, melee, senjata FP, tombol TEBAS", Object.FindFirstObjectByType<AlasKeramat.Building.PohonInteraktif>() != null && Object.FindFirstObjectByType<AlasKeramat.Player.CombatAndLeftHandController>() != null
+                && GameObject.Find("SenjataFP") != null && Object.FindFirstObjectByType<AlasKeramat.UI.TombolTahan>() != null && AlasKeramat.UI.TombolTahan.Berat(0.5f) && !AlasKeramat.UI.TombolTahan.Berat(0.1f));
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)

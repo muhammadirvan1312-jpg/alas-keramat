@@ -45,6 +45,7 @@ namespace AlasKeramat.Player
         public void SetDekatApi(bool v) { _dekatApi = v; }
         public void SetBerteduh(bool v) { _berteduh = v; }
         public void SetTidur(bool v) { Tidur = v; }
+        public void UbahSanity(float d) { Sanity = Mathf.Clamp(Sanity + d, 0f, Maks); }
 
         public static float PlafonHP(float full, float haus, float rest)
         {
