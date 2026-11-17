@@ -1,0 +1,5 @@
+Perangkat grafis: llvmpipe (LLVM 15.0.7, 256 bits) (OpenGLCore)
+t1_01_lebar
+t1_02_kubus_dekat
+t1_03_bola_material
+t1_04_tanah_rendah
