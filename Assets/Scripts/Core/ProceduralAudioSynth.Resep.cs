@@ -155,5 +155,28 @@ namespace AlasKeramat.Core
             }
             return b;
         }
+    
+
+        // Guruh: retakan HP singkat + gemuruh noise coklat LP 150 Hz dengan AM acak lambat, 4 s.
+        static float[] ResepGuruh(int sr, ref Dsp.Rng rng)
+        {
+            const float T = 4.2f;
+            var b = Dsp.Buffer(T, sr);
+            var lp = Dsp.Biquad.LP(150f, 0.7f, sr);
+            var hp = Dsp.Biquad.HP(1800f, 0.7f, sr);
+            var coklat = new Dsp.Brown();
+            float am = 0.6f, amTujuan = 1f;
+            for (int i = 0; i < b.Length; i++)
+            {
+                float t = (float)i / sr;
+                if (i % 1800 == 0) amTujuan = rng.Range(0.35f, 1f);
+                am += (amTujuan - am) * 0.0006f;
+                float w = rng.White();
+                float s = lp.Process(coklat.Next(w)) * 2.6f * am * Dsp.AD(t, 0.25f, 1.6f);
+                s += hp.Process(w) * 0.5f * Dsp.ExpDecay(t, 0.09f);
+                b[i] = Dsp.SoftClip(s * 1.4f);
+            }
+            return b;
+        }
     }
 }

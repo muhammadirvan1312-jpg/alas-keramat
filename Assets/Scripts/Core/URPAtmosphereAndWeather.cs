@@ -7,7 +7,7 @@ namespace AlasKeramat.Core
     {
         public const float SudutUtara = -35f;
         const float IntensitasMatahari = 1.35f, IntensitasBulan = 0.12f;
-        const float KabutSiang = 0.0016f, KabutMalam = 0.0045f, KabutMaghrib = 0.0035f;
+        const float KabutSiang = 0.00055f, KabutMalam = 0.0016f, KabutMaghrib = 0.0012f; // dunia 2 km: jarak pandang siang ~ 1,5 km
 
         [SerializeField] Light sun;
         [SerializeField] Light moon;
@@ -35,8 +35,9 @@ namespace AlasKeramat.Core
         void Update()
         {
             if (_jam == null) return;
-            // Update visual 10x per jam game cukup halus; hindari kerja tiap frame.
-            if (Mathf.Abs(_jam.Jam - _jamTerapan) > 0.02f) Terapkan(_jam.Jam);
+            UpdateCuaca();
+            // Update visual 50x per jam game cukup halus; saat transisi cuaca diperbarui tiap frame.
+            if (Mathf.Abs(_jam.Jam - _jamTerapan) > 0.02f || _transisi < 1f) Terapkan(_jam.Jam);
         }
 
         static Gradient G(params string[] hexPerJam)
@@ -99,13 +100,15 @@ namespace AlasKeramat.Core
             if (skybox != null)
             {
                 RenderSettings.skybox = skybox;
-                Color langit = _warnaLangit.Evaluate(u);
+                // _SkyTint bawaan 0,5 abu; warna penuh membuat langit kuning-hijau. Hanya digeser sebagian ke warna jam.
+                Color langit = Color.Lerp(new Color(0.5f, 0.5f, 0.5f), _warnaLangit.Evaluate(u), maghrib ? 0.75f : 0.25f);
                 SafeMaterialFactory.SetC(skybox, "_SkyTint", langit);
                 SafeMaterialFactory.SetC(skybox, "_GroundColor", Color.Lerp(langit, Color.black, 0.6f));
                 SafeMaterialFactory.SetF(skybox, "_Exposure", Mathf.Lerp(1.25f, 0.08f, Malam01(jam)));
                 SafeMaterialFactory.SetF(skybox, "_AtmosphereThickness", maghrib ? 1.9f : 1.0f);
                 SafeMaterialFactory.SetF(skybox, "_SunSize", 0.035f);
             }
+            TerapkanCuaca();
             if (sun != null) RenderSettings.sun = sun.enabled ? sun : moon;
         }
 

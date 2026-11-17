@@ -14,10 +14,10 @@ namespace AlasKeramat.Core
 
         public const string KlipTebang = "Tebang", KlipPohonTumbang = "PohonTumbang", KlipKentongan = "Kentongan",
             KlipKuntilanak = "Kuntilanak", KlipPocong = "Pocong", KlipUIKlik = "UIKlik", KlipAmbilItem = "AmbilItem",
-            KlipAmbilKayu = "AmbilKayu";
+            KlipAmbilKayu = "AmbilKayu", KlipGuruh = "Guruh";
 
         // Daftar klip wajib T1 (Builder memanggang semuanya).
-        public static readonly string[] KlipWajib = { KlipTebang, KlipPohonTumbang, KlipKentongan, KlipKuntilanak, KlipPocong, KlipUIKlik, KlipAmbilItem, KlipAmbilKayu };
+        public static readonly string[] KlipWajib = { KlipTebang, KlipPohonTumbang, KlipKentongan, KlipKuntilanak, KlipPocong, KlipUIKlik, KlipAmbilItem, KlipAmbilKayu, KlipGuruh };
 
         public static float VolMaster = 1f;
         static readonly float[] _volKategori = { 1f, 1f, 1f, 1f };
@@ -147,7 +147,8 @@ namespace AlasKeramat.Core
                 case KlipUIKlik: b = ResepKlik(sr); break;
                 case KlipAmbilItem: b = ResepAmbilItem(sr); break;
                 case KlipAmbilKayu: b = ResepAmbilKayu(sr, ref rng); break;
-                default: return null;
+                case KlipGuruh: b = ResepGuruh(sr, ref rng); break;
+                default: return GenerateAmbien(nama, variasi, out sr);
             }
             Dsp.Finalize(b, sr);
             return b;

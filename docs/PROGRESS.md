@@ -2,7 +2,7 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T2b
+AUTOPILOT_TAHAP_BERIKUTNYA: T3b
 
 - Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
@@ -17,6 +17,14 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T2b
 | T1 | 2026-11-17 | Menunggu CI | Core: SOTFContracts, GameServices, GameEvents, GameBootstrap, PhysicsCompat, NusantaraDiagnostics, ProceduralAssetFactory(+IconPainter), ProceduralAudioSynth(+Dsp, +Resep). Editor: NusantaraMasterBuilder + BuilderSteps.Proyek/Aset/Scene, NusantaraSelfTest. Tools: cek_kompilasi.bat/.sh | 17 cek (idempoten, layer/tag, URP semua Quality, 14 tekstur, 6 material, shader, font, 8 WAV, scene, UI) | Scene uji: tanah 200x200, kubus & 3 bola PBR, judul "ALAS KERAMAT - FONDASI OK", 5 tombol suara |
 
 | T2a | 2026-11-17 | Menunggu CI | Core: WorldTerrainGenerator (+Biome), TimeOfDayClock, URPAtmosphereAndWeather; UI: TurPratinjau; Editor: BuilderSteps.Dunia/Scene (baru), NusantaraFoto (9 shot dunia + pemanasan), SelfTest T2a | 30+ cek (16 tile, 6 lapisan, laut, sungai, 6 cek tinggi, 9 bioma, jam, atmosfer, tur) | Dunia v5 2x2 km: 16 Unity Terrain 1025², splat 6 lapis per bioma+lereng, laut & 2 sungai, siang-malam & Maghrib merah, tur kamera 12 zona (waktu x20) |
+| T2b | 2026-11-17 | Menunggu CI | Core: ProcPohon (11 jenis x 2 varian x 2 LOD + atlas daun), URPAtmosphereAndWeather.Cuaca (7 cuaca, hujan, kilat, guruh), resep Guruh; Building: VegetationData, VegetationManager (RenderMeshInstanced); Editor: BuilderSteps.Vegetasi, foto +3 shot | + cek pohon 8k-45k, semak >= 10k, 7 cuaca | Hutan v5 per bioma & zona baru, sawit hangus grid, cuaca dinamis |
+| T2c | 2026-11-17 | Menunggu CI | Core: ProcBangunan (rumah panggung, heli, mercusuar, gedung & cerobong pabrik, mulut gua, altar); Editor: BuilderSteps.Landmark; perbaikan visual dari foto T2a: alpha albedo = smoothness rendah (tanah tidak mengilap), kabut 3x lebih tipis, tint langit | + cek landmark >= 35 | Beringin Agung 28 m, heli rusak, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula + cerobong 38 m, 2 mulut gua, altar |
+
+| T2d | 2026-11-17 | Menunggu CI | GPT (TUGAS 02): ProceduralAudioSynth.Ambien (23 resep: 10 bed loop + 13 one-shot), AmbienceDirector (bed per bioma x waktu silang 4 s, emitter titik, jadwal alam, gelombang hening, burung kaget, snapshot). Claude: BuilderSteps.Ambien (emitter per bioma + titik khusus pabrik/kampung/Wingit), bake WAV ambien (bed Vorbis), hook Generate | + cek director, emitter >= 1000, 23 klip, 4 cek PilihBed | Dunia bersuara: jangkrik, tokek, kedasih, burung hantu, tonggeret, katak rawa, rantai pabrik, radio statis kampung, gamelan samar Alas Wingit |
+
+| T2e | 2026-11-17 | Menunggu CI | GPT (TUGAS 04): shader AlasKeramat/Daun (angin, kibasan, cahaya tembus, variasi warna, instancing), /Kulit (PBR + goyang sinkron), /Air (riak prosedural, kedalaman, fresnel, buih tepi), AKAngin (angin global ikut cuaca). Claude: BuilderSteps.Shader (konversi material, fallback URP/Lit), air laut & sungai tanpa bayangan, URP depth texture aktif | + cek 3 shader tanpa error, material daun & sungai pakai shader AK, AKAngin | Hutan bergoyang ditiup angin (kencang saat badai), daun tembus cahaya, air beriak dengan buih |
+
+| T3a | 2026-11-17 | Menunggu CI | Player: AndiFPSController (jalan/lari/jongkok/lompat + coyote, berenang & menyelam dasar, napas, damage jatuh via IDamageable, kamera pitch/yaw + head bob, keyboard/mouse hanya ENABLE_LEGACY_INPUT_MANAGER); UI: ZonaJoystick (mengambang, sprint LARI), ZonaGeser, TouchControls, HUDInfo (HARI/jam/label waktu/cuaca + nama zona); Editor: BuilderSteps.Andi (spawn (-4,-424) dekat heli, kamera Andi, tur dimatikan, sprite UI lingkaran) | + 11 cek (Andi, spawn, MainCamera, 1 AudioListener, tur mati, kontrol, handler tombol, HUDInfo, kecepatan 09 §3, sprint, label waktu) | Pertama kali bisa jalan-jalan di hutan dari HP |
 
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
@@ -26,6 +34,7 @@ Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hid
 - PlayerSettings Android diatur NusantaraCI: `com.alaskeramat.game`, Mono, ARMv7, min API 26 (IL2CPP/ARM64 ditunda ke T11).
 - Lock file aset CC0 & mocap masih kosong; diisi mulai T2 (docs/gdd/19).
 - T1: aset URP dibuat Builder di `Assets/Generated/Render/` (UniversalRendererData + PostProcessData bawaan paket) dan dipasang ke default + semua level Quality.
+- Kelas MonoBehaviour/ScriptableObject WAJIB di file bernama sama dengan kelasnya (VegetationManager.cs, VegetationData.cs) agar bisa diserialisasi Unity; nama file manifest 11 menyesuaikan.
 - T1: tombol uji suara memanggil `ProceduralAudioSynth.PlayByName(string)` lewat persistent listener (tanpa sambungan manual).
 - T1: ikon 20 buah (kayu, batu, ranting, daun, tali, makanan, air, golok, kapak, tombak, busur, panah, obor, senter, peta, buku, api, nyawa, stamina, kewarasan) di `Assets/Generated/Icons/`.
 

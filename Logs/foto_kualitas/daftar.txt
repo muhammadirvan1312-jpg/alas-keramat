@@ -1,5 +1,16 @@
 Perangkat grafis: llvmpipe (LLVM 15.0.7, 256 bits) (OpenGLCore)
-t1_01_lebar
-t1_02_kubus_dekat
-t1_03_bola_material
-t1_04_tanah_rendah
+t2_15_beringin_agung
+t2_14_pabrik_gula
+t2_13_desa_mati
+t2_08_maghrib_merah
+t2_09_malam
+t2_10_hutan_dalam
+t2_11_badai
+t2_01_udara_pulau_pagi
+t2_02_heli_pagi
+t2_03_kawah_beringin_siang
+t2_04_tebing_kapur_siang
+t2_05_sungai_bambu_pagi
+t2_06_pantai_sore
+t2_07_gunung_kapur
+t2_12_hutan_jati
