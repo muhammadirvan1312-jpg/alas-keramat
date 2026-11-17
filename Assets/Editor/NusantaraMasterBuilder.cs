@@ -73,6 +73,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7e. Vital Andi & bar HUD", 0.925f, LangkahVital);
                 Langkah("7f. Foley, subtitle, sabuk cepat", 0.928f, LangkahHUDLanjut);
                 Langkah("7g. Karakter & animasi", 0.935f, LangkahKarakter);
+                Langkah("7h. Tebang & melee", 0.94f, LangkahTebang);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }
