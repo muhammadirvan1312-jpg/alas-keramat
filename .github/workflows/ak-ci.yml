@@ -11,7 +11,8 @@ on:
 
 concurrency:
   group: ak-ci-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  # Build main tidak dibatalkan (setiap merge harus menghasilkan APK); PR boleh dibatalkan oleh push baru.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: write
@@ -150,7 +151,7 @@ jobs:
   foto:
     name: Foto kualitas (tidak memblokir)
     needs: unity
-    if: always() && needs.unity.result == 'success'
+    if: always() && needs.unity.result == 'success' && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     continue-on-error: true
