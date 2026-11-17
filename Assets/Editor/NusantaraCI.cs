@@ -28,19 +28,29 @@ namespace AlasKeramat.EditorTools
             Langkah("pengaturan pemain", AturPemain);
             Langkah("builder", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraMasterBuilder", "BuildAll"));
             Langkah("self-test", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraSelfTest", "RunAll"));
-            if (!NusantaraFoto.AdaPerangkatGrafis) Tulis("[LEWAT] foto: tanpa perangkat grafis (" + SystemInfo.graphicsDeviceType + ")");
-            else Langkah("foto kualitas", () =>
-            {
-                int n = NusantaraFoto.AmbilSemua();
-                Tulis("  foto tersimpan: " + n + " (" + SystemInfo.graphicsDeviceName + ")");
-                if (n <= 0) throw new Exception("tidak ada foto yang berhasil dirender");
-            });
+            Tulis("[LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)");
             Langkah("build APK", () => BangunApk(buildPath));
 
             Application.logMessageReceived -= TangkapLog;
             File.WriteAllLines(Path.Combine(_folder, "ringkasan.md"), _baris);
             _log.Dispose();
             EditorApplication.Exit(_adaGagal ? 1 : 0);
+        }
+
+        // Job CI "foto": bangun scene lalu render foto kualitas. Tidak membangun APK.
+        public static void FotoSaja()
+        {
+            _folder = Arg("-akLaporan") ?? "Logs/ci";
+            Directory.CreateDirectory(_folder);
+            int n = -2;
+            try
+            {
+                NusantaraMasterBuilder.BuildAll();
+                n = NusantaraFoto.AmbilSemua();
+            }
+            catch (Exception e) { Debug.LogError("[AK][Foto] gagal: " + e); }
+            File.AppendAllText(Path.Combine(_folder, "foto.log"), "Hasil foto: " + n + " (" + SystemInfo.graphicsDeviceName + ")\n");
+            EditorApplication.Exit(n > 0 ? 0 : 1);
         }
 
         static void AturPemain()

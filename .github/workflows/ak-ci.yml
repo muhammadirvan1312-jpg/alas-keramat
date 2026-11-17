@@ -77,6 +77,7 @@ jobs:
         id: build
         if: steps.cekproyek.outputs.ada == '1'
         continue-on-error: true
+        timeout-minutes: 75
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -147,3 +148,75 @@ jobs:
       - name: Tandai gagal bila Unity gagal
         if: steps.build.outcome == 'failure'
         run: exit 1
+
+  # Foto kualitas dipisah dari build: render perangkat lunak (llvmpipe) bisa sangat lambat untuk terrain besar.
+  # Job ini TIDAK menentukan lulus/gagal CI (continue-on-error) dan dibatasi waktunya.
+  foto:
+    name: Foto kualitas (tidak memblokir)
+    needs: unity
+    if: always() && needs.unity.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    continue-on-error: true
+    steps:
+      - name: Kosongkan disk runner
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 1
+
+      - name: Pulihkan cache Library Unity
+        uses: actions/cache/restore@v4
+        with:
+          path: Library
+          key: Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-foto-${{ github.run_id }}
+          restore-keys: |
+            Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-
+            Library-Android-
+
+      - name: Unity — Builder + Foto
+        id: foto
+        continue-on-error: true
+        timeout-minutes: 35
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: Android
+          buildMethod: AlasKeramat.EditorTools.NusantaraCI.FotoSaja
+          allowDirtyBuild: true
+          customParameters: -akLaporan Logs/ci
+
+      - name: Komit foto ke cabang PR
+        if: always() && github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true
+          ls -la Logs/foto_kualitas 2>/dev/null || echo "Tidak ada foto."
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name "ak-ci-bot"
+          git config user.email "ak-ci-bot@users.noreply.github.com"
+          git stash -u -q 2>/dev/null || true
+          git pull -q --rebase origin "${{ github.head_ref }}" || true
+          git stash pop -q 2>/dev/null || true
+          git add -f Logs/foto_kualitas Logs/ci/foto.log 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Tidak ada foto baru."; else git commit -m "ci: foto kualitas [skip ci]" && git push; fi
+
+      - name: Unggah foto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: foto-${{ github.run_number }}
+          path: |
+            Logs/foto_kualitas
+            Logs/ci/foto.log
+          if-no-files-found: ignore
+          retention-days: 14
+

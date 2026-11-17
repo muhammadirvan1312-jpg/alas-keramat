@@ -15,6 +15,8 @@ namespace AlasKeramat.EditorTools
     {
         public const string Folder = "Logs/foto_kualitas";
         const int Lebar = 1280, Tinggi = 720;
+        const double BatasDetik = 1200; // anggaran total render (render perangkat lunak bisa lambat)
+        const string PathLog = "Logs/ci/foto.log";
 
         // Posisi & target: (x, tinggi di atas tanah/air, z) dalam koordinat dunia; jam = waktu game saat difoto.
         public struct Shot
@@ -38,6 +40,8 @@ namespace AlasKeramat.EditorTools
         };
 
         static float TinggiDasar(float x, float z) { return Mathf.Max(0f, WorldTerrainGenerator.SampleHeight(x, z)); }
+
+        static void Log(string s) { Debug.Log("[AK][Foto] " + s); File.AppendAllText(PathLog, s + "\n"); }
 
         public static bool AdaPerangkatGrafis { get { return SystemInfo.graphicsDeviceType != GraphicsDeviceType.Null; } }
 
@@ -66,11 +70,21 @@ namespace AlasKeramat.EditorTools
                 cam.allowHDR = true;
                 var rt = new RenderTexture(Lebar, Tinggi, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
                 var atmos = UnityEngine.Object.FindFirstObjectByType<URPAtmosphereAndWeather>();
+                // Ringankan terrain untuk render perangkat lunak (tidak disimpan ke scene).
+                foreach (var t in UnityEngine.Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None))
+                {
+                    t.heightmapPixelError = 12f; t.basemapDistance = 400f; t.drawTreesAndFoliage = false;
+                }
+                var jam = System.Diagnostics.Stopwatch.StartNew();
+                Directory.CreateDirectory("Logs/ci");
+                Log("Mulai foto, perangkat: " + SystemInfo.graphicsDeviceName);
                 cam.targetTexture = rt;
                 cam.farClipPlane = 2600f;
                 for (int pemanasan = 0; pemanasan < 2; pemanasan++) cam.Render(); // frame pertama sering gelap (tekstur/cahaya belum siap)
+                Log("Pemanasan selesai " + jam.Elapsed.TotalSeconds.ToString("0") + " s");
                 foreach (var s in ShotAktif)
                 {
+                    if (jam.Elapsed.TotalSeconds > BatasDetik) { Log("Anggaran waktu habis, sisa shot dilewati"); break; }
                     try
                     {
                         if (atmos != null) atmos.Terapkan(s.jam);
@@ -87,6 +101,7 @@ namespace AlasKeramat.EditorTools
                         File.WriteAllBytes(Path.Combine(Folder, s.nama + ".png"), tex.EncodeToPNG());
                         UnityEngine.Object.DestroyImmediate(tex);
                         daftar.Add(s.nama);
+                        Log(s.nama + " selesai pada " + jam.Elapsed.TotalSeconds.ToString("0") + " s");
                     }
                     catch (Exception e)
                     {
