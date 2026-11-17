@@ -1,7 +1,7 @@
 # LAPORAN CI
-- Commit: 0fc33636e2dad5f598edce616927b3382239d1f8
-- Hasil langkah Unity: success
-- Waktu: 2026-11-17T01:40:56Z
+- Commit: 21bc2c9a1dd9f262cde4d9a177cd59ae3ee8d501
+- Hasil langkah Unity: cancelled
+- Waktu: 2026-11-17T03:33:22Z
 
 [LULUS] pengaturan pemain
 [LULUS] builder
