@@ -1,11 +1,11 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (555 = 555)
+[LULUS] Idempoten: jumlah objek sama (1452 = 1452)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
 [LULUS] Tekstur >= 10 (14)
-[LULUS] Material >= 5 (36)
+[LULUS] Material >= 5 (49)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
 [LULUS] WAV >= 8 (52)
@@ -85,6 +85,10 @@
 [LULUS] Hasil kayu 07 §1 (jati 4, aren 3, kelapa 2; HP jati 120)
 [LULUS] Senjata terbaik (golok saja -> tebang 20; + kapak batu -> 28)
 [LULUS] Pool pohon, melee, senjata FP, tombol TEBAS
+[LULUS] Hasil buruan 03 §8 (rusa daging 3/kulit 1/tulang 2; babi + tengkorak)
+[LULUS] 5 template hewan (1 SMR, 17 sendi, collider) (5)
+[LULUS] Rusa cocok di hutan jati, tidak di pantai
+[LULUS] Titik pungut deterministik (4467, 7 jenis ada)
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas

@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-17 10:49:02
+Laporan Builder Alas Keramat - 2026-11-17 11:16:23
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -37,8 +37,10 @@ Laporan Builder Alas Keramat - 2026-11-17 10:49:02
 [LULUS] 7g. Karakter & animasi
   - Tebang: pool pohon interaktif, melee golok/kapak, model senjata FP, tombol TEBAS
 [LULUS] 7h. Tebang & melee
+  - Hewan: 5 template (rusa, kancil, babi hutan, ayam hutan, biawak); titik pungut pool 40
+[LULUS] 7i. Hewan & titik pungut
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 555
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 1452
 [LULUS] 9. Simpan scene
-Durasi: 136.5 detik
+Durasi: 112.0 detik
 HASIL: SEMUA LANGKAH LULUS
