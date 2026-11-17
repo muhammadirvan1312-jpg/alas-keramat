@@ -49,7 +49,8 @@ namespace AlasKeramat.EditorTools
                     bool adaBebas = GridPathfinder.Cari(grid, heli, desa, null, SurfaceGrid.JumlahSel, out nBebas);
                     GridPathfinder.BobotHeuristik = 3f; bool adaW3 = GridPathfinder.Cari(grid, heli, desa, null, SurfaceGrid.JumlahSel, out nW3);
                     GridPathfinder.BobotHeuristik = simpan;
-                    diag = " [diag: tanpa batas " + adaBebas + "/" + nBebas + " node, bobot 3 " + adaW3 + "/" + nW3 + " node]";
+                    int nT; bool adaT = GridPathfinder.CariBertingkat(grid, heli, desa, null, SurfaceGrid.JumlahSel, out nT);
+                    diag = " [diag: tanpa batas " + adaBebas + "/" + nBebas + " node, bobot 3 " + adaW3 + "/" + nW3 + " node, bertingkat tanpa batas " + adaT + "/" + nT + " (kasar " + GridPathfinder.SimpulKasarTerakhir + " dari " + grid.JumlahSimpul + " simpul)]";
                 }
                 cek("A* bertingkat Heli -> Desa ditemukan dengan " + node + " node (< 4.000), " + jalur.Count + " titik, koridor dilebarkan " + segGagal + "x, " + jam.ElapsedMilliseconds + " ms" + diag, ada && node < 4000 && jalur.Count > 0);
                 bool lurus = GridPathfinder.Cari(grid, heli, heli + new Vector3(8f, 0f, 0f), jalur, GridPathfinder.MaksNode, out node);

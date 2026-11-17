@@ -8,7 +8,9 @@ namespace AlasKeramat.AI
     // lalu A* sel 4 m hanya di dalam wilayah koridor itu (+ tetangga langsung). Total node (kasar + halus) tetap di bawah MaksNode.
     public partial class GridPathfinder
     {
-        public const float JarakBertingkat = 150f, BobotKasar = 1.2f;
+        public const float JarakBertingkat = 150f, BobotKasar = 1.5f;
+        public const int CadanganHalus = 800;
+        public static int SimpulKasarTerakhir { get; private set; }
 
         public static int SegmenGagalTerakhir { get; private set; }
 
@@ -39,7 +41,9 @@ namespace AlasKeramat.AI
             if (!SelTerdekat(g, sx, sz, out sx, out sz) || !SelTerdekat(g, tx, tz, out tx, out tz)) return false;
             int a = g.SimpulSel(SurfaceGrid.Indeks(sx, sz)), b = g.SimpulSel(SurfaceGrid.Indeks(tx, tz));
             int nK;
-            if (!CariSimpul(g, a, b, anggaran / 2, out nK)) { dikunjungi = nK; return false; }
+            bool okK = CariSimpul(g, a, b, Mathf.Max(100, anggaran - CadanganHalus), out nK);
+            SimpulKasarTerakhir = nK;
+            if (!okK) { dikunjungi = nK; return false; }
             dikunjungi = nK;
             if (_izinSimpul == null || _izinSimpul.Length != g.JumlahSimpul) _izinSimpul = new bool[g.JumlahSimpul];
             System.Array.Clear(_izinSimpul, 0, _izinSimpul.Length);
