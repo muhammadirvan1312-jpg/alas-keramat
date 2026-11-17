@@ -28,6 +28,9 @@ namespace AlasKeramat.EditorTools
         // Daftar shot aktif (T2a: dunia). Tahap berikutnya menambah shot (12 money shot 19 §8).
         public static readonly Shot[] ShotAktif =
         {
+            new Shot("t4_01_galeri_karakter", new Vector3(56f, 1.7f, -386f), new Vector3(56f, 1.1f, -376f), 10f, 75f),
+            new Shot("t4_02_galeri_dekat", new Vector3(50f, 1.6f, -380f), new Vector3(52f, 1.3f, -376f), 10f, 55f),
+            new Shot("t4_03_deden_heli", new Vector3(19f, 1.6f, -434f), new Vector3(24f, 0.9f, -440f), 9f, 55f),
             new Shot("t2_15_beringin_agung", new Vector3(30f, 4f, -60f), new Vector3(0f, 14f, 0f), 18.4f, 70f),
             new Shot("t2_14_pabrik_gula", new Vector3(600f, 8f, -590f), new Vector3(680f, 15f, -500f), 17.2f, 60f),
             new Shot("t2_13_desa_mati", new Vector3(500f, 6f, 150f), new Vector3(550f, 3f, 210f), 16.8f, 60f),
@@ -92,6 +95,9 @@ namespace AlasKeramat.EditorTools
                 cam.farClipPlane = 2600f;
                 for (int pemanasan = 0; pemanasan < 2; pemanasan++) cam.Render(); // frame pertama sering gelap (tekstur/cahaya belum siap)
                 Log("Pemanasan selesai " + jam.Elapsed.TotalSeconds.ToString("0") + " s");
+                var akar = GameObject.Find(NusantaraMasterBuilder.NamaRoot);
+                var galeriFoto = akar != null ? akar.transform.Find(NusantaraMasterBuilder.NamaGaleri) : null;
+                if (galeriFoto != null) galeriFoto.gameObject.SetActive(true);
                 foreach (var s in ShotAktif)
                 {
                     if (jam.Elapsed.TotalSeconds > BatasDetik) { Log("Anggaran waktu habis, sisa shot dilewati"); break; }
