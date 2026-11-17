@@ -307,7 +307,7 @@ namespace AlasKeramat.AI
         {
             if (_anim != null) _anim.Pose = ProceduralAnimator.PoseTempur.Merangkak;
             if (Diseret) { _vy = 0f; return; }
-            if (_tSuara <= 0f { Suara(ProceduralAudioSynth.KlipRintihSekte, 0.8f); _tSuara = Random.Range(3.5f, 6f); }
+            if (_tSuara <= 0f) { Suara(ProceduralAudioSynth.KlipRintihSekte, 0.8f); _tSuara = Random.Range(3.5f, 6f); }
             Gerak(TitikMenjauhDari(_andi.transform.position, 10f), 0.4f, dt, true);
         }
 
