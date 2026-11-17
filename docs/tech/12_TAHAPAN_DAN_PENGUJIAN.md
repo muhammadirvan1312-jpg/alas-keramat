@@ -5,7 +5,7 @@ Dibaca di SETIAP sesi. Satu sesi Codex = satu tahap. Jangan lompat tahap.
 
 > **v4 — Codex Cloud**: pengguna TIDAK menjalankan T0 di bawah ini. Ikuti `docs/tech/18_PIPELINE_CLOUD_OTONOM.md` §2 (persiapan sekali), lalu Codex mengerjakan **T0-C** (18 §4). Checklist "buka Unity" di setiap tahap diganti: CI hijau + APK uji dimainkan di HP. Bagian "Tambahan v4" di bawah wajib.
 
-> **v5**: setiap tahap juga mengerjakan baris tahap itu di `docs/gdd/20` §6 dan `docs/gdd/21` §10. Gerbang G5 Uji Dengar di akhir T2, T7, T9, T10.
+> **v5**: setiap tahap juga mengerjakan baris tahap itu di `docs/gdd/20` §6 `docs/gdd/21` §10, `docs/gdd/22` §9 dan `docs/gdd/23` §8 (T10 dipecah T10a/T10b/T10c). Gerbang G5 Uji Dengar di akhir T2, T7, T9, T10.
 
 ## T0 — Persiapan lokal (hanya bila memakai komputer sendiri)
 1. Pasang **Unity Hub**, lalu Unity **6 LTS** terbaru (atau 2022.3 LTS) dengan modul **Android Build Support** (centang OpenJDK serta Android SDK & NDK Tools). Pengguna Mac yang ingin iOS: tambah iOS Build Support.
