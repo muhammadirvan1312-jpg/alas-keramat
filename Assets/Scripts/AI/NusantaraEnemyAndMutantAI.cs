@@ -20,6 +20,7 @@ namespace AlasKeramat.AI
         public const float Gravitasi = 18f, LajuBelok = 360f, TickPersepsi = 0.2f, JedaJalur = 2f, JarakLangsung = 10f, RadiusPisah = 1.4f;
         public const float LamaLupa = 15f, JarakLupa = 70f, RadiusRitual = 6f, LamaMatiAbu = 4f, SanityAmpuni = 3f, SanitySerangMenyerah = -4f;
 
+        public static event System.Action OnMenyerahDiserang; // T8: Ningsih -5 Trust
         public static readonly List<NusantaraEnemyAndMutantAI> Semua = new List<NusantaraEnemyAndMutantAI>();
 
         [SerializeField] EnemyArchetype jenis;
@@ -345,7 +346,7 @@ namespace AlasKeramat.AI
         {
             if (!IsAlive || info.amount <= 0f) return;
             Ambil();
-            if (_keadaan == KeadaanSekte.Menyerah && _vital != null) _vital.UbahSanity(SanitySerangMenyerah);
+            if (_keadaan == KeadaanSekte.Menyerah) { if (_vital != null) _vital.UbahSanity(SanitySerangMenyerah); var ev = OnMenyerahDiserang; if (ev != null) ev(); }
             bool penghabisan = _combat != null && _combat.SedangPenghabisan && StatMusuh.Sekte(jenis);
             ZonaKena zona; bool putusLengan, putusKaki;
             float dmg = LukaiZona(info, penghabisan, out zona, out putusLengan, out putusKaki);

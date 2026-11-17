@@ -51,6 +51,7 @@ namespace AlasKeramat.Player
         readonly Dictionary<ItemID, int> _isi = new Dictionary<ItemID, int>();
 
         public void PasangProyektil(GameObject[] p) { prefabProyektil = p; }
+        public GameObject PrefabProyektil(int i) { return prefabProyektil != null && i >= 0 && i < prefabProyektil.Length ? prefabProyektil[i] : null; }
         public bool PakaiJarak { get { return _iJarak >= 0; } }
         public SenjataJarak AktifJarak { get { return _iJarak >= 0 ? TabelJarak[_iJarak] : default(SenjataJarak); } }
         public bool Kebal { get { return _tElak > 0f; } }

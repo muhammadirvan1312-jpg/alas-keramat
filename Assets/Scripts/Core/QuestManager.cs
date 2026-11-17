@@ -10,9 +10,11 @@ namespace AlasKeramat.Core
         {
             public List<string> koper = new List<string>();
             public bool jamu, catatan, saung, api, malam, pagi;
+            public bool m05; // T8: diisi misi M05 (T10); membuka semua perintah Kang Deden
             public bool[] selesai = new bool[4];
         }
         public ProgresMisiT6 Progres = new ProgresMisiT6();
+        public bool M05Selesai { get { return Progres.m05; } }
         public string SaveKey { get { return "misi"; } }
         void Awake() { GameServices.Register(this); }
         void OnEnable() { GameEvents.OnStructureBuilt += BangunanSelesai; }
