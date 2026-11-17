@@ -1,13 +1,12 @@
 # LAPORAN CI
-- Commit: 0fc33636e2dad5f598edce616927b3382239d1f8
+- Commit: bdb7f351106da1b9d3858c99ba984141b5baf2bd
 - Hasil langkah Unity: success
-- Waktu: 2026-11-17T01:40:56Z
+- Waktu: 2026-11-17T03:49:36Z
 
 [LULUS] pengaturan pemain
 [LULUS] builder
 [LULUS] self-test
-  foto tersimpan: 4 (llvmpipe (LLVM 15.0.7, 256 bits))
-[LULUS] foto kualitas
+[LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
 [LULUS] build APK
 
 ## Baris error yang ditemukan

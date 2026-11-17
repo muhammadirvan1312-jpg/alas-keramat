@@ -4,6 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using AlasKeramat.Core;
 using UnityEngine.Rendering;
 
 namespace AlasKeramat.EditorTools
@@ -14,21 +15,33 @@ namespace AlasKeramat.EditorTools
     {
         public const string Folder = "Logs/foto_kualitas";
         const int Lebar = 1280, Tinggi = 720;
+        const double BatasDetik = 1200; // anggaran total render (render perangkat lunak bisa lambat)
+        const string PathLog = "Logs/ci/foto.log";
 
+        // Posisi & target: (x, tinggi di atas tanah/air, z) dalam koordinat dunia; jam = waktu game saat difoto.
         public struct Shot
         {
-            public string nama; public Vector3 posisi; public Vector3 euler; public float fov;
-            public Shot(string n, Vector3 p, Vector3 e, float f = 60f) { nama = n; posisi = p; euler = e; fov = f; }
+            public string nama; public Vector3 posisi; public Vector3 target; public float jam; public float fov;
+            public Shot(string n, Vector3 p, Vector3 t, float j, float f = 60f) { nama = n; posisi = p; target = t; jam = j; fov = f; }
         }
 
-        // Daftar shot per tahap. Tahap berikutnya menambah shot ke daftar ini (12 money shot penuh di T2+).
-        public static readonly Shot[] ShotT1 =
+        // Daftar shot aktif (T2a: dunia). Tahap berikutnya menambah shot (12 money shot 19 §8).
+        public static readonly Shot[] ShotAktif =
         {
-            new Shot("t1_01_lebar", new Vector3(0f, 3.2f, -4f), new Vector3(12f, 0f, 0f)),
-            new Shot("t1_02_kubus_dekat", new Vector3(2.5f, 1.8f, 2.5f), new Vector3(10f, -30f, 0f), 50f),
-            new Shot("t1_03_bola_material", new Vector3(0f, 1.6f, 6.5f), new Vector3(8f, 0f, 0f), 55f),
-            new Shot("t1_04_tanah_rendah", new Vector3(-6f, 0.4f, -2f), new Vector3(4f, 35f, 0f), 70f),
+            new Shot("t2_01_udara_pulau_pagi", new Vector3(0f, 520f, -1250f), new Vector3(0f, 0f, 0f), 8f, 55f),
+            new Shot("t2_02_heli_pagi", new Vector3(-40f, 14f, -520f), new Vector3(0f, 4f, -440f), 7.5f),
+            new Shot("t2_03_kawah_beringin_siang", new Vector3(90f, 30f, -150f), new Vector3(0f, 6f, 0f), 12f),
+            new Shot("t2_04_tebing_kapur_siang", new Vector3(30f, 25f, 470f), new Vector3(0f, 20f, 690f), 13f),
+            new Shot("t2_05_sungai_bambu_pagi", new Vector3(300f, 10f, -330f), new Vector3(330f, 2f, -200f), 9f),
+            new Shot("t2_06_pantai_sore", new Vector3(60f, 8f, -760f), new Vector3(0f, 0f, -980f), 16.5f),
+            new Shot("t2_07_gunung_kapur", new Vector3(-320f, 60f, 380f), new Vector3(-600f, 60f, 660f), 10f),
+            new Shot("t2_08_maghrib_merah", new Vector3(0f, 90f, -620f), new Vector3(0f, 10f, 0f), 18.3f),
+            new Shot("t2_09_malam", new Vector3(-40f, 14f, -520f), new Vector3(0f, 4f, -440f), 22f),
         };
+
+        static float TinggiDasar(float x, float z) { return Mathf.Max(0f, WorldTerrainGenerator.SampleHeight(x, z)); }
+
+        static void Log(string s) { Debug.Log("[AK][Foto] " + s); File.AppendAllText(PathLog, s + "\n"); }
 
         public static bool AdaPerangkatGrafis { get { return SystemInfo.graphicsDeviceType != GraphicsDeviceType.Null; } }
 
@@ -56,13 +69,30 @@ namespace AlasKeramat.EditorTools
                 if (utama != null) { cam.CopyFrom(utama); utama.enabled = false; }
                 cam.allowHDR = true;
                 var rt = new RenderTexture(Lebar, Tinggi, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
-                foreach (var s in ShotT1)
+                var atmos = UnityEngine.Object.FindFirstObjectByType<URPAtmosphereAndWeather>();
+                // Ringankan terrain untuk render perangkat lunak (tidak disimpan ke scene).
+                foreach (var t in UnityEngine.Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None))
                 {
+                    t.heightmapPixelError = 12f; t.basemapDistance = 400f; t.drawTreesAndFoliage = false;
+                }
+                var jam = System.Diagnostics.Stopwatch.StartNew();
+                Directory.CreateDirectory("Logs/ci");
+                Log("Mulai foto, perangkat: " + SystemInfo.graphicsDeviceName);
+                cam.targetTexture = rt;
+                cam.farClipPlane = 2600f;
+                for (int pemanasan = 0; pemanasan < 2; pemanasan++) cam.Render(); // frame pertama sering gelap (tekstur/cahaya belum siap)
+                Log("Pemanasan selesai " + jam.Elapsed.TotalSeconds.ToString("0") + " s");
+                foreach (var s in ShotAktif)
+                {
+                    if (jam.Elapsed.TotalSeconds > BatasDetik) { Log("Anggaran waktu habis, sisa shot dilewati"); break; }
                     try
                     {
-                        cam.transform.SetPositionAndRotation(s.posisi, Quaternion.Euler(s.euler));
+                        if (atmos != null) atmos.Terapkan(s.jam);
+                        var pos = new Vector3(s.posisi.x, TinggiDasar(s.posisi.x, s.posisi.z) + s.posisi.y, s.posisi.z);
+                        var tgt = new Vector3(s.target.x, TinggiDasar(s.target.x, s.target.z) + s.target.y, s.target.z);
+                        cam.transform.SetPositionAndRotation(pos, Quaternion.LookRotation(tgt - pos));
                         cam.fieldOfView = s.fov;
-                        cam.targetTexture = rt;
+                        cam.Render();
                         cam.Render();
                         RenderTexture.active = rt;
                         var tex = new Texture2D(Lebar, Tinggi, TextureFormat.RGB24, false);
@@ -71,12 +101,14 @@ namespace AlasKeramat.EditorTools
                         File.WriteAllBytes(Path.Combine(Folder, s.nama + ".png"), tex.EncodeToPNG());
                         UnityEngine.Object.DestroyImmediate(tex);
                         daftar.Add(s.nama);
+                        Log(s.nama + " selesai pada " + jam.Elapsed.TotalSeconds.ToString("0") + " s");
                     }
                     catch (Exception e)
                     {
                         Debug.LogWarning("[AK][Foto] Shot " + s.nama + " gagal: " + e.Message);
                     }
                 }
+                if (atmos != null) atmos.Terapkan(TimeOfDayClock.JamMulai);
                 cam.targetTexture = null;
                 RenderTexture.active = null;
                 rt.Release();

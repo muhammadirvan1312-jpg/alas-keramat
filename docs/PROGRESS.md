@@ -2,9 +2,9 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T2
+AUTOPILOT_TAHAP_BERIKUTNYA: T2b
 
-- Tahap aktif: **T1 selesai ditulis, menunggu AK CI hijau**. Pengerjaan per sesi (Claude).
+- Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
 - Mode input proyek: default proyek baru; EventSystem memakai AddCorrectInputModule (H3)
 - Hasil cek kompilasi terakhir: cek_statis.py 0 masalah; kompilasi Unity diuji AK CI (tidak ada Unity di container)
@@ -15,6 +15,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T2
 | T0 | — | Dilakukan pengguna | — | — | Proyek URP dibuat, AGENTS.md & docs/ disalin |
 | T0-C | 2026-11-17 | Menunggu CI | ProjectSettings/ProjectVersion.txt, Packages/manifest.json, .gitignore, Assets/Editor/NusantaraCI.cs, NusantaraMasterBuilder.cs, NusantaraSelfTest.cs, Tools/ambil_aset.py, Tools/cek_statis.py, lock file kosong, ak-autopilot.yml | 5 cek (root tunggal, Build Settings, kamera, teks, font) | Scene minimal "ALAS KERAMAT - PIPELINE OK", APK pengembangan Mono ARMv7 |
 | T1 | 2026-11-17 | Menunggu CI | Core: SOTFContracts, GameServices, GameEvents, GameBootstrap, PhysicsCompat, NusantaraDiagnostics, ProceduralAssetFactory(+IconPainter), ProceduralAudioSynth(+Dsp, +Resep). Editor: NusantaraMasterBuilder + BuilderSteps.Proyek/Aset/Scene, NusantaraSelfTest. Tools: cek_kompilasi.bat/.sh | 17 cek (idempoten, layer/tag, URP semua Quality, 14 tekstur, 6 material, shader, font, 8 WAV, scene, UI) | Scene uji: tanah 200x200, kubus & 3 bola PBR, judul "ALAS KERAMAT - FONDASI OK", 5 tombol suara |
+
+| T2a | 2026-11-17 | Menunggu CI | Core: WorldTerrainGenerator (+Biome), TimeOfDayClock, URPAtmosphereAndWeather; UI: TurPratinjau; Editor: BuilderSteps.Dunia/Scene (baru), NusantaraFoto (9 shot dunia + pemanasan), SelfTest T2a | 30+ cek (16 tile, 6 lapisan, laut, sungai, 6 cek tinggi, 9 bioma, jam, atmosfer, tur) | Dunia v5 2x2 km: 16 Unity Terrain 1025², splat 6 lapis per bioma+lereng, laut & 2 sungai, siang-malam & Maghrib merah, tur kamera 12 zona (waktu x20) |
 
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
