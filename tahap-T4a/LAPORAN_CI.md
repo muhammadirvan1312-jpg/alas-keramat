@@ -1,14 +1,12 @@
 # LAPORAN CI
-- Commit: e2bd0f12993eb396fa145f5e2c6fec95c40d0cb0
-- Hasil langkah Unity: failure
-- Waktu: 2026-11-17T09:06:36Z
+- Commit: 5b43336bae16de69d50d70503a8bb92744c543d5
+- Hasil langkah Unity: success
+- Waktu: 2026-11-17T09:20:32Z
 
 [LULUS] pengaturan pemain
 [LULUS] builder
-[GAGAL] self-test: RunAll melaporkan gagal
+[LULUS] self-test
 [LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
 [LULUS] build APK
 
 ## Baris error yang ditemukan
-[Error] [AK][GAGAL] self-test: [GAGAL] Tahi lalat Andi di bawah mata kiri (02 §2)
-[Error] [AK][GAGAL] self-test: System.Exception: RunAll melaporkan gagal
