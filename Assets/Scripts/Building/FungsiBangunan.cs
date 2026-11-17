@@ -7,7 +7,7 @@ namespace AlasKeramat.Building
 {
     // Fungsi bangunan blueprint (07 §7.1-7.2) selain api & panci: tidur/istirahat, rak & kereta kayu, penampung hujan, jemuran,
     // perangkap ayun, obor tengkorak, menara (naik/turun), pintu, kentongan, rakit.
-    public class FungsiBangunan : MonoBehaviour, IInteractable
+    public partial class FungsiBangunan : MonoBehaviour, IInteractable
     {
         public const int KapRak = 24, KapKereta = 8, MaksAir = 6, SlotJemur = 6;
         public const float DetikPerAir = 10f, LamaJemur = 120f, LamaObor = 240f, DamagePerangkap = 200f, JamBangun = 6f, TidurSiang = 2f;
@@ -33,6 +33,7 @@ namespace AlasKeramat.Building
         void Update()
         {
             float dt = Time.deltaTime;
+            UpdateV3(dt);
             if (Jenis == BlueprintID.PenampungHujan)
             {
                 if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
@@ -40,7 +41,7 @@ namespace AlasKeramat.Building
                 if (hujan && Stok < MaksAir) { _tAir += dt; if (_tAir >= DetikPerAir) { _tAir = 0f; Stok++; } }
             }
             if (Jenis == BlueprintID.JemuranIkan) for (int i = 0; i < SlotJemur; i++) if (_jemur[i] != ItemID.None) _tJemur[i] += dt;
-            if (Jenis == BlueprintID.OborTengkorak && NyalaSisa > 0f) NyalaSisa -= dt;
+            if ((Jenis == BlueprintID.OborTengkorak || Jenis == BlueprintID.LampuMinyak || Jenis == BlueprintID.PatungNgeri) && NyalaSisa > 0f) NyalaSisa -= dt;
             if (lampu != null) { lampu.enabled = NyalaSisa > 0f; if (lampu.enabled) lampu.intensity = 1.8f * (0.9f + 0.2f * Mathf.PerlinNoise(Time.time * 7f, 0.5f)); }
             if (pintu != null) pintu.localRotation = Quaternion.Slerp(pintu.localRotation, Quaternion.Euler(0f, Terbuka ? 95f : 0f, 0f), dt * 6f);
             int tampil = Jenis == BlueprintID.JemuranIkan ? Terisi() : Stok;
@@ -51,11 +52,17 @@ namespace AlasKeramat.Building
 
         void OnTriggerEnter(Collider c)
         {
-            if (Jenis != BlueprintID.PerangkapAyunBambu || !Siap || c.gameObject.layer != GameLayers.Enemy) return;
+            if ((Jenis != BlueprintID.PerangkapAyunBambu && Jenis != BlueprintID.PerangkapPunji) || !Siap || c.gameObject.layer != GameLayers.Enemy) return;
             var d = c.GetComponentInParent<IDamageable>();
             if (d == null) return;
-            d.TakeDamage(new DamageInfo { amount = DamagePerangkap, type = DamageType.Tusuk, point = c.transform.position, direction = transform.forward, source = gameObject, isHeavy = true });
+            d.TakeDamage(new DamageInfo { amount = Jenis == BlueprintID.PerangkapPunji ? 120f : DamagePerangkap, type = DamageType.Tusuk, point = c.transform.position, direction = transform.forward, source = gameObject, isHeavy = true });
             Siap = false;
+            if (Jenis == BlueprintID.PerangkapPunji)
+            {
+                var tahan = c.GetComponentInParent<JeratanPunji>();
+                if (tahan == null) tahan = c.gameObject.AddComponent<JeratanPunji>();
+                tahan.Tahan(3f);
+            }
             if (visual.Length > 0 && visual[0] != null) visual[0].localRotation = Quaternion.Euler(80f, 0f, 0f);
         }
 
@@ -63,6 +70,7 @@ namespace AlasKeramat.Building
         {
             var inv = GameServices.Get<TikarPandan3DInventory>();
             var bahu = GameServices.Get<ShoulderLogAndFreeformBuilder>();
+            if ((int)Jenis >= 15) return PromptV3(actor);
             switch (Jenis)
             {
                 case BlueprintID.SaungPanggung: return "TIDUR";
@@ -99,6 +107,7 @@ namespace AlasKeramat.Building
             var bahu = GameServices.Get<ShoulderLogAndFreeformBuilder>();
             var synth = GameServices.Get<ProceduralAudioSynth>();
             string p = GetPromptText(actor);
+            if ((int)Jenis >= 15) { InteraksiV3(actor); return; }
             switch (Jenis)
             {
                 case BlueprintID.SaungPanggung: case BlueprintID.TendaDarurat: Tidur(Jenis == BlueprintID.SaungPanggung); return;
@@ -128,7 +137,7 @@ namespace AlasKeramat.Building
                     return;
                 case BlueprintID.PintuBambu: Terbuka = !Terbuka; return;
                 case BlueprintID.KentonganKemah: if (synth != null) synth.PlayKentonganBamboo(transform.position); return;
-                case BlueprintID.RakitBambu: GameEvents.RaiseToast("Rakit siap. Mengayuh rakit dibuka di tahap berikut."); return;
+                case BlueprintID.RakitBambu: var pengayuh = actor.GetComponent<AndiFPSController>(); if (pengayuh != null) pengayuh.NaikRakit(this); return;
             }
         }
 

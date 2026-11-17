@@ -51,7 +51,7 @@ namespace AlasKeramat.EditorTools
             var cincin = AssetDatabase.LoadAssetAtPath<Sprite>(FolderIkon + "/ui_cincin.png");
 
             var bTangan = Tombol(kontrol.gameObject, "TombolTangan", "TANGAN", lingkaran, font, 160f, new Vector2(-320f, 300f), ProcTex.Hex("#E0B33A"));
-            UnityEventTools.AddPersistentListener(bTangan.onClick, tc.TekanTangan);
+            bTangan.gameObject.AddComponent<TanganTahan>();
             var prompt = BuatTeks(bTangan.gameObject, "Prompt", "", font, 26, new Vector2(0.5f, 1f), new Vector2(0f, 26f), new Vector2(520f, 40f));
             prompt.color = ProcTex.Hex("#F2C14E");
             var bObor = Tombol(kontrol.gameObject, "TombolObor", "OBOR", lingkaran, font, 120f, new Vector2(-500f, 160f), ProcTex.Hex("#C0612B"));

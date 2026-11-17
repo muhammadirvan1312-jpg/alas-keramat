@@ -11,6 +11,7 @@ namespace AlasKeramat.Building
     {
         public const float Panjang = 3.6f, Radius = 0.22f, Massa = 45f, MaksAktif = 40, GayaApung = 14f;
         static readonly List<KayuFisik> _aktif = new List<KayuFisik>();
+        public string Kunci = System.Guid.NewGuid().ToString("N");
         Rigidbody _rb;
         public bool Papan { get; private set; }
         int _pukulBelah;

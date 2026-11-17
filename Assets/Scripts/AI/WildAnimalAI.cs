@@ -10,15 +10,15 @@ namespace AlasKeramat.AI
     // Babi hutan menyeruduk bila dilukai. Mati -> terguling, interaksi "AMBIL HASIL BURUAN" memberi hasil 03 §8.
     public class WildAnimalAI : MonoBehaviour, IDamageable, IInteractable
     {
-        public enum Keadaan { Merumput, Waspada, Kabur, Menyerang, Mati }
+        public enum KeadaanHewan { Merumput, Waspada, Kabur, Menyerang, Mati }
         public const float JedaSeruduk = 1.5f, DamageSeruduk = 12f, JarakSeruduk = 1.4f, LamaMarah = 8f, LamaKabur = 12f, LajuBelok = 240f;
 
         [SerializeField] JH jenis;
         [SerializeField] Transform[] tulang = new Transform[ResepHewan.Jumlah];
 
         public JH Jenis { get { return jenis; } }
-        public Keadaan State { get; private set; }
-        public bool IsAlive { get { return State != Keadaan.Mati; } }
+        public KeadaanHewan State { get; private set; }
+        public bool IsAlive { get { return State != KeadaanHewan.Mati; } }
         public float HoldDuration { get { return 0f; } }
 
         float _hp, _t, _tState, _fase, _arah, _tSeruduk, _guling;
@@ -57,35 +57,35 @@ namespace AlasKeramat.AI
 
         void Update()
         {
-            if (State == Keadaan.Mati) { Guling(); return; }
+            if (State == KeadaanHewan.Mati) { Guling(); return; }
             float dt = Time.deltaTime;
             _tState -= dt;
             if (_andi == null) _andi = GameServices.Get<AndiFPSController>();
             var u = ResepHewan.Ambil(jenis);
             Vector3 p = transform.position;
             float kec = 0f;
-            if (_andi != null && State != Keadaan.Menyerang)
+            if (_andi != null && State != KeadaanHewan.Menyerang)
             {
                 float det = u.deteksi * (_andi.Jongkok ? 0.5f : 1f) * (_andi.SedangLari ? 2f : 1f);
                 float d = Vector3.Distance(_andi.transform.position, p);
-                if (d < det) { State = Keadaan.Kabur; _tState = LamaKabur; }
-                else if (d < det * 1.5f && State == Keadaan.Merumput) { State = Keadaan.Waspada; _tState = 2f; }
+                if (d < det) { State = KeadaanHewan.Kabur; _tState = LamaKabur; }
+                else if (d < det * 1.5f && State == KeadaanHewan.Merumput) { State = KeadaanHewan.Waspada; _tState = 2f; }
             }
             switch (State)
             {
-                case Keadaan.Merumput:
+                case KeadaanHewan.Merumput:
                     if (_tState <= 0f) { _tState = Random.Range(3f, 8f); _arah += Random.Range(-90f, 90f); }
                     kec = _tState > 4f ? u.kecepatan * 0.12f : 0f;
                     break;
-                case Keadaan.Waspada:
-                    if (_tState <= 0f) State = Keadaan.Merumput;
+                case KeadaanHewan.Waspada:
+                    if (_tState <= 0f) State = KeadaanHewan.Merumput;
                     break;
-                case Keadaan.Kabur:
+                case KeadaanHewan.Kabur:
                     if (_andi != null) { Vector3 jauh = p - _andi.transform.position; _arah = Mathf.MoveTowardsAngle(_arah, Mathf.Atan2(jauh.x, jauh.z) * Mathf.Rad2Deg, LajuBelok * dt); }
                     kec = u.kecepatan;
-                    if (_tState <= 0f) State = Keadaan.Merumput;
+                    if (_tState <= 0f) State = KeadaanHewan.Merumput;
                     break;
-                case Keadaan.Menyerang:
+                case KeadaanHewan.Menyerang:
                     if (_andi != null)
                     {
                         Vector3 ke = _andi.transform.position - p;
@@ -99,7 +99,7 @@ namespace AlasKeramat.AI
                             if (target != null) target.TakeDamage(new DamageInfo { amount = DamageSeruduk, type = DamageType.Tusuk, point = _andi.transform.position, direction = ke.normalized, source = gameObject });
                         }
                     }
-                    if (_tState <= 0f) State = Keadaan.Merumput;
+                    if (_tState <= 0f) State = KeadaanHewan.Merumput;
                     break;
             }
             Gerak(kec, dt);
@@ -124,13 +124,13 @@ namespace AlasKeramat.AI
             float amp = Mathf.Clamp01(kec / 2f) * 32f;
             for (int k = 0; k < 4; k++)
             {
-                if (jenis == JH.AyamHutan && k < 2) { R(ResepHewan.LFU + k * 3, 0f, 0f, State == Keadaan.Kabur ? Mathf.Sin(_t * 30f) * 40f * (k == 0 ? 1f : -1f) : 0f); continue; }
+                if (jenis == JH.AyamHutan && k < 2) { R(ResepHewan.LFU + k * 3, 0f, 0f, State == KeadaanHewan.Kabur ? Mathf.Sin(_t * 30f) * 40f * (k == 0 ? 1f : -1f) : 0f); continue; }
                 float f = _fase + (k == 0 || k == 3 ? 0f : Mathf.PI);
                 R(ResepHewan.LFU + k * 3, Mathf.Sin(f) * amp, 0f, 0f);
                 R(ResepHewan.LFU + k * 3 + 1, Mathf.Max(0f, -Mathf.Sin(f)) * amp * 0.8f * (k < 2 ? -1f : 1f), 0f, 0f);
             }
             _t += dt;
-            float nunduk = State == Keadaan.Merumput && kec < 0.1f ? 35f + Mathf.Sin(_t * 1.3f) * 8f : State == Keadaan.Waspada ? -15f : 0f;
+            float nunduk = State == KeadaanHewan.Merumput && kec < 0.1f ? 35f + Mathf.Sin(_t * 1.3f) * 8f : State == KeadaanHewan.Waspada ? -15f : 0f;
             R(ResepHewan.Neck, nunduk, 0f, 0f);
         }
 
@@ -138,11 +138,11 @@ namespace AlasKeramat.AI
 
         public void TakeDamage(DamageInfo d)
         {
-            if (State == Keadaan.Mati) return;
+            if (State == KeadaanHewan.Mati) return;
             _hp -= d.amount;
-            if (_hp <= 0f) { State = Keadaan.Mati; _guling = 0f; gameObject.layer = GameLayers.Interactable; GameEvents.RaiseToast(NamaTampil(jenis) + " tumbang"); return; }
-            if (ResepHewan.Ambil(jenis).agresif) { State = Keadaan.Menyerang; _tState = LamaMarah; }
-            else { State = Keadaan.Kabur; _tState = LamaKabur; }
+            if (_hp <= 0f) { State = KeadaanHewan.Mati; _guling = 0f; gameObject.layer = GameLayers.Interactable; GameEvents.RaiseToast(NamaTampil(jenis) + " tumbang"); return; }
+            if (ResepHewan.Ambil(jenis).agresif) { State = KeadaanHewan.Menyerang; _tState = LamaMarah; }
+            else { State = KeadaanHewan.Kabur; _tState = LamaKabur; }
         }
 
         void Guling()
@@ -158,7 +158,7 @@ namespace AlasKeramat.AI
         }
 
         public string GetPromptText(GameObject actor) { return "AMBIL HASIL BURUAN"; }
-        public bool CanInteract(GameObject actor) { return State == Keadaan.Mati && !_diambil; }
+        public bool CanInteract(GameObject actor) { return State == KeadaanHewan.Mati && !_diambil; }
 
         public void Interact(GameObject actor)
         {

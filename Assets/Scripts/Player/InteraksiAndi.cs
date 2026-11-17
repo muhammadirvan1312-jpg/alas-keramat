@@ -15,6 +15,16 @@ namespace AlasKeramat.Player
         AndiFPSController _ctrl;
         IInteractable _target;
         bool _air, _bangun;
+        IInteractable _ditahan;
+        float _lamaTahan;
+        public void MulaiTahan()
+        {
+            if (_bangun || _target == null || _target.HoldDuration <= 0f) { Tekan(); return; }
+            _ditahan = _target; _lamaTahan = 0f;
+        }
+        public void LepasTahan() { _ditahan = null; _lamaTahan = 0f; }
+        void OnDisable() { LepasTahan(); }
+
         int _mask;
         Building.ShoulderLogAndFreeformBuilder _pembangun;
 
@@ -29,6 +39,7 @@ namespace AlasKeramat.Player
         {
             var cam = _ctrl != null ? _ctrl.Kamera : null;
             if (cam == null) return;
+            if (_ctrl.RakitAktif != null || _ctrl.Duduk) { LepasTahan(); _target=null; _air=false; _bangun=false; Prompt=_ctrl.Duduk ? "BERDIRI" : "TURUN"; return; }
             _target = null; _air = false;
             RaycastHit hit;
             if (Physics.SphereCast(cam.position, Radius, cam.forward, out hit, Jarak, _mask, QueryTriggerInteraction.Collide))
@@ -42,6 +53,18 @@ namespace AlasKeramat.Player
             _bangun = _pembangun != null && _pembangun.Prompt.Length > 0 && !(_target is Building.KayuFisik);
             if (_bangun) p = _pembangun.Prompt;
             if (p != Prompt) Prompt = p;
+            if (_ditahan != null)
+            {
+                if (!ReferenceEquals(_ditahan, _target) || _bangun) LepasTahan();
+                else
+                {
+                    _lamaTahan += Time.deltaTime;
+                    if (_lamaTahan >= _ditahan.HoldDuration)
+                    {
+                        var selesai = _ditahan; LepasTahan(); selesai.Interact(gameObject);
+                    }
+                }
+            }
         }
 
         static bool CariAir(Vector3 asal, Vector3 arah)
@@ -60,8 +83,10 @@ namespace AlasKeramat.Player
         {
             try
             {
+                if (_ctrl != null && _ctrl.RakitAktif != null) { _ctrl.TurunRakit(); return; }
+                if (_ctrl != null && _ctrl.Duduk) { _ctrl.Berdiri(); return; }
                 if (_bangun && _pembangun != null) { _pembangun.PasangSekarang(); return; }
-                if (_target != null) { _target.Interact(gameObject); return; }
+                if (_target != null) { if (_target.HoldDuration <= 0f) _target.Interact(gameObject); return; }
                 if (_air)
                 {
                     var v = GetComponent<IVitalAndi>();
@@ -73,7 +98,7 @@ namespace AlasKeramat.Player
         }
 
 #if ENABLE_LEGACY_INPUT_MANAGER
-        void LateUpdate() { if (Input.GetKeyDown(KeyCode.E)) Tekan(); }
+        void LateUpdate() { if (Input.GetKeyDown(KeyCode.E)) MulaiTahan(); if (Input.GetKeyUp(KeyCode.E)) LepasTahan(); }
 #endif
     }
 }

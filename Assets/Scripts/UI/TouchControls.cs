@@ -68,7 +68,7 @@ namespace AlasKeramat.UI
             if (_pembangun == null) _pembangun = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>();
             bool bawa = _pembangun != null && _pembangun.Jumlah > 0;
             if (tombolLempar != null && tombolLempar.activeSelf != bawa) tombolLempar.SetActive(bawa);
-            bool gel = bawa && _pembangun.Bawa == AlasKeramat.Building.ShoulderLogAndFreeformBuilder.Muatan.Gelondong;
+            bool gel = _pembangun != null;
             if (tombolMode != null && tombolMode.activeSelf != gel) tombolMode.SetActive(gel);
             _tObor += Time.deltaTime;
             if (tombolObor != null && _kiri != null && _tObor > 0.5f)

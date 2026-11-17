@@ -35,6 +35,8 @@ namespace AlasKeramat.Player
         int _mask;
         Quaternion _restPivot = Quaternion.identity;
 
+        float _tajam;
+        public void Asah() { if (_aktif.id == ItemID.None) { GameEvents.RaiseToast("Pegang golok atau kapak"); return; } _tajam=300f; GameEvents.RaiseToast("Senjata diasah: daya tebas +10% selama 5 menit"); }
         public Senjata Aktif { get { return _aktif; } }
         public bool SedangMenyerang { get { return _t >= 0f; } }
 
@@ -74,6 +76,7 @@ namespace AlasKeramat.Player
 
         void Update()
         {
+            _tajam=Mathf.Max(0f,_tajam-Time.deltaTime);
             _tCekSenjata -= Time.deltaTime;
             if (_tCekSenjata <= 0f) { PilihSenjata(); _tCekSenjata = 0.5f; }
 #if ENABLE_LEGACY_INPUT_MANAGER
@@ -102,12 +105,14 @@ namespace AlasKeramat.Player
             var kayu = hit.collider.GetComponent<KayuFisik>();
             if (kayu != null && _aktif.id != ItemID.None) { kayu.Pukul(); return; }
             var bagian = hit.collider.GetComponentInParent<BagianStruktur>();
+            var builder=GameServices.Get<ShoulderLogAndFreeformBuilder>();
+            if(builder!=null && builder.ModeCelah && _aktif.id!=ItemID.None && PotongCelah.Pukul(bagian,hit.point,builder.ModeAktif==ShoulderLogAndFreeformBuilder.ModeBangun.CelahPintu))return;
             if (bagian != null && bagian.Jenis == BagianStruktur.Tipe.Tiang && hit.point.y > bagian.Puncak.y - 0.5f && _aktif.id != ItemID.None) { ShoulderLogAndFreeformBuilder.Serut(bagian); return; }
             var pohon = hit.collider.GetComponentInParent<DirectionalTree>();
             if (pohon != null) { pohon.Pukul(transform.position, _aktif.tebang * (_berat ? PengaliTebangBerat : 1f)); return; }
             var target = hit.collider.GetComponentInParent<IDamageable>();
             if (target != null && !ReferenceEquals(target, GetComponent<IDamageable>()))
-                target.TakeDamage(new DamageInfo { amount = _berat ? _aktif.berat : _aktif.ringan, type = _aktif.tipe, point = hit.point, direction = cam.forward, source = gameObject, isHeavy = _berat });
+                target.TakeDamage(new DamageInfo { amount = (_berat ? _aktif.berat : _aktif.ringan) * (_tajam>0f?1.1f:1f), type = _aktif.tipe, point = hit.point, direction = cam.forward, source = gameObject, isHeavy = _berat });
         }
     }
 }

@@ -152,7 +152,7 @@ namespace AlasKeramat.EditorTools
             cek("TouchControls & joystick & area geser", Object.FindFirstObjectByType<AlasKeramat.UI.TouchControls>() != null
                 && Object.FindFirstObjectByType<AlasKeramat.UI.ZonaJoystick>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.ZonaGeser>() != null);
             bool handler = true; int nTombol = 0;
-            foreach (var b in Object.FindObjectsByType<Button>(FindObjectsSortMode.None)) { nTombol++; if (b.onClick.GetPersistentEventCount() == 0) handler = false; }
+            foreach (var b in Object.FindObjectsByType<Button>(FindObjectsSortMode.None)) { nTombol++; if (b.onClick.GetPersistentEventCount() == 0 && b.GetComponent<AlasKeramat.UI.TanganTahan>() == null) handler = false; }
             cek("Semua tombol HUD punya handler (" + nTombol + ")", nTombol >= 2 && handler);
             var koper = Object.FindObjectsByType<AlasKeramat.Inventory.WadahItem>(FindObjectsSortMode.None);
             int kOk = 0;
@@ -307,11 +307,11 @@ namespace AlasKeramat.EditorTools
             finally { Object.DestroyImmediate(ujiB); }
             cek("Pemanggul kayu & tombol LEMPAR/MODE", Object.FindFirstObjectByType<ShoulderLogAndFreeformBuilder>() != null && GameObject.Find("BahuKiri") != null);
             var tbl = GuidebookBlueprintsAndCooking.Tabel;
-            var idUnik = new HashSet<BlueprintID>(); bool bpOk = tbl.Length == 14;
-            foreach (var bp in tbl) { bpOk &= idUnik.Add(bp.id) && (int)bp.id >= 1 && (int)bp.id <= 14; foreach (var c in bp.cost) bpOk &= AlasKeramat.Inventory.ItemDatabase.Has(c.id) && c.count > 0; }
+            var idUnik = new HashSet<BlueprintID>(); bool bpOk = tbl.Length == 26;
+            foreach (var bp in tbl) { bpOk &= idUnik.Add(bp.id) && (int)bp.id >= 1 && (int)bp.id <= 26; foreach (var c in bp.cost) bpOk &= AlasKeramat.Inventory.ItemDatabase.Has(c.id) && c.count > 0; }
             var api = GuidebookBlueprintsAndCooking.Ambil(BlueprintID.ApiUnggun); var saung = GuidebookBlueprintsAndCooking.Ambil(BlueprintID.SaungPanggung);
             bpOk &= api.cost.Length == 2 && api.cost[0].id == ItemID.Ranting && api.cost[0].count == 6 && api.cost[1].count == 4 && saung.cost[0].count == 10 && saung.cost[2].count == 16;
-            cek("14 blueprint, biaya sesuai 07 §7 (api: ranting 6 + batu 4; saung: kayu 10/ranting 8/daun 16)", bpOk);
+            cek("26 blueprint, biaya sesuai 07 §7 (api: ranting 6 + batu 4; saung: kayu 10/ranting 8/daun 16)", bpOk);
             cek("Masak: ikan mentah 30 s = matang, 50 s = gosong", ApiUnggun.KeadaanMasak(ItemID.IkanMentah, 30f) == ItemID.IkanMatang && ApiUnggun.KeadaanMasak(ItemID.IkanMentah, 50f) == ItemID.MakananGosong && ApiUnggun.KeadaanMasak(ItemID.IkanMentah, 10f) == ItemID.IkanMentah);
             cek("Jemuran: ikan matang -> ikan kering", FungsiBangunan.HasilJemur(ItemID.IkanMatang) == ItemID.IkanKering);
             var ujiS = new GameObject("UjiSimpan");
@@ -329,6 +329,7 @@ namespace AlasKeramat.EditorTools
             }
             finally { Object.DestroyImmediate(ujiS); }
             cek("Buku Panduan, SaveSystem, penempatan", Object.FindFirstObjectByType<GuidebookBlueprintsAndCooking>() != null && Object.FindFirstObjectByType<SaveSystem>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.BukuPanduanUI>() != null);
+            PemeriksaanT6c.Jalankan(cek);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)

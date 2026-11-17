@@ -6,10 +6,10 @@ namespace AlasKeramat.Building
 {
     // 07 §4-5: memanggul kayu di bahu kiri (maks 2 gelondong / 4 papan), LEMPAR, bangun bebas dengan pratinjau hantu hijau/merah:
     // TIANG (tanah / di atas tiang), BALOK (antar 2 tiang <= 3,6 m pada kelipatan 0,42 m, atau pondasi), PAPAN (di atas 2 balok sejajar).
-    public class ShoulderLogAndFreeformBuilder : MonoBehaviour
+    public partial class ShoulderLogAndFreeformBuilder : MonoBehaviour
     {
-        public enum Muatan { Kosong, Gelondong, Papan }
-        public enum ModeBangun { Tiang, Balok, Papan }
+        public enum Muatan { Kosong, Gelondong, Papan, Batu }
+        public enum ModeBangun { Tiang, Balok, Papan, Atap, Tangga, FondasiBatu, DindingBatu, JalanBatu, CelahJendela, CelahPintu }
         public const int MaksGelondong = 2, MaksPapan = 4;
         public const float Jangkau = 3.5f, Benam = 0.2f, Tumpuk = 0.42f, BentangMaks = 3.6f, CariTiang = 1.6f, LerengMaks = 30f;
         public const float VLempar = 3f, VAtasLempar = 1f;
@@ -55,19 +55,21 @@ namespace AlasKeramat.Building
         {
             if (m == Muatan.Kosong) return false;
             if (Bawa != Muatan.Kosong && Bawa != m) { GameEvents.RaiseToast("Turunkan dulu yang sedang dipanggul"); return false; }
-            int maks = m == Muatan.Gelondong ? MaksGelondong : MaksPapan;
+            int maks = m == Muatan.Batu ? 1 : m == Muatan.Gelondong ? MaksGelondong : MaksPapan;
             if (Jumlah >= maks) return false;
             _mat[Jumlah] = mat; Jumlah++; Bawa = m;
-            ModeAktif = m == Muatan.Papan ? ModeBangun.Papan : (ModeAktif == ModeBangun.Papan ? ModeBangun.Tiang : ModeAktif);
+            ModeAktif = m == Muatan.Batu ? ModeBangun.FondasiBatu : m == Muatan.Papan ? ModeBangun.Papan : (ModeAktif != ModeBangun.Tiang && ModeAktif != ModeBangun.Balok && ModeAktif != ModeBangun.Atap && ModeAktif != ModeBangun.Tangga ? ModeBangun.Tiang : ModeAktif);
             Visual();
             return true;
         }
 
         public void GantiMode()
         {
-            if (Bawa != Muatan.Gelondong) return;
-            ModeAktif = ModeAktif == ModeBangun.Tiang ? ModeBangun.Balok : ModeBangun.Tiang;
-            GameEvents.RaiseToast("ModeBangun bangun: " + (ModeAktif == ModeBangun.Tiang ? "TIANG" : "BALOK"));
+            if (Bawa == Muatan.Batu) ModeAktif = ModeAktif == ModeBangun.JalanBatu ? ModeBangun.FondasiBatu : ModeAktif + 1;
+            else if (Bawa == Muatan.Papan) ModeAktif = ModeBangun.Papan;
+            else if (Bawa == Muatan.Gelondong) ModeAktif = ModeAktif == ModeBangun.Tiang ? ModeBangun.Balok : ModeAktif == ModeBangun.Balok ? ModeBangun.Atap : ModeAktif == ModeBangun.Atap ? ModeBangun.Tangga : ModeBangun.Tiang;
+            else ModeAktif = ModeAktif == ModeBangun.CelahJendela ? ModeBangun.CelahPintu : ModeBangun.CelahJendela;
+            GameEvents.RaiseToast("MODE " + ModeAktif.ToString().ToUpperInvariant());
         }
 
         Material Ambil()
@@ -85,6 +87,7 @@ namespace AlasKeramat.Building
         public void Lempar()
         {
             if (Jumlah <= 0) return;
+            if (Bawa == Muatan.Batu) { Ambil(); KayuFisik.Benda("BatuBesar", transform.position + transform.forward, ItemID.BatuBesar, 1, "BATU BESAR"); return; }
             bool papan = Bawa == Muatan.Papan;
             var cam = _ctrl != null ? _ctrl.Kamera : transform;
             var k = KayuFisik.Buat(cam.position + cam.forward * 1.2f - Vector3.up * 0.2f, cam.right, Ambil(), papan);
@@ -98,10 +101,10 @@ namespace AlasKeramat.Building
                 for (int i = 0; i < bahu.childCount; i++)
                 {
                     var c = bahu.GetChild(i);
-                    bool gel = c.name.StartsWith("Gelondong"), aktif = (gel ? Bawa == Muatan.Gelondong : Bawa == Muatan.Papan) && (c.name[c.name.Length - 1] - '0') < Jumlah;
+                    bool gel = c.name.StartsWith("Gelondong"), batu = c.name.StartsWith("Batu"), aktif = (batu ? Bawa == Muatan.Batu : gel ? Bawa == Muatan.Gelondong : Bawa == Muatan.Papan) && (c.name[c.name.Length - 1] - '0') < Jumlah;
                     c.gameObject.SetActive(aktif);
                 }
-            if (_ctrl != null) _ctrl.PengaliKecepatan = Bawa == Muatan.Gelondong ? (Jumlah >= 2 ? 0.75f : 0.85f) : Bawa == Muatan.Papan ? 0.9f : 1f;
+            if (_ctrl != null) _ctrl.PengaliKecepatan = Bawa == Muatan.Batu ? 0.7f : Bawa == Muatan.Gelondong ? (Jumlah >= 2 ? 0.75f : 0.85f) : Bawa == Muatan.Papan ? 0.9f : 1f;
         }
 
         void Update()
@@ -113,11 +116,11 @@ namespace AlasKeramat.Building
 #endif
             if (Jumlah <= 0 || _ctrl == null || _ctrl.Kamera == null) { if (_hantu.activeSelf) _hantu.SetActive(false); if (Prompt.Length > 0) Prompt = ""; return; }
             _r = Rencanakan(_ctrl.Kamera.position, _ctrl.Kamera.forward, ModeAktif, Bawa);
-            Prompt = _r.sah ? (ModeAktif == ModeBangun.Tiang ? "PASANG TIANG" : ModeAktif == ModeBangun.Balok ? "PASANG BALOK" : "PASANG PAPAN") : "";
+            Prompt = _r.sah ? "PASANG " + ModeAktif.ToString().ToUpperInvariant() : "";
             bool tampil = _r.panjang > 0f;
             _hantu.SetActive(tampil);
             if (!tampil) return;
-            _hantuMf.sharedMesh = ModeAktif == ModeBangun.Papan ? _kotak : _kapsul;
+            _hantuMf.sharedMesh = Kotak(ModeAktif) ? _kotak : _kapsul;
             _hantuMr.sharedMaterial = _r.sah ? hantuSah : hantuSalah;
             _hantu.transform.SetPositionAndRotation(_r.pos, _r.rot);
             _hantu.transform.localScale = Skala(ModeAktif, _r.panjang);
@@ -125,6 +128,10 @@ namespace AlasKeramat.Building
 
         public static Vector3 Skala(ModeBangun m, float panjang)
         {
+            if (m == ModeBangun.FondasiBatu || m == ModeBangun.DindingBatu) return new Vector3(0.6f, 0.4f, 0.6f);
+            if (m == ModeBangun.JalanBatu) return new Vector3(0.6f, 0.12f, 0.6f);
+            if (m == ModeBangun.Atap) return new Vector3(0.8f, panjang, 0.12f);
+            if (m == ModeBangun.Tangga) return new Vector3(0.8f, panjang, 0.1f);
             return m == ModeBangun.Papan ? new Vector3(KayuFisik.UkuranPapan.x, panjang, KayuFisik.UkuranPapan.z) : new Vector3(KayuFisik.Radius * 2f, panjang * 0.5f, KayuFisik.Radius * 2f);
         }
 
@@ -135,7 +142,9 @@ namespace AlasKeramat.Building
             RaycastHit hit;
             int mask = (1 << GameLayers.Ground) | (1 << GameLayers.Structure) | 1;
             if (!Physics.Raycast(asal, arah, out hit, Jangkau, mask, QueryTriggerInteraction.Ignore)) return r;
-            var kena = hit.collider.GetComponent<BagianStruktur>();
+            var kena = hit.collider.GetComponentInParent<BagianStruktur>();
+            if (mode >= ModeBangun.Atap) return RencanaLanjut(hit, arah, mode, kena);
+            if (mode == ModeBangun.Papan && kena != null && kena.Jenis == BagianStruktur.Tipe.Tangga) return AnakTangga(hit, kena);
             if (mode == ModeBangun.Tiang)
             {
                 r.panjang = KayuFisik.Panjang; r.rot = Quaternion.identity;
@@ -238,7 +247,7 @@ namespace AlasKeramat.Building
 
         public static BagianStruktur Buat(Rencana r, Material mat)
         {
-            bool papan = r.mode == ModeBangun.Papan;
+            bool papan = Kotak(r.mode);
             var go = GameObject.CreatePrimitive(papan ? PrimitiveType.Cube : PrimitiveType.Capsule);
             go.name = papan ? "Papan" : r.mode == ModeBangun.Tiang ? "Tiang" : "Balok";
             go.layer = GameLayers.Structure; go.tag = GameTags.StructurePiece;
@@ -246,10 +255,15 @@ namespace AlasKeramat.Building
             go.transform.localScale = Skala(r.mode, r.panjang);
             if (mat != null) go.GetComponent<MeshRenderer>().sharedMaterial = mat;
             var s = go.AddComponent<BagianStruktur>();
+            if (!BagianStruktur.Semua.Contains(s)) BagianStruktur.Semua.Add(s);
             s.Jenis = papan ? BagianStruktur.Tipe.Papan : r.mode == ModeBangun.Tiang ? BagianStruktur.Tipe.Tiang : BagianStruktur.Tipe.Balok;
+            if (r.mode == ModeBangun.Atap) s.Jenis = BagianStruktur.Tipe.Atap;
+            if (r.mode == ModeBangun.Tangga) s.Jenis = BagianStruktur.Tipe.Tangga;
+            if (r.mode >= ModeBangun.FondasiBatu && r.mode <= ModeBangun.JalanBatu) s.Jenis = BagianStruktur.Tipe.FondasiBatu + (r.mode - ModeBangun.FondasiBatu);
             s.Tertanam = r.tertanam; s.Panjang = r.panjang; s.HP = BagianStruktur.HPAwal(s.Jenis);
             if (r.a != null) s.Hubungkan(r.a);
             if (r.b != null) s.Hubungkan(r.b);
+            if (r.mode == ModeBangun.Tangga) Pengapit(s);
             return s;
         }
 
