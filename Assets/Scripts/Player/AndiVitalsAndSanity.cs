@@ -193,7 +193,8 @@ namespace AlasKeramat.Player
         public void TakeDamage(DamageInfo info)
         {
             if (!IsAlive || info.amount <= 0f) return;
-            Health = Mathf.Max(0f, Health - info.amount);
+            float sisa = Serap(info);
+            Health = Mathf.Max(0f, Health - sisa);
             _sejakDamage = 0f;
             GameEvents.RaisePlayerDamaged(info);
             if (Health <= 0f) Mati();

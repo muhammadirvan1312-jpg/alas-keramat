@@ -2,7 +2,7 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T5c
+AUTOPILOT_TAHAP_BERIKUTNYA: T6
 
 - Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
@@ -39,6 +39,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T5c
 | T5a | 2026-11-17 | Menunggu CI | Building: VegetationManager (salinan matriks runtime, Cari/Sembunyikan/Tampilkan per id), DirectionalTree (takikan 4 kuadran, arah rebah, bambu 2 pukulan/batang, pisang, serat aren, damar mahoni, beringin = kewarasan -5 + tawa), PohonRebah (Rigidbody 400 + HingeJoint, lepas 25°, pecah jadi kayu, ranting/kelapa, tunggul), KayuFisik (3,6 m, menggelinding, mengapung, maks 40, AMBIL KAYU), PohonInteraktif (pool 32 proxy 30 m); Player: CombatAndLeftHandController (tabel 06 §2 golok/kapak, ringan/berat, frame aktif, stamina, model senjata FP); UI: TombolTahan (TEBAS ketuk/tahan); kluster tombol ditata ulang | + cek arah rebah, seri, hasil kayu & HP, senjata terbaik, komponen | Bisa menebang jati dan mendapat kayu fisik, memanen bambu & pisang |
 
 | T5b | 2026-11-17 | Menunggu CI | Core: ResepHewan (kerangka quadruped 17 sendi, mesh loft: rusa bertanduk, kancil, babi hutan bertaring, ayam hutan bersayap & ekor, biawak); AI: WildAnimalAI (merumput/waspada/kabur, jongkok mengurangi deteksi, babi menyeruduk saat dilukai, mati terguling, AMBIL HASIL BURUAN sesuai 03 §8), EcosystemDirector (maks 10 dalam 100 m, kelompok per bioma, hilang > 140 m); Building: ForagingDirector (titik pungut deterministik per bioma 03 §7, pool 40, tumbuh lagi 2 hari), ForagingNode (batu, sirih, kunyit, jahe, jamur, jamur beracun, sarang telur) | + cek hasil buruan, 5 template, kecocokan bioma, titik pungut 7 jenis | Berburu & memungut tanaman obat |
+
+| T5c | 2026-11-17 | Menunggu CI | Inventory: TikarPanggung (panggung 3D layer InventoryStage + kamera & lampu sendiri, item ditata grid, ketuk = lingkaran rakit, CariResep/Rakit dengan alat wajib & pengganti kain); Player: AndiVitalsAndSanity.Zirah (10 segmen, durabilitas 05 §3.7, daun x2 saat hujan, bambu lemah api, tulang kewarasan -1, jatuh/gaib menembus); UI: TikarUI (RAKIT nama hasil, MAKAN, PAKAI ZIRAH, BATAL, TUTUP, label item mengikuti 3D, R17 butuh api), tombol TAS, 10 kotak zirah di atas bar darah | + cek rakit tombak, serapan zirah, komponen | Merakit 23 resep, makan dari tas, memakai zirah |
 
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
