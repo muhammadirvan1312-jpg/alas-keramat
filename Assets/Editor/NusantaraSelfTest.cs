@@ -265,6 +265,22 @@ namespace AlasKeramat.EditorTools
                 cek("Titik pungut deterministik (" + fdU.JumlahTitik + ", 7 jenis ada)", fdU.JumlahTitik > 1500 && semuaJenis);
             }
             finally { Object.DestroyImmediate(fdGo); }
+            var ujiGo = new GameObject("UjiTikar");
+            try
+            {
+                var inv2 = ujiGo.AddComponent<AlasKeramat.Inventory.TikarPandan3DInventory>();
+                inv2.Tambah(ItemID.Bambu, 1); inv2.Tambah(ItemID.TaliIjuk, 1); inv2.Tambah(ItemID.GolokPusaka, 1);
+                var r2 = AlasKeramat.Inventory.TikarPanggung.CariResep(new List<ItemID> { ItemID.Bambu, ItemID.TaliIjuk }, inv2);
+                bool rakit = r2.HasValue && r2.Value.output.id == ItemID.TombakBambu && AlasKeramat.Inventory.TikarPanggung.Rakit(r2.Value, inv2);
+                cek("Rakit di tikar: Bambu + Tali (+ golok) -> Tombak Bambu", rakit && inv2.Punya(ItemID.TombakBambu) && !inv2.Punya(ItemID.Bambu));
+                var v2 = ujiGo.AddComponent<AlasKeramat.Player.AndiVitalsAndSanity>();
+                v2.PakaiZirah(ItemID.ZirahDaun, false);
+                float hp0 = v2.Health;
+                v2.TakeDamage(new DamageInfo { amount = 10f, type = DamageType.Tebas });
+                cek("Zirah daun (8) menyerap 8 dari 10 damage", Mathf.Abs((hp0 - v2.Health) - 2f) < 0.01f && v2.JumlahSegmen == 0);
+            }
+            finally { Object.DestroyImmediate(ujiGo); }
+            cek("Panggung tikar, layar tikar, tombol TAS", Object.FindFirstObjectByType<AlasKeramat.Inventory.TikarPanggung>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.TikarUI>() != null && GameObject.Find("TombolTas") != null);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)

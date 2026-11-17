@@ -75,6 +75,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7g. Karakter & animasi", 0.935f, LangkahKarakter);
                 Langkah("7h. Tebang & melee", 0.94f, LangkahTebang);
                 Langkah("7i. Hewan & titik pungut", 0.945f, LangkahHewan);
+                Langkah("7j. Tikar Pandan & zirah", 0.948f, LangkahTikar);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }
