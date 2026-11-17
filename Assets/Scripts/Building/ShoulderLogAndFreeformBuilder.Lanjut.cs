@@ -22,6 +22,13 @@ namespace AlasKeramat.Building
             float sudut = Mathf.Atan2(Mathf.Abs(d.y), new Vector2(d.x, d.z).magnitude) * Mathf.Rad2Deg;
             return d.magnitude <= BentangMaks && sudut >= (m == ModeBangun.Atap ? SudutAtapMin : SudutTanggaMin) && sudut <= (m == ModeBangun.Atap ? SudutAtapMaks : SudutTanggaMaks);
         }
+        public static Quaternion RotasiBidangMiring(Vector3 bawah, Vector3 atas)
+        {
+            Vector3 sumbu=(atas-bawah).normalized;
+            Vector3 kanan=Vector3.Cross(sumbu,Vector3.up).normalized;
+            if(kanan.sqrMagnitude<0.001f)kanan=Vector3.right;
+            return Quaternion.LookRotation(Vector3.Cross(kanan,sumbu).normalized,sumbu);
+        }
         static Rencana RencanaLanjut(RaycastHit hit, Vector3 arah, ModeBangun mode, BagianStruktur kena)
         {
             var r = new Rencana { mode = mode, rot = Quaternion.identity };
@@ -49,7 +56,7 @@ namespace AlasKeramat.Building
                 if (Vector2.Distance(new Vector2(q.x, q.z), new Vector2(bawah.x, bawah.z)) < 1.2f && q.y < atas.y) { bawah = q; penopang = s; break; }
             }
             float? air = WorldTerrainGenerator.GetWaterLevelAt(bawah.x, bawah.z);
-            r.pos = (atas + bawah) * 0.5f; r.rot = Quaternion.FromToRotation(Vector3.up, (atas - bawah).normalized);
+            r.pos = (atas + bawah) * 0.5f; r.rot = RotasiBidangMiring(bawah, atas);
             r.panjang = Vector3.Distance(atas, bawah); r.a = kena; r.b = penopang; r.tertanam = penopang == null;
             r.sah = SudutSah(mode, atas, bawah) && (!air.HasValue || air.Value <= bawah.y);
             return r;

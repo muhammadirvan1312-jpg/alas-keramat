@@ -13,6 +13,14 @@ namespace AlasKeramat.EditorTools
         {
             cek("Atap 20-45 derajat, tangga 25-40 derajat", ShoulderLogAndFreeformBuilder.SudutSah(ShoulderLogAndFreeformBuilder.ModeBangun.Atap,Vector3.zero,new Vector3(2f,1f,0f)) && !ShoulderLogAndFreeformBuilder.SudutSah(ShoulderLogAndFreeformBuilder.ModeBangun.Tangga,Vector3.zero,new Vector3(1f,2f,0f)));
             cek("Batu HP 500 dan hasil bongkar atap adalah papan", BagianStruktur.HPAwal(BagianStruktur.Tipe.FondasiBatu)==500f && BagianStruktur.HasilPapan(BagianStruktur.Tipe.Atap));
+            bool normalAtap=true;
+            for(int sudut=0;sudut<360;sudut+=45)
+            {
+                Vector3 ujung=Quaternion.Euler(0f,sudut,0f)*new Vector3(2f,1f,0f);
+                var rot=ShoulderLogAndFreeformBuilder.RotasiBidangMiring(Vector3.zero,ujung);
+                normalAtap &= Vector3.Dot(rot*Vector3.forward,Vector3.up)>0.8f;
+            }
+            cek("Bidang atap menghadap atas dari delapan arah",normalAtap);
             var p=new QuestManager.ProgresMisiT6();
             var urut=new List<QuestID>();
             p.koper.Add("K1"); p.koper.Add("K2"); p.koper.Add("K3"); urut.AddRange(QuestManager.Majukan(p));
