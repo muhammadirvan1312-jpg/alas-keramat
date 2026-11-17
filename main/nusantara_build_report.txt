@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-17 14:59:38
+Laporan Builder Alas Keramat - 2026-11-17 23:48:11
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -47,8 +47,20 @@ Laporan Builder Alas Keramat - 2026-11-17 14:59:38
 [LULUS] 7l. Buku Panduan & simpan
   - T6c: dunia tersimpan, 26 blueprint, rakit, bongkar dan misi M01-M04
 [LULUS] 7m. Dunia, bangunan & misi
+  - Musuh: SurfaceGrid 500x500 (lewat 178177/188416 darat), prefab Sekte x5, EnemyDirector, TANGKIS
+[LULUS] 7n. Musuh, jalur & tempur
+  - Hantu: prefab Pocong/Kuntilanak/Banaspati, jarahan, bambu lempar, 6 Totem Topeng, MusikTempur
+[LULUS] 7o. Hantu, raid & totem
+  - Gore: 4 percikan, genangan, atlas luka 8, tutup potongan, partikel darah, GoreSystem, peringatan 18+
+[LULUS] 7p. Gore, luka & peringatan 18+
+  - Senjata jarak: 5 proyektil, 10 model FP, tombol GANTI, cincin suara, 3 titik lumpur
+[LULUS] 7q. Senjata jarak, elak, stealth
+  - Companion: Kang Deden (15 perintah) & Ningsih (Trust 3 tahap), Buku Catatan & menu Ningsih
+[LULUS] 7r. Companion Kang Deden & Ningsih
+  - Teror: TerrorDirector (25 kejadian), WorldEventScheduler, 20 catatan Deden
+[LULUS] 7s. Sutradara Teror & dunia hidup
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 1687
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2050
 [LULUS] 9. Simpan scene
-Durasi: 110.7 detik
+Durasi: 144.0 detik
 HASIL: SEMUA LANGKAH LULUS
