@@ -47,9 +47,9 @@ namespace AlasKeramat.Core
             {
                 var f = b.GetComponentsInChildren<FungsiBangunan>(true); var a = b.GetComponentsInChildren<ApiUnggun>(true); var p = b.GetComponentsInChildren<PanciMasak>(true);
                 var n = new BangunanT6 { bentang = b.Bentang, id = b.Kunci, jenis = b.Id, posisi = b.transform.position, rotasi = b.transform.rotation, fungsi = new string[f.Length], api = new string[a.Length], panci = new string[p.Length] };
-                for (int i=0;i<f.Length;i++) n.fungsi[i]=f.CaptureIsi();
-                for (int i=0;i<a.Length;i++) n.api[i]=a.CaptureIsi();
-                for (int i=0;i<p.Length;i++) n.panci[i]=p.CaptureIsi();
+                for (int i=0;i<f.Length;i++) n.fungsi[i]=f[i].CaptureIsi();
+                for (int i=0;i<a.Length;i++) n.api[i]=a[i].CaptureIsi();
+                for (int i=0;i<p.Length;i++) n.panci[i]=p[i].CaptureIsi();
                 d.bangunan.Add(n);
             }
             d.bangunan.Sort((a,b) => string.CompareOrdinal(a.id,b.id));
