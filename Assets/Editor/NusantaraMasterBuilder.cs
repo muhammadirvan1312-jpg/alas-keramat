@@ -70,6 +70,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7. UI", 0.85f, LangkahUI);
                 Langkah("7b. Andi & kontrol sentuh", 0.9f, LangkahAndi);
                 Langkah("7c. Interaksi, koper, radar", 0.92f, LangkahInteraksi);
+                Langkah("7e. Vital Andi & bar HUD", 0.925f, LangkahVital);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

@@ -186,6 +186,21 @@ namespace AlasKeramat.EditorTools
             cek("Kamera utama pakai pasca-proses", camAndi != null && UnityEngine.Rendering.Universal.CameraExtensions.GetUniversalAdditionalCameraData(camAndi).renderPostProcessing);
             cek("Pasca-proses malam lebih gelap & dingin dari siang", AKPascaProses.Target(23f, WeatherState.Cerah).x < AKPascaProses.Target(12f, WeatherState.Cerah).x
                 && AKPascaProses.Target(23f, WeatherState.Cerah).z < AKPascaProses.Target(12f, WeatherState.Cerah).z);
+            cek("Vital Andi & bar HUD ada", Object.FindFirstObjectByType<AlasKeramat.Player.AndiVitalsAndSanity>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.HUDVital>() != null);
+            var vGo = new GameObject("UjiVital");
+            try
+            {
+                var v = vGo.AddComponent<AlasKeramat.Player.AndiVitalsAndSanity>();
+                float h0 = v.Hydration, k0 = v.Fullness, r0 = v.Rest;
+                var kd = new AlasKeramat.Player.AndiVitalsAndSanity.Keadaan { jam = 9f, hari = 7, cuaca = WeatherState.Berawan, biome = Biome.HutanCampuran };
+                for (int i = 0; i < 600; i++) v.Tick(kd, 0.1f);
+                float dh = h0 - v.Hydration, dk = k0 - v.Fullness, dr = r0 - v.Rest;
+                cek("Laju vital 60 s sesuai 05 (haus -" + dh.ToString("0.00") + ", kenyang -" + dk.ToString("0.00") + ", istirahat -" + dr.ToString("0.00") + ")",
+                    Mathf.Abs(dh - 5.1f) < 0.2f && Mathf.Abs(dk - 3.3f) < 0.2f && Mathf.Abs(dr - 2.1f) < 0.2f);
+            }
+            finally { Object.DestroyImmediate(vGo); }
+            cek("Plafon HP 05 §3.1 (lapar 10, haus 10 -> " + AlasKeramat.Player.AndiVitalsAndSanity.PlafonHP(10f, 10f, 50f).ToString("0") + ")", Mathf.Approximately(AlasKeramat.Player.AndiVitalsAndSanity.PlafonHP(10f, 10f, 50f), 100f - 18f - 24f));
+            cek("Suhu udara: siang kemarau > malam", AlasKeramat.Player.AndiVitalsAndSanity.SuhuUdara(13f, true, Biome.HutanCampuran, 0f, WeatherState.Cerah) > AlasKeramat.Player.AndiVitalsAndSanity.SuhuUdara(2f, true, Biome.HutanCampuran, 0f, WeatherState.Cerah) + 8f);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)
