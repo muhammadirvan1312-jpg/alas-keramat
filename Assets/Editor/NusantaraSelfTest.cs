@@ -329,6 +329,7 @@ namespace AlasKeramat.EditorTools
             }
             finally { Object.DestroyImmediate(ujiS); }
             cek("Buku Panduan, SaveSystem, penempatan", Object.FindFirstObjectByType<GuidebookBlueprintsAndCooking>() != null && Object.FindFirstObjectByType<SaveSystem>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.BukuPanduanUI>() != null);
+            PemeriksaanT7.Jalankan(cek);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)

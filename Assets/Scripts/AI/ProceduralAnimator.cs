@@ -5,7 +5,7 @@ namespace AlasKeramat.AI
 {
     // 02 §1.7: animasi prosedural murni kode (tanpa komponen animasi bawaan). Lapisan: pose dasar -> lokomosi (fase dari jarak tempuh) -> klip aksi -> aditif (napas, tatap, kedip).
     // Mode khusus: duduk terhuyung (Deden di heli), pocong melompat, kuntilanak melayang, galeri (memutar klip bergiliran).
-    public class ProceduralAnimator : MonoBehaviour
+    public partial class ProceduralAnimator : MonoBehaviour
     {
         public enum Mode { Normal, DudukTerhuyung, Pocong, Melayang, Galeri }
         public static readonly string[] Klip = { "Melambai", "Menunjuk", "JempolKanan", "GelengBahu", "Mengangguk" };
@@ -86,6 +86,7 @@ namespace AlasKeramat.AI
             else Lokomosi(dt, skala);
 
             KlipAksi(dt);
+            if (mode == Mode.Normal) TerapkanPoseTempur(dt, skala);
             float napasHz = _kec > 3f ? 0.7f : 0.25f;
             R(Kerangka.Chest, Mathf.Sin(_t * napasHz * Mathf.PI * 2f) * 2f, 0f, 0f);
             Tatap();

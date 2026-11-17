@@ -2,7 +2,7 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T6c
+AUTOPILOT_TAHAP_BERIKUTNYA: T7b
 
 - Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
@@ -45,6 +45,7 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T6c
 | T6a | 2026-11-17 | Menunggu CI | Building: ShoulderLogAndFreeformBuilder (panggul 2 gelondong / 4 papan di bahu kiri, kecepatan x0,85/x0,75, LEMPAR, lepas saat berenang; pratinjau hantu hijau/merah; TIANG di tanah lereng <= 30° atau di atas tiang, BALOK antar 2 tiang <= 3,6 m kelipatan 0,42 m atau pondasi, PAPAN di atas 2 balok sejajar; maks 6 tingkat; SERUT RUNCING 2 pukulan), BagianStruktur (HP 07 §6, tetangga, hancur & runtuh 20 s, 50% kayu), StructureIntegrity (BFS dari simpul tertanam), KayuFisik (papan, BELAH PAPAN 3 pukulan, ambil = panggul); Player: PengaliKecepatan; UI: tombol LEMPAR & MODE | + cek snap & HP, BFS integritas, komponen | Bisa membangun lantai panggung dan pagar runcing |
 
 | T6b | 2026-11-17 | Menunggu CI | Building: GuidebookBlueprintsAndCooking (14 blueprint 07 §7 + penempatan hantu biru/merah, putar 15°, rakit hanya di air), CetakBiru (TAMBAH bahan dari tas/bahu, kain kafan menggantikan batik), BangunanBlueprint (objek jadi dari primitif), ApiUnggun (bahan bakar 600 s, ranting +45/kayu +300, cahaya berkedip, hujan x2, badai padam 60 s, 4 tusuk matang 25 s/gosong 40 s, bakar kemenyan), PanciMasak (sup hutan), FungsiBangunan (tidur/istirahat + simpan, rak 24/kereta 8, penampung hujan, jemuran 120 s, perangkap ayun 200, obor tengkorak 240 s, menara naik/turun, pintu, kentongan, rakit); Core: SaveSystem (semua ISaveable ke JSON); Player: Pulihkan saat tidur, hangat dekat api; UI: BukuPanduanUI (tombol BUKU, panel 4 kategori, TANDAI/PUTAR/BATAL) | + cek 14 blueprint & biaya, masak, jemur, simpan->muat identik | Membangun kemah: api unggun, saung, tidur sampai pagi & tersimpan |
+| T7a | 2026-11-17 | Menunggu CI | AI: StatMusuh (13 archetype 06 §4), SurfaceGrid (500x500 sel 4 m, darat/sungai/terhalang, dipanggang ke Generated/Nav/SurfaceGrid.bytes), GridPathfinder (A* 8 arah berbobot, maks 4.000 node, antrian 2 pencarian/frame, string pulling), MeterSuara (langkah lari 20/jalan 8/jongkok 3, tebang 45 m), NusantaraEnemyAndMutantAI (kesadaran 0-100 pandang+dengar; Patroli/Selidik/Mengintai/Isyarat kentongan/Gertak/Serang ancang 0,45 s + lompatan/Mengitari/Lari/Terluka/Menyerah AMPUNI/Mati GELEDAH/Ritual malam di Desa), EnemyDirector (regu Desa 5-7 + pemimpin, Sawit 3-4 + Abdi Lumpur, pengintai Hari 1 15:00, maks 12 aktif, despawn 150 m, token 2/3, Kemarahan 10 + harian/bunuh/ampuni, simpan), pose tempur ProceduralAnimator; Player: TANGKIS (parry 0,25 s/Keris 0,35, blok -60%, ketuk ganda simpan senjata), Tebasan Penghabisan x2,5, hit-stop, guncang, aim assist, ReaksiAndi (jatuh bila kena >= 25); UI: TombolTangkis, TandaTempur (tanda kena + vignette merah); Audio: 7 suara tempur prosedural | + PemeriksaanT7: statistik, grid 250.000 & >= 70%, A* Heli->Desa < 4.000 node, maks 12 aktif, persepsi, parry, keputusan, suara, prefab | Bertemu patroli Sekte di Desa, pemimpin memukul kentongan, parry lalu tebasan penghabisan, Sekte menyerah -> AMPUNI |
 
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
@@ -60,6 +61,8 @@ Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hid
 
 ## Masalah Terbuka / Belum Lulus Uji
 _(Daftar checklist yang belum lulus beserta dugaan penyebab.)_
+- T7 dipecah: T7a (inti tempur & Sekte, PR ini), T7b (hantu Pocong/Kuntilanak/Banaspati, Totem Topeng x6, raid malam & Malam Darah, Obor Tengkorak, Seret Teman, lempar bambu Abdi Wanita), T7c (GoreSystem 14 + AK/Blood/AK/Wet + ragdoll/mayat), T7d (senjata jarak jauh 118-127, Elak, Bunuh Senyap, stealth semak/lumpur, luka & medis 24 §5, musuh 13-17).
+- T7a: Tingkat gore sementara di `EnemyDirector.TingkatGore` (default Sedang = mayat telentang tanpa darah; Mati = larut jadi abu) sampai GoreSystem T7c.
 
 ## Tahap Berikutnya
 _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_

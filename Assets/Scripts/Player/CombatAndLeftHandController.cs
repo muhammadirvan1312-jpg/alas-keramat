@@ -7,7 +7,7 @@ namespace AlasKeramat.Player
 {
     // T5a: melee dasar golok/kapak (06 §2): tebasan ringan & berat, frame aktif, stamina, jangkauan; menebang pohon & melukai IDamageable.
     // Senjata aktif = yang terbaik di inventaris (kapak baja > kapak batu > golok > tangan kosong). Tangkis, lempar & panah menyusul T7.
-    public class CombatAndLeftHandController : MonoBehaviour
+    public partial class CombatAndLeftHandController : MonoBehaviour
     {
         public struct Senjata
         {
@@ -66,7 +66,7 @@ namespace AlasKeramat.Player
 
         public void Tebas(bool berat)
         {
-            if (SedangMenyerang || (_ctrl != null && _ctrl.Berenang)) return;
+            if (SedangMenyerang || _tersimpan || _blok || (_ctrl != null && _ctrl.Berenang)) return;
             if (_v == null) _v = GameServices.Get<AndiVitalsAndSanity>();
             if (_v != null && !_v.Pakai(berat ? _aktif.stamB : _aktif.stamR)) { GameEvents.RaiseToast("Terlalu lelah untuk mengayun"); return; }
             _berat = berat; _t = 0f; _sudahKena = false;
@@ -74,15 +74,19 @@ namespace AlasKeramat.Player
 
         void Update()
         {
+            TickTangkis(Time.deltaTime);
             _tCekSenjata -= Time.deltaTime;
             if (_tCekSenjata <= 0f) { PilihSenjata(); _tCekSenjata = 0.5f; }
 #if ENABLE_LEGACY_INPUT_MANAGER
             if (Input.GetMouseButtonDown(0)) Tebas(false);
             if (Input.GetKeyDown(KeyCode.Q)) Tebas(true);
+            if (Input.GetMouseButtonDown(1)) TangkisTekan();
+            if (Input.GetMouseButtonUp(1)) TangkisLepas();
 #endif
-            if (_t < 0f) { if (pivotFP != null) pivotFP.localRotation = Quaternion.Slerp(pivotFP.localRotation, _restPivot, Time.deltaTime * 10f); return; }
+            if (_t < 0f) { if (pivotFP != null) pivotFP.localRotation = Quaternion.Slerp(pivotFP.localRotation, _blok ? _restPivot * PoseBlok : _restPivot, Time.deltaTime * (_blok ? 14f : 10f)); return; }
             _t += Time.deltaTime;
             float dur = _berat ? _aktif.durB : _aktif.durR, aktif = _berat ? _aktif.aktifB : _aktif.aktifR;
+            if (!_sudahKena && _t < aktif) Assist(Time.deltaTime);
             if (!_sudahKena && _t >= aktif) { _sudahKena = true; Kenai(); }
             if (pivotFP != null)
             {
@@ -104,10 +108,10 @@ namespace AlasKeramat.Player
             var bagian = hit.collider.GetComponentInParent<BagianStruktur>();
             if (bagian != null && bagian.Jenis == BagianStruktur.Tipe.Tiang && hit.point.y > bagian.Puncak.y - 0.5f && _aktif.id != ItemID.None) { ShoulderLogAndFreeformBuilder.Serut(bagian); return; }
             var pohon = hit.collider.GetComponentInParent<DirectionalTree>();
-            if (pohon != null) { pohon.Pukul(transform.position, _aktif.tebang * (_berat ? PengaliTebangBerat : 1f)); return; }
+            if (pohon != null) { pohon.Pukul(transform.position, _aktif.tebang * (_berat ? PengaliTebangBerat : 1f)); AlasKeramat.AI.MeterSuara.Pancar(hit.point, AlasKeramat.AI.MeterSuara.Tebang); return; }
             var target = hit.collider.GetComponentInParent<IDamageable>();
             if (target != null && !ReferenceEquals(target, GetComponent<IDamageable>()))
-                target.TakeDamage(new DamageInfo { amount = _berat ? _aktif.berat : _aktif.ringan, type = _aktif.tipe, point = hit.point, direction = cam.forward, source = gameObject, isHeavy = _berat });
+                KenaiTarget(target, hit, cam, 1f);
         }
     }
 }
