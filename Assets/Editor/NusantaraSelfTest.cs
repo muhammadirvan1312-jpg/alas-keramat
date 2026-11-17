@@ -228,7 +228,7 @@ namespace AlasKeramat.EditorTools
             if (tahi != null)
             {
                 var kepalaA = tahi.transform.parent;
-                Vector3 rel = tahi.transform.position - (kepalaA.position + new Vector3(0f, 0.085f, 0.01f));
+                Vector3 rel = kepalaA.InverseTransformPoint(tahi.transform.position) - new Vector3(0f, 0.085f, 0.01f); // ruang lokal kepala (Andi berputar menghadap heli)
                 tahiOk = Vector3.Distance(rel, new Vector3(-0.036f, -0.014f, 0.081f)) < 0.003f && kepalaA.name == "Head";
             }
             cek("Tahi lalat Andi di bawah mata kiri (02 §2)", tahiOk);
