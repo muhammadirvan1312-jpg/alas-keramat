@@ -1,0 +1,42 @@
+Laporan Builder Alas Keramat - 2026-11-17 09:02:48
+[LULUS] 0. Bersihkan Assets/Generated
+  - Tag 15 & layer 6-18 terdaftar
+  - Player Settings: Linear, landscape, com.alaskeramat.game
+  - Aset URP dipasang di 6 level Quality
+[LULUS] 1. Proyek
+  - 14 tekstur
+  - 20 ikon
+  - 6 material
+  - 52 klip WAV
+[LULUS] 2. Aset
+  - Scene, matahari, bulan, langit prosedural
+[LULUS] 3. Scene & langit
+  - Terrain 16 tile @1025, laut, 2 sungai
+[LULUS] 3b. Dunia 2x2 km
+  - Vegetasi: 15453 pohon, 22115 semak/pakis, 2287 sel instancing
+[LULUS] 3c. Vegetasi
+  - Landmark: 38 objek (Beringin Agung, heli, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula, 2 mulut gua, altar)
+[LULUS] 3d. Landmark
+  - Ambien: 23 klip, 1112 emitter titik
+[LULUS] 3e. Ambien hidup
+  - Pasca-proses: ACES, color grading, bloom, vignette, split-tone + dinamis jam/cuaca
+[LULUS] 3f. Pasca-proses
+  - Sistem: Bootstrap, Diagnostik, Jam, Atmosfer, Synth (29 klip)
+[LULUS] 6. Sistem
+  - UI: judul, label zona & jam tur pratinjau, EventSystem
+[LULUS] 7. UI
+  - Andi di (-4.00, 10.70, -424.00), kontrol sentuh (joystick, geser, LOMPAT, JONGKOK), baris info HUD
+[LULUS] 7b. Andi & kontrol sentuh
+  - Interaksi: inventaris, 3 koper, 3 puing, tombol TANGAN & OBOR, toast, radar GPS
+[LULUS] 7c. Interaksi, koper, radar
+  - Vital Andi + 5 bar HUD + suhu/basah
+[LULUS] 7e. Vital Andi & bar HUD
+  - Foley Andi, subtitle + monolog pembuka, sabuk cepat 4 slot
+[LULUS] 7f. Foley, subtitle, sabuk cepat
+  - Karakter: Andi (2 renderer), Deden di heli, Ningsih di Sarang, galeri 12 humanoid
+[LULUS] 7g. Karakter & animasi
+[LULUS] 7d. Pasca-proses kamera
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 542
+[LULUS] 9. Simpan scene
+Durasi: 108.5 detik
+HASIL: SEMUA LANGKAH LULUS
