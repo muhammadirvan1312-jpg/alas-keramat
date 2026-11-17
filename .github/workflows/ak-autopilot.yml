@@ -109,7 +109,9 @@ jobs:
           if [ "$KESIMPULAN" = "success" ]; then
             KEPALA=$(gh pr view "$PR" -R "$REPO" --json commits --jq '[.commits[].messageHeadline | select(test("^(chore\\(autopilot\\)|ci: laporan)") | not)] | length')
             if [ "$KEPALA" = "0" ]; then echo "[AK] PR $PR belum berisi kerja Codex, tunggu."; exit 0; fi
-            gh pr merge "$PR" -R "$REPO" --squash --delete-branch || gh pr merge "$PR" -R "$REPO" --squash --auto || true
+            # Pesan squash bersih: komit foto berisi "[skip ci]" akan membuat build main terlewat bila ikut ke pesan merge.
+            JUDUL=$(gh pr view "$PR" -R "$REPO" --json title --jq .title)
+            gh pr merge "$PR" -R "$REPO" --squash --delete-branch --subject "$JUDUL (#$PR)" --body "Merge otomatis Autopilot setelah CI hijau." || gh pr merge "$PR" -R "$REPO" --squash --auto --subject "$JUDUL (#$PR)" --body "Merge otomatis Autopilot setelah CI hijau." || true
             exit 0
           fi
 
