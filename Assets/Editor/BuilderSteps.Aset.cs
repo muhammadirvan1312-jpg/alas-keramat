@@ -120,6 +120,7 @@ namespace AlasKeramat.EditorTools
         {
             var semua = new List<string>(ProceduralAudioSynth.KlipWajib);
             semua.AddRange(ProceduralAudioSynth.KlipAmbien);
+            semua.AddRange(ProceduralAudioSynth.KlipFoley);
             foreach (var nama in semua)
             {
                 string p = FolderAudio + "/" + nama + ".wav";
