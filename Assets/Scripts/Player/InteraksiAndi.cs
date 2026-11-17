@@ -14,8 +14,9 @@ namespace AlasKeramat.Player
 
         AndiFPSController _ctrl;
         IInteractable _target;
-        bool _air;
+        bool _air, _bangun;
         int _mask;
+        Building.ShoulderLogAndFreeformBuilder _pembangun;
 
         void Awake()
         {
@@ -37,6 +38,9 @@ namespace AlasKeramat.Player
             }
             if (_target == null) _air = CariAir(cam.position, cam.forward);
             string p = _target != null ? _target.GetPromptText(gameObject) : (_air ? TeksMinum : "");
+            if (_pembangun == null) _pembangun = GameServices.Get<Building.ShoulderLogAndFreeformBuilder>();
+            _bangun = _pembangun != null && _pembangun.Prompt.Length > 0 && !(_target is Building.KayuFisik);
+            if (_bangun) p = _pembangun.Prompt;
             if (p != Prompt) Prompt = p;
         }
 
@@ -56,6 +60,7 @@ namespace AlasKeramat.Player
         {
             try
             {
+                if (_bangun && _pembangun != null) { _pembangun.PasangSekarang(); return; }
                 if (_target != null) { _target.Interact(gameObject); return; }
                 if (_air)
                 {

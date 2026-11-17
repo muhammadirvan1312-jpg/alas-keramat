@@ -99,6 +99,10 @@ namespace AlasKeramat.Player
             if (cam == null) return;
             RaycastHit hit;
             if (!Physics.SphereCast(cam.position, RadiusSapuan, cam.forward, out hit, _aktif.jangkau + 0.3f, _mask, QueryTriggerInteraction.Ignore)) return;
+            var kayu = hit.collider.GetComponent<KayuFisik>();
+            if (kayu != null && _aktif.id != ItemID.None) { kayu.Pukul(); return; }
+            var bagian = hit.collider.GetComponentInParent<BagianStruktur>();
+            if (bagian != null && bagian.Jenis == BagianStruktur.Tipe.Tiang && hit.point.y > bagian.Puncak.y - 0.5f && _aktif.id != ItemID.None) { ShoulderLogAndFreeformBuilder.Serut(bagian); return; }
             var pohon = hit.collider.GetComponentInParent<DirectionalTree>();
             if (pohon != null) { pohon.Pukul(transform.position, _aktif.tebang * (_berat ? PengaliTebangBerat : 1f)); return; }
             var target = hit.collider.GetComponentInParent<IDamageable>();

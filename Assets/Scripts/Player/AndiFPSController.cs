@@ -24,7 +24,8 @@ namespace AlasKeramat.Player
         public Vector2 InputGerak;      // -1..1 (x samping, y maju)
         public Vector2 InputLihatPx;    // piksel layar yang diakumulasi sejak frame lalu
         public bool MintaLari;
-        public bool LariDiblokir;   // diset AndiVitalsAndSanity saat stamina habis
+        public bool LariDiblokir;
+        public float PengaliKecepatan = 1f; // diset pemanggul kayu (07 §4)   // diset AndiVitalsAndSanity saat stamina habis
         public event System.Action OnLompat;
         public bool Jongkok { get; private set; }
         public bool Berenang { get; private set; }
@@ -120,7 +121,7 @@ namespace AlasKeramat.Player
             float faktor = arah.y < 0f ? FaktorMundur : (Mathf.Abs(arah.x) > Mathf.Abs(arah.y) ? FaktorSamping : 1f);
             Vector3 lokal = new Vector3(arah.x, 0f, arah.y);
             if (lokal.sqrMagnitude > 1f) lokal.Normalize();
-            Vector3 inginDatar = transform.TransformDirection(lokal) * target * faktor;
+            Vector3 inginDatar = transform.TransformDirection(lokal) * target * faktor * PengaliKecepatan;
             float a = inginDatar.sqrMagnitude > _vDatar.sqrMagnitude ? Akselerasi : Perlambatan;
             _vDatar = Vector3.MoveTowards(_vDatar, inginDatar, a * dt);
 

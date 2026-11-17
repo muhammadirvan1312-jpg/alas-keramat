@@ -12,26 +12,30 @@ namespace AlasKeramat.Building
         public const float Panjang = 3.6f, Radius = 0.22f, Massa = 45f, MaksAktif = 40, GayaApung = 14f;
         static readonly List<KayuFisik> _aktif = new List<KayuFisik>();
         Rigidbody _rb;
+        public bool Papan { get; private set; }
+        int _pukulBelah;
+        public const int PukulanBelah = 3;
+        public static readonly Vector3 UkuranPapan = new Vector3(0.36f, Panjang, 0.08f);
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void Reset() { _aktif.Clear(); }
 
         public static int JumlahAktif { get { return _aktif.Count; } }
 
-        public static KayuFisik Buat(Vector3 pusat, Vector3 sumbu, Material kulit)
+        public static KayuFisik Buat(Vector3 pusat, Vector3 sumbu, Material kulit, bool papan = false)
         {
-            var go = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            go.name = "KayuGelondong";
+            var go = GameObject.CreatePrimitive(papan ? PrimitiveType.Cube : PrimitiveType.Capsule);
+            go.name = papan ? "PapanKayu" : "KayuGelondong";
             go.layer = GameLayers.LogPhysics; go.tag = GameTags.LogItem;
             go.transform.SetPositionAndRotation(pusat, Quaternion.FromToRotation(Vector3.up, sumbu));
-            go.transform.localScale = new Vector3(Radius * 2f, Panjang * 0.5f, Radius * 2f);
+            go.transform.localScale = papan ? UkuranPapan : new Vector3(Radius * 2f, Panjang * 0.5f, Radius * 2f);
             if (kulit != null) go.GetComponent<MeshRenderer>().sharedMaterial = kulit;
             var rb = go.AddComponent<Rigidbody>();
-            rb.mass = Massa;
+            rb.mass = papan ? 18f : Massa;
             PhysicsCompat.SetDrag(rb, 0.2f); PhysicsCompat.SetAngularDrag(rb, 0.5f);
             rb.sleepThreshold = 0.1f;
             var k = go.AddComponent<KayuFisik>();
-            k._rb = rb;
+            k._rb = rb; k.Papan = papan;
             return k;
         }
 
@@ -70,17 +74,40 @@ namespace AlasKeramat.Building
         }
 
         public float HoldDuration { get { return 0f; } }
-        public string GetPromptText(GameObject actor) { return "AMBIL KAYU"; }
+        public string GetPromptText(GameObject actor) { return Papan ? "AMBIL PAPAN" : "AMBIL KAYU"; }
+
+        // 07 §5 mode 4: 3 pukulan memanjang pada gelondong tergeletak -> 2 papan.
+        public void Pukul()
+        {
+            if (Papan) return;
+            var synth = GameServices.Get<ProceduralAudioSynth>();
+            if (synth != null) synth.PlayWoodChop(transform.position);
+            if (++_pukulBelah < PukulanBelah) { GameEvents.RaiseToast("BELAH PAPAN " + _pukulBelah + "/" + PukulanBelah); return; }
+            Vector3 s = transform.up, kanan = Vector3.Cross(s, Vector3.up).normalized;
+            if (kanan.sqrMagnitude < 0.01f) kanan = Vector3.right;
+            var mat = GetComponent<MeshRenderer>().sharedMaterial;
+            Buat(transform.position + kanan * 0.2f + Vector3.up * 0.1f, s, mat, true);
+            Buat(transform.position - kanan * 0.2f + Vector3.up * 0.1f, s, mat, true);
+            GameEvents.RaiseToast("Kayu terbelah jadi 2 papan");
+            Destroy(gameObject);
+        }
         public bool CanInteract(GameObject actor) { return true; }
 
         public void Interact(GameObject actor)
         {
-            var inv = GameServices.Get<TikarPandan3DInventory>();
-            if (inv == null) return;
-            if (inv.Tambah(ItemID.KayuGelondong, 1) == 0) { GameEvents.RaiseToast("Tak sanggup membawa lebih dari " + ItemDatabase.MaxCarry(ItemID.KayuGelondong) + " kayu"); return; }
+            var pemanggul = GameServices.Get<ShoulderLogAndFreeformBuilder>();
             var synth = GameServices.Get<ProceduralAudioSynth>();
+            if (pemanggul != null && pemanggul.Panggul(Papan ? ShoulderLogAndFreeformBuilder.Muatan.Papan : ShoulderLogAndFreeformBuilder.Muatan.Gelondong, GetComponent<MeshRenderer>().sharedMaterial))
+            {
+                if (synth != null) synth.PlayLogPickup(transform.position);
+                Destroy(gameObject);
+                return;
+            }
+            var inv = GameServices.Get<TikarPandan3DInventory>();
+            var id = Papan ? ItemID.PapanKayu : ItemID.KayuGelondong;
+            if (inv == null || inv.Tambah(id, 1) == 0) { GameEvents.RaiseToast("Bahu & tas sudah penuh"); return; }
             if (synth != null) synth.PlayLogPickup(transform.position);
-            GameEvents.RaiseToast("+1 Kayu Gelondong");
+            GameEvents.RaiseToast("+1 " + ItemDatabase.Get(id).displayName);
             Destroy(gameObject);
         }
     }
