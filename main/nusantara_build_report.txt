@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-17 08:39:16
+Laporan Builder Alas Keramat - 2026-11-17 09:20:14
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -7,7 +7,7 @@ Laporan Builder Alas Keramat - 2026-11-17 08:39:16
   - 14 tekstur
   - 20 ikon
   - 6 material
-  - 32 klip WAV
+  - 52 klip WAV
 [LULUS] 2. Aset
   - Scene, matahari, bulan, langit prosedural
 [LULUS] 3. Scene & langit
@@ -21,7 +21,7 @@ Laporan Builder Alas Keramat - 2026-11-17 08:39:16
 [LULUS] 3e. Ambien hidup
   - Pasca-proses: ACES, color grading, bloom, vignette, split-tone + dinamis jam/cuaca
 [LULUS] 3f. Pasca-proses
-  - Sistem: Bootstrap, Diagnostik, Jam, Atmosfer, Synth (9 klip)
+  - Sistem: Bootstrap, Diagnostik, Jam, Atmosfer, Synth (29 klip)
 [LULUS] 6. Sistem
   - UI: judul, label zona & jam tur pratinjau, EventSystem
 [LULUS] 7. UI
@@ -31,8 +31,10 @@ Laporan Builder Alas Keramat - 2026-11-17 08:39:16
 [LULUS] 7c. Interaksi, koper, radar
   - Vital Andi + 5 bar HUD + suhu/basah
 [LULUS] 7e. Vital Andi & bar HUD
+  - Foley Andi, subtitle + monolog pembuka, sabuk cepat 4 slot
+[LULUS] 7f. Foley, subtitle, sabuk cepat
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 134
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 148
 [LULUS] 9. Simpan scene
-Durasi: 98.4 detik
+Durasi: 131.2 detik
 HASIL: SEMUA LANGKAH LULUS

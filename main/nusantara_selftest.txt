@@ -1,6 +1,6 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (134 = 134)
+[LULUS] Idempoten: jumlah objek sama (148 = 148)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
@@ -8,7 +8,7 @@
 [LULUS] Material >= 5 (24)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
-[LULUS] WAV >= 8 (32)
+[LULUS] WAV >= 8 (52)
 [LULUS] Scene tersimpan & terdaftar di Build Settings
 [LULUS] Synth punya klip dipanggang
 [LULUS] EventSystem ada
@@ -73,6 +73,10 @@
 [LULUS] Laju vital 60 s sesuai 05 (haus -5.10, kenyang -3.30, istirahat -2.10)
 [LULUS] Plafon HP 05 §3.1 (lapar 10, haus 10 -> 58)
 [LULUS] Suhu udara: siang kemarau > malam
+[LULUS] Klip foley 20/20
+[LULUS] Permukaan langkah: pantai=pasir, air=air, struktur=kayu
+[LULUS] Foley, subtitle, sabuk cepat ada
+[LULUS] Subtitle: lama tampil min 2,5 s
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas
