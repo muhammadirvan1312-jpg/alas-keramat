@@ -22,7 +22,7 @@ Pengguna menjalankan **Codex Cloud** (tugas dipicu dari issue `AUTOPILOT` / kome
 - Pengguna memilih **kualitas di atas segalanya**. Baca `docs/gdd/20` (dunia 2×2 km 16 tile + streaming, 12 zona, 6 kompleks bawah tanah, tekstur 2K/4K, mocap ≤ 220 klip, mekanik baru, preset Ultra) dan `docs/gdd/21` (audio v5: rekaman CC0 + prosedural, HRTF-lite, akustik dunia, gelombang hening, suara makhluk, musik adaptif) di SETIAP tahap.
 - Batas di H10 & 11 §7 diganti tabel 20 §1. Audio tidak lagi 100% prosedural: rekaman CC0 wajib sesuai 21 §2 (prosedural = cadangan).
 - Koordinat permukaan 03/16 dikali 2 (20 §2). ID baru 20 §3 & §2.3 ditambahkan ke `SOTFContracts` saat tahap yang memakainya.
-- **Karakter realistis** MakeHuman/MPFB2 CC0 (`docs/gdd/22`) menggantikan karakter kotak 02 & aturan "rigid skinning" H10; tetap tanpa Animator (rig Generic + `ProceduralAnimator`). **Cerita 6 babak, 42 cutscene, 3 ending** (`docs/gdd/23`) melengkapi 04.
+- **Karakter realistis** MakeHuman/MPFB2 CC0 (`docs/gdd/22`) menggantikan karakter kotak 02 & aturan "rigid skinning" H10; tetap tanpa Animator (rig Generic + `ProceduralAnimator`). **Cerita 6 babak, 42 cutscene, 3 ending** (`docs/gdd/23`) melengkapi 04. **Survival mendalam & mode tantangan** (`docs/gdd/24`) melengkapi 05.
 - Tahap kini dikerjakan per sesi (bukan Codex Cloud); Autopilot hanya merge PR hijau + rilis APK. Aturan cloud (Bagian 0) tetap berlaku.
 
 ## BAGIAN 1 — PERAN KAMU & PROFIL PENGGUNA
@@ -205,6 +205,7 @@ public static Material CreatePBR(string name, Color albedo, float metallic, floa
 | `docs/gdd/21_AUDIO_V5_HIDUP_DAN_MENAKUTKAN.md` | V5 audio: rekaman CC0, HRTF-lite, akustik, ambien hidup, suara makhluk, musik adaptif, Uji Dengar (G5) | SETIAP tahap |
 | `docs/gdd/22_V5_KARAKTER_REALISTIS.md` | V5: karakter MakeHuman/MPFB2 dibuat Blender headless di CI, wajah 12 ekspresi + visem, kulit/rambut/mata HLSL, gore segmen | T1, T4, T7, T10 |
 | `docs/gdd/23_V5_CERITA_DAN_SINEMATIK.md` | V5: sejarah perjanjian, 6 babak, misi M14–M18 & S05–S08, 3 ending, `CutsceneDirector`, 42 cutscene, dialog bercabang | T3, T4, T10 |
+| `docs/gdd/24_V5_SURVIVAL_MENDALAM_DAN_TANTANGAN.md` | V5: suhu tubuh, gizi 4 cadangan, air bersih, penyakit & bisa, luka per bagian, alat & api bertingkat, hama/banjir/kebun, bahaya alam & hewan, navigasi, mode Sengsara/Pantang Mundur | T3, T5, T6, T7, T9, T11 |
 | `docs/tech/18_PIPELINE_CLOUD_OTONOM.md` | Codex Cloud + GameCI + Autopilot, T0-C, aturan kerja cloud, gerbang G1–G4, bila macet | SETIAP tugas |
 | `docs/EVALUASI_V4.md` · `docs/UMPAN_BALIK.md` | Rapor jujur & prioritas · masukan pengguna dari HP | Awal setiap tugas |
 | `docs/tech/11_ARSITEKTUR_TEKNIS.md` | Manifest file, namespace, kode kontrak, hierarki scene, Tag/Layer, aset Generated, save JSON, performa, menu Builder | SETIAP tahap |
