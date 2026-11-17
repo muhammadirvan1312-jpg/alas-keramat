@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-17 09:20:14
+Laporan Builder Alas Keramat - 2026-11-17 10:02:42
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -33,8 +33,10 @@ Laporan Builder Alas Keramat - 2026-11-17 09:20:14
 [LULUS] 7e. Vital Andi & bar HUD
   - Foley Andi, subtitle + monolog pembuka, sabuk cepat 4 slot
 [LULUS] 7f. Foley, subtitle, sabuk cepat
+  - Karakter: Andi (2 renderer), Deden di heli, Ningsih di Sarang, galeri 12 humanoid
+[LULUS] 7g. Karakter & animasi
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 148
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 542
 [LULUS] 9. Simpan scene
-Durasi: 131.2 detik
+Durasi: 107.5 detik
 HASIL: SEMUA LANGKAH LULUS

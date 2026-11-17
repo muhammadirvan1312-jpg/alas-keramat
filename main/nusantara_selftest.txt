@@ -1,11 +1,11 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (148 = 148)
+[LULUS] Idempoten: jumlah objek sama (542 = 542)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
 [LULUS] Tekstur >= 10 (14)
-[LULUS] Material >= 5 (24)
+[LULUS] Material >= 5 (36)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
 [LULUS] WAV >= 8 (52)
@@ -77,6 +77,9 @@
 [LULUS] Permukaan langkah: pantai=pasir, air=air, struktur=kayu
 [LULUS] Foley, subtitle, sabuk cepat ada
 [LULUS] Subtitle: lama tampil min 2,5 s
+[LULUS] Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga 400-6500, 24 sendi bernama (15/15)
+[LULUS] Tahi lalat Andi di bawah mata kiri (02 §2)
+[LULUS] Deden di heli & Ningsih di Sarang
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas
