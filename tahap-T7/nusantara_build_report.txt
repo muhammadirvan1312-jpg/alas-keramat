@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-17 15:29:32
+Laporan Builder Alas Keramat - 2026-11-17 15:54:14
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -53,8 +53,10 @@ Laporan Builder Alas Keramat - 2026-11-17 15:29:32
 [LULUS] 7o. Hantu, raid & totem
   - Gore: 4 percikan, genangan, atlas luka 8, tutup potongan, partikel darah, GoreSystem, peringatan 18+
 [LULUS] 7p. Gore, luka & peringatan 18+
+  - Senjata jarak: 5 proyektil, 10 model FP, tombol GANTI, cincin suara, 3 titik lumpur
+[LULUS] 7q. Senjata jarak, elak, stealth
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 1936
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 1987
 [LULUS] 9. Simpan scene
-Durasi: 144.3 detik
+Durasi: 145.2 detik
 HASIL: SEMUA LANGKAH LULUS
