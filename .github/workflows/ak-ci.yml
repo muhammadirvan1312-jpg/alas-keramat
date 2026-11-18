@@ -53,6 +53,7 @@ jobs:
           python-version: '3.12'
 
       - name: Cache aset CC0 & mocap
+        id: cacheaset
         if: steps.cekproyek.outputs.ada == '1'
         uses: actions/cache@v4
         with:
@@ -77,6 +78,13 @@ jobs:
           fi
           mkdir -p Logs/ci
           python Tools/visual/siapkan.py 2>&1 | tee Logs/ci/visual.log
+
+      - name: Simpan cache hasil panggang visual
+        if: steps.visual.outcome == 'success' && steps.cacheaset.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: Assets/ThirdParty
+          key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}
 
       # Cache Library dipulihkan dari run terbaru & DISIMPAN ULANG setiap run (termasuk saat gagal),
       # supaya shader & impor aset tidak dikompilasi ulang dari nol (build APK pertama ±16 menit untuk shader).
