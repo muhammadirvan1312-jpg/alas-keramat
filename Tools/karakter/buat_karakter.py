@@ -136,7 +136,7 @@ def make(name,recipe):
     hidden=clothes[-1]|shoes[-1]
     parts=[(base,UV,[(g,f) for g,f in FACES if g=='body' and not any(p[0] in hidden for p in f)],W,0),(*clothes[:4],1),(*shoes[:4],2),(*hair[:4],3),(*eyes[:4],4)]
     if name=='Ningsih':
-        body=[(g,f) for g,f in FACES if g=='body' and all((base[vi].y-bottom)/height>0.84 or W[vi].get(12,0)+W[vi].get(13,0)>0.5 for vi,_ in f)]
+        body=[(g,f) for g,f in FACES if g=='body' and all((base[vi].y-bottom)/height>0.75 or W[vi].get(12,0)+W[vi].get(13,0)>0.5 for vi,_ in f)]
         garment,guv,gfaces,gweights,_=clothes
         hem=min((v.y-bottom)/height for v in garment)
         for v in garment:

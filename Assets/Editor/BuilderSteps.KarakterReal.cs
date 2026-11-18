@@ -99,7 +99,7 @@ namespace AlasKeramat.EditorTools
             string hair=j==J.Ningsih?"ponytail01":"short01";
             var skinMat=SafeMaterialFactory.CreatePBR("M_Skin_"+j,j==J.Deden?new Color(0.65f,0.54f,0.43f):j==J.Ningsih?new Color(0.95f,0.91f,0.85f):new Color(0.8f,0.7f,0.59f),0f,0.32f,TeksturKarakter("skins/"+skin+".png"));
             var sh=AmbilShaderAK("AlasKeramat/KulitManusia");if(sh!=null)skinMat.shader=sh;
-            var cloth=SafeMaterialFactory.CreatePBR("M_Pakaian_"+j,Color.white,0f,0.25f,PakaianBerwarna(j,suit),TeksturKarakter("clothes/"+suit+"/"+suit+"_normal.png",true));
+            var cloth=SafeMaterialFactory.CreatePBR("M_Pakaian_"+j,Color.white,0f,0.25f,PakaianBerwarna(j,suit),j==J.Ningsih?AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kain_n.png"):TeksturKarakter("clothes/"+suit+"/"+suit+"_normal.png",true));
             var boots=SafeMaterialFactory.CreatePBR("M_Boots_"+j,Color.white,0f,0.22f,TeksturKarakter("clothes/shoes01/shoes01_diffuse.png"),TeksturKarakter("clothes/shoes01/shoes01_normal.png",true));
             var rambut=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,new Color(0.18f,0.14f,0.11f),0f,0.33f,TeksturKarakter("hair/"+hair+"/"+hair+"_diffuse.png"),null,null,SurfaceMode.Cutout,0.35f);
             SafeMaterialFactory.SetF(rambut,"_Cull",0f);

@@ -45,6 +45,33 @@ Shader "AlasKeramat/KabutLokal"
             }
             ENDHLSL
         }
+        // Kartu atmosfer tidak menulis depth atau bayangan padat.
+        Pass
+        {
+            Name "ShadowCaster"
+            Tags {"LightMode"="ShadowCaster"}
+            ZWrite Off ColorMask 0 Cull Off
+            HLSLPROGRAM
+            #pragma vertex VertNoDepth
+            #pragma fragment FragNoDepth
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            float4 VertNoDepth(float4 p:POSITION):SV_POSITION { return TransformObjectToHClip(p.xyz); }
+            half4 FragNoDepth():SV_Target { clip(-1);return 0; }
+            ENDHLSL
+        }
+        Pass
+        {
+            Name "DepthOnly"
+            Tags {"LightMode"="DepthOnly"}
+            ZWrite Off ColorMask 0 Cull Off
+            HLSLPROGRAM
+            #pragma vertex VertNoDepth
+            #pragma fragment FragNoDepth
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            float4 VertNoDepth(float4 p:POSITION):SV_POSITION { return TransformObjectToHClip(p.xyz); }
+            half4 FragNoDepth():SV_Target { clip(-1);return 0; }
+            ENDHLSL
+        }
     }
     Fallback "Universal Render Pipeline/Lit"
 }
