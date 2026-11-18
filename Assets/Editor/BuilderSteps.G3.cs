@@ -9,6 +9,7 @@ namespace AlasKeramat.EditorTools
     {
         static void LangkahG3()
         {
+            BuatSerasahHutan();
             var go=Anak(_root,"AtmosferHutanG3");
             string path=FolderTex+"/noise_kabut.png";
             var tex=ProcTex.FromHeight("NoiseKabut",128,ProcTex.HeightMap(128,(u,v)=>ProcTex.Fbm(u,v,4,4,2026)),ProcTex.Palet(new[]{Color.black,Color.white}));

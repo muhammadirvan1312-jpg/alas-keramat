@@ -14,7 +14,8 @@ namespace AlasKeramat.EditorTools
     public static class NusantaraFoto
     {
         public const string Folder = "Logs/foto_kualitas";
-        const int Lebar = 1280, Tinggi = 720;
+        const int Lebar = 960, Tinggi = 540;
+        public const int JumlahFotoAudit = 6;
         const double BatasDetik = 1200; // anggaran total render (render perangkat lunak bisa lambat)
         const string PathLog = "Logs/ci/foto.log";
 
@@ -77,6 +78,10 @@ namespace AlasKeramat.EditorTools
             bool asinkronLama = EditorSettings.asyncShaderCompilation;
             EditorSettings.asyncShaderCompilation = false; // hindari shader placeholder (biru muda) di foto
             Directory.CreateDirectory(Folder);
+            foreach(var lama in Directory.GetFiles(Folder,"*.png"))File.Delete(lama);
+            Directory.CreateDirectory("Logs/ci");File.WriteAllText(PathLog,"");
+            string sumber=NusantaraCI.SourceCommit();
+            File.WriteAllText(Path.Combine(Folder,"sumber.txt"),sumber+"\n960x540; survei CI, radius foto permukaan 400m, potret 120m\n");
             var daftar = new List<string>();
             var go = new GameObject("AK_KameraFoto");
             try
@@ -87,11 +92,12 @@ namespace AlasKeramat.EditorTools
                 cam.allowHDR = true;
                 var dataCam = UnityEngine.Rendering.Universal.CameraExtensions.GetUniversalAdditionalCameraData(cam);
                 if (dataCam != null) dataCam.renderPostProcessing = true;
-                var rt = new RenderTexture(Lebar, Tinggi, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+                var rt = new RenderTexture(Lebar, Tinggi, 24, RenderTextureFormat.ARGB32) { antiAliasing = 1 };
                 var atmos = UnityEngine.Object.FindFirstObjectByType<URPAtmosphereAndWeather>();
                 var volumeFoto=UnityEngine.Object.FindFirstObjectByType<UnityEngine.Rendering.Volume>();
                 var guaFoto=UnityEngine.Object.FindFirstObjectByType<WorldCaveAndSaveManager>();
                 var kabutLokal=UnityEngine.Object.FindFirstObjectByType<AtmosferHutan>();
+                var serasah=UnityEngine.Object.FindFirstObjectByType<SerasahHutan>();
                 var veg = UnityEngine.Object.FindFirstObjectByType<AlasKeramat.Building.VegetationManager>();
                 if (veg != null) veg.PengaliJarak = 0.5f; // ringankan render perangkat lunak
                 // Ringankan terrain untuk render perangkat lunak (tidak disimpan ke scene).
@@ -103,9 +109,7 @@ namespace AlasKeramat.EditorTools
                 Directory.CreateDirectory("Logs/ci");
                 Log("Mulai foto, perangkat: " + SystemInfo.graphicsDeviceName);
                 cam.targetTexture = rt;
-                cam.farClipPlane = 2600f;
-                for (int pemanasan = 0; pemanasan < 2; pemanasan++) cam.Render(); // frame pertama sering gelap (tekstur/cahaya belum siap)
-                Log("Pemanasan selesai " + jam.Elapsed.TotalSeconds.ToString("0") + " s");
+
                 var akar = GameObject.Find(NusantaraMasterBuilder.NamaRoot);
                 var galeriFoto = akar != null ? akar.transform.Find(NusantaraMasterBuilder.NamaGaleri) : null;
                 if (galeriFoto != null) galeriFoto.gameObject.SetActive(true);
@@ -115,6 +119,7 @@ namespace AlasKeramat.EditorTools
                 if (dioHantu != null) dioHantu.gameObject.SetActive(true);
                 foreach (var s in ShotAktif)
                 {
+                    if(Application.isBatchMode && daftar.Count>=JumlahFotoAudit)break;
                     if (jam.Elapsed.TotalSeconds > BatasDetik) { Log("Anggaran waktu habis, sisa shot dilewati"); break; }
                     try
                     {
@@ -128,11 +133,14 @@ namespace AlasKeramat.EditorTools
                         URPAtmosphereAndWeather.DalamRuangan=bawah;
                         if(bawah && atmos!=null)atmos.TerapkanRuangan();
                         if(guaFoto!=null)guaFoto.TerapkanLampuFoto(pos);
-                        cam.farClipPlane=bawah?80f:2600f;cam.clearFlags=bawah?CameraClearFlags.SolidColor:CameraClearFlags.Skybox;cam.backgroundColor=Color.black;
+                        cam.farClipPlane=bawah?80f:s.nama.Contains("wajah")?120f:Application.isBatchMode?400f:2600f;cam.clearFlags=bawah?CameraClearFlags.SolidColor:CameraClearFlags.Skybox;cam.backgroundColor=Color.black;
                         if(volumeFoto!=null)AKPascaProses.TerapkanFoto(volumeFoto.profile,s.jam,(WeatherState)s.cuaca,bawah);
                         if(kabutLokal!=null)kabutLokal.Terapkan(cam,s.jam,(WeatherState)s.cuaca);
+                        Log("Render " + s.nama);
+                        if(serasah!=null)serasah.Gambar(cam);
                         if (veg != null) veg.Gambar(cam);
                         cam.Render();
+                        if(serasah!=null)serasah.Gambar(cam);
                         if (veg != null) veg.Gambar(cam);
                         cam.Render();
                         RenderTexture.active = rt;
@@ -142,6 +150,7 @@ namespace AlasKeramat.EditorTools
                         File.WriteAllBytes(Path.Combine(Folder, s.nama + ".png"), tex.EncodeToPNG());
                         UnityEngine.Object.DestroyImmediate(tex);
                         daftar.Add(s.nama);
+                        File.WriteAllLines(Path.Combine(Folder,"daftar.txt"),daftar);
                         Log(s.nama + " selesai pada " + jam.Elapsed.TotalSeconds.ToString("0") + " s");
                     }
                     catch (Exception e)

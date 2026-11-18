@@ -8,6 +8,9 @@ OUT.mkdir(parents=True,exist_ok=True)
 
 def write_mesh(path,objects,limit,tree=False):
     vertices=[]; triangles=[[],[]]
+    points=[o.matrix_world@v.co for o in objects for v in o.data.vertices]
+    zmin=min(p.z for p in points);height=max(p.z for p in points)-zmin
+    scale=18.0/max(height,0.001) if tree else 1.0
     for src in objects:
         obj=src.copy();obj.data=src.data.copy();bpy.context.collection.objects.link(obj)
         bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);bpy.context.view_layer.objects.active=obj
@@ -19,15 +22,12 @@ def write_mesh(path,objects,limit,tree=False):
             dec=obj.modifiers.new('LOD','DECIMATE');dec.ratio=limit/count;dec.use_collapse_triangulate=True
             bpy.ops.object.modifier_apply(modifier=dec.name)
         mesh=obj.data;mesh.calc_loop_triangles();uv=mesh.uv_layers.active
-        zmin=min((obj.matrix_world@v.co).z for v in mesh.vertices)
-        height=max((obj.matrix_world@v.co).z for v in mesh.vertices)-zmin
-        scale=(18.0/height) if tree else 1.0
         for tri in mesh.loop_triangles:
             material=mesh.materials[tri.material_index] if tri.material_index<len(mesh.materials) else None
             sub=1 if not tree or (material and 'leaves' in material.name) else 0
             base=len(vertices)
             for vi,li in zip(tri.vertices,tri.loops):
-                v=mesh.vertices[vi];p=obj.matrix_world@v.co;n=obj.matrix_world.to_3x3()@v.normal
+                v=mesh.vertices[vi];p=obj.matrix_world@v.co;n=(obj.matrix_world.to_3x3().inverted().transposed()@v.normal).normalized()
                 # Blender Z-up to Unity Y-up; swapping axes changes handedness.
                 q=(p.x*scale,(p.z-zmin)*scale,-p.y*scale)
                 norm=(n.x,n.z,-n.y);tex=uv.data[li].uv if uv else (0,0)

@@ -10,6 +10,14 @@ namespace AlasKeramat.EditorTools
     {
         public static void Jalankan(Action<string,bool> cek)
         {
+            var serasah=Object.FindFirstObjectByType<SerasahHutan>();
+            bool detail=serasah!=null && serasah.kelompok.Length>0;
+            if(serasah!=null)foreach(var group in serasah.kelompok)
+            {
+                detail &= group.mesh!=null && group.material!=null && group.matriks.Length<=1023;
+                foreach(var matrix in group.matriks)detail &= group.bounds.Contains((Vector3)matrix.GetColumn(3));
+            }
+            cek("Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance",detail);
             bool foto=true;
             foreach(string slot in new[]{"tanah","rumput","batu","kayu","kulit_kayu","pasir","lumpur","beton","logam_karat","kain"})
             {

@@ -4,6 +4,8 @@ Shader "AlasKeramat/Daun"
     {
         [MainTexture] _BaseMap ("Tekstur dasar", 2D) = "white" {}
         [MainColor] _BaseColor ("Warna dasar", Color) = (1,1,1,1)
+        [Normal] _BumpMap ("Normal daun", 2D) = "bump" {}
+        _BumpScale ("Detail normal", Range(0,2)) = 0.65
         _Smoothness ("Kehalusan", Range(0,1)) = 0.25
         _Goyang ("Goyang batang", Range(0,0.1)) = 0.025
         _Cutoff ("Ambang alpha", Range(0,1)) = 0.45
@@ -19,12 +21,13 @@ Shader "AlasKeramat/Daun"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
         #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Packing.hlsl"
+        TEXTURE2D(_BumpMap); SAMPLER(sampler_BumpMap);
         TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
         
         CBUFFER_START(UnityPerMaterial)
             float4 _BaseMap_ST;
             half4 _BaseColor;
-            float _Smoothness, _Goyang;
+            float _Smoothness, _Goyang, _BumpScale;
             float _Cutoff, _Kibasan, _Translucency, _VariasiWarna;
         CBUFFER_END
         // Global, sengaja bukan Properties/UnityPerMaterial.
@@ -111,7 +114,11 @@ Shader "AlasKeramat/Daun"
         }
         half3 Normal(Varyings i, FRONT_FACE_TYPE face)
         {
-            return NormalizeNormalPerPixel(i.normalWS) * IS_FRONT_VFACE(face, 1.0, -1.0);
+            half3 n=NormalizeNormalPerPixel(i.normalWS);
+            half3 t=SafeNormalize(i.tangentWS.xyz-n*dot(n,i.tangentWS.xyz));
+            half3 b=cross(n,t)*i.tangentWS.w;
+            half3 detail=UnpackNormalScale(SAMPLE_TEXTURE2D(_BumpMap,sampler_BumpMap,i.uv),_BumpScale);
+            return NormalizeNormalPerPixel(TransformTangentToWorld(detail,half3x3(t,b,n))) * IS_FRONT_VFACE(face,1.0,-1.0);
         }
         half4 Frag(Varyings i, FRONT_FACE_TYPE face : FRONT_FACE_SEMANTIC) : SV_Target
         {

@@ -119,7 +119,10 @@ namespace AlasKeramat.EditorTools
             Color tone=j==J.Deden?new Color(0.88f,0.43f,0.12f):j==J.Ningsih?new Color(0.86f,0.83f,0.73f):j==J.KiRogo?new Color(0.14f,0.13f,0.12f):new Color(0.5f,0.48f,0.31f);
             for(int i=0;i<px.Length;i++)
             {
-                float lum=px[i].grayscale;px[i]=tone*Mathf.Lerp(0.35f,1.25f,lum);px[i].a=1f;
+                Color asli=px[i];float lum=asli.grayscale;
+                float denim=Mathf.Clamp01((asli.b-asli.r)*6f);
+                Color dyed=tone*Mathf.Lerp(0.12f,1.2f,lum);
+                px[i]=(j==J.Andi || j==J.Deden)?Color.Lerp(asli,dyed,denim):dyed;px[i].a=1f;
                 if(j==J.Ningsih)
                 {
                     float u=(float)(i%source.width)/source.width,v=(float)(i/source.width)/source.height;

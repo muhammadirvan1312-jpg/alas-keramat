@@ -7,3 +7,5 @@ Format bebas, contoh:
 - [APK uji 2026-11-20] Wajah Kang Deden aneh saat cutscene.
 
 ## Catatan
+
+- [DALAM PENGERJAAN, 18 Nov 2026] Pengguna sangat tidak puas dengan visual G3. Audit dibuka kembali; belum selesai hanya karena kode lolos CI. Wajib nilai render asli baru sebelum menyatakan kualitas lulus.

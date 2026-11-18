@@ -121,6 +121,7 @@ jobs:
         timeout-minutes: 75
         uses: game-ci/unity-builder@v4
         env:
+          AK_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
@@ -128,7 +129,7 @@ jobs:
           targetPlatform: Android
           buildMethod: AlasKeramat.EditorTools.NusantaraCI.BuildAndTest
           allowDirtyBuild: true
-          customParameters: -akLaporan Logs/ci
+          customParameters: -akLaporan Logs/ci -akSource ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Ambil alih kepemilikan file dari container Unity
         if: always() && steps.cekproyek.outputs.ada == '1'
@@ -141,6 +142,17 @@ jobs:
         with:
           path: Library
           key: Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-${{ github.run_id }}
+
+      - name: Simpan scene untuk audit foto
+        if: steps.build.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-foto-${{ github.run_id }}
+          path: |
+            Assets/Generated
+            Assets/Generated.meta
+            Assets/Scenes
+          retention-days: 2
 
       - name: Susun laporan CI (selalu)
         if: always() && steps.cekproyek.outputs.ada == '1'
@@ -241,12 +253,24 @@ jobs:
             Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-
             Library-Android-
 
+      - name: Ambil scene hasil build yang sama
+        uses: actions/download-artifact@v4
+        with:
+          name: scene-foto-${{ github.run_id }}
+          path: Assets
+
+      - name: Bersihkan foto warisan
+        run: |
+          rm -rf Logs/foto_kualitas
+          rm -f Logs/ci/foto.log
+
       - name: Unity — Builder + Foto
         id: foto
         continue-on-error: true
         timeout-minutes: 35
         uses: game-ci/unity-builder@v4
         env:
+          AK_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
@@ -254,7 +278,7 @@ jobs:
           targetPlatform: Android
           buildMethod: AlasKeramat.EditorTools.NusantaraCI.FotoSaja
           allowDirtyBuild: true
-          customParameters: -akLaporan Logs/ci
+          customParameters: -akLaporan Logs/ci -akSource ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Simpan foto ke cabang ci-hasil
         if: always()

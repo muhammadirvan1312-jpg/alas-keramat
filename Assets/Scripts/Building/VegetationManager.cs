@@ -36,8 +36,8 @@ namespace AlasKeramat.Building
             for (int i = 0; i < n; i++)
             {
                 var j = data.jenis[i];
-                _rpKayu[i] = new RenderParams(j.kayu) { shadowCastingMode = j.bayangan ? ShadowCastingMode.On : ShadowCastingMode.Off, receiveShadows = true, layer = GameLayers.Foliage };
-                _rpDaun[i] = new RenderParams(j.daun) { shadowCastingMode = j.bayangan ? ShadowCastingMode.On : ShadowCastingMode.Off, receiveShadows = true, layer = GameLayers.Foliage };
+                _rpKayu[i] = new RenderParams(j.kayu) { shadowCastingMode = j.bayangan ? ShadowCastingMode.On : ShadowCastingMode.Off, receiveShadows = true, layer = GameLayers.Foliage, lightProbeUsage = LightProbeUsage.Off };
+                _rpDaun[i] = new RenderParams(j.daun) { shadowCastingMode = j.bayangan ? ShadowCastingMode.On : ShadowCastingMode.Off, receiveShadows = true, layer = GameLayers.Foliage, lightProbeUsage = LightProbeUsage.Off };
             }
             _mat = new Matrix4x4[data.sel.Length][];
             _letak.Clear();

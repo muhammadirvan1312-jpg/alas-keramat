@@ -12,6 +12,7 @@ namespace AlasKeramat.EditorTools
     // Titik masuk CI (GameCI buildMethod). Lihat docs/tech/18 bagian 4.
     public static class NusantaraCI
     {
+        public static string SourceCommit() { return Arg("-akSource") ?? Environment.GetEnvironmentVariable("AK_SOURCE_SHA") ?? "editor-lokal"; }
         static string _folder = "Logs/ci";
         static readonly List<string> _baris = new List<string>();
         static bool _adaGagal;
@@ -27,6 +28,8 @@ namespace AlasKeramat.EditorTools
 
             Langkah("pengaturan pemain", AturPemain);
             Langkah("builder", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraMasterBuilder", "BuildAll"));
+            if(NusantaraMasterBuilder.LastBuildSucceeded)
+                File.WriteAllText("Assets/Generated/foto_commit.txt",SourceCommit());
             Langkah("self-test", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraSelfTest", "RunAll"));
             Tulis("[LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)");
             Langkah("build APK", () => BangunApk(buildPath));
@@ -45,7 +48,10 @@ namespace AlasKeramat.EditorTools
             int n = -2;
             try
             {
-                NusantaraMasterBuilder.BuildAll();
+                string stamp="Assets/Generated/foto_commit.txt";
+                string sumber=SourceCommit();
+                if(sumber=="editor-lokal" || !File.Exists(stamp) || File.ReadAllText(stamp)!=sumber || !File.Exists(NusantaraMasterBuilder.PathScene))
+                    NusantaraMasterBuilder.BuildAll();
                 n = NusantaraFoto.AmbilSemua();
             }
             catch (Exception e) { Debug.LogError("[AK][Foto] gagal: " + e); }
