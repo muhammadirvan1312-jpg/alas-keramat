@@ -99,13 +99,14 @@ namespace AlasKeramat.World
         {
             var baru=KompleksPada(andi.transform.position);
             if(baru==Aktif)return;
+            bool dariPermukaan=Aktif==UndergroundId.None;
             Aktif=baru;
             if(_kamera==null && andi.Kamera!=null)_kamera=andi.Kamera.GetComponent<Camera>();
             var atmosfer=GameServices.Get<URPAtmosphereAndWeather>();
             if(atmosfer!=null)atmosfer.SetDalamRuangan(baru!=UndergroundId.None);
             if(baru!=UndergroundId.None)
             {
-                if(_kamera!=null) { _far=_kamera.farClipPlane; _clear=_kamera.clearFlags; _background=_kamera.backgroundColor; _kamera.farClipPlane=80f; _kamera.clearFlags=CameraClearFlags.SolidColor; _kamera.backgroundColor=Color.black; }
+                if(_kamera!=null) { if(dariPermukaan) { _far=_kamera.farClipPlane; _clear=_kamera.clearFlags; _background=_kamera.backgroundColor; } _kamera.farClipPlane=80f; _kamera.clearFlags=CameraClearFlags.SolidColor; _kamera.backgroundColor=Color.black; }
                 GameEvents.RaiseEnterUnderground(baru);
             }
             else

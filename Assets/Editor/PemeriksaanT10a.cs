@@ -61,6 +61,33 @@ namespace AlasKeramat.EditorTools
                 }
             }
             finally { if(go!=null)Object.DestroyImmediate(go);if(blok!=null)Object.DestroyImmediate(blok); }
+            GameObject pemainUji=null,kameraUji=null,duniaUji=null;
+            try
+            {
+                pemainUji=new GameObject("UjiAndiGua");var andi=pemainUji.AddComponent<AndiFPSController>();
+                kameraUji=new GameObject("UjiKameraGua");var cam=kameraUji.AddComponent<Camera>();cam.farClipPlane=1200f;cam.clearFlags=CameraClearFlags.Skybox;andi.Pasang(cam.transform);
+                duniaUji=new GameObject("UjiModeGua");var d=duniaUji.AddComponent<WorldCaveAndSaveManager>();
+                andi.Teleport(new Vector3(-600f,-80f,-600f));d.Sinkron(andi);
+                bool mode=cam.farClipPlane==80f && cam.clearFlags==CameraClearFlags.SolidColor;
+                andi.Teleport(new Vector3(0f,-80f,-600f));d.Sinkron(andi);
+                andi.Teleport(Vector3.zero);d.Sinkron(andi);
+                cek("T10a: pindah/muat antar gua lalu keluar memulihkan kamera",mode && cam.farClipPlane==1200f && cam.clearFlags==CameraClearFlags.Skybox);
+                andi.MulaiZipline(new Vector3(0f,10f,0f),new Vector3(0f,20f,50f));
+                string posisi=andi.CaptureJson();andi.LepasZipline();andi.Teleport(Vector3.zero);andi.RestoreJson(posisi);
+                cek("T10a: simpan/muat ketika meluncur melanjutkan posisi & tali",andi.SedangZipline && andi.transform.position==new Vector3(0f,10f,0f));
+                if(manager!=null)
+                {
+                    manager.TerapkanLampu(new Vector3(-630f,-80f,-600f));int aktif=0;
+                    foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))if(light.transform.position.y < -40f && light.enabled)aktif++;
+                    cek("T10a: maksimal empat lampu interior aktif",aktif==4);manager.TerapkanLampu(Vector3.zero);
+                }
+            }
+            finally
+            {
+                if(pemainUji!=null)Object.DestroyImmediate(pemainUji);
+                if(kameraUji!=null)Object.DestroyImmediate(kameraUji);
+                if(duniaUji!=null)Object.DestroyImmediate(duniaUji);
+            }
             cek("T10a: zipline turun maksimum 16 dan naik 3 m/s",AndiFPSController.KecepatanTali(Vector3.down)==16f && AndiFPSController.KecepatanTali(Vector3.up)==3f && Object.FindObjectsByType<JangkarZipline>(FindObjectsSortMode.None).Length==2);
             cek("T10a: angin, reverb & ambien pada tiga kompleks",Object.FindFirstObjectByType<LorongAnginGua>()!=null && Object.FindObjectsByType<AudioGua>(FindObjectsSortMode.None).Length==3);
         }
