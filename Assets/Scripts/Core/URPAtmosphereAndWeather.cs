@@ -38,7 +38,7 @@ namespace AlasKeramat.Core
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetRuangan() { DalamRuangan = false; }
 
-        void TerapkanRuangan()
+        public void TerapkanRuangan()
         {
             if (sun != null) sun.intensity = 0f;
             if (moon != null) moon.intensity = 0f;

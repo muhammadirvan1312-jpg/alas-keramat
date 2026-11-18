@@ -115,6 +115,7 @@ namespace AlasKeramat.EditorTools
                         bool bawah = WorldTerrainGenerator.DiBawahTanah(s.posisi.y); // T10: shot gua memakai Y absolut
                         var pos = new Vector3(s.posisi.x, (bawah ? 0f : TinggiDasar(s.posisi.x, s.posisi.z)) + s.posisi.y, s.posisi.z);
                         var tgt = new Vector3(s.target.x, (bawah ? 0f : TinggiDasar(s.target.x, s.target.z)) + s.target.y, s.target.z);
+                        if (atmos != null && bawah) atmos.TerapkanRuangan();
                         cam.transform.SetPositionAndRotation(pos, Quaternion.LookRotation(tgt - pos));
                         cam.fieldOfView = s.fov;
                         if (veg != null) veg.Gambar(cam);
