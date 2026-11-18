@@ -123,20 +123,25 @@ namespace AlasKeramat.AI
 
         void Pocong(float skala)
         {
-            // Lompatan kaku 0,6 s; tinggi lebih besar saat bergerak.
+            // Lompatan kaku 0,6 s; tinggi lebih besar saat bergerak + kedutan leher patah.
             float siklus = Mathf.Repeat(_t / 0.6f, 1f);
-            float tinggiLompat = (_kec > 0.3f ? 0.35f : 0.12f) * skala;
+            float tinggiLompat = (_kec > 0.3f ? 0.38f : 0.12f) * skala;
             tulang[Kerangka.Pelvis].localPosition += Vector3.up * tinggiLompat * Mathf.Sin(siklus * Mathf.PI);
-            R(Kerangka.Head, Mathf.Sin(_t * 0.7f) * 4f, 0f, 8f);
+            float kejut = Mathf.Sin(_t * 17f) * Mathf.Pow(Mathf.Max(0f, Mathf.Sin(_t * 1.9f)), 6f) * 22f;
+            R(Kerangka.Spine, _kec > 0.3f ? 10f : 3f, 0f, Mathf.Sin(_t * 1.4f) * 5f);
+            R(Kerangka.Head, Mathf.Sin(_t * 0.9f) * 6f - 8f, kejut * 0.5f, 14f + kejut);
+            R(Kerangka.Jaw, 12f + Mathf.Abs(kejut) * 0.6f, 0f, 0f);
         }
 
         void Melayang(float skala)
         {
-            tulang[Kerangka.Pelvis].localPosition += Vector3.up * (0.45f + 0.08f * Mathf.Sin(_t * 1.3f)) * skala;
-            R(Kerangka.Spine, 6f, 0f, Mathf.Sin(_t * 0.5f) * 4f);
-            R(Kerangka.Head, 22f, 0f, 14f);
-            R(Kerangka.LUpper, -12f, 0f, 4f); R(Kerangka.RUpper, -12f, 0f, -4f);
-            R(Kerangka.LFore, -25f, 0f, 0f); R(Kerangka.RFore, -25f, 0f, 0f);
+            tulang[Kerangka.Pelvis].localPosition += Vector3.up * (0.45f + 0.11f * Mathf.Sin(_t * 1.5f)) * skala;
+            float patah = Mathf.Pow(Mathf.Max(0f, Mathf.Sin(_t * 1.7f)), 8f) * 28f;
+            R(Kerangka.Spine, 10f, 0f, Mathf.Sin(_t * 0.7f) * 6f);
+            R(Kerangka.Head, 24f - patah * 0.4f, Mathf.Sin(_t * 11f) * patah * 0.35f, 18f + patah);
+            R(Kerangka.LUpper, -28f + Mathf.Sin(_t * 1.9f) * 6f, 0f, 8f); R(Kerangka.RUpper, -28f + Mathf.Cos(_t * 1.9f) * 6f, 0f, -8f);
+            R(Kerangka.LFore, -38f, 0f, 0f); R(Kerangka.RFore, -38f, 0f, 0f);
+            R(Kerangka.LHand, 25f, 0f, 0f); R(Kerangka.RHand, 25f, 0f, 0f);
         }
 
         void TickGaleri(float dt)

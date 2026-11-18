@@ -84,7 +84,14 @@ namespace AlasKeramat.EditorTools
             SetLayer(go, GameLayers.Enemy);
             var cap = go.AddComponent<CapsuleCollider>();
             cap.height = d.tinggi; cap.radius = 0.32f; cap.center = new Vector3(0f, d.tinggi * 0.5f + (mode == ProceduralAnimator.Mode.Melayang ? 0.45f : 0f), 0f);
-            var h = go.AddComponent<HantuAI>(); h.Pasang(a, null);
+            var pendar = new GameObject("PendarHantu").AddComponent<Light>();
+            pendar.transform.SetParent(go.transform, false);
+            pendar.transform.localPosition = new Vector3(0f, d.tinggi * 0.78f, 0.18f);
+            pendar.type = LightType.Point; pendar.range = 4.2f;
+            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 0.65f : 0.45f;
+            pendar.color = a == EnemyArchetype.Kuntilanak ? new Color(0.75f, 0.22f, 0.22f) : new Color(0.55f, 0.72f, 0.65f);
+            pendar.shadows = LightShadows.None;
+            var h = go.AddComponent<HantuAI>(); h.Pasang(a, pendar);
             var tali = new GameObject("TitikInteraksi");
             tali.transform.SetParent(go.transform, false);
             tali.layer = GameLayers.Interactable;

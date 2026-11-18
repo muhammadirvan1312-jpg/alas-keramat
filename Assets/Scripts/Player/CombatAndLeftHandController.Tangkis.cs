@@ -16,8 +16,10 @@ namespace AlasKeramat.Player
 
         public static event System.Action<bool> OnKena; // true = berat/penghabisan
 
-        float _tParry = -1f, _tTahan = -1f, _tPenghabisan, _tKetukLalu = -10f, _guncang, _tHitStop;
+        float _tParry = -1f, _tTahan = -1f, _tPenghabisan, _tKetukLalu = -10f, _guncang, _tHitStop, _darahSenjata;
         bool _blok, _tersimpan, _pukulanPenghabisan;
+        MaterialPropertyBlock _mpbDarah;
+        public float DarahSenjata { get { return _darahSenjata; } }
 
         public bool Blok { get { return _blok; } }
         public bool ParryAktif { get { return _tParry > 0f; } }
@@ -83,6 +85,12 @@ namespace AlasKeramat.Player
 
         void TickTangkis(float dt)
         {
+            if (_darahSenjata > 0f)
+            {
+                bool cuci = _ctrl != null && _ctrl.Berenang;
+                _darahSenjata = cuci ? 0f : Mathf.Max(0f, _darahSenjata - dt / 30f);
+                TerapkanDarahSenjata();
+            }
             if (_tParry > 0f) _tParry -= dt;
             if (_tPenghabisan > 0f) _tPenghabisan -= dt;
             if (_tTahan >= 0f)
@@ -143,10 +151,27 @@ namespace AlasKeramat.Player
             try { target.TakeDamage(new DamageInfo { amount = dmg, type = _aktif.tipe, point = hit.point, direction = cam.forward, source = gameObject, isHeavy = _berat }); }
             finally { _pukulanPenghabisan = false; }
             if (habis) _tPenghabisan = 0f;
+            if (GoreSystem.BolehDarah(GoreSystem.Tingkat)) { _darahSenjata = Mathf.Clamp01(_darahSenjata + (habis ? 0.7f : 0.35f)); TerapkanDarahSenjata(); }
             if (_berat) MulaiHitStop();
             Guncang(_berat ? GuncangBerat : GuncangRingan);
             var h = OnKena; if (h != null) h(_berat || habis);
             AlasKeramat.AI.MeterSuara.Pancar(hit.point, AlasKeramat.AI.MeterSuara.Pertarungan);
+        }
+
+        void TerapkanDarahSenjata()
+        {
+            if (pivotFP == null) return;
+            if (_mpbDarah == null) _mpbDarah = new MaterialPropertyBlock();
+            var rends = pivotFP.GetComponentsInChildren<Renderer>(true);
+            Color tint = Color.Lerp(Color.white, new Color(0.45f, 0.04f, 0.04f, 1f), _darahSenjata * 0.85f);
+            for (int i = 0; i < rends.Length; i++)
+            {
+                if (rends[i] == null) continue;
+                rends[i].GetPropertyBlock(_mpbDarah);
+                _mpbDarah.SetColor("_BaseColor", tint);
+                _mpbDarah.SetFloat("_Smoothness", Mathf.Lerp(0.35f, 0.92f, _darahSenjata));
+                rends[i].SetPropertyBlock(_mpbDarah);
+            }
         }
     }
 }

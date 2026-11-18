@@ -90,10 +90,12 @@ namespace AlasKeramat.EditorTools
             var urp = UniversalRenderPipelineAsset.Create(data);
             urp.shadowDistance = JarakBayangan;
             urp.msaaSampleCount = 2;
-            urp.shadowCascadeCount=2;
-            urp.mainLightShadowmapResolution=2048;
-            urp.supportsSoftShadows=true;
+            urp.shadowCascadeCount = 2;
+            urp.mainLightShadowmapResolution = 2048;
             urp.supportsHDR = true;
+            var urpSo = new SerializedObject(urp);
+            var softProp = urpSo.FindProperty("m_SoftShadowsSupported");
+            if (softProp != null) { softProp.boolValue = true; urpSo.ApplyModifiedPropertiesWithoutUndo(); }
             urp.supportsCameraDepthTexture = true; // shader air AK butuh kedalaman (buih tepi, warna dalam)
             AssetDatabase.CreateAsset(urp, PathUrpAsset);
             AssetDatabase.SaveAssets();

@@ -24,9 +24,9 @@ namespace AlasKeramat.Core
                 case JenisKarakter.AbdiLumpur: return D(1.74f, 1.05f, 1.05f, 1f, 1.05f, "#5A4634", "#4A3E30", "#4A3E30", "#5A4634", "#3E342A", "#2E261E", "#1A1612", "#C8C0B0", "#2A1A10", "#4A3A2E", "#3E2E1E", "#6A5A40", "#1A120C", "#3A3024");
                 case JenisKarakter.AbdiButo: return D(2.05f, 1.35f, 1.25f, 1.25f, 1.3f, "#7A5640", "#8E8470", "#8E8470", "#7A5640", "#5E5444", "#3A2E22", "#1A1612", "#D8D0C0", "#5A1A10", "#5E3A2E", "#4A3420", "#6E2A1A", "#2A1A12", "#4A3A2A");
                 case JenisKarakter.PemimpinPatroli: return D(1.78f, 1.02f, 1f, 1.05f, 1.02f, "#866046", "#5A2A20", "#5A2A20", "#866046", "#2A2420", "#2A2018", "#1A1612", "#E0DAD0", "#2A1A10", "#6E4A3A", "#7A5A2E", "#C8A050", "#2A1A12", "#3A1A12");
-                case JenisKarakter.Pocong: return D(1.72f, 1f, 1.05f, 1f, 1f, "#C8C2B4", "#E2DCCC", "#E2DCCC", "#E2DCCC", "#E2DCCC", "#E2DCCC", "#E2DCCC", "#D0D0C8", "#D0D0C8", "#3A3A30", "#C8C0A8", "#B8B098", "#24221C", "#8A8070");
-                case JenisKarakter.Kuntilanak: return D(1.66f, 0.85f, 0.88f, 0.9f, 0.85f, "#C8C4B6", "#DCD6C8", "#DCD6C8", "#C8C4B6", "#DCD6C8", "#C8C4B6", "#0A0908", "#E8E8E0", "#E8E8E0", "#5A3A3A", "#8A1A1A", "#B8B0A0", "#1A1010", "#6A5A50");
-                default: return D(2.3f, 1.45f, 1.3f, 1.35f, 1.4f, "#2A2018", "#2A2018", "#2A2018", "#2A2018", "#2A2018", "#1E1812", "#1A140E", "#3A1A10", "#D02818", "#3A2018", "#3A2A1E", "#4A3424", "#0E0A08", "#5A4030");
+                case JenisKarakter.Pocong: return D(1.72f, 1f, 1.05f, 1f, 1f, "#ACA492", "#D4CCBA", "#D4CCBA", "#D4CCBA", "#C2B8A2", "#ACA492", "#D4CCBA", "#C8D0B8", "#E6ECD0", "#261E1A", "#8E7E62", "#4A1210", "#100D0B", "#6E6452");
+                case JenisKarakter.Kuntilanak: return D(1.66f, 0.85f, 0.88f, 0.9f, 0.85f, "#9E9A8E", "#CFC8B8", "#CFC8B8", "#9E9A8E", "#5A1814", "#8E8A7E", "#070606", "#DCE4D8", "#F03020", "#3E1818", "#6E0E0E", "#A89E8E", "#120A0A", "#4E1210");
+                default: return D(2.3f, 1.45f, 1.3f, 1.35f, 1.4f, "#1E1610", "#241A12", "#241A12", "#1E1610", "#1A120D", "#140E0A", "#0E0A07", "#4A120A", "#FF2410", "#2E120E", "#3A261A", "#5A100C", "#080605", "#C8B898");
             }
         }
 
@@ -56,9 +56,13 @@ namespace AlasKeramat.Core
             {
                 if (pocong)
                 {
-                    // Kain kafan membungkus dari kaki sampai leher (lengan di dalam).
-                    b.Loft(new Vector3(0f, 0.03f, 0f), P(Kerangka.Neck), new[] { S3(0f, 0.12f * L, 0.10f * L), S3(0.25f, 0.15f * L, 0.12f * L), S3(0.55f, 0.19f * L, 0.13f * L), S3(0.85f, 0.2f * L, 0.13f * L), S3(1f, 0.08f, 0.07f) }, Kerangka.Spine, Atasan);
-                    b.Kerucut(P(Kerangka.Pelvis) + new Vector3(0f, -0.93f, 0f), P(Kerangka.Pelvis) + new Vector3(0f, -1.0f, 0f), 0.06f, Kerangka.Pelvis, Aks1);
+                    // Kain kafan membungkus dari kaki sampai leher (lengan terikat di dalam) + 3 ikatan tali kafan & bercak tanah/darah bawah.
+                    b.Loft(new Vector3(0f, 0.03f, 0f), P(Kerangka.Neck), new[] { S3(0f, 0.11f * L, 0.095f * L), S3(0.18f, 0.145f * L, 0.115f * L), S3(0.32f, 0.125f * L, 0.105f * L), S3(0.58f, 0.195f * L, 0.135f * L), S3(0.84f, 0.205f * L, 0.135f * L), S3(1f, 0.075f, 0.068f) }, Kerangka.Spine, Atasan);
+                    b.Loft(new Vector3(0f, 0.03f, 0f), new Vector3(0f, 0.36f, 0f), new[] { S3(0f, 0.115f * L, 0.10f * L), S3(1f, 0.14f * L, 0.118f * L) }, Kerangka.Pelvis, Celana, false);
+                    b.Loft(new Vector3(0f, 0.44f, 0f), new Vector3(0f, 0.48f, 0f), new[] { S3(0f, 0.142f * L, 0.118f * L), S3(1f, 0.142f * L, 0.118f * L) }, Kerangka.Pelvis, Aks1, false);
+                    b.Loft(P(Kerangka.Spine) + Vector3.up * 0.04f, P(Kerangka.Spine) + Vector3.up * 0.08f, new[] { S3(0f, 0.202f * L, 0.14f * L), S3(1f, 0.202f * L, 0.14f * L) }, Kerangka.Spine, Aks1, false);
+                    b.Loft(P(Kerangka.Neck) + Vector3.down * 0.02f, P(Kerangka.Neck) + Vector3.up * 0.02f, new[] { S3(0f, 0.09f * L, 0.082f * L), S3(1f, 0.09f * L, 0.082f * L) }, Kerangka.Neck, Aks1, false);
+                    b.Kerucut(P(Kerangka.Pelvis) + new Vector3(0f, -0.93f, 0f), P(Kerangka.Pelvis) + new Vector3(0f, -1.02f, 0f), 0.065f, Kerangka.Pelvis, Aks1);
                 }
                 else
                 {
@@ -67,7 +71,14 @@ namespace AlasKeramat.Core
                     b.Loft(P(Kerangka.Chest), P(Kerangka.Neck), new[] { S3(0f, 0.155f * L * d.dada, 0.105f * L), S3(0.6f, 0.18f * L * d.dada, 0.115f * L), S3(1f, 0.1f * L, 0.08f * L) }, Kerangka.Chest, Atasan);
                     if (kunti)
                     {
-                        b.Loft(P(Kerangka.Pelvis), new Vector3(0f, 0.02f, 0f), new[] { S3(0f, 0.15f * L, 0.11f * L), S3(0.6f, 0.21f * L, 0.17f * L), S3(1f, 0.25f * L, 0.21f * L) }, Kerangka.Pelvis, Atasan);
+                        b.Loft(P(Kerangka.Pelvis), new Vector3(0f, 0.18f, 0f), new[] { S3(0f, 0.15f * L, 0.11f * L), S3(0.65f, 0.22f * L, 0.175f * L), S3(1f, 0.26f * L, 0.21f * L) }, Kerangka.Pelvis, Atasan);
+                        b.Loft(new Vector3(0f, 0.18f, 0f), new Vector3(0f, 0.01f, 0f), new[] { S3(0f, 0.26f * L, 0.21f * L), S3(1f, 0.29f * L, 0.23f * L) }, Kerangka.Pelvis, Celana); // ujung daster berlumur darah kering
+                        for (int r = 0; r < 8; r++)
+                        {
+                            float a = r * Mathf.PI * 0.25f;
+                            Vector3 pangkal = new Vector3(Mathf.Cos(a) * 0.25f * L, 0.06f, Mathf.Sin(a) * 0.20f * L);
+                            b.Kerucut(pangkal, pangkal + new Vector3(Mathf.Cos(a) * 0.04f, -0.14f - (r % 2) * 0.05f, Mathf.Sin(a) * 0.04f), 0.045f, Kerangka.Pelvis, r % 2 == 0 ? Atasan : Celana, 5);
+                        }
                     }
                     else
                     {
@@ -112,8 +123,19 @@ namespace AlasKeramat.Core
                 b.Kerucut(pusat + new Vector3(0f, -0.005f, 0.088f) * sk, pusat + new Vector3(0f, -0.025f, 0.112f) * sk, 0.014f * sk, Kerangka.Head, pocong ? Atasan : Kulit, 5);
                 if (pocong)
                 {
-                    b.Bola(pusat + new Vector3(0f, -0.01f, 0.07f) * sk, new Vector3(0.055f, 0.07f, 0.03f) * sk, Kerangka.Head, Gelap, 10, 6);
-                    b.Kerucut(pusat + new Vector3(0f, 0.1f, 0f) * sk, pusat + new Vector3(0f, 0.17f, -0.01f) * sk, 0.035f, Kerangka.Head, Aks1);
+                    // Bukaan kafan gelap cekung dengan wajah busuk, rongga mata hitam, titik mata menyala pucat & rahang menganga.
+                    b.Bola(pusat + new Vector3(0f, -0.008f, 0.066f) * sk, new Vector3(0.062f, 0.078f, 0.034f) * sk, Kerangka.Head, Gelap, 12, 8);
+                    b.Bola(pusat + new Vector3(0f, -0.005f, 0.072f) * sk, new Vector3(0.052f, 0.066f, 0.028f) * sk, Kerangka.Head, Kulit, 10, 8);
+                    for (int s = 0; s < 2; s++)
+                    {
+                        float sx = s == 0 ? -0.022f : 0.022f;
+                        b.Bola(pusat + new Vector3(sx, 0.012f, 0.091f) * sk, new Vector3(0.015f, 0.013f, 0.008f) * sk, Kerangka.Head, Gelap, 8, 6);
+                        b.Bola(pusat + new Vector3(sx, 0.012f, 0.097f) * sk, new Vector3(0.0055f, 0.0055f, 0.003f) * sk, Kerangka.Head, Iris, 6, 4);
+                    }
+                    b.Bola(pusat + new Vector3(0f, -0.036f, 0.088f) * sk, new Vector3(0.022f, 0.018f, 0.012f) * sk, Kerangka.Jaw, Gelap, 8, 6);
+                    b.Bola(pusat + new Vector3(0f, -0.065f, 0.078f) * sk, new Vector3(0.035f, 0.025f, 0.015f) * sk, Kerangka.Head, Aks2, 8, 6); // rembesan darah di dagu kafan
+                    b.Kerucut(pusat + new Vector3(0f, 0.1f, 0f) * sk, pusat + new Vector3(0f, 0.19f, -0.015f) * sk, 0.042f, Kerangka.Head, Aks1);
+                    b.Kerucut(pusat + new Vector3(0.01f, 0.15f, -0.01f) * sk, pusat + new Vector3(0.045f, 0.21f, -0.03f) * sk, 0.018f, Kerangka.Head, Atasan, 5);
                 }
                 else
                 {
@@ -145,9 +167,11 @@ namespace AlasKeramat.Core
                     b.Bola(c + new Vector3(0f, 0.07f, 0.075f) * sk, new Vector3(0.012f, 0.012f, 0.004f), h, Aks2, 6, 4);   // segel
                     break;
                 case JenisKarakter.Kuntilanak:
-                    b.Bola(c + new Vector3(0f, 0.03f, -0.005f) * sk, new Vector3(0.085f, 0.09f, 0.095f) * sk, h, Rambut, 12, 8);
-                    b.Loft(c + new Vector3(0f, 0.05f, -0.06f) * sk, c + new Vector3(0f, -0.75f, -0.1f) * sk, new[] { S3(0f, 0.09f, 0.05f), S3(0.5f, 0.12f, 0.05f), S3(1f, 0.1f, 0.03f) }, h, Rambut);
-                    b.Loft(c + new Vector3(0f, 0.06f, 0.07f) * sk, c + new Vector3(0f, -0.35f, 0.1f) * sk, new[] { S3(0f, 0.07f, 0.02f), S3(1f, 0.08f, 0.02f) }, h, Rambut); // menutup wajah
+                    b.Bola(c + new Vector3(0f, 0.03f, -0.005f) * sk, new Vector3(0.088f, 0.092f, 0.098f) * sk, h, Rambut, 12, 8);
+                    b.Loft(c + new Vector3(0f, 0.05f, -0.06f) * sk, c + new Vector3(0f, -0.88f, -0.11f) * sk, new[] { S3(0f, 0.095f, 0.055f), S3(0.5f, 0.135f, 0.055f), S3(1f, 0.11f, 0.03f) }, h, Rambut);
+                    b.Loft(c + new Vector3(-0.045f, 0.05f, 0.065f) * sk, c + new Vector3(-0.055f, -0.46f, 0.095f) * sk, new[] { S3(0f, 0.042f, 0.018f), S3(0.6f, 0.048f, 0.02f), S3(1f, 0.02f, 0.01f) }, h, Rambut);
+                    b.Loft(c + new Vector3(0.045f, 0.05f, 0.065f) * sk, c + new Vector3(0.055f, -0.44f, 0.095f) * sk, new[] { S3(0f, 0.042f, 0.018f), S3(0.6f, 0.048f, 0.02f), S3(1f, 0.02f, 0.01f) }, h, Rambut);
+                    b.Loft(c + new Vector3(0f, 0.06f, 0.075f) * sk, c + new Vector3(0f, -0.32f, 0.105f) * sk, new[] { S3(0f, 0.035f, 0.015f), S3(1f, 0.018f, 0.01f) }, h, Rambut); // helai rambut terbelah di tengah wajah
                     break;
                 case JenisKarakter.KiRogo:
                     b.Bola(c + new Vector3(0f, 0.05f, -0.005f) * sk, new Vector3(0.085f, 0.07f, 0.095f) * sk, h, Aks1, 12, 6); // blangkon
@@ -159,7 +183,11 @@ namespace AlasKeramat.Core
                     b.Loft(c + new Vector3(0f, -0.025f, 0f) * sk, c + new Vector3(0f, 0.005f, 0f) * sk, new[] { S3(0f, 0.088f * sk, 0.06f * sk), S3(1f, 0.088f * sk, 0.06f * sk) }, h, Aks2, false, 12); // perban telinga
                     break;
                 case JenisKarakter.Genderuwo:
-                    b.Bola(c + new Vector3(0f, 0.02f, -0.01f) * sk, new Vector3(0.09f, 0.1f, 0.1f) * sk, h, Rambut, 12, 8);
+                    b.Bola(c + new Vector3(0f, 0.02f, -0.01f) * sk, new Vector3(0.098f, 0.108f, 0.108f) * sk, h, Rambut, 12, 8);
+                    b.Kerucut(c + new Vector3(-0.055f, 0.07f, 0.03f) * sk, c + new Vector3(-0.095f, 0.16f, 0.06f) * sk, 0.022f * sk, h, Aks3, 6); // tanduk kasar kiri
+                    b.Kerucut(c + new Vector3(0.055f, 0.07f, 0.03f) * sk, c + new Vector3(0.095f, 0.16f, 0.06f) * sk, 0.022f * sk, h, Aks3, 6);  // tanduk kasar kanan
+                    b.Kerucut(c + new Vector3(-0.022f, -0.042f, 0.092f) * sk, c + new Vector3(-0.024f, -0.018f, 0.105f) * sk, 0.007f * sk, Kerangka.Jaw, Aks3, 5); // taring bawah
+                    b.Kerucut(c + new Vector3(0.022f, -0.042f, 0.092f) * sk, c + new Vector3(0.024f, -0.018f, 0.105f) * sk, 0.007f * sk, Kerangka.Jaw, Aks3, 5);
                     break;
                 default:
                     b.Bola(c + new Vector3(0f, 0.04f, -0.008f) * sk, new Vector3(0.082f, 0.075f, 0.092f) * sk, h, Rambut, 12, 6);

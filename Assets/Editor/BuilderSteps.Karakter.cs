@@ -129,7 +129,9 @@ namespace AlasKeramat.EditorTools
             AssetDatabase.ImportAsset(pt);
             AturImpor(pt, false, false, CharacterMeshBuilder.UkuranAtlas);
             var atlas = AssetDatabase.LoadAssetAtPath<Texture2D>(pt);
-            m = SafeMaterialFactory.CreatePBR("M_Karakter_" + j, Color.white, 0f, 0.35f, atlas);
+            var normKain = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kain_n.png");
+            Color? emisi = j == J.Pocong ? new Color(0.04f, 0.05f, 0.045f) : j == J.Kuntilanak ? new Color(0.06f, 0.02f, 0.02f) : j == J.Genderuwo ? new Color(0.12f, 0.02f, 0.01f) : (Color?)null;
+            m = SafeMaterialFactory.CreatePBR("M_Karakter_" + j, Color.white, 0f, j == J.AbdiLumpur ? 0.55f : 0.28f, atlas, normKain, emisi);
             string pm = FolderKarakter + "/M_Karakter_" + j + ".mat";
             AssetDatabase.DeleteAsset(pm);
             AssetDatabase.CreateAsset(m, pm);

@@ -179,8 +179,15 @@ namespace AlasKeramat.Core
                 {
                     int i = (y / sel) * SelPerSisi + x / sel;
                     Color c = i < warna.Length ? warna[i] : Color.magenta;
-                    float n = Mathf.PerlinNoise(x * 0.11f, y * 0.11f) * 0.08f - 0.04f; // serat kain/kulit halus
-                    c = new Color(Mathf.Clamp01(c.r + n), Mathf.Clamp01(c.g + n), Mathf.Clamp01(c.b + n), ProcTex.KilauAlbedo);
+                    float u = (float)(x % sel) / sel, v = (float)(y % sel) / sel;
+                    float serat = (Mathf.Sin(x * 1.4f) * Mathf.Cos(y * 1.4f)) * 0.025f;
+                    float n = Mathf.PerlinNoise(x * 0.11f, y * 0.11f) * 0.12f - 0.06f + serat;
+                    float bercak = Mathf.PerlinNoise(x * 0.045f + i * 7.3f, y * 0.045f + i * 3.1f);
+                    if ((i == 1 || i == 4) && bercak > 0.62f)
+                        c = Color.Lerp(c, new Color(0.22f, 0.06f, 0.04f), (bercak - 0.62f) * 1.6f); // noda tanah & darah mengering di pakaian/kafan
+                    float tepi = Mathf.Min(Mathf.Min(u, 1f - u), Mathf.Min(v, 1f - v));
+                    float ao = Mathf.Lerp(0.78f, 1f, Mathf.Clamp01(tepi * 6f));
+                    c = new Color(Mathf.Clamp01((c.r + n) * ao), Mathf.Clamp01((c.g + n) * ao), Mathf.Clamp01((c.b + n) * ao), ProcTex.KilauAlbedo);
                     px[y * UkuranAtlas + x] = c;
                 }
             tex.SetPixels32(px); tex.Apply(true);
