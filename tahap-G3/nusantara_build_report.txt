@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-18 10:50:25
+Laporan Builder Alas Keramat - 2026-11-18 12:59:02
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -68,10 +68,13 @@ Laporan Builder Alas Keramat - 2026-11-18 10:50:25
 [LULUS] 7u. Ritual Beringin, siege & lore
   - Ending: Heli SAR, layar intro/Pilihan Takdir/Ending A-B/statistik, Mode Sandbox
 [LULUS] 7v. Heli SAR, ending & statistik
+  - Lantai hutan selatan: batu kecil & ranting instanced, radius 65m, tanpa mengubah simpanan pohon
   - G3a: bulan terbaca, gua tidak hitam, grading netral, bayangan 2 kaskade, kabut lokal 12 kartu & basah dinamis
 [LULUS] 7w. G3 visual realistis
+  - T11: MenuScreens (Menu Utama, Jeda, Pengaturan, Cara Bermain 6 kartu, Kredit, 3 Slot Simpan, Panel Debug HP)
+[LULUS] 7x. Menu, pengaturan & debug T11
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2649
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2767
 [LULUS] 9. Simpan scene
-Durasi: 700.7 detik
+Durasi: 561.6 detik
 HASIL: SEMUA LANGKAH LULUS

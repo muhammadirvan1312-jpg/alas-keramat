@@ -1,6 +1,6 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (2649 = 2649)
+[LULUS] Idempoten: jumlah objek sama (2767 = 2767)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
@@ -61,7 +61,7 @@
 [LULUS] Tepat 1 AudioListener aktif (1)
 [LULUS] Tur pratinjau mati saat Andi ada
 [LULUS] TouchControls & joystick & area geser
-[LULUS] Semua tombol HUD punya handler (37)
+[LULUS] Semua tombol HUD punya handler (39)
 [LULUS] 3 koper berisi item sesuai 03 §9 (3)
 [LULUS] Inventaris menghormati Maks (golok 3 -> 1)
 [LULUS] Radar, toast, interaksi, tangan kiri ada
@@ -117,7 +117,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 279 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 234 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -201,6 +201,7 @@
 [LULUS] Teks ending A/B 04 §7.8-7.9
 [LULUS] Scene: Heli SAR, layar sinema, statistik
 [LULUS] Malam Darah tambahan: malam berikutnya setelah paku
+[LULUS] Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance
 [LULUS] G3b: 10 permukaan foto PBR 2K, normal GL, mask linear & mip streaming
 [LULUS] G3c: 4 MakeHuman berpakaian, <=30rb tris, 24 tulang, bobot normal, 13 bentuk wajah
 [LULUS] G3c: model nyata tersambung ke scene, material & kendali wajah
@@ -208,6 +209,15 @@
 [LULUS] G3 shader AlasKeramat/KabutLokal tanpa error
 [LULUS] G3 shader AlasKeramat/KulitManusia tanpa error
 [LULUS] G3a: kabut lokal tetap, basah cuaca, malam & gua terbaca
+[LULUS] T11: MenuScreens & TombolJeda terpasang di scene
+[LULUS] T11: Preset grafis 11 §7.2 (Rendah 0.7/0m, Sedang 0.85/35m, Tinggi 1.0/60m, Ultra 90m)
+[LULUS] T11: Pengali kesulitan 05 §9 (Damai laju 0.7/dmg 0.5, Normal 1/1, Sulit 1.25/1.4)
+[LULUS] T11: Vital haus turun lebih lambat di Damai daripada Sulit
+[LULUS] T11: 6 kartu Cara Bermain & teks Kredit lengkap
+[GAGAL] T11: Pengaturan tersimpan & dimuat kembali dari PlayerPrefs
+[LULUS] T11: 3 slot simpan mandiri (simpan, ringkasan, hapus)
+[LULUS] T11: Ketuk pojok 5x membuka Panel Debug HP
+[LULUS] T11: Getar haptik >= 20 dmg, AKTexturePostprocessor, & NusantaraAndroidBuild
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas
