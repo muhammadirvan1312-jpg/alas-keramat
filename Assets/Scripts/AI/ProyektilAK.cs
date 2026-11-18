@@ -64,6 +64,8 @@ namespace AlasKeramat.AI
             if (target != null && _pemilik != null && ReferenceEquals(target, _pemilik.GetComponent<IDamageable>())) target = null;
             DamageType tipe = _amunisi == ItemID.PelurSuar ? DamageType.Api : DamageType.Proyektil;
             if (_amunisi == ItemID.BomBambuMinyak) { ApiArea.Buat(titik); Destroy(gameObject); return; }
+            var akar = c != null ? c.GetComponentInParent<AkarBakar>() : null;
+            if (akar != null && (_amunisi == ItemID.PanahApi || _amunisi == ItemID.PelurSuar)) akar.Bakar();
             if (target != null)
             {
                 target.TakeDamage(new DamageInfo { amount = _damage, type = tipe, point = titik, direction = _v.normalized, source = _pemilik, isHeavy = _damage >= 45f });

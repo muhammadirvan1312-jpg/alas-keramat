@@ -74,7 +74,7 @@ namespace AlasKeramat.AI
             float jam = _jam.Jam;
             int malam = MalamKe(_jam.Hari, jam);
             bool gelap = JamMalam(jam);
-            bool md = gelap && IsMalamDarah(malam);
+            bool md = gelap && (IsMalamDarah(malam) || malam == MalamDarahPaksa) && !TanpaMalamDarah;
             if (md != MalamDarah)
             {
                 MalamDarah = md;
@@ -98,7 +98,7 @@ namespace AlasKeramat.AI
 
         void SpawnHantu(int malam)
         {
-            if (Aktif >= MaksAktif) return;
+            if (Aktif >= MaksAktif || TanpaMalamDarah || WorldTerrainGenerator.DiBawahTanah(_andi.transform.position.y)) return;
             Vector3 a = _andi.transform.position;
             if (HitungHantu(EnemyArchetype.PocongHutan) < TargetPocong(MalamDarah) && BiomaHutan(WorldTerrainGenerator.GetBiome(a.x, a.z)))
             {

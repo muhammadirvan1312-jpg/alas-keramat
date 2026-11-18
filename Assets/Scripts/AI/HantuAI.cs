@@ -245,8 +245,8 @@ namespace AlasKeramat.AI
         void Geser(Vector3 datar, float dt, float tinggiDiAtasTanah)
         {
             Vector3 p = transform.position + datar * dt;
-            float h = WorldTerrainGenerator.SampleHeight(p.x, p.z);
-            float target = Mathf.Max(h, 0f) + tinggiDiAtasTanah;
+            float h = WorldTerrainGenerator.Lantai(p);
+            float target = (WorldTerrainGenerator.DiBawahTanah(p.y) ? h : Mathf.Max(h, 0f)) + tinggiDiAtasTanah;
             p.y = Mathf.MoveTowards(p.y, target, (tinggiDiAtasTanah > 0.5f ? 6f : 30f) * dt);
             transform.position = p;
         }

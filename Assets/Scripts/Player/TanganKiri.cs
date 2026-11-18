@@ -42,6 +42,9 @@ namespace AlasKeramat.Player
             return _inv != null && _inv.Punya(ItemID.OborBambu);
         }
 
+        // Lorong Angin (03 §10 UG3 K1): angin memadamkan obor.
+        public void Padamkan() { if (!OborMenyala) return; OborMenyala = false; if (lampu != null) lampu.enabled = false; GameEvents.RaiseToast("Angin memadamkan obor"); }
+
         public void ToggleObor()
         {
             if (OborMenyala) { OborMenyala = false; if (lampu != null) lampu.enabled = false; return; }

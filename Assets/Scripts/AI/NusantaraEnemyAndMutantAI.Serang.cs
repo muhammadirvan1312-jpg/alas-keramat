@@ -108,7 +108,7 @@ namespace AlasKeramat.AI
         void Menuju(Vector3 tujuan, float laju, float dt)
         {
             float d = Datar(tujuan - transform.position).magnitude;
-            if (d < JarakLangsung || _pf == null || _pf.Grid == null) { Gerak(tujuan, laju, dt, true); return; }
+            if (d < JarakLangsung || _pf == null || _pf.Grid == null || WorldTerrainGenerator.DiBawahTanah(transform.position.y)) { Gerak(tujuan, laju, dt, true); return; }
             if (!_menungguJalur && (_tJalur <= 0f || Datar(tujuan - _tujuanJalur).sqrMagnitude > 25f))
             {
                 _menungguJalur = true; _tujuanJalur = tujuan; _tJalur = JedaJalur;
@@ -145,8 +145,8 @@ namespace AlasKeramat.AI
             _vy = _cc.isGrounded ? -2f : _vy - Gravitasi * dt;
             _cc.Move((datar + Vector3.up * _vy) * dt);
             Vector3 p = transform.position;
-            float h = WorldTerrainGenerator.SampleHeight(p.x, p.z);
-            float? air = WorldTerrainGenerator.GetWaterLevelAt(p.x, p.z);
+            float h = WorldTerrainGenerator.Lantai(p);
+            float? air = WorldTerrainGenerator.AirDi(p);
             float lantai = h;
             if (air.HasValue && air.Value - _cc.height * 0.75f > h) lantai = air.Value - _cc.height * 0.75f; // mengapung/mengarungi sungai
             if (p.y < lantai - 0.05f) { transform.position = new Vector3(p.x, lantai, p.z); _vy = 0f; }
@@ -197,7 +197,7 @@ namespace AlasKeramat.AI
             Vector3 p = transform.position + arah.normalized * jarak;
             p.x = Mathf.Clamp(p.x, -WorldTerrainGenerator.BatasDunia + 20f, WorldTerrainGenerator.BatasDunia - 20f);
             p.z = Mathf.Clamp(p.z, -WorldTerrainGenerator.BatasDunia + 20f, WorldTerrainGenerator.BatasDunia - 20f);
-            p.y = WorldTerrainGenerator.SampleHeight(p.x, p.z);
+            p.y = WorldTerrainGenerator.Lantai(p);
             return p;
         }
 

@@ -425,7 +425,7 @@ namespace AlasKeramat.AI
             float t = Mathf.Clamp01(_tState / 0.5f);
             var e = transform.eulerAngles;
             transform.rotation = Quaternion.Euler(Mathf.Lerp(0f, -88f, t * t), e.y, 0f);
-            float h = WorldTerrainGenerator.SampleHeight(transform.position.x, transform.position.z);
+            float h = WorldTerrainGenerator.Lantai(transform.position);
             if (transform.position.y > h + 0.25f) transform.position = new Vector3(transform.position.x, Mathf.Max(h + 0.25f, transform.position.y - 3f * dt), transform.position.z);
         }
 

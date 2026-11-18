@@ -32,9 +32,31 @@ namespace AlasKeramat.Core
 
         void Start() { _jam = GameServices.Get<TimeOfDayClock>(); Terapkan(_jam != null ? _jam.Jam : 9f); }
 
+        // Mode Dalam Ruangan (03 §10): diatur WorldCaveAndSaveManager saat Andi di gua.
+        public static bool DalamRuangan;
+        bool _ruanganTerapan;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetRuangan() { DalamRuangan = false; }
+
+        void TerapkanRuangan()
+        {
+            if (sun != null) sun.intensity = 0f;
+            if (moon != null) moon.intensity = 0f;
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = WorldCaveAndSaveManager.AmbienGua;
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.ExponentialSquared;
+            RenderSettings.fogColor = Color.black;
+            RenderSettings.fogDensity = WorldCaveAndSaveManager.KabutGua;
+            RenderSettings.skybox = null;
+            if (_hujan != null && _hujan.isPlaying) _hujan.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
         void Update()
         {
             if (_jam == null) return;
+            if (DalamRuangan) { if (!_ruanganTerapan) { _ruanganTerapan = true; TerapkanRuangan(); } return; }
+            if (_ruanganTerapan) { _ruanganTerapan = false; _jamTerapan = -99f; }
             UpdateCuaca();
             // Update visual 50x per jam game cukup halus; saat transisi cuaca diperbarui tiap frame.
             if (Mathf.Abs(_jam.Jam - _jamTerapan) > 0.02f || _transisi < 1f) Terapkan(_jam.Jam);

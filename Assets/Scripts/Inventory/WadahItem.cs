@@ -40,7 +40,7 @@ namespace AlasKeramat.Inventory
             namaTampil = nama; item = isi; jumlah = n; lore = loreId; hilangSetelahDiambil = hilang; tutup = tutupKoper;
         }
 
-        public string GetPromptText(GameObject actor) { return hilangSetelahDiambil ? "AMBIL " + namaTampil.ToUpperInvariant() : "BUKA " + namaTampil.ToUpperInvariant(); }
+        public string GetPromptText(GameObject actor) { if (lore > 0 && (item == null || item.Length == 0)) return "BACA " + namaTampil.ToUpperInvariant(); return hilangSetelahDiambil ? "AMBIL " + namaTampil.ToUpperInvariant() : "BUKA " + namaTampil.ToUpperInvariant(); }
         public bool CanInteract(GameObject actor) { return !_kosong; }
 
         public void Interact(GameObject actor)
