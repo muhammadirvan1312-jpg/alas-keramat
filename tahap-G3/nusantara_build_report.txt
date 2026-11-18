@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-18 15:25:03
+Laporan Builder Alas Keramat - 2026-11-18 16:56:18
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -14,8 +14,8 @@ Laporan Builder Alas Keramat - 2026-11-18 15:25:03
 [LULUS] 3. Scene & langit
   - Terrain 16 tile @1025, laut, 2 sungai
 [LULUS] 3b. Dunia 2x2 km
-  - G3b: 6 varian scan pohon/pakis tersambung ke instancing dan tebang, dengan LOD
-  - Vegetasi: 15453 pohon, 39268 semak/pakis, 3281 sel instancing
+  - G3b: 9 varian scan pohon/pakis tersambung ke instancing dan tebang, dengan LOD
+  - Vegetasi: 15453 pohon, 45637 semak/pakis, 3289 sel instancing
 [LULUS] 3c. Vegetasi
   - Landmark: 38 objek (Beringin Agung, heli, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula, 2 mulut gua, altar)
 [LULUS] 3d. Landmark
@@ -35,7 +35,7 @@ Laporan Builder Alas Keramat - 2026-11-18 15:25:03
 [LULUS] 7e. Vital Andi & bar HUD
   - Foley Andi, subtitle + monolog pembuka, sabuk cepat 4 slot
 [LULUS] 7f. Foley, subtitle, sabuk cepat
-  - Karakter: Andi (2 renderer), Deden di heli, Ningsih di Sarang, galeri 12 humanoid
+  - Karakter: Andi (2 renderer), Deden di heli, Ningsih di Sarang, galeri 16 humanoid
 [LULUS] 7g. Karakter & animasi
   - Tebang: pool pohon interaktif, melee golok/kapak, model senjata FP, tombol TEBAS
 [LULUS] 7h. Tebang & melee
@@ -51,7 +51,7 @@ Laporan Builder Alas Keramat - 2026-11-18 15:25:03
 [LULUS] 7m. Dunia, bangunan & misi
   - Musuh: SurfaceGrid 500x500 (lewat 178177/188416 darat), prefab Sekte x5, EnemyDirector, TANGKIS
 [LULUS] 7n. Musuh, jalur & tempur
-  - Hantu: prefab Pocong/Kuntilanak/Banaspati, jarahan, bambu lempar, 6 Totem Topeng, MusikTempur
+  - Hantu: Pocong, Kuntilanak, Banaspati, Kuyang, Tuyul, Genderuwo Hutan, Hantu Air, Penyerupa + 6 Totem Topeng
 [LULUS] 7o. Hantu, raid & totem
   - Gore: 4 percikan, genangan, atlas luka 8, tutup potongan, partikel darah, GoreSystem, peringatan 18+
 [LULUS] 7p. Gore, luka & peringatan 18+
@@ -68,13 +68,13 @@ Laporan Builder Alas Keramat - 2026-11-18 15:25:03
 [LULUS] 7u. Ritual Beringin, siege & lore
   - Ending: Heli SAR, layar intro/Pilihan Takdir/Ending A-B/statistik, Mode Sandbox
 [LULUS] 7v. Heli SAR, ending & statistik
-  - Lantai hutan selatan: batu kecil & ranting instanced, radius 65m, tanpa mengubah simpanan pohon
+  - Lantai hutan selatan: rumput liar 3D, batu lumut alam, & kayu tumbang instanced
   - G3a: bulan terbaca, gua tidak hitam, grading netral, bayangan 2 kaskade, kabut lokal 12 kartu & basah dinamis
 [LULUS] 7w. G3 visual realistis
   - T11: MenuScreens (Menu Utama, Jeda, Pengaturan, Cara Bermain 6 kartu, Kredit, 3 Slot Simpan, Panel Debug HP)
 [LULUS] 7x. Menu, pengaturan & debug T11
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2780
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2927
 [LULUS] 9. Simpan scene
-Durasi: 412.0 detik
+Durasi: 750.4 detik
 HASIL: SEMUA LANGKAH LULUS
