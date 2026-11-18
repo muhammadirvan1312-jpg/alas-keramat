@@ -1,15 +1,13 @@
 # LAPORAN CI
-- Commit: 548b192b1962c8948e6bd2359547f2cb69ef5411
+- Commit: 74cfec4fbc65eab5728cde8d1a8a303d149c4661
 - Hasil aset visual: success
-- Hasil langkah Unity: failure
-- Waktu: 2026-11-18T10:01:27Z
+- Hasil langkah Unity: success
+- Waktu: 2026-11-18T11:09:40Z
 
 [LULUS] pengaturan pemain
 [LULUS] builder
-[GAGAL] self-test: RunAll melaporkan gagal
+[LULUS] self-test
 [LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
 [LULUS] build APK
 
 ## Baris error yang ditemukan
-[Error] [AK][GAGAL] self-test: [GAGAL] Pasca-proses malam lebih gelap & dingin dari siang
-[Error] [AK][GAGAL] self-test: System.Exception: RunAll melaporkan gagal
