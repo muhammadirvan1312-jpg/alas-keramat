@@ -1,0 +1,23 @@
+Perangkat grafis: llvmpipe (LLVM 15.0.7, 256 bits) (OpenGLCore)
+t10_01_gua_lumut
+t10_02_kubah_akar_boss
+t7_02_pocong_kuntilanak_malam
+t7_01_sekte_ritual_desa
+t4_01_galeri_karakter
+t4_02_galeri_dekat
+t4_03_deden_heli
+t2_15_beringin_agung
+t2_14_pabrik_gula
+t2_13_desa_mati
+t2_08_maghrib_merah
+t2_09_malam
+t2_10_hutan_dalam
+t2_11_badai
+t2_01_udara_pulau_pagi
+t2_02_heli_pagi
+t2_03_kawah_beringin_siang
+t2_04_tebing_kapur_siang
+t2_05_sungai_bambu_pagi
+t2_06_pantai_sore
+t2_07_gunung_kapur
+t2_12_hutan_jati
