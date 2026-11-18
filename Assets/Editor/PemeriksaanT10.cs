@@ -89,6 +89,19 @@ namespace AlasKeramat.EditorTools
             cek("Titik spawn siege di cincin 35-45 m", Mathf.Abs(s0.magnitude - 35f) < 0.01f && Mathf.Abs(s3.magnitude - 45f) < 0.01f);
             cek("Arena: Genderuwo, Ki Rogo, 8 tungku, altar ritual", Object.FindFirstObjectByType<BossGenderuwo>() != null && Object.FindFirstObjectByType<KiRogoPanggung>() != null
                 && Object.FindObjectsByType<TungkuObor>(FindObjectsSortMode.None).Length == 8 && Object.FindFirstObjectByType<RitualAltar>() != null);
+            // --- T10a+: graf waypoint & audio gua (dari versi ChatGPT) ---
+            var graf = Object.FindObjectsByType<WaypointGraph>(FindObjectsSortMode.None);
+            bool grafOk = graf.Length == 3;
+            var jalur = new List<Vector3>();
+            foreach (var g in graf) if (g.Kompleks == UndergroundId.UG1_GuaSungai) grafOk &= g.Jalur(WorldCaveAndSaveManager.Lokal(UndergroundId.UG1_GuaSungai, new Vector3(-60f, 0f, 0f)), WorldCaveAndSaveManager.Lokal(UndergroundId.UG1_GuaSungai, new Vector3(60f, 0f, -14f)), jalur) && jalur.Count >= 4;
+            cek("WaypointGraph 3 kompleks; UG1 R0 -> R4 lewat jalan pintas (" + jalur.Count + " titik)", grafOk);
+            cek("Audio gua per kompleks", Object.FindObjectsByType<AudioGua>(FindObjectsSortMode.None).Length == 3);
+            // --- T10d ---
+            cek("Statistik 04 §7.10 (9 baris, km 1 desimal)", StatistikPemain.Susun(5, 10, 3, 7, 2, 1, 4, 12345f, 6).Split('\n').Length == 9 && StatistikPemain.Susun(1, 0, 0, 0, 0, 0, 0, 12345f, 6).Contains("12.3 km") && StatistikPemain.Susun(1, 0, 0, 0, 0, 0, 0, 0f, 6).Contains("6/12"));
+            var pm = new Q.ProgresMisiT6();
+            cek("Heli SAR hanya datang setelah siege & sebelum ending", !AlasKeramat.AI.HeliSAR.BolehDatang(pm) && AlasKeramat.AI.HeliSAR.BolehDatang(new Q.ProgresMisiT6 { siegeSelesai = true }) && !AlasKeramat.AI.HeliSAR.BolehDatang(new Q.ProgresMisiT6 { siegeSelesai = true, ending = 2 }));
+            cek("Teks ending A/B 04 §7.8-7.9", AlasKeramat.UI.LayarSinema.TeksEnding(1, true).Contains("tiga paku kembali tertidur") && AlasKeramat.UI.LayarSinema.TeksEnding(2, false).Contains("memilih menjadi penjaga") && AlasKeramat.UI.LayarSinema.TeksIntro.Contains("kabut merah"));
+            cek("Scene: Heli SAR, layar sinema, statistik", Object.FindFirstObjectByType<AlasKeramat.AI.HeliSAR>() != null && Object.FindFirstObjectByType<AlasKeramat.UI.LayarSinema>(FindObjectsInactive.Include) != null && Object.FindFirstObjectByType<StatistikPemain>() != null);
             cek("Malam Darah tambahan: malam berikutnya setelah paku", EnemyDirector.MalamBerikutnya(3, 10f) == 3 && EnemyDirector.MalamBerikutnya(3, 21f) == 4 && EnemyDirector.MalamBerikutnya(4, 2f) == 4);
         }
     }

@@ -18,6 +18,7 @@ namespace AlasKeramat.Core
             public int lore, paku;            // bitmask lore 1-12 ditemukan; paku keramat 1-3 pernah didapat
             public bool hari2, ningsihTerlihat, trust31, cangkul, kartu, rebreather, zipline, keluarBunker, sisiUtara, bossKalah, siegeSelesai;
             public int tertancap, ending;     // paku tertancap di altar (0-3); ending 0 = belum, 1 = A, 2 = B
+            public bool intro;                // T10d: cutscene intro sudah diputar
         }
         public ProgresMisiT6 Progres = new ProgresMisiT6();
         public bool M05Selesai { get { return Progres.m05; } }

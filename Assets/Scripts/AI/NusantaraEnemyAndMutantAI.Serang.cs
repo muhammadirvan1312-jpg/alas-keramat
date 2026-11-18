@@ -108,7 +108,8 @@ namespace AlasKeramat.AI
         void Menuju(Vector3 tujuan, float laju, float dt)
         {
             float d = Datar(tujuan - transform.position).magnitude;
-            if (d < JarakLangsung || _pf == null || _pf.Grid == null || WorldTerrainGenerator.DiBawahTanah(transform.position.y)) { Gerak(tujuan, laju, dt, true); return; }
+            if (WorldTerrainGenerator.DiBawahTanah(transform.position.y)) { MenujuGua(tujuan, laju, dt, d); return; }
+            if (d < JarakLangsung || _pf == null || _pf.Grid == null) { Gerak(tujuan, laju, dt, true); return; }
             if (!_menungguJalur && (_tJalur <= 0f || Datar(tujuan - _tujuanJalur).sqrMagnitude > 25f))
             {
                 _menungguJalur = true; _tujuanJalur = tujuan; _tJalur = JedaJalur;

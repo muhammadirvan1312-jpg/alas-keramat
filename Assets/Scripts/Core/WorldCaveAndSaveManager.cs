@@ -11,12 +11,12 @@ namespace AlasKeramat.Core
     // napas 60 s dengan Rebreather, bendera gerbang tersimpan, kejadian terskrip (Pocong jatuh, penjaga, alarm bunker).
     public partial class WorldCaveAndSaveManager : MonoBehaviour, ISaveable
     {
-        public const float LamaFade = 1.2f, JarakPandangGua = 80f, KabutGua = 0.06f, TickDetik = 0.5f, NapasRebreather = 60f;
+        public const float LamaFade = 1.2f, JarakPandangGua = 80f, KabutGua = 0.035f, TickDetik = 0.5f, NapasRebreather = 60f;
         public const int MaksLampu = 4, GaliPerlu = 4;
         public const int B_Palka = 1, B_PintuKartu = 2, B_Rintangan = 4, B_Tali = 8, B_AkarK4 = 16, B_Alarm = 32, B_PocongJatuh = 64,
             B_PenjagaR4 = 128, B_Penyergap = 256, B_MalamDarah1 = 512, B_MalamDarah2 = 1024;
         public static readonly Vector3[] Pusat = { Vector3.zero, new Vector3(-600f, -80f, -600f), new Vector3(0f, -80f, -600f), new Vector3(600f, -80f, -600f) };
-        public static readonly Color AmbienGua = new Color(0.039f, 0.055f, 0.071f);
+        public static readonly Color AmbienGua = new Color(0.12f, 0.14f, 0.16f); // 03 §10 #0A0E12 terlalu gelap di HP (foto CI T10); dinaikkan
 
         [SerializeField] Transform[] kompleks = new Transform[4];
         [SerializeField] Image layarHitam;
