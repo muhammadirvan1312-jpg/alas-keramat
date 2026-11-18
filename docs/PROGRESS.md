@@ -110,3 +110,6 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
 - Perbaikan: normal map shader daun, atlas pelepah sesuai spesies, warna pakaian mempertahankan detail putih/denim, grading netral, skala scan pohon memakai satu bounds, probe vegetasi global, serasah batu/ranting instanced di irisan selatan.
 - Audit foto: scene hasil Builder dikirim ke job foto dengan SHA yang sama; tidak membangun ulang dunia. Tanpa pemanasan 2 km dari origin; enam shot 960x540 lebih dahulu, provenance dan daftar ditulis per foto. Folder foto warisan diganti saat publikasi.
 - Cek statis 0 masalah, Python syntax dan diff bersih. Kompilasi/shader, self-test baru, foto dan FPS perangkat revisi audit masih menunggu CI; belum mengklaim target visual tercapai.
+
+- Lanjutan audit: pemeriksa bukti foto otomatis (`Tools/cek_foto.py`) dengan lima skenario lokal lulus; job foto melaporkan gagal bila capture/provenance/pemeriksaan teknis gagal, walau tetap tidak memblokir build APK. JSON audit ikut disimpan di ci-hasil.
+- Snapshot foto juga membawa ProjectSettings dan ThirdParty beserta .meta agar GUID material/tekstur, pipeline URP, dan preset bayangan cocok dengan scene yang diuji.

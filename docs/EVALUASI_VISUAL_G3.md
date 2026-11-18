@@ -23,3 +23,6 @@ Render dunia yang dapat ditinjau masih gambar tahap lama (t2_10_hutan_dalam). Pr
 2. Sedikitnya enam PNG baru bersumber dari SHA revisi (dua karakter, hutan siang/malam, dua gua). Gambar lama tidak dihitung.
 3. Nilai rubrik 19 §7 dari PNG asli: cahaya, kedalaman, material, vegetasi, komposisi, warna, karakter, horor malam, artefak. Tidak memberi skor G3 sebelum bukti tersedia.
 4. Target rata-rata 7,5 belum dinyatakan tercapai. Perbaikan aset pahlawan, animasi, kepadatan vegetasi dan FPS HP tetap membutuhkan putaran tersendiri berdasarkan gambar nyata.
+
+## Pemeriksaan bukti otomatis
+`Tools/cek_foto.py` memeriksa enam nama shot wajib, SHA sumber, dimensi, gambar duplikat, kegelapan merata, dan dominasi warna pink. JSON per gambar disimpan bersama foto. Batas luminansi sengaja rendah agar malam tetap boleh gelap. Kelulusan pemeriksaan teknis tidak membuktikan skor estetika 7,5 atau FPS. Pengujian lokal meliputi bukti valid, foto hilang, SHA salah, gambar hitam, dan gambar pink.

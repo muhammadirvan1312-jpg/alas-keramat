@@ -152,6 +152,8 @@ jobs:
             Assets/Generated
             Assets/Generated.meta
             Assets/Scenes
+            Assets/ThirdParty
+            ProjectSettings
           retention-days: 2
 
       - name: Susun laporan CI (selalu)
@@ -257,7 +259,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: scene-foto-${{ github.run_id }}
-          path: Assets
+          path: .
 
       - name: Bersihkan foto warisan
         run: |
@@ -280,13 +282,22 @@ jobs:
           allowDirtyBuild: true
           customParameters: -akLaporan Logs/ci -akSource ${{ github.event.pull_request.head.sha || github.sha }}
 
+      - name: Periksa bukti foto revisi ini
+        id: auditfoto
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 Tools/cek_foto.py --commit "${{ github.event.pull_request.head.sha || github.sha }}"
+
       - name: Simpan foto ke cabang ci-hasil
         if: always()
         shell: bash
         run: |
           sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true
           ls -la Logs/foto_kualitas 2>/dev/null || echo "Tidak ada foto."
-          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/foto_kualitas Logs/ci/foto.log
+          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/foto_kualitas Logs/ci/foto.log Logs/ci/audit_foto.json
 
       - name: Unggah foto
         if: always()
@@ -296,6 +307,11 @@ jobs:
           path: |
             Logs/foto_kualitas
             Logs/ci/foto.log
+            Logs/ci/audit_foto.json
           if-no-files-found: ignore
           retention-days: 14
 
+
+      - name: Laporkan kegagalan foto
+        if: always() && (steps.foto.outcome != 'success' || steps.auditfoto.outcome != 'success')
+        run: exit 1
