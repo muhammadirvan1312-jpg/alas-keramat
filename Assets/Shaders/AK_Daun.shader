@@ -138,8 +138,8 @@ Shader "AlasKeramat/Daun"
             d.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(i.positionCS);
             d.shadowMask = half4(1,1,1,1);
             SurfaceData s = (SurfaceData)0;
-            half ao = saturate(0.55h + 0.45h * i.color.g) * saturate(0.7h + 0.3h * d.normalWS.y);
-            s.albedo = c.rgb * (0.82h + 0.18h * ao);
+            half ao = saturate(0.68h + 0.32h * i.color.g) * saturate(0.78h + 0.22h * d.normalWS.y);
+            s.albedo = c.rgb * (0.86h + 0.14h * ao);
             s.alpha = 1;
             s.metallic = 0;
             s.smoothness = _Smoothness * 0.35h;

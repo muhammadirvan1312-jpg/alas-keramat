@@ -145,9 +145,12 @@ Shader "AlasKeramat/KulitManusia"
             half4 lit = UniversalFragmentPBR(d, s);
 
             Light skinLight=GetMainLight(d.shadowCoord,d.positionWS,half4(1,1,1,1));
-            half wrap=saturate((dot(d.normalWS,skinLight.direction)+0.3h)/1.3h);
-            half rim=pow(saturate(dot(-d.viewDirectionWS,skinLight.direction)),3);
-            lit.rgb+=c.rgb*half3(0.3,0.09,0.055)*wrap*rim*skinLight.color*skinLight.shadowAttenuation*skinLight.distanceAttenuation;
+            half wrap=saturate((dot(d.normalWS,skinLight.direction)+0.45h)/1.45h);
+            half sssBack=saturate(0.35h+0.65h*(1.0h-abs(dot(d.normalWS,skinLight.direction))));
+            half rim=pow(1.0h-saturate(dot(d.normalWS,d.viewDirectionWS)),2.4h);
+            half3 warmSss=half3(0.32h,0.105h,0.06h);
+            lit.rgb+=c.rgb*warmSss*(wrap*0.45h+rim*0.35h*sssBack)*skinLight.color*(0.28h+0.72h*skinLight.shadowAttenuation)*skinLight.distanceAttenuation;
+            lit.rgb+=c.rgb*half3(0.08h,0.025h,0.015h)*(_BaseColor.r>0.75h?1.0h:0.25h);
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;
         }

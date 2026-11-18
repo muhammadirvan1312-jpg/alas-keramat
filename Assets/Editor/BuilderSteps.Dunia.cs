@@ -56,15 +56,15 @@ namespace AlasKeramat.EditorTools
             var hasil = new TerrainLayer[LapisTerrain.Length];
             for (int i = 0; i < LapisTerrain.Length; i++)
             {
-                float ubin = i == L_Batu ? 6.5f : i == L_Pasir ? 5f : i == L_Daun ? 4.2f : i == L_Rumput ? 3.6f : 3.2f;
+                float ubin = i == L_Batu ? 5.2f : i == L_Pasir ? 4.2f : i == L_Daun ? 2.8f : i == L_Rumput ? 2.6f : 2.6f;
                 var tl = new TerrainLayer
                 {
                     diffuseTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + ".png"),
                     normalMapTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + "_n.png"),
                     maskMapTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + "_mask.png"),
-                    normalScale = i == L_Batu ? 1.15f : i == L_Rumput || i == L_Daun ? 0.95f : 0.85f,
+                    normalScale = i == L_Batu ? 1.35f : i == L_Rumput || i == L_Daun ? 1.25f : 1.05f,
                     tileSize = new Vector2(ubin, ubin),
-                    smoothness = i == L_Lumpur ? 0.42f : i == L_Batu ? 0.18f : 0.12f
+                    smoothness = i == L_Lumpur ? 0.42f : i == L_Batu ? 0.18f : 0.10f
                 };
                 if (tl.diffuseTexture == null) throw new Exception("tekstur terrain hilang: " + LapisTerrain[i]);
                 string p = FolderTerrain + "/L_" + LapisTerrain[i] + ".terrainlayer";
@@ -158,13 +158,13 @@ namespace AlasKeramat.EditorTools
             switch ((int)b)
             {
                 case (int)Biome.Laut: case (int)Biome.Pantai: w[L_Pasir] = 1f; break;
-                case (int)Biome.KawahBeringin: w[L_Tanah] = 0.5f; w[L_Daun] = 0.5f; break;
+                case (int)Biome.KawahBeringin: w[L_Tanah] = 0.25f; w[L_Daun] = 0.45f; w[L_Rumput] = 0.30f; break;
                 case (int)Biome.TebingKapur: w[L_Batu] = 0.6f; w[L_Rumput] = 0.4f; break;
                 case (int)Biome.SawitTerbakar: w[L_Lumpur] = 0.5f; w[L_Tanah] = 0.5f; break;
-                case (int)Biome.Desa: w[L_Tanah] = 0.6f; w[L_Rumput] = 0.4f; break;
-                case (int)Biome.HutanBambu: w[L_Daun] = 0.6f; w[L_Rumput] = 0.4f; break;
-                case (int)Biome.TepiSungai: w[L_Lumpur] = 0.4f; w[L_Rumput] = 0.6f; break;
-                case (int)Biome.HutanJatiSelatan: w[L_Daun] = 0.7f; w[L_Tanah] = 0.3f; break;
+                case (int)Biome.Desa: w[L_Tanah] = 0.4f; w[L_Rumput] = 0.6f; break;
+                case (int)Biome.HutanBambu: w[L_Daun] = 0.5f; w[L_Rumput] = 0.5f; break;
+                case (int)Biome.TepiSungai: w[L_Lumpur] = 0.35f; w[L_Rumput] = 0.65f; break;
+                case (int)Biome.HutanJatiSelatan: w[L_Daun] = 0.44f; w[L_Rumput] = 0.44f; w[L_Tanah] = 0.12f; break;
                 case 11: w[L_Lumpur] = 0.8f; w[L_Daun] = 0.2f; break;      // Rawa Bakau
                 case 12: w[L_Tanah] = 0.7f; w[L_Batu] = 0.3f; break;       // Pabrik Gula
                 case 13: w[L_Batu] = 0.5f; w[L_Rumput] = 0.5f; break;      // Gunung Kapur

@@ -58,9 +58,9 @@ namespace AlasKeramat.EditorTools
                 if (hantu[i] == null) continue;
                 var g = (GameObject)PrefabUtility.InstantiatePrefab(hantu[i]);
                 g.transform.SetParent(dio.transform, false);
-                float x = PosDioramaHantu.x + i * 5f, z = PosDioramaHantu.z + i * 6f;
-                g.transform.position = new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z) + (i == 1 ? 2.2f : 0f), z);
-                g.transform.rotation = Quaternion.Euler(0f, 200f, 0f);
+                float x = PosDioramaHantu.x + i * 3.8f, z = PosDioramaHantu.z + i * 2.5f;
+                g.transform.position = new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z) + (i == 1 ? 0.55f : 0f), z);
+                g.transform.rotation = Quaternion.Euler(0f, 190f, 0f);
                 var ai = g.GetComponent<HantuAI>(); if (ai != null) ai.enabled = false;
             }
             dio.SetActive(false);
@@ -86,10 +86,10 @@ namespace AlasKeramat.EditorTools
             cap.height = d.tinggi; cap.radius = 0.32f; cap.center = new Vector3(0f, d.tinggi * 0.5f + (mode == ProceduralAnimator.Mode.Melayang ? 0.45f : 0f), 0f);
             var pendar = new GameObject("PendarHantu").AddComponent<Light>();
             pendar.transform.SetParent(go.transform, false);
-            pendar.transform.localPosition = new Vector3(0f, d.tinggi * 0.78f, 0.18f);
-            pendar.type = LightType.Point; pendar.range = 6.5f;
-            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 1.35f : 1.05f;
-            pendar.color = a == EnemyArchetype.Kuntilanak ? new Color(0.75f, 0.22f, 0.22f) : new Color(0.55f, 0.72f, 0.65f);
+            pendar.transform.localPosition = new Vector3(0f, d.tinggi * 0.80f, 0.35f);
+            pendar.type = LightType.Point; pendar.range = 6.0f;
+            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 0.95f : 0.82f;
+            pendar.color = a == EnemyArchetype.Kuntilanak ? new Color(0.55f, 0.68f, 0.88f) : new Color(0.68f, 0.78f, 0.72f);
             pendar.shadows = LightShadows.None;
             var h = go.AddComponent<HantuAI>(); h.Pasang(a, pendar);
             var tali = new GameObject("TitikInteraksi");
@@ -103,27 +103,71 @@ namespace AlasKeramat.EditorTools
 
         static GameObject PrefabBanaspati()
         {
+            string ptex = FolderPrefabMusuh + "/Tex_ApiBanaspati.png";
+            const int sz = 128;
+            var ftex = new Texture2D(sz, sz, TextureFormat.RGBA32, true);
+            var fpx = new Color[sz * sz];
+            for (int y = 0; y < sz; y++) for (int x = 0; x < sz; x++)
+            {
+                float u = (float)x / sz, v = (float)y / sz;
+                float cx = Mathf.Abs(u - 0.5f) * 2f;
+                float n = Mathf.PerlinNoise(u * 6f + 1.3f, v * 5f - 0.8f);
+                float w = (1f - v * 0.88f) * (0.65f + 0.55f * n);
+                float a = Mathf.Clamp01((w - cx) * 3.5f) * Mathf.Clamp01(v * 6f);
+                Color col = Color.Lerp(new Color(0.95f, 0.22f, 0.04f), new Color(1f, 0.78f, 0.22f), Mathf.Clamp01(1f - v * 0.7f));
+                col.a = a; fpx[y * sz + x] = col;
+            }
+            ftex.SetPixels(fpx); ftex.Apply(); SimpanPng(ftex, ptex); AssetDatabase.ImportAsset(ptex); AturImpor(ptex, false, false, sz);
+            var fimp = (TextureImporter)AssetImporter.GetAtPath(ptex); fimp.alphaIsTransparency = true; fimp.SaveAndReimport();
+            ftex = AssetDatabase.LoadAssetAtPath<Texture2D>(ptex);
+
             string pm = FolderMat + "/M_Banaspati.mat";
             AssetDatabase.DeleteAsset(pm);
-            var m = SafeMaterialFactory.CreatePBR("M_Banaspati", new Color(1f, 0.45f, 0.1f), 0f, 0.2f, null, null, new Color(4f, 1.4f, 0.25f));
+            var m = SafeMaterialFactory.CreatePBR("M_Banaspati", Color.white, 0f, 0.1f, ftex, null, new Color(4.8f, 1.65f, 0.28f), SurfaceMode.Cutout, 0.3f);
             AssetDatabase.CreateAsset(m, pm);
             m = AssetDatabase.LoadAssetAtPath<Material>(pm);
+            var mSkull = SafeMaterialFactory.CreatePBR("M_BanaspatiTengkorak", new Color(0.18f, 0.12f, 0.1f), 0f, 0.35f,
+                AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/tanah.png"), AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/tanah_n.png"),
+                new Color(0.95f, 0.22f, 0.04f));
+            string ps = FolderMat + "/M_BanaspatiTengkorak.mat"; AssetDatabase.DeleteAsset(ps); AssetDatabase.CreateAsset(mSkull, ps);
+            mSkull = AssetDatabase.LoadAssetAtPath<Material>(ps);
             var go = new GameObject("Hantu_Banaspati");
             go.tag = GameTags.Enemy;
-            var inti = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            Object.DestroyImmediate(inti.GetComponent<Collider>());
-            inti.transform.SetParent(go.transform, false);
-            inti.transform.localScale = Vector3.one * 0.55f;
-            var mr = inti.GetComponent<MeshRenderer>(); mr.sharedMaterial = m; mr.shadowCastingMode = ShadowCastingMode.Off;
-            var luar = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            Object.DestroyImmediate(luar.GetComponent<Collider>());
-            luar.transform.SetParent(go.transform, false);
-            luar.transform.localPosition = new Vector3(0f, 0.15f, 0f); luar.transform.localScale = new Vector3(0.8f, 1.0f, 0.8f);
-            var mr2 = luar.GetComponent<MeshRenderer>(); mr2.sharedMaterial = m; mr2.shadowCastingMode = ShadowCastingMode.Off;
+            var skullMesh = ImporMeshVisual.Baca("Assets/ThirdParty/Prepared/Banaspati.bytes");
+            if (skullMesh != null)
+            {
+                string pmsh = FolderPrefabMusuh + "/Mesh_BanaspatiSkull.asset";
+                AssetDatabase.DeleteAsset(pmsh); AssetDatabase.CreateAsset(skullMesh, pmsh);
+                skullMesh = AssetDatabase.LoadAssetAtPath<Mesh>(pmsh);
+                var inti = Anak(go, "TengkorakBanaspati");
+                inti.AddComponent<MeshFilter>().sharedMesh = skullMesh;
+                var mr = inti.AddComponent<MeshRenderer>();
+                mr.sharedMaterials = new[] { mSkull, m };
+                mr.shadowCastingMode = ShadowCastingMode.Off;
+            }
+            else
+            {
+                var inti = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                Object.DestroyImmediate(inti.GetComponent<Collider>());
+                inti.transform.SetParent(go.transform, false); inti.transform.localScale = Vector3.one * 0.55f;
+                var mr = inti.GetComponent<MeshRenderer>(); mr.sharedMaterial = m; mr.shadowCastingMode = ShadowCastingMode.Off;
+            }
+            for (int k = 0; k < 6; k++)
+            {
+                float a = k * 30f;
+                var lidah = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                lidah.name = "LidahApi_" + k;
+                Object.DestroyImmediate(lidah.GetComponent<Collider>());
+                lidah.transform.SetParent(go.transform, false);
+                lidah.transform.localPosition = new Vector3(Mathf.Sin(a * Mathf.Deg2Rad) * 0.16f, 0.18f + (k % 2) * 0.14f, Mathf.Cos(a * Mathf.Deg2Rad) * 0.16f);
+                lidah.transform.localRotation = Quaternion.Euler(0f, a, (k % 2 == 0 ? 1 : -1) * 14f);
+                lidah.transform.localScale = new Vector3(0.45f, 1.05f, 0.45f);
+                var fmr = lidah.GetComponent<MeshRenderer>(); fmr.sharedMaterial = m; fmr.shadowCastingMode = ShadowCastingMode.Off;
+            }
             var sc = go.AddComponent<SphereCollider>(); sc.radius = 0.5f;
             var lampu = new GameObject("Cahaya").AddComponent<Light>();
             lampu.transform.SetParent(go.transform, false);
-            lampu.type = LightType.Point; lampu.range = 9f; lampu.intensity = 2.4f; lampu.color = new Color(1f, 0.5f, 0.15f); lampu.shadows = LightShadows.None;
+            lampu.type = LightType.Point; lampu.range = 9f; lampu.intensity = 2.6f; lampu.color = new Color(1f, 0.45f, 0.12f); lampu.shadows = LightShadows.None;
             SetLayer(go, GameLayers.Enemy);
             go.AddComponent<HantuAI>().Pasang(EnemyArchetype.Banaspati, lampu);
             return SimpanPrefab(go, "Hantu_Banaspati");

@@ -47,7 +47,7 @@ namespace AlasKeramat.Core
             TerapkanProbeAmbien(WorldCaveAndSaveManager.AmbienGua,WorldCaveAndSaveManager.AmbienGua);
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogColor = Color.black;
+            RenderSettings.fogColor = new Color(0.025f, 0.03f, 0.04f);
             RenderSettings.fogDensity = WorldCaveAndSaveManager.KabutGua;
             RenderSettings.skybox = null;
             if (_hujan != null && _hujan.isPlaying) _hujan.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);

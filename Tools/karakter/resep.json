@@ -34,5 +34,65 @@
     "outfit": "male_casualsuit01",
     "hair": "short01",
     "skin": "old_asian_male"
+  },
+  "Pocong": {
+    "height": 1.74,
+    "width": 0.94,
+    "old": 0.55,
+    "female": false,
+    "outfit": "male_worksuit01",
+    "hair": "short01",
+    "skin": "old_asian_male",
+    "role": "pocong"
+  },
+  "Kuntilanak": {
+    "height": 1.68,
+    "width": 0.88,
+    "old": 0.25,
+    "female": true,
+    "outfit": "female_elegantsuit01",
+    "hair": "ponytail01",
+    "skin": "young_asian_female",
+    "role": "kuntilanak"
+  },
+  "Genderuwo": {
+    "height": 2.35,
+    "width": 1.38,
+    "old": 0.9,
+    "female": false,
+    "outfit": "male_worksuit01",
+    "hair": "short01",
+    "skin": "old_asian_male",
+    "role": "genderuwo"
+  },
+  "SektePria": {
+    "height": 1.73,
+    "width": 1.0,
+    "old": 0.35,
+    "female": false,
+    "outfit": "male_casualsuit01",
+    "hair": "short01",
+    "skin": "middleage_asian_male",
+    "role": "sekte"
+  },
+  "SekteWanita": {
+    "height": 1.61,
+    "width": 0.92,
+    "old": 0.2,
+    "female": true,
+    "outfit": "female_elegantsuit01",
+    "hair": "ponytail01",
+    "skin": "young_asian_female",
+    "role": "sekte"
+  },
+  "SekteButo": {
+    "height": 2.04,
+    "width": 1.32,
+    "old": 0.75,
+    "female": false,
+    "outfit": "male_worksuit01",
+    "hair": "short01",
+    "skin": "old_asian_male",
+    "role": "sekte"
   }
 }

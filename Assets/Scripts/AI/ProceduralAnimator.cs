@@ -75,9 +75,9 @@ namespace AlasKeramat.AI
             pel.localPosition = _restPelvis;
             float skala = tinggi / 1.75f;
 
-            // Pose dasar: lengan sedikit abduksi, siku ditekuk.
-            R(Kerangka.LUpper, 0f, 0f, -8f); R(Kerangka.RUpper, 0f, 0f, 8f);
-            R(Kerangka.LFore, -10f, 0f, 0f); R(Kerangka.RFore, -10f, 0f, 0f);
+            // Pose dasar: lengan sedikit abduksi menjauh dari pinggul (+Z untuk LUpper, -Z untuk RUpper sesuai aturan tangan kiri Unity), siku menekuk alami.
+            R(Kerangka.LUpper, 3f, 0f, 11f); R(Kerangka.RUpper, 3f, 0f, -11f);
+            R(Kerangka.LFore, -16f, 0f, 0f); R(Kerangka.RFore, -16f, 0f, 0f);
 
             if (mode == Mode.Galeri) TickGaleri(dt);
             if (mode == Mode.DudukTerhuyung) Duduk(skala);
@@ -188,6 +188,29 @@ namespace AlasKeramat.AI
             if (_kedip > 0f) { _kedip -= dt; sy = 0.1f; }
             for (int i = Kerangka.LEye; i <= Kerangka.REye; i++)
                 if (tulang[i] != null) tulang[i].localScale = new Vector3(_restEyeScale.x, _restEyeScale.y * sy, _restEyeScale.z);
+        }
+
+        // Dipanggil NusantaraFoto di Edit Mode agar pose duduk/melayang/menyeramkan terekam alami tanpa menunggu LateUpdate Play Mode.
+        public void TerapkanPoseFoto(float waktu = 0.45f)
+        {
+            if (tulang == null || tulang.Length < Kerangka.Jumlah || tulang[Kerangka.Pelvis] == null) return;
+            _rest = new Quaternion[tulang.Length];
+            for (int i = 0; i < tulang.Length; i++) _rest[i] = tulang[i] != null ? tulang[i].localRotation : Quaternion.identity;
+            _restPelvis = tulang[Kerangka.Pelvis].localPosition;
+            _t = waktu; _kec = 0f;
+            float skala = tinggi / 1.75f;
+            R(Kerangka.LUpper, 3f, 0f, 11f); R(Kerangka.RUpper, 3f, 0f, -11f);
+            R(Kerangka.LFore, -16f, 0f, 0f); R(Kerangka.RFore, -16f, 0f, 0f);
+            if (mode == Mode.DudukTerhuyung) Duduk(skala);
+            else if (mode == Mode.Pocong) Pocong(skala);
+            else if (mode == Mode.Melayang) Melayang(skala);
+            else
+            {
+                R(Kerangka.Pelvis, 0f, 4f, 0f);
+                R(Kerangka.Spine, 2f, -3f, 0f);
+                R(Kerangka.Head, 2f, -4f, 2f);
+            }
+            Tatap();
         }
     }
 }

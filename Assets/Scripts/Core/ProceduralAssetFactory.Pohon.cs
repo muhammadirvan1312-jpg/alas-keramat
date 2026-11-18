@@ -123,21 +123,24 @@ namespace AlasKeramat.Core
             float kurang = lod1 ? 0.4f : 1f;
             switch (j)
             {
-                case Jenis.Jati: Pohon(b, r, R(r, 17f, 23f), 0.32f, 0.55f, 6, 3.2f, 1.25f, 0, sisi, kurang); break;
-                case Jenis.Mahoni: Pohon(b, r, R(r, 14f, 19f), 0.38f, 0.45f, 9, 3.6f, 0.9f, 1, sisi, kurang); break;
-                case Jenis.BeringinKecil: Pohon(b, r, R(r, 11f, 14f), 0.6f, 0.4f, 11, 4.2f, 0.8f, 1, sisi, kurang); AkarGantung(b, r, 10, sisi); break;
-                case Jenis.Kelapa: Palem(b, r, R(r, 14f, 19f), 0.22f, 12, 4.6f, 1.6f, 2, sisi, kurang, R(r, 0.6f, 2.4f)); break;
-                case Jenis.Aren: Palem(b, r, R(r, 9f, 13f), 0.3f, 14, 4.0f, 2.2f, 2, sisi, kurang, 0.2f); break;
+                case Jenis.Jati: Pohon(b, r, R(r, 17f, 22f), 0.36f, 0.38f, 11, 3.9f, 1.45f, 0, sisi, kurang); break;
+                case Jenis.Mahoni: Pohon(b, r, R(r, 15f, 20f), 0.42f, 0.35f, 13, 4.1f, 1.15f, 1, sisi, kurang); break;
+                case Jenis.BeringinKecil: Pohon(b, r, R(r, 12f, 15f), 0.62f, 0.32f, 14, 4.6f, 0.95f, 1, sisi, kurang); AkarGantung(b, r, 14, sisi); break;
+                case Jenis.Kelapa: Palem(b, r, R(r, 13f, 18f), 0.24f, 15, 5.2f, 1.8f, 2, sisi, kurang, R(r, 0.6f, 2.2f)); break;
+                case Jenis.Aren: Palem(b, r, R(r, 9f, 13f), 0.32f, 16, 4.4f, 2.4f, 2, sisi, kurang, 0.2f); break;
                 case Jenis.SawitHangus: Palem(b, r, R(r, 5f, 8f), 0.32f, 6, 1.4f, 0.6f, 3, sisi, kurang, 0.1f); break;
                 case Jenis.Pisang: Pisang(b, r, sisi, kurang); break;
-                case Jenis.BambuRumpun: Rumpun(b, r, 18, R(r, 10f, 14f), 0.055f, 2, sisi, kurang); break;
-                case Jenis.Tebu: Rumpun(b, r, 12, R(r, 2.6f, 3.4f), 0.025f, 2, 4, kurang); break;
-                case Jenis.Semak: b.Gumpal(r, new Vector3(0f, 0.6f, 0f), 1.1f, Mathf.Max(3, (int)(9 * kurang)), 0.55f, 1); break;
+                case Jenis.BambuRumpun: Rumpun(b, r, 20, R(r, 10f, 14f), 0.055f, 2, sisi, kurang); break;
+                case Jenis.Tebu: Rumpun(b, r, 14, R(r, 2.6f, 3.4f), 0.025f, 2, 4, kurang); break;
+                case Jenis.Semak:
+                    b.Gumpal(r, new Vector3(0f, 0.42f, 0f), 1.35f, Mathf.Max(5, (int)(18 * kurang)), 0.62f, 1);
+                    b.Gumpal(r, new Vector3(0f, 0.14f, 0f), 1.1f, Mathf.Max(3, (int)(10 * kurang)), 0.52f, 0);
+                    break;
                 case Jenis.Pakis:
-                    for (int k = 0; k < (lod1 ? 5 : 9); k++)
+                    for (int k = 0; k < (lod1 ? 6 : 12); k++)
                     {
-                        float a = k * Mathf.PI * 2f / (lod1 ? 5 : 9) + R(r, -0.2f, 0.2f);
-                        b.Pelepah(new Vector3(0f, 0.05f, 0f), new Vector3(Mathf.Cos(a), 0.9f, Mathf.Sin(a)).normalized, 1.0f, 0.22f, 0.45f, lod1 ? 2 : 4, 2);
+                        float a = k * Mathf.PI * 2f / (lod1 ? 6 : 12) + R(r, -0.25f, 0.25f);
+                        b.Pelepah(new Vector3(0f, 0.02f, 0f), new Vector3(Mathf.Cos(a), 0.65f, Mathf.Sin(a)).normalized, 1.18f, 0.28f, 0.48f, lod1 ? 2 : 4, 2);
                     }
                     break;
             }
@@ -174,9 +177,9 @@ namespace AlasKeramat.Core
                 Vector3 pangkal = Vector3.Lerp(jalur[0], jalur[seg], t);
                 Vector3 ujung = pangkal + new Vector3(Mathf.Cos(sudut) * jauh, R(r, 0.5f, 2f), Mathf.Sin(sudut) * jauh);
                 if (kurang >= 1f) b.Tabung(new[] { pangkal, Vector3.Lerp(pangkal, ujung, 0.5f) + Vector3.up * 0.4f, ujung }, new[] { rBatang * 0.35f, rBatang * 0.2f, rBatang * 0.08f }, 5, Color.white);
-                b.Gumpal(r, ujung, radGumpal, Mathf.Max(4, (int)(14 * kurang)), ukuranDaun * (kurang < 1f ? 1.6f : 1f), sel);
+                b.Gumpal(r, ujung, radGumpal, Mathf.Max(5, (int)(20 * kurang)), ukuranDaun * (kurang < 1f ? 1.55f : 1f), sel);
             }
-            b.Gumpal(r, jalur[seg] + Vector3.up * 0.8f, radGumpal * 1.1f, Mathf.Max(4, (int)(16 * kurang)), ukuranDaun * (kurang < 1f ? 1.6f : 1f), sel);
+            b.Gumpal(r, jalur[seg] + Vector3.up * 0.8f, radGumpal * 1.15f, Mathf.Max(6, (int)(22 * kurang)), ukuranDaun * (kurang < 1f ? 1.55f : 1f), sel);
         }
 
         static void AkarGantung(Pembangun b, System.Random r, int n, int sisi)
@@ -234,9 +237,9 @@ namespace AlasKeramat.Core
                 var tengah = dasar + Vector3.up * h * 0.55f + luar * 0.35f;
                 var ujung = dasar + Vector3.up * h + luar;
                 b.Tabung(new[] { dasar, tengah, ujung }, new[] { rad, rad * 0.85f, rad * 0.5f }, Mathf.Max(4, sisi / 2), new Color(0.6f, 0.6f, 0.6f, 1f));
-                int daun = Mathf.Max(2, (int)(5 * kurang));
+                int daun = Mathf.Max(3, (int)(8 * kurang));
                 for (int q = 0; q < daun; q++)
-                    b.Gumpal(r, Vector3.Lerp(tengah, ujung, 0.4f + 0.6f * q / daun), h * 0.07f, 2, h * 0.06f, sel);
+                    b.Gumpal(r, Vector3.Lerp(tengah, ujung, 0.2f + 0.8f * q / daun), h * 0.11f, 3, h * 0.085f, sel);
             }
         }
 

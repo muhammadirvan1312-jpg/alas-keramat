@@ -332,7 +332,7 @@ namespace AlasKeramat.EditorTools
                 var r = i < 24 ? r1 : i < 31 ? r0 : i < 38 ? r4 : r2;
                 float a = (float)rng.NextDouble() * Mathf.PI * 2f;
                 Vector3 tepi = ProcGua.Tepi(r.ukuran, true, a * Mathf.Rad2Deg, 0.9f);
-                Hias(hias, PrimitiveType.Cube, "Lumut_" + i, r.pos + tepi + Vector3.up * (0.1f + (float)rng.NextDouble() * 2.2f), new Vector3(1.15f, 0.1f + (float)rng.NextDouble() * 0.6f, 1.15f), _matLumut, false);
+                Hias(hias, PrimitiveType.Sphere, "Lumut_" + i, r.pos + tepi + Vector3.up * (0.05f + (float)rng.NextDouble() * 1.8f), new Vector3(1.35f, 0.22f + (float)rng.NextDouble() * 0.45f, 1.35f), _matLumut, false);
             }
             Color cyan = ProcTex.Hex("#3CF2C8");
             Lampu(hias, "Lampu_R0", r0.pos + Vector3.up * 3f, cyan, 12f, 2.0f);

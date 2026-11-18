@@ -29,13 +29,13 @@ namespace AlasKeramat.EditorTools
         // Daftar shot aktif (T2a: dunia). Tahap berikutnya menambah shot (12 money shot 19 §8).
         public static readonly Shot[] ShotAktif =
         {
-            new Shot("g3_01_deden_wajah", new Vector3(23f,1.35f,-437.6f),new Vector3(24f,1.45f,-440f),9f,38f),
+            new Shot("g3_01_deden_wajah", new Vector3(22.7f,1.12f,-437.8f),new Vector3(24f,0.88f,-440f),9f,40f),
             new Shot("g3_02_ningsih_wajah", new Vector3(201.3f,1.3f,-352f),new Vector3(200f,1.36f,-350f),10f,38f),
-            new Shot("g3_03_hutan_malam", new Vector3(-58f,1.7f,-312f),new Vector3(-57f,1.6f,-297f),21f,60f),
+            new Shot("g3_03_hutan_malam", new Vector3(-58.2f,1.5f,-305.5f),new Vector3(-57.6f,1.35f,-298f),21f,58f),
             new Shot("g3_04_lantai_hutan", new Vector3(65f,1.65f,-335f),new Vector3(68f,0.3f,-328f),8f,70f),
             new Shot("t10_01_gua_lumut", new Vector3(-623f, -78.2f, -595f), new Vector3(-608f, -78.5f, -602f), 0.5f, 70f),
-            new Shot("t10_02_kubah_akar_boss", new Vector3(600f, -76.5f, -597f), new Vector3(600f, -77.5f, -578f), 0.5f, 70f),
-            new Shot("t7_02_pocong_kuntilanak_malam", new Vector3(-58f, 1.7f, -312f), new Vector3(-57f, 1.6f, -297f), 21f, 60f),
+            new Shot("t10_02_kubah_akar_boss", new Vector3(593.5f, -75.6f, -588.5f), new Vector3(600f, -77.3f, -571f), 0.5f, 70f),
+            new Shot("t7_02_pocong_kuntilanak_malam", new Vector3(-58.2f, 1.5f, -305.5f), new Vector3(-57.6f, 1.35f, -298f), 21f, 58f),
             new Shot("t7_01_sekte_ritual_desa", new Vector3(533f, 1.7f, 190f), new Vector3(540f, 1.0f, 200f), 10f, 60f),
             new Shot("t4_01_galeri_karakter", new Vector3(56f, 1.7f, -386f), new Vector3(56f, 1.1f, -376f), 10f, 75f),
             new Shot("t4_02_galeri_dekat", new Vector3(50f, 1.6f, -380f), new Vector3(52f, 1.3f, -376f), 10f, 55f),
@@ -99,7 +99,7 @@ namespace AlasKeramat.EditorTools
                 var kabutLokal=UnityEngine.Object.FindFirstObjectByType<AtmosferHutan>();
                 var serasah=UnityEngine.Object.FindFirstObjectByType<SerasahHutan>();
                 var veg = UnityEngine.Object.FindFirstObjectByType<AlasKeramat.Building.VegetationManager>();
-                if (veg != null) veg.PengaliJarak = 0.5f; // ringankan render perangkat lunak
+                if (veg != null) veg.PengaliJarak = 0.72f; // ringankan render perangkat lunak
                 // Ringankan terrain untuk render perangkat lunak (tidak disimpan ke scene).
                 foreach (var t in UnityEngine.Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None))
                 {
@@ -117,6 +117,7 @@ namespace AlasKeramat.EditorTools
                 if (dioramaFoto != null) dioramaFoto.gameObject.SetActive(true);
                 var dioHantu = akar != null ? akar.transform.Find(NusantaraMasterBuilder.NamaDioramaHantu) : null;
                 if (dioHantu != null) dioHantu.gameObject.SetActive(true);
+                foreach (var pa in UnityEngine.Object.FindObjectsByType<AlasKeramat.AI.ProceduralAnimator>(FindObjectsInactive.Include, FindObjectsSortMode.None)) pa.TerapkanPoseFoto(0.65f);
                 foreach (var s in ShotAktif)
                 {
                     if(Application.isBatchMode && daftar.Count>=JumlahFotoAudit)break;

@@ -13,8 +13,8 @@ namespace AlasKeramat.EditorTools
     {
         public const string FolderVeg = FolderGen + "/Vegetasi";
         public const string PathVegData = FolderVeg + "/VegetationData.asset";
-        const int Varian = 3, CalonPohonPerHa = 80, CalonSemakPerHa = 300, UkuranSel = 125;
-        const float FaktorSemak = 0.62f, LerengMaksVeg = 35f, JarakGridSawit = 8f;
+        const int Varian = 3, CalonPohonPerHa = 80, CalonSemakPerHa = 360, UkuranSel = 125;
+        const float FaktorSemak = 0.72f, LerengMaksVeg = 35f, JarakGridSawit = 8f;
 
         struct Kepadatan { public J jenis; public float perHa; public Kepadatan(J j, float d) { jenis = j; perHa = d; } }
 
