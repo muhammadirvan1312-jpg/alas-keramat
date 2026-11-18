@@ -40,6 +40,13 @@ Bila merah: baca file itu, perbaiki di cabang yang sama, push lagi (run lama oto
 - Interaksi: `IInteractable` di layer Interactable (prompt KAPITAL Bahasa Indonesia, mendukung tahan via HoldDuration). Companion turunan `CompanionDasar`. Teror lewat `PenjadwalTeror` (logika murni, mudah diuji).
 - Musuh/hantu: `NusantaraEnemyAndMutantAI` (13 arketipe di `StatMusuh`), `HantuAI` (Pocong/Kuntilanak/Banaspati), `EnemyDirector` (+ `.Malam`, `.Jadwal`; ISaveable "musuh"). Paku Kuning sudah dipakai `HantuAI` (TANCAPKAN PAKU).
 
+## 6c. Kerja lokal di Google Antigravity (laptop pengguna)
+- Tidak perlu Unity di laptop: hakimnya tetap AK CI di GitHub. Butuh Git + Python 3 saja.
+- Clone: `git clone https://github.com/muhammadirvan1312-jpg/alas-keramat.git`. Login GitHub (saat push pertama) dilakukan PENGGUNA sendiri lewat jendela browser; jangan pernah menulis token/password ke file.
+- G3: `git checkout tahap-G3 && git merge origin/main`, kerjakan, `python3 Tools/cek_statis.py` sampai 0 masalah, commit, `git push`. PR #26 otomatis ikut ter-update (tidak perlu PR baru). Tahap baru: buat cabang `tahap-<KODE>`, push, lalu buka PR lewat tombol "Compare & pull request" di GitHub (atau `gh pr create` bila gh terpasang).
+- Hasil CI (20-30 menit setelah push): `git fetch origin ci-hasil` lalu baca `git show origin/ci-hasil:tahap-G3/ringkasan.md` dan `.../nusantara_selftest.txt`; foto di `tahap-G3/foto_kualitas/`.
+- Laptop pengguna adalah laptop kantor: jangan menginstal hal yang tidak perlu, jangan mengubah pengaturan sistem.
+
 ## 6b. Update 18 Nov sore (TERBARU)
 - T10d SUDAH selesai & ter-merge (PR #27): intro Kabut Merah, Heli SAR, Pilihan Takdir, Ending A/B, statistik, Mode Sandbox + Golok Api Pusaka. WaypointGraph & audio gua dari PR #24 sudah dipasang; cahaya gua dinaikkan. APK: `uji-20261118-0648`.
 - PR #24 (T10a lama ChatGPT) = DUPLIKAT, tutup saja. PR #26 (G3 visual ChatGPT) belum hijau: lanjutkan/perbaiki di cabang `tahap-G3` (merge `main` dulu karena main sudah berubah).
