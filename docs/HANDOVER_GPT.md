@@ -40,6 +40,10 @@ Bila merah: baca file itu, perbaiki di cabang yang sama, push lagi (run lama oto
 - Interaksi: `IInteractable` di layer Interactable (prompt KAPITAL Bahasa Indonesia, mendukung tahan via HoldDuration). Companion turunan `CompanionDasar`. Teror lewat `PenjadwalTeror` (logika murni, mudah diuji).
 - Musuh/hantu: `NusantaraEnemyAndMutantAI` (13 arketipe di `StatMusuh`), `HantuAI` (Pocong/Kuntilanak/Banaspati), `EnemyDirector` (+ `.Malam`, `.Jadwal`; ISaveable "musuh"). Paku Kuning sudah dipakai `HantuAI` (TANCAPKAN PAKU).
 
+## 6a. Update 18 Nov siang
+- T10a-c SUDAH selesai & ter-merge (PR #25, CI hijau sekali jalan): gua/bunker/kuil, M05-M13, 12 lore + jurnal, boss Genderuwo + Ki Rogo, altar + siege. Lanjut dari **T10d** (cutscene, heli SAR, Pilihan Takdir, Ending A/B, statistik, sandbox, musik).
+- Catatan poles: foto CI gua (`t10_01`, `t10_02`) hampir hitam. Naikkan ambient gua (`WorldCaveAndSaveManager.AmbienGua`), intensitas lampu gua, dan cek eksposur `AKPascaProses` di bawah tanah.
+
 ## 6. Rencana T10 (spesifikasi: `docs/tech/12` bagian T10, `docs/gdd/04` semua, `06` §9-11, `03` §10, `10` §5, `17` §6)
 Pecah jadi beberapa PR kecil agar mudah lulus CI:
 - **T10a** Gua & Bunker UG1-UG3 di Y=-80 (teleport fade di mulut gua), gerbang: gali cangkul 4x -> palka, pintu kartu, terowongan selam (Alat Selam), zipline/tembak tali di jurang, koridor angin perlu obor. Self-test: 3 kompleks punya pintu masuk/keluar valid.
