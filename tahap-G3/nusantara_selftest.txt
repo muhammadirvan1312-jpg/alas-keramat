@@ -77,7 +77,7 @@
 [LULUS] Permukaan langkah: pantai=pasir, air=air, struktur=kayu
 [LULUS] Foley, subtitle, sabuk cepat ada
 [LULUS] Subtitle: lama tampil min 2,5 s
-[GAGAL] Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga sesuai anggaran (real <=30000), 24 sendi bernama (29/32) Genderuwo(smr 1, tri 30187, nama True) Hantu_GenderuwoHutan(smr 1, tri 30187, nama True) Galeri_Genderuwo(smr 1, tri 30187, nama True)
+[LULUS] Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga sesuai anggaran (real <=30000), 24 sendi bernama (32/32)
 [LULUS] Tahi lalat Andi di bawah mata kiri (02 §2)
 [LULUS] Deden di heli & Ningsih di Sarang
 [LULUS] Pohon rebah menjauhi takikan (tebang dari selatan -> rebah ke utara)
@@ -117,7 +117,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 205 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 208 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -133,7 +133,7 @@
 [LULUS] Hantu 06 §8: indra Pocong 30/45, api & Keris x2, rentan x1,5, Banaspati padam hujan/air, Pocong 2/4
 [LULUS] Penangkal: Obor Tengkorak 15 m (hantu) terdaftar & dilepas
 [LULUS] Lintasan bambu lempar mendarat tepat (sisa tinggi 0.00 m)
-[GAGAL] Prefab hantu (Pocong, Kuntilanak, Banaspati), jarahan, bambu
+[LULUS] Prefab hantu (Pocong, Kuntilanak, Banaspati), jarahan, bambu
 [LULUS] 6 Totem Topeng & MusikTempur
 [LULUS] Batas gore 14 §10: decal 64, luka 6, ragdoll 4, prop 12, mayat 12, partikel 300
 [LULUS] Tetes darah 6 + damage/4 (maks 40)
