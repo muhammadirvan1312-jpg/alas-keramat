@@ -32,6 +32,7 @@ namespace AlasKeramat.EditorTools
             cek("Peta: koordinat dunia dua kilometer pulang-pergi & utara benar",Vector2.Distance(p,PetaSurveiUI.KeDunia(PetaSurveiUI.KeUV(p)))<0.001f && Mathf.Abs(PetaSurveiUI.Bearing(Vector2.up))<0.001f && Mathf.Abs(PetaSurveiUI.Bearing(Vector2.right)-90f)<0.001f);
             var peta=Object.FindFirstObjectByType<PetaSurveiUI>(FindObjectsInactive.Include);
             cek("Peta: panel, gambar, GPS, tujuan & kompas tersambung",peta!=null && peta.Panel!=null && peta.Bidang!=null && peta.Andi!=null && peta.Tujuan!=null && peta.Kompas!=null);
+            cek("Spawn dan koper darurat tidak tertutup dekorasi tinggi",NusantaraMasterBuilder.DekorasiMenutupAwal(NusantaraMasterBuilder.SpawnAndi.x,NusantaraMasterBuilder.SpawnAndi.z) && NusantaraMasterBuilder.DekorasiMenutupAwal(16,-460) && !NusantaraMasterBuilder.DekorasiMenutupAwal(250,-300));
             cek("Diagnostik main & safe area kontrol terpasang",Object.FindFirstObjectByType<DiagnostikMain>()!=null && Object.FindFirstObjectByType<RuangAmanKontrol>()!=null);
             bool rekaman=true;
             foreach(var file in new[]{"forest_day.mp3","forest_night.mp3","leaves01.ogg","wood01.ogg","stone01.ogg"})

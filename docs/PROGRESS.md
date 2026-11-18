@@ -132,3 +132,5 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
 - Pipeline: penanda snapshot ditulis setelah self-test yang membangun ulang Generated; pemulihan cache aset lama tetap divalidasi SHA oleh pengunduh agar penambahan audio tidak mengunduh ulang semua model.
 
 - Validasi lokal revisi uji main: cek statis 0 masalah; 234 file C# lolos parse sintaks tree-sitter (bukan kompilasi Unity). Sepuluh audio berhasil diunduh, SHA256 dan ekstraksi diverifikasi, unduh kedua memakai berkas yang ada, hash ZIP salah ditolak. ffprobe memastikan kedua ambien stereo (44,76 s dan 11,49 s) dan sampel langkah tidak kosong. Unity/HP belum dinyatakan lulus.
+
+- Pemeriksaan tambahan sebelum CI Unity dimulai: tombol serang ikut membuang pointer saat fokus hilang/jeda; area 3 m sekitar koper dan 4 m sekitar spawn bebas dekorasi tinggi agar GPS/peta terlihat. Tidak mengubah isi koper atau ID pohon.

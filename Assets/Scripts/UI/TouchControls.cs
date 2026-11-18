@@ -24,6 +24,7 @@ namespace AlasKeramat.UI
 
         AndiFPSController _andi;
         bool _adaJoy;
+        TombolTahan _tombolSerang;
 
         public void Pasang(ZonaJoystick j, ZonaGeser g) { joystick = j; geser = g; }
         public void PasangPanggul(GameObject lempar, GameObject mode) { tombolLempar = lempar; tombolMode = mode; }
@@ -56,6 +57,8 @@ namespace AlasKeramat.UI
         {
             if (joystick != null) joystick.ResetSentuh();
             if (geser != null) geser.ResetSentuh();
+            if(_tombolSerang==null)_tombolSerang=GetComponentInChildren<TombolTahan>(true);
+            if(_tombolSerang!=null)_tombolSerang.ResetSentuh();
             if (_andi != null) { _andi.InputGerak = Vector2.zero; _andi.InputLihatPx = Vector2.zero; _andi.MintaLari = false; }
             var tempur=GameServices.Get<CombatAndLeftHandController>();
             if(tempur!=null){tempur.BatalkanTebas();tempur.TangkisLepas();}

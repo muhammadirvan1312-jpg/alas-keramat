@@ -89,6 +89,14 @@ namespace AlasKeramat.EditorTools
             return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_RumputHutan",Color.white,0f,0.18f,tex,null,null,SurfaceMode.Cutout,0.38f),ShaderDaun,0.03f,0.5f));
         }
 
+        public static bool DekorasiMenutupAwal(float x,float z)
+        {
+            var p=new Vector2(x,z);
+            if(Vector2.Distance(p,new Vector2(SpawnAndi.x,SpawnAndi.z))<4f)return true;
+            foreach(var koper in PosisiKoper)if(Vector2.Distance(p,new Vector2(koper.x,koper.z))<3f)return true;
+            return false;
+        }
+
         static void BuatSerasahHutan()
         {
             const int sisiSel=32,calon=240;
@@ -107,7 +115,7 @@ namespace AlasKeramat.EditorTools
                 for(int n=0;n<calon;n++)
                 {
                     float px=x+(float)rand.NextDouble()*sisiSel,pz=z+(float)rand.NextDouble()*sisiSel,y;
-                    if(!BolehTanam(px,pz,out y,true))continue;
+                    if(!BolehTanam(px,pz,out y,true) || DekorasiMenutupAwal(px,pz))continue;
                     int tipe=n%10==0?0:n%18==1?1:2;
                     float rY=(float)rand.NextDouble()*360f;
                     Vector3 pos;Quaternion rot;Vector3 scale;

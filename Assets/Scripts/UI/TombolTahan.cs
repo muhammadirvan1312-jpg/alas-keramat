@@ -21,7 +21,9 @@ namespace AlasKeramat.UI
         CombatAndLeftHandController C() { return GameServices.Get<CombatAndLeftHandController>(); }
         public void OnPointerDown(PointerEventData e) { if(_jari!=int.MinValue || Time.timeScale<=0f)return;_jari=e.pointerId;var c = C(); if (c != null) c.TekanTebas(); }
         public void OnPointerUp(PointerEventData e) { if(e.pointerId!=_jari)return;_jari=int.MinValue;var c = C(); if (c != null && Time.timeScale>0f) c.LepasTebas(); }
-        void OnDisable() { _jari=int.MinValue;var c=C();if(c!=null)c.BatalkanTebas(); }
+        public void ResetSentuh() { _jari=int.MinValue;var c=C();if(c!=null)c.BatalkanTebas(); }
+        void OnDisable() { ResetSentuh(); }
+        void OnApplicationFocus(bool fokus) { if(!fokus)ResetSentuh(); }
 
         public void OnInitializePotentialDrag(PointerEventData e) { e.useDragThreshold=false; }
         public void OnDrag(PointerEventData e) { if(e.pointerId!=_jari)return;var tc=GameServices.Get<TouchControls>();if(tc!=null)tc.GeserDariTombol(e.delta); }
