@@ -35,6 +35,11 @@ jobs:
           ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 1
 
+      - name: Bersihkan laporan CI lama
+        shell: bash
+        run: |
+          rm -f Logs/ci/ringkasan.md Logs/ci/LAPORAN_CI.md Logs/nusantara_selftest.txt Logs/nusantara_build_report.txt
+
       - name: Lewati bila proyek Unity belum ada
         id: cekproyek
         shell: bash

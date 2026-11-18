@@ -109,7 +109,8 @@ namespace AlasKeramat.EditorTools
         static Texture2D PakaianBerwarna(J j,string suit)
         {
             string src="Assets/ThirdParty/Characters/System/clothes/"+suit+"/"+suit+"_diffuse.png";
-            var imp=AssetImporter.GetAtPath(src) as TextureImporter;if(imp==null)return null;imp.isReadable=true;imp.maxTextureSize=2048;imp.SaveAndReimport();
+            var imp=AssetImporter.GetAtPath(src) as TextureImporter;if(imp==null)return null;imp.isReadable=true;imp.maxTextureSize=2048;imp.textureCompression=TextureImporterCompression.Uncompressed;
+            var android=imp.GetPlatformTextureSettings("Android");android.overridden=true;android.maxTextureSize=2048;android.format=TextureImporterFormat.RGBA32;imp.SetPlatformTextureSettings(android);imp.SaveAndReimport();
             var source=AssetDatabase.LoadAssetAtPath<Texture2D>(src);var px=source.GetPixels();
             Color tone=j==J.Deden?new Color(0.88f,0.43f,0.12f):j==J.Ningsih?new Color(0.86f,0.83f,0.73f):j==J.KiRogo?new Color(0.14f,0.13f,0.12f):new Color(0.5f,0.48f,0.31f);
             for(int i=0;i<px.Length;i++)

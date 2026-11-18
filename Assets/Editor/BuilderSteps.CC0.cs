@@ -21,8 +21,11 @@ namespace AlasKeramat.EditorTools
             if(!File.Exists(p))return null;
             AssetDatabase.ImportAsset(p);
             var imp=AssetImporter.GetAtPath(p) as TextureImporter;
-            if(imp!=null && (!imp.isReadable || imp.textureType!=TextureImporterType.Default))
-            { imp.textureType=TextureImporterType.Default;imp.isReadable=true;imp.sRGBTexture=peta=="Albedo";imp.maxTextureSize=2048;imp.SaveAndReimport(); }
+            if(imp!=null && (!imp.isReadable || imp.textureType!=TextureImporterType.Default || imp.textureCompression!=TextureImporterCompression.Uncompressed))
+            {
+                imp.textureType=TextureImporterType.Default;imp.isReadable=true;imp.sRGBTexture=peta=="Albedo";imp.maxTextureSize=2048;imp.textureCompression=TextureImporterCompression.Uncompressed;
+                var settings=imp.GetPlatformTextureSettings("Android");settings.overridden=true;settings.maxTextureSize=2048;settings.format=TextureImporterFormat.RGBA32;imp.SetPlatformTextureSettings(settings);imp.SaveAndReimport();
+            }
             return AssetDatabase.LoadAssetAtPath<Texture2D>(p);
         }
         static void PanggangFotoPBR()
