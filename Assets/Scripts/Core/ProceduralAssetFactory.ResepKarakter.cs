@@ -5,7 +5,7 @@ namespace AlasKeramat.Core
     // Resep 12 humanoid (02 §2-7): proporsi, warna atlas, gaya rambut, aksesori khas. Hewan menyusul di T5.
     public static class ResepKarakter
     {
-        public enum JenisKarakter { Andi, Deden, Ningsih, KiRogo, AbdiSekte, AbdiWanita, AbdiLumpur, AbdiButo, PemimpinPatroli, Pocong, Kuntilanak, Genderuwo }
+        public enum JenisKarakter { Andi, Deden, Ningsih, KiRogo, AbdiSekte, AbdiWanita, AbdiLumpur, AbdiButo, PemimpinPatroli, Pocong, Kuntilanak, Genderuwo, Kuyang, Tuyul, HantuAir, Penyerupa }
         public enum Bagian { Semua, BadanSaja, KepalaLengan }
         public const int Kulit = 0, Atasan = 1, LenganAtas = 2, LenganBawah = 3, Celana = 4, Sepatu = 5, Rambut = 6, PutihMata = 7, Iris = 8, Bibir = 9, Aks1 = 10, Aks2 = 11, Gelap = 12, Aks3 = 13;
 
@@ -26,6 +26,10 @@ namespace AlasKeramat.Core
                 case JenisKarakter.PemimpinPatroli: return D(1.78f, 1.02f, 1f, 1.05f, 1.02f, "#866046", "#5A2A20", "#5A2A20", "#866046", "#2A2420", "#2A2018", "#1A1612", "#E0DAD0", "#2A1A10", "#6E4A3A", "#7A5A2E", "#C8A050", "#2A1A12", "#3A1A12");
                 case JenisKarakter.Pocong: return D(1.72f, 1f, 1.05f, 1f, 1f, "#ACA492", "#D4CCBA", "#D4CCBA", "#D4CCBA", "#C2B8A2", "#ACA492", "#D4CCBA", "#C8D0B8", "#E6ECD0", "#261E1A", "#8E7E62", "#4A1210", "#100D0B", "#6E6452");
                 case JenisKarakter.Kuntilanak: return D(1.66f, 0.85f, 0.88f, 0.9f, 0.85f, "#9E9A8E", "#CFC8B8", "#CFC8B8", "#9E9A8E", "#5A1814", "#8E8A7E", "#070606", "#DCE4D8", "#F03020", "#3E1818", "#6E0E0E", "#A89E8E", "#120A0A", "#4E1210");
+                case JenisKarakter.Kuyang: return D(1.66f, 0.9f, 0.88f, 0.9f, 0.85f, "#9B988D", "#781414", "#781414", "#9B988D", "#520C0C", "#781414", "#090707", "#DDE6D8", "#E62818", "#3E1010", "#6E0E0E", "#A89E8E", "#120A0A", "#4E1210");
+                case JenisKarakter.Tuyul: return D(0.78f, 1.1f, 1.12f, 1.0f, 0.95f, "#6E7F6B", "#3A3228", "#3A3228", "#6E7F6B", "#3A3228", "#4A4438", "#0A0C0A", "#101210", "#050505", "#4E5548", "#2E261E", "#3A3228", "#080A08", "#3A3228");
+                case JenisKarakter.HantuAir: return D(1.74f, 1.16f, 1.18f, 1.12f, 1.08f, "#5C756D", "#2E3A36", "#2E3A36", "#5C756D", "#2A3430", "#3E4A44", "#0E1A16", "#BFD2C8", "#5AE0D0", "#2A3632", "#1E3028", "#4E5E54", "#0A1412", "#2E3A36");
+                case JenisKarakter.Penyerupa: return D(1.58f, 0.88f, 0.9f, 0.95f, 0.88f, "#8E8A84", "#CDC8BA", "#CDC8BA", "#8E8A84", "#3E2A1A", "#2E221A", "#080606", "#E0E6DC", "#101010", "#4A2E2A", "#8A8270", "#3A4E44", "#0E0C0C", "#3A2A1A");
                 default: return D(2.3f, 1.45f, 1.3f, 1.35f, 1.4f, "#1E1610", "#241A12", "#241A12", "#1E1610", "#1A120D", "#140E0A", "#0E0A07", "#4A120A", "#FF2410", "#2E120E", "#3A261A", "#5A100C", "#080605", "#C8B898");
             }
         }

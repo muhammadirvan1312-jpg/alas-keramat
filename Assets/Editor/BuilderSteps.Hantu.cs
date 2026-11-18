@@ -22,10 +22,15 @@ namespace AlasKeramat.EditorTools
         static void LangkahHantu()
         {
             EnsureFolder(FolderPrefabMusuh);
-            var hantu = new GameObject[3];
+            var hantu = new GameObject[8];
             hantu[0] = PrefabHantuManusia(EnemyArchetype.PocongHutan, J.Pocong, ProceduralAnimator.Mode.Pocong);
             hantu[1] = PrefabHantuManusia(EnemyArchetype.Kuntilanak, J.Kuntilanak, ProceduralAnimator.Mode.Melayang);
             hantu[2] = PrefabBanaspati();
+            hantu[3] = PrefabHantuManusia(EnemyArchetype.Kuyang, J.Kuyang, ProceduralAnimator.Mode.Melayang);
+            hantu[4] = PrefabHantuManusia(EnemyArchetype.Tuyul, J.Tuyul, ProceduralAnimator.Mode.Normal);
+            hantu[5] = PrefabHantuManusia(EnemyArchetype.GenderuwoHutan, J.Genderuwo, ProceduralAnimator.Mode.Normal);
+            hantu[6] = PrefabHantuManusia(EnemyArchetype.HantuAir, J.HantuAir, ProceduralAnimator.Mode.Normal);
+            hantu[7] = PrefabHantuManusia(EnemyArchetype.Penyerupa, J.Penyerupa, ProceduralAnimator.Mode.Normal);
             var jarahan = PrefabJarahan();
             var bambu = PrefabBambu();
             var dir = Object.FindFirstObjectByType<EnemyDirector>();
@@ -53,18 +58,28 @@ namespace AlasKeramat.EditorTools
             }
 
             var dio = Anak(_root, NamaDioramaHantu);
-            for (int i = 0; i < 2; i++)
+            // Panggung horor malam: Pocong, Kuntilanak, Kuyang, Tuyul, Genderuwo Hutan, dan Banaspati dalam bulan purnama.
+            var formasi = new[]
+            {
+                new Vector4(-2.2f, 0f, 0.6f, 168f),
+                new Vector4(0.1f, 0.45f, 0f, 180f),
+                new Vector4(2.1f, 0.65f, 0.4f, 194f),
+                new Vector4(-0.95f, 0f, -1.2f, 172f),
+                new Vector4(1.3f, 0f, 2.4f, 186f),
+                new Vector4(-1.8f, 1.55f, -0.5f, 175f),
+            };
+            for (int i = 0; i < 6; i++)
             {
                 if (hantu[i] == null) continue;
                 var g = (GameObject)PrefabUtility.InstantiatePrefab(hantu[i]);
                 g.transform.SetParent(dio.transform, false);
-                float x = PosDioramaHantu.x + i * 3.8f, z = PosDioramaHantu.z + i * 2.5f;
-                g.transform.position = new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z) + (i == 1 ? 0.55f : 0f), z);
-                g.transform.rotation = Quaternion.Euler(0f, 190f, 0f);
+                float x = PosDioramaHantu.x + formasi[i].x, z = PosDioramaHantu.z + formasi[i].z;
+                g.transform.position = new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z) + formasi[i].y, z);
+                g.transform.rotation = Quaternion.Euler(0f, formasi[i].w, 0f);
                 var ai = g.GetComponent<HantuAI>(); if (ai != null) ai.enabled = false;
             }
             dio.SetActive(false);
-            Catat("Hantu: prefab Pocong/Kuntilanak/Banaspati, jarahan, bambu lempar, 6 Totem Topeng, MusikTempur");
+            Catat("Hantu: Pocong, Kuntilanak, Banaspati, Kuyang, Tuyul, Genderuwo Hutan, Hantu Air, Penyerupa + 6 Totem Topeng");
         }
 
         static void BagianPrimitif(Transform induk, PrimitiveType tipe, Vector3 pos, Vector3 skala, Material mat, bool kolider)
@@ -87,9 +102,9 @@ namespace AlasKeramat.EditorTools
             var pendar = new GameObject("PendarHantu").AddComponent<Light>();
             pendar.transform.SetParent(go.transform, false);
             pendar.transform.localPosition = new Vector3(0f, d.tinggi * 0.80f, 0.35f);
-            pendar.type = LightType.Point; pendar.range = 6.0f;
-            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 0.95f : 0.82f;
-            pendar.color = a == EnemyArchetype.Kuntilanak ? new Color(0.55f, 0.68f, 0.88f) : new Color(0.68f, 0.78f, 0.72f);
+            pendar.type = LightType.Point; pendar.range = 6.5f;
+            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 1.15f : a == EnemyArchetype.Kuyang ? 1.0f : a == EnemyArchetype.GenderuwoHutan ? 1.3f : 0.9f;
+            pendar.color = a == EnemyArchetype.Kuntilanak ? new Color(0.55f, 0.68f, 0.92f) : a == EnemyArchetype.Kuyang ? new Color(0.85f, 0.25f, 0.18f) : a == EnemyArchetype.HantuAir ? new Color(0.32f, 0.80f, 0.72f) : a == EnemyArchetype.GenderuwoHutan ? new Color(0.95f, 0.42f, 0.18f) : new Color(0.68f, 0.78f, 0.72f);
             pendar.shadows = LightShadows.None;
             var h = go.AddComponent<HantuAI>(); h.Pasang(a, pendar);
             var tali = new GameObject("TitikInteraksi");

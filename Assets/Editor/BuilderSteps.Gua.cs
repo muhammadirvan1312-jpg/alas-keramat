@@ -157,6 +157,18 @@ namespace AlasKeramat.EditorTools
             if (panjang < 0.9f) return;
             var rot = Quaternion.LookRotation(d.normalized, Vector3.up);
             Vector3 c = (p + q) * 0.5f;
+            bool guaAlam = _kompleks != null && WorldCaveAndSaveManager.KompleksDi(_kompleks.transform.position) != UndergroundId.UG2_Bunker;
+            if (guaAlam)
+            {
+                var go = Anak(induk, "LorongBatuan_" + _seedGua++);
+                go.transform.localPosition = c; go.transform.localRotation = rot;
+                var mesh = SimpanMeshGua(ProcGua.LorongGua(go.name, panjang, lebar, tinggi, _seedGua * 17));
+                go.AddComponent<MeshFilter>().sharedMesh = mesh;
+                go.AddComponent<MeshRenderer>().sharedMaterial = _matDinding;
+                go.AddComponent<MeshCollider>().sharedMesh = mesh;
+                go.layer = GameLayers.Ground;
+                return;
+            }
             Balok(induk, "Lantai", c + rot * new Vector3(0f, -0.25f, 0f), rot, new Vector3(lebar + 0.8f, 0.5f, panjang), _matLantai, false);
             Balok(induk, "Atap", c + rot * new Vector3(0f, tinggi + 0.25f, 0f), rot, new Vector3(lebar + 0.8f, 0.5f, panjang), _matDinding, false);
             Balok(induk, "DindingKiri", c + rot * new Vector3(-lebar * 0.5f - 0.2f, tinggi * 0.5f, 0f), rot, new Vector3(0.4f, tinggi + 0.2f, panjang), _matDinding, false);
@@ -322,10 +334,15 @@ namespace AlasKeramat.EditorTools
             // Lumut bercahaya, stalaktit, lampu cyan (6, maks 4 aktif).
             var hias = Anak(k, "Hiasan");
             var rng = new System.Random(41);
+            var meshStalaktit = SimpanMeshGua(ProcGua.Stalaktit("StalaktitAlam", 77));
             for (int i = 0; i < 40; i++)
             {
-                float a = (float)rng.NextDouble() * Mathf.PI * 2f, rr = (float)rng.NextDouble() * 7f;
-                Hias(hias, PrimitiveType.Capsule, "Stalaktit_" + i, r1.pos + new Vector3(Mathf.Cos(a) * rr, 7.5f + (float)rng.NextDouble() * 1.5f, Mathf.Sin(a) * rr * 0.8f), new Vector3(0.25f, 0.6f + (float)rng.NextDouble() * 0.9f, 0.25f), _matDinding, false);
+                float a = (float)rng.NextDouble() * Mathf.PI * 2f, rr = (float)rng.NextDouble() * 7.5f;
+                var st = Anak(hias, "Stalaktit_" + i);
+                st.transform.localPosition = r1.pos + new Vector3(Mathf.Cos(a) * rr, 9.2f, Mathf.Sin(a) * rr * 0.8f);
+                st.transform.localScale = new Vector3(0.45f + (float)rng.NextDouble() * 0.4f, 1.4f + (float)rng.NextDouble() * 1.9f, 0.45f + (float)rng.NextDouble() * 0.4f);
+                st.AddComponent<MeshFilter>().sharedMesh = meshStalaktit;
+                st.AddComponent<MeshRenderer>().sharedMaterial = _matDinding;
             }
             for (int i = 0; i < 45; i++)
             {

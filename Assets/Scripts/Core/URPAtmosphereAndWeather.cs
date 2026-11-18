@@ -6,8 +6,8 @@ namespace AlasKeramat.Core
     public partial class URPAtmosphereAndWeather : MonoBehaviour
     {
         public const float SudutUtara = -35f;
-        const float IntensitasMatahari = 1.42f, IntensitasBulan = 0.45f;
-        const float KabutSiang = 0.00052f, KabutMalam = 0.00145f, KabutMaghrib = 0.00115f; // dunia 2 km: jarak pandang siang ~ 1,5 km
+        const float IntensitasMatahari = 1.58f, IntensitasBulan = 0.58f;
+        const float KabutSiang = 0.00125f, KabutMalam = 0.00165f, KabutMaghrib = 0.00145f; // kabut jarak lembut memadukan bukit ke langit
 
         [SerializeField] Light sun;
         [SerializeField] Light moon;
@@ -83,9 +83,9 @@ namespace AlasKeramat.Core
             _warnaMatahari = G("#2A3550@0", "#FF8A4C@5.8", "#FFD9A8@7.5", "#FFF4E0@12", "#FF5A2A@18", "#B31E12@18.6", "#2A3550@19.5", "#2A3550@24");
             _warnaLangit = G("#05070D@0", "#F09A62@6", "#8FB4D8@8", "#7FA8D6@13", "#D2502A@18", "#7A1410@18.6", "#0A0C16@19.6", "#05070D@24");
             _warnaKabut = G("#0B0F18@0", "#5A5868@5.5", "#C9B9A6@7", "#B9C8D2@12", "#B0402A@18", "#5A1210@18.7", "#0D1018@19.6", "#0B0F18@24");
-            _ambienAtas = G("#29384A@0", "#4A4A64@5.6", "#9FB5CC@8", "#B8CDE0@12", "#B5523A@18", "#3A1412@18.8", "#29384A@19.6", "#29384A@24");
-            _ambienTengah = G("#1C2936@0", "#3E3A40@5.6", "#7A8A70@8", "#8C9C80@12", "#7A3424@18", "#24100E@18.8", "#1C2936@19.6", "#1C2936@24");
-            _ambienBawah = G("#101820@0", "#262022@5.6", "#3E3A2E@8", "#4A4434@12", "#3A1A12@18", "#140A08@18.8", "#080A0E@19.6", "#101820@24");
+            _ambienAtas = G("#2E4056@0", "#54526E@5.6", "#9FC0DE@8", "#BBD3E8@12", "#B5523A@18", "#3A1412@18.8", "#2E4056@19.6", "#2E4056@24");
+            _ambienTengah = G("#1D2D3D@0", "#3E3C42@5.6", "#586E52@8", "#657C5D@12", "#7A3424@18", "#24100E@18.8", "#1D2D3D@19.6", "#1D2D3D@24");
+            _ambienBawah = G("#111B24@0", "#262022@5.6", "#332E24@8", "#3C3629@12", "#3A1A12@18", "#140A08@18.8", "#0A0D12@19.6", "#111B24@24");
         }
 
         public void Terapkan(float jam)

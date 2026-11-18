@@ -195,7 +195,6 @@ def sculpt_corpse(base,role):
     elif role=='genderuwo':
         for i in GROUP['body']:
             p=base[i]
-            # Alis menonjol garang + rahang taring lebar + bahu membungkuk kekar.
             if 7.38<p.y<7.82 and p.z>0.95:
                 k=max(0.0,1.0-abs(p.x)/0.65)
                 base[i].z+=0.22*k;base[i].y+=0.08*k
@@ -204,6 +203,25 @@ def sculpt_corpse(base,role):
             elif 2.5<p.y<6.0:
                 base[i].x*=1.10;base[i].z*=1.12
                 if p.z<0:base[i].z-=0.15*((p.y-2.5)/3.5)
+    elif role=='kuyang':
+        sculpt_corpse(base,'kuntilanak')
+    elif role=='tuyul':
+        # Kepala membesar bulat & gundul, telinga runcing tajam seperti kelelawar/goblin, wajah tirus cekung!
+        for i in GROUP['body']:
+            p=base[i]
+            if p.y>6.15:
+                dx=p.x;dy=p.y-7.1;dz=p.z-0.35
+                # Perbesar batok kepala 1.32x & tarik telinga kiri/kanan jadi runcing panjang!
+                ear=max(0.0,(abs(p.x)-0.66)/0.25)
+                base[i]=Vector((dx*1.28+(0.52*ear if p.x>0 else -0.52*ear),7.1+dy*1.22+0.42*ear,0.35+dz*1.25-0.30*ear))
+        for side in (-1,1):
+            pass
+    elif role=='hantuair':
+        sculpt_corpse(base,'pocong')
+        for i in GROUP['body']:
+            p=base[i]
+            if 0.2<p.y<5.5:base[i].x*=1.14;base[i].z*=1.16
+            if p.y>6.4 and p.z>0.3:base[i].x*=1.06;base[i].z+=0.06
 
 def ring_ellipse(cx,cy,cz,rx,rz,radial,wiggle=0.0):
     pts=[]
@@ -412,16 +430,66 @@ def add_genderuwo_features(shoes,hair):
 
     # Surai & bulu kasar lebat di kepala, tengkuk, bahu, punggung & lengan!
     fur=PartBuilder()
-    zones=[(0.0,7.9,0.1,0.75,0.7,4,18),(0.0,6.1,0.0,1.15,0.85,3,18),(0.0,4.8,-0.4,1.65,0.75,2,24),(-2.2,4.4,0.1,0.55,0.45,8,10),(2.2,4.4,0.1,0.55,0.45,9,10)]
+    zones=[(0.0,7.9,0.1,0.75,0.7,4,22),(0.0,6.1,0.0,1.15,0.85,3,20),(0.0,4.8,-0.4,1.65,0.75,2,28),(-2.2,4.4,0.1,0.55,0.45,8,12),(2.2,4.4,0.1,0.55,0.45,9,12)]
     for cx,cy,cz,rx,ry,bone,cnt in zones:
         for k in range(cnt):
             a=(k/cnt)*2.0*math.pi+bone*0.7
             ox=cx+math.sin(a)*rx*0.85;oy=cy+(((k%3)-1)*0.45)*ry;oz=cz+math.cos(a)*rx*0.55
             out=Vector((math.sin(a)*0.4,-0.85,math.cos(a)*0.35)).normalized()
-            pts=[Vector((ox,oy,oz))+out*(0.36*t) for t in (0.0,0.4,0.8,1.0)]
-            fur.ribbon_double(pts,lambda t:0.22*(1.0-0.7*t),lambda p,t,b=bone:{b:1.0},(0.05,0.05,0.9,0.9))
+            pts=[Vector((ox,oy,oz))+out*(0.38*t) for t in (0.0,0.4,0.8,1.0)]
+            fur.ribbon_double(pts,lambda t:0.24*(1.0-0.7*t),lambda p,t,b=bone:{b:1.0},(0.05,0.05,0.9,0.9))
     hair=append_part(hair,fur.build())
     return shoes,hair
+
+def build_kuyang():
+    # Organ dalam menggantung basah (trakea, dua paru-paru, jantung, usus melilit berayun di bawah leher terputus!)
+    org=PartBuilder();hair=PartBuilder();fangs=PartBuilder()
+    def obw(y):return {4:1.0} if y>5.5 else {3:0.6,2:0.4} if y>4.2 else {2:0.7,1:0.3} if y>2.2 else {1:0.6,0:0.4}
+    # Batang trakea + kerongkongan dari pangkal leher putus (5.9 -> 3.8).
+    t_rings=[]
+    for k in range(7):
+        y=5.92-k*0.36;r=0.26+0.05*math.sin(k*2.1)
+        t_rings.append((ring_ellipse(0.06*math.sin(k),y,0.15,r,r*0.95,12,0.15),obw(y)))
+    org.tube(t_rings,12,(0.05,0.1,0.4,0.8),closed=True)
+    # Sepasang paru-paru basah menggantung di kiri-kanan dada.
+    for side in (-1.0,1.0):
+        lr=[]
+        for k in range(5):
+            t=k/4.0;y=4.55-t*1.25;r=0.14+0.34*math.sin(t*math.pi*0.92)
+            lr.append((ring_ellipse(side*0.42,y,0.18,r*0.95,r*0.80,12,0.2),obw(y)))
+        org.tube(lr,12,(0.45,0.1,0.5,0.8),closed=True)
+    # 3 untaian usus panjang melilit turun ~1.1 m di bawah leher!
+    for idx,ang0,rad_coil,len_c in [(0,0.0,0.34,4.4),(1,2.1,0.26,5.0),(2,4.2,0.20,4.8)]:
+        ir=[]
+        for k in range(15):
+            t=k/14.0;y=3.95-t*len_c;a=ang0+t*9.5
+            cx=math.cos(a)*rad_coil*(1.0-0.3*t);cz=0.15+math.sin(a)*rad_coil*0.85
+            r=0.11+0.025*math.sin(t*12.0)
+            ir.append((ring_ellipse(cx,y,cz,r,r,8),obw(y)))
+        org.tube(ir,8,(0.1,0.1,0.8,0.8),closed=True)
+    # Rambut panjang kuyang berkibar liar ke belakang & samping kepala terpenggal!
+    for i in range(18):
+        f=(i/17.0)*2.0-1.0;ang=math.pi+f*1.65
+        sx=math.sin(ang)*0.72;sz=0.34+math.cos(ang)*0.88
+        out=Vector((math.sin(ang),0.0,math.cos(ang))).normalized()
+        pts=[Vector((sx+out.x*(0.2+t*1.4),8.25-t*3.8+0.35*math.sin(t*5.0+i),sz+out.z*(0.2+t*2.1))) for t in [s/6.0 for s in range(7)]]
+        hair.ribbon_double(pts,lambda t:0.20*(1.0-0.4*t),lambda p,t:{4:0.85,3:0.15},(0.05,0.05,0.9,0.9))
+    # Taring tajam mencuat dari rahang bawah/atas.
+    for side in (-1.0,1.0):
+        fr=[(ring_ellipse(side*0.20,6.65-t*0.24,1.25+0.05*t,0.04*(1.0-0.8*t),0.04*(1.0-0.8*t),6),{4:1.0}) for t in (0.0,0.5,1.0)]
+        fangs.tube(fr,6,(0.2,0.2,0.4,0.4),closed=True)
+    return (*org.build(),set()),(*fangs.build(),set()),(*hair.build(),set())
+
+def add_hantu_air_algae(hair):
+    pb=PartBuilder()
+    def bw(p,t):return {4:1.0} if p.y>6.6 else {3:0.5,2:0.5} if p.y>4.4 else {2:0.7,1:0.3}
+    for i in range(22):
+        f=(i/21.0)*2.0-1.0;ang=math.pi+f*1.9
+        sx=math.sin(ang)*0.78;sz=0.34+math.cos(ang)*0.96
+        out=Vector((math.sin(ang),0.0,math.cos(ang))).normalized()
+        pts=[Vector((sx+out.x*(0.16+0.65*t)+0.12*math.sin(t*6+i),8.35-t*5.2,sz+out.z*(0.16+0.65*t))) for t in [s/6.0 for s in range(7)]]
+        pb.ribbon_double(pts,lambda t:0.22*(1.0-0.3*t),bw,(0.05,0.05,0.9,0.9))
+    return append_part(hair,pb.build())
 
 def bake_banaspati_skull():
     """Panggang tengkorak iblis hangus (non-skinned submesh 2: 0=tulang hangus, 1=mata/retak api) untuk Banaspati."""
@@ -554,10 +622,35 @@ def make(name,recipe):
         shoes,hair=add_genderuwo_features(shoes,hair)
     elif role=='sekte':
         shoes=add_topeng(shoes,base,not recipe['female'])
+    elif role=='kuyang':
+        # Kepala terpenggal di pangkal leher + taring + rambut melambai + isi perut menggantung basah!
+        body_faces=[(g,f) for g,f in FACES if (g=='body' and all(base[vi].y>5.82 for vi,_ in f)) or g in ('helper-upper-teeth','helper-lower-teeth')]
+        clothes,shoes,hair=build_kuyang()
+    elif role=='tuyul':
+        # Tubuh kecil bungkuk gundul, cawat pinggul robek, tanpa rambut & mata raksasa hitam mengilap!
+        garment,guv,gfaces,gweights,_=clothes
+        gfaces=[(g,f) for g,f in gfaces if all(0.32<(garment[vi].y-bottom)/height<0.55 for vi,_ in f)]
+        clothes=(garment,guv,gfaces,gweights,clothes[-1])
+        body_faces=[(g,f) for g,f in FACES if g=='body' and not any(0.36<(base[vi].y-bottom)/height<0.52 for vi,_ in f)]
+        shoes=([Vector((0,0.02,0)),Vector((0.01,0.02,0)),Vector((0,0.03,0))],[(0.5,0.5)]*3,[('',[(0,0),(1,1),(2,2)])],[{18:1.0},{18:1.0},{18:1.0}],set())
+        hair=([Vector((0,1.4,0)),Vector((0.01,1.4,0)),Vector((0,1.41,0))],[(0.5,0.5)]*3,[('',[(0,0),(1,1),(2,2)])],[{4:1.0},{4:1.0},{4:1.0}],set())
+        # Perbesar mata Tuyul 1.4x mengelilingi pusat mata kiri/kanan hasil proxy.
+        ev=eyes[0]
+        l_pts=[p for p in ev if p.x<0];r_pts=[p for p in ev if p.x>=0]
+        lc=sum(l_pts,Vector((0,0,0)))/max(1,len(l_pts));rc=sum(r_pts,Vector((0,0,0)))/max(1,len(r_pts))
+        eyes=([((lc if v.x<0 else rc)+(v-(lc if v.x<0 else rc))*1.45) for v in ev],*eyes[1:])
+    elif role=='hantuair':
+        # Mayat tenggelam bengkak berkain robek & tirai lumut/ganggang sungai di kepala & bahu.
+        garment,guv,gfaces,gweights,_=clothes
+        gfaces=[(g,f) for g,f in gfaces if all((garment[vi].y-bottom)/height<0.58 for vi,_ in f)]
+        clothes=(garment,guv,gfaces,gweights,clothes[-1])
+        body_faces=[(g,f) for g,f in FACES if (g=='body' and not any(p[0] in clothes[-1] for p in f) and not any(0.35<(base[vi].y-bottom)/height<0.54 for vi,_ in f)) or g in ('helper-upper-teeth','helper-lower-teeth')]
+        shoes=([Vector((0,0.02,0)),Vector((0.01,0.02,0)),Vector((0,0.03,0))],[(0.5,0.5)]*3,[('',[(0,0),(1,1),(2,2)])],[{18:1.0},{18:1.0},{18:1.0}],set())
+        hair=add_hantu_air_algae(hair)
 
     parts=[(base,UV,body_faces,W,0),(*clothes[:4],1),(*shoes[:4],2),(*hair[:4],3),(*eyes[:4],4)]
     output=[];indices=[[],[],[],[],[]];original=[]
-    limits={1:6500,2:1800,3:4500 if role in ('kuntilanak','genderuwo') else 2200}
+    limits={1:5200,2:1400,3:2400}
     for vs,uv,faces,ws,material in parts:
         posed=[deform(v,w) for v,w in zip(vs,ws)]
         if material in limits:posed,uv,faces,ws=reduce_part(posed,uv,faces,ws,limits[material])

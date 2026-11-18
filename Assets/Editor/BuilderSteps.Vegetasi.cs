@@ -85,7 +85,7 @@ namespace AlasKeramat.EditorTools
             var palemN = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/palem_n.png");
             var matKulit = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_KulitPohon", Color.white, 0f, 0.18f, kulit, kulitN), ShaderKulit, 0.02f, 0f));
             var matPalem = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangPalem", Color.white, 0f, 0.2f, palem != null ? palem : kulit, palemN != null ? palemN : kulitN), ShaderKulit, 0.035f, 0f));
-            var matBambu = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_Bambu", ProcTex.Hex("#9DA85A"), 0f, 0.35f, AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kayu.png"), AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kayu_n.png")), ShaderKulit, 0.05f, 0f));
+            var matBambu = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_Bambu", ProcTex.Hex("#4B6E2A"), 0f, 0.35f, AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu.png"), AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu_n.png")), ShaderKulit, 0.05f, 0f));
             var matHangus = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangHangus", ProcTex.Hex("#2A2420"), 0f, 0.1f, kulit, kulitN), ShaderKulit, 0.01f, 0f));
 
             var data = ScriptableObject.CreateInstance<VegetationData>();
@@ -128,7 +128,7 @@ namespace AlasKeramat.EditorTools
             return AssetDatabase.LoadAssetAtPath<Material>(p);
         }
 
-        static bool BolehTanam(float x, float z, out float y)
+        static bool BolehTanam(float x, float z, out float y, bool semak = false)
         {
             y = WorldTerrainGenerator.SampleHeight(x, z);
             if (y < 0.6f) return false;
@@ -137,7 +137,13 @@ namespace AlasKeramat.EditorTools
             for (int i = 0; i < AreaBebas.Length; i++)
             {
                 float dx = x - AreaBebas[i].x, dz = z - AreaBebas[i].y;
-                if (dx * dx + dz * dz < AreaBebas[i].z * AreaBebas[i].z) return false;
+                float r = semak && i < 2 ? 9.5f : AreaBebas[i].z;
+                if (dx * dx + dz * dz < r * r) return false;
+            }
+            if (semak)
+            {
+                float dhx = x - 8f, dhz = z + 448f;
+                if (dhx * dhx + dhz * dhz < 8.5f * 8.5f) return false; // badan rongsokan heli saja
             }
             return WorldTerrainGenerator.SampleSlopeDeg(x, z) <= LerengMaksVeg;
         }
@@ -206,7 +212,7 @@ namespace AlasKeramat.EditorTools
                 if (tabel.Length == 0) continue;
                 double kum = 0; int pilih = -1;
                 for (int i = 0; i < tabel.Length; i++) { kum += tabel[i].perHa * faktor; if (undian < kum) { pilih = i; break; } }
-                if (pilih < 0 || !BolehTanam(x, z, out y)) continue;
+                if (pilih < 0 || !BolehTanam(x, z, out y, semak)) continue;
                 var jn = tabel[pilih].jenis;
                 float skala = semak ? 0.7f + 0.7f * (float)r.NextDouble() : 0.8f + 0.45f * (float)r.NextDouble();
                 tambah((int)jn * Varian + r.Next(Varian), new Vector3(x, y - (semak ? 0.05f : 0.25f), z), (float)r.NextDouble() * 360f, skala);

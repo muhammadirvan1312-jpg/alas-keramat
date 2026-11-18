@@ -199,5 +199,82 @@ namespace AlasKeramat.AI
                 if (b != null) ApiStruktur.Nyalakan(b.gameObject);
             }
         }
+
+        // ---------------- Kuyang (13 §4.4: terbang & juntaian tersangkut pagar runcing) ----------------
+        void TickKuyang(float dt)
+        {
+            float d = JarakAndi();
+            if (TerusirPenangkal(transform.position)) { Hadap(-KeAndi(), dt); Melayang(transform.position - KeAndi().normalized * 4f, 2.1f, dt, _d.jalan); return; }
+            int duri = Physics.OverlapSphereNonAlloc(transform.position, 0.9f, _hasilOverlap, 1 << GameLayers.Structure, QueryTriggerInteraction.Ignore);
+            for (int i = 0; i < duri; i++)
+                if (_hasilOverlap[i].name.Contains("PagarRuncing") && _fase != FaseHantu.Terjungkal)
+                { TakeDamage(new DamageInfo { amount = 25f, type = DamageType.Tusuk, point = transform.position, direction = Vector3.up }); Ubah(FaseHantu.Terjungkal); GameEvents.RaiseToast("Isi perut Kuyang tersangkut pagar runcing!"); return; }
+            switch (_fase)
+            {
+                case FaseHantu.Diam:
+                    Melayang(Sarang, 2.2f, dt, 2f);
+                    if (d <= _d.lihatMalam) { Ubah(FaseHantu.Mengitari); _tKitar = Random.Range(3f, 5f); }
+                    break;
+                case FaseHantu.Mengitari:
+                    _sudut += 50f * dt; float r = _sudut * Mathf.Deg2Rad;
+                    Melayang(_andi.transform.position + new Vector3(Mathf.Cos(r), 0f, Mathf.Sin(r)) * 6.5f, 2.0f, dt, _d.jalan);
+                    Hadap(KeAndi(), dt);
+                    if (_t > _tKitar) Ubah(FaseHantu.Ancang);
+                    break;
+                case FaseHantu.Ancang:
+                    Hadap(KeAndi(), dt, 500f);
+                    if (_t >= 0.5f) { _arahTerjang = ((_andi.transform.position + Vector3.up * 1.4f) - transform.position).normalized; Ubah(FaseHantu.Terjang); }
+                    break;
+                case FaseHantu.Terjang:
+                    transform.position += _arahTerjang * _d.lari * dt;
+                    if (!_sudahKena && Vector3.Distance(transform.position, _andi.transform.position + Vector3.up) < 1.3f)
+                    {
+                        _sudahKena = true; bool parry;
+                        KenaiAndi(_d.damage, true, DamageType.Tebas, out parry);
+                        var rk = GameServices.Get<ReaksiAndi>(); if (!parry && rk != null) rk.MulaiPendarahan();
+                    }
+                    if (_t >= 1f || _sudahKena) Ubah(FaseHantu.Mengitari);
+                    break;
+                case FaseHantu.Terjungkal:
+                    if (_t >= 4f) Ubah(FaseHantu.Mengitari);
+                    break;
+                default: Ubah(FaseHantu.Diam); break;
+            }
+        }
+
+        // ---------------- Tuyul (13 §4.5: pencuri malam gesit, kabur disorot cahaya & ditangkal Mangkuk Kepiting) ----------------
+        void TickTuyul(float dt)
+        {
+            if (Disorot(dt) || AlasKeramat.Building.FungsiBangunan.MenangkalTuyul(transform.position))
+            {
+                Hadap(-KeAndi(), dt); Geser(-KeAndi().normalized * _d.lari, dt, 0f);
+                if (JarakAndi() > 28f) gameObject.SetActive(false);
+                return;
+            }
+            if (_fase == FaseHantu.Hilang) { if (_t >= 6f) gameObject.SetActive(false); return; }
+            float d = JarakAndi();
+            if (d < 8f) { Hadap(-KeAndi(), dt); Geser(-KeAndi().normalized * _d.lari, dt, 0f); }
+            else { _sudut += 35f * dt; Vector3 p = Sarang + new Vector3(Mathf.Cos(_sudut * Mathf.Deg2Rad), 0f, Mathf.Sin(_sudut * Mathf.Deg2Rad)) * 5f; Hadap(p - transform.position, dt); Geser((p - transform.position).normalized * _d.jalan, dt, 0f); }
+        }
+
+        // ---------------- Genderuwo Hutan & Hantu Air ----------------
+        void TickPemburuMalam(float dt)
+        {
+            if (TerusirPenangkal(transform.position)) { Hadap(-KeAndi(), dt); Geser(-KeAndi().normalized * _d.jalan, dt, 0f); return; }
+            float d = JarakAndi();
+            if (d > _d.lihatMalam * 1.4f) return;
+            Hadap(KeAndi(), dt);
+            if (d > 1.8f) Geser(KeAndi().normalized * (d < 9f ? _d.lari : _d.jalan), dt, 0f);
+            else if (_t >= 1.6f) { _t = 0f; bool p; KenaiAndi(_d.damage, true, DamageType.Tumpul, out p); }
+        }
+
+        // ---------------- Penyerupa (13 §4.6: meniru tenang lalu memutar kepala 180 deg) ----------------
+        void TickPenyerupa(float dt)
+        {
+            float d = JarakAndi(); Hadap(KeAndi(), dt, 180f);
+            if (_anim != null && _anim.Tulang != null && _anim.Tulang.Length > Kerangka.Head && _anim.Tulang[Kerangka.Head] != null && d < 12f)
+                _anim.Tulang[Kerangka.Head].localRotation = Quaternion.Euler(0f, 168f, 18f);
+            if (d < 2.2f && _t >= 2f) { _t = 0f; bool p; KenaiAndi(_d.damage, true, DamageType.Gaib, out p); if (_vital != null) _vital.UbahSanity(-4f); }
+        }
     }
 }

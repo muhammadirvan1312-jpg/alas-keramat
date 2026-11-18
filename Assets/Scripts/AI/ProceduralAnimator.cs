@@ -206,9 +206,9 @@ namespace AlasKeramat.AI
             else if (mode == Mode.Melayang) Melayang(skala);
             else
             {
-                R(Kerangka.Pelvis, 0f, 4f, 0f);
-                R(Kerangka.Spine, 2f, -3f, 0f);
-                R(Kerangka.Head, 2f, -4f, 2f);
+                if (name.Contains("Tuyul")) { R(Kerangka.Spine, 24f, 0f, 0f); R(Kerangka.Head, -14f, 8f, 0f); R(Kerangka.LThigh, -35f, -12f, 0f); R(Kerangka.RThigh, -35f, 12f, 0f); R(Kerangka.LCalf, 55f, 0f, 0f); R(Kerangka.RCalf, 55f, 0f, 0f); R(Kerangka.LUpper, -45f, 0f, 18f); R(Kerangka.RUpper, -45f, 0f, -18f); }
+                else if (name.Contains("Genderuwo")) { R(Kerangka.Spine, 14f, 0f, 0f); R(Kerangka.LUpper, -24f, 0f, 16f); R(Kerangka.RUpper, -24f, 0f, -16f); R(Kerangka.Jaw, 18f, 0f, 0f); }
+                else { R(Kerangka.Pelvis, 0f, 4f, 0f); R(Kerangka.Spine, 2f, -3f, 0f); R(Kerangka.Head, 2f, -4f, 2f); }
             }
             Tatap();
         }

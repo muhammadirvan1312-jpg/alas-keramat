@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'Assets/ThirdParty/Prepared';STAMP=OUT/'versi.sha256'
 SOURCES=['Tools/aset_cc0.lock.json','Tools/karakter.lock.json','Tools/karakter/resep.json','Tools/karakter/buat_karakter.py','Tools/visual/panggang_pohon.py','Tools/visual/pasang_blender.py']
-EXPECTED=['Andi','Deden','Ningsih','KiRogo','Pocong','Kuntilanak','Genderuwo','SektePria','SekteWanita','SekteButo','Banaspati','PohonScan_LOD0','PohonScan_LOD1','PakisScan_LOD0','PakisScan_LOD1']
+EXPECTED=['Andi','Deden','Ningsih','KiRogo','Pocong','Kuntilanak','Genderuwo','SektePria','SekteWanita','SekteButo','Kuyang','Tuyul','HantuAir','Banaspati','PohonScan_LOD0','PohonScan_LOD1','PohonScanB_LOD0','PohonScanB_LOD1','PakisScan_LOD0','PakisScan_LOD1']
 def digest():return hashlib.sha256(b''.join((ROOT/p).read_bytes() for p in SOURCES)).hexdigest()
 def siap():return STAMP.exists() and STAMP.read_text()==digest() and all((OUT/(n+'.bytes')).exists() for n in EXPECTED)
 def main():

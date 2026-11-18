@@ -25,16 +25,26 @@ namespace AlasKeramat.EditorTools
             for (int i = 0; i < 8; i++)
             {
                 float a = (i + 0.5f) * 45f * Mathf.Deg2Rad;
-                Hias(arena, PrimitiveType.Cylinder, "PilarAkar_" + i, new Vector3(Mathf.Sin(a) * 13f, 11f, Mathf.Cos(a) * 13f), new Vector3(3f, 11f, 3f), akarMat, true);
+                Hias(arena, PrimitiveType.Cylinder, "PilarAkar_" + i, new Vector3(Mathf.Sin(a) * 13f, 11f, Mathf.Cos(a) * 13f), new Vector3(2.8f, 11f, 2.8f), akarMat, true);
+                var uratPilar = Hias(arena, PrimitiveType.Cylinder, "UratPilar_" + i, new Vector3(Mathf.Sin(a) * 12.1f, 6f, Mathf.Cos(a) * 12.1f), new Vector3(0.35f, 6f, 0.35f), _matUrat, false);
+                uratPilar.transform.localRotation = Quaternion.Euler(14f, i * 45f, 18f);
                 float b = i * 45f * Mathf.Deg2Rad;
-                var dasar = Balok(arena, "Tungku_" + i, new Vector3(Mathf.Sin(b) * 17f, 0.6f, Mathf.Cos(b) * 17f), Quaternion.identity, new Vector3(1f, 1.2f, 1f), batu, true);
-                var api = Hias(dasar, PrimitiveType.Cube, "Api", new Vector3(0f, 0.65f, 0f), new Vector3(0.6f, 0.4f, 0.6f), apiMat, false);
-                var l = Lampu(dasar, "Cahaya", new Vector3(0f, 1.4f, 0f), new Color(1f, 0.38f, 0.14f), 22f, 4.2f);
+                var dasar = Balok(arena, "Tungku_" + i, new Vector3(Mathf.Sin(b) * 17f, 0.6f, Mathf.Cos(b) * 17f), Quaternion.identity, new Vector3(1.1f, 1.2f, 1.1f), batu, true);
+                var api = Hias(dasar, PrimitiveType.Cylinder, "Api", new Vector3(0f, 0.72f, 0f), new Vector3(0.55f, 0.6f, 0.55f), apiMat, false);
+                api.transform.localRotation = Quaternion.Euler(8f, b * 30f, -8f);
+                var l = Lampu(dasar, "Cahaya", new Vector3(0f, 1.6f, 0f), new Color(1f, 0.42f, 0.16f), 25f, 4.8f);
                 tungku[i] = dasar.AddComponent<TungkuObor>();
                 if (i % 2 == 1) panggil[i / 2] = dasar.transform;
             }
             Hias(arena, PrimitiveType.Cylinder, "Panggung", new Vector3(0f, 0.5f, 0f), new Vector3(8f, 0.5f, 8f), batu, true);
             var tutup = Hias(arena, PrimitiveType.Sphere, "KepompongAkar", new Vector3(0f, 2f, 0f), new Vector3(1.4f, 2f, 1.4f), akarMat, false);
+            for (int r = 0; r < 6; r++)
+            {
+                float rad = r * 60f * Mathf.Deg2Rad;
+                var lilit = Hias(tutup, PrimitiveType.Cylinder, "LilitUrat_" + r, new Vector3(Mathf.Sin(rad) * 0.46f, 0f, Mathf.Cos(rad) * 0.46f), new Vector3(0.14f, 0.6f, 0.14f), _matUrat, false);
+                lilit.transform.localRotation = Quaternion.Euler(22f, r * 60f, 18f);
+            }
+            Lampu(arena, "CahayaAltarBoss", new Vector3(0f, 7.5f, 10f), new Color(1f, 0.34f, 0.18f), 28f, 4.5f);
             var isi = Wadah(arena, "Paku_3", "Paku Keramat", new Vector3(0f, 1f, 0f), new Vector3(0.12f, 0.5f, 0.12f), AmbilMatGen("M_PakuKeramat"), new[] { ItemID.PakuKeramat3 }, new[] { 1 }, 0, true);
             var dinding = Anak(arena, "DindingAkar");
             dinding.transform.localPosition = new Vector3(0f, 0f, 14.5f);

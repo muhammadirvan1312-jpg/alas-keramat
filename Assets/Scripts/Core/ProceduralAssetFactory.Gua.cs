@@ -79,5 +79,67 @@ namespace AlasKeramat.Core
             m.RecalculateNormals(); m.RecalculateBounds();
             return m;
         }
+
+        // Lorong gua lengkung batu alami bertekstur noise (pengganti terowongan kubus pada gua alam).
+        public static Mesh LorongGua(string nama, float panjang, float lebar, float tinggi, int seed)
+        {
+            const int cincin = 8, seg = 16;
+            var v = new List<Vector3>(); var uv = new List<Vector2>(); var tri = new List<int>();
+            float rx = lebar * 0.55f, ry = tinggi;
+            for (int r = 0; r <= cincin; r++)
+            {
+                float z = -panjang * 0.5f + panjang * r / cincin;
+                for (int s = 0; s <= seg; s++)
+                {
+                    float u = (float)s / seg, sud = u * Mathf.PI * 2f;
+                    float xBase = Mathf.Sin(sud) * rx;
+                    float cosS = Mathf.Cos(sud);
+                    float yBase = cosS < -0.25f ? 0f : (cosS + 0.25f) / 1.25f * ry;
+                    float disp = yBase < 0.05f ? 0f : 1f + 0.16f * (Mathf.PerlinNoise(seed * 0.23f + r * 0.45f, s * 0.55f) - 0.5f);
+                    v.Add(new Vector3(xBase * disp, yBase * (yBase < 0.05f ? 1f : disp), z));
+                    uv.Add(new Vector2(u * (lebar + tinggi) * 0.5f, z * 0.4f));
+                }
+            }
+            int w = seg + 1;
+            for (int r = 0; r < cincin; r++)
+                for (int s = 0; s < seg; s++)
+                {
+                    int v0 = r * w + s, v1 = v0 + 1, v2 = v0 + w, v3 = v2 + 1;
+                    tri.Add(v0); tri.Add(v2); tri.Add(v1); tri.Add(v1); tri.Add(v2); tri.Add(v3);
+                }
+            var m = new Mesh { name = nama };
+            m.SetVertices(v); m.SetUVs(0, uv); m.SetTriangles(tri, 0);
+            m.RecalculateNormals(); m.RecalculateTangents(); m.RecalculateBounds();
+            return m;
+        }
+
+        // Stalaktit batu runcing berprofil kasar tidak simetris.
+        public static Mesh Stalaktit(string nama, int seed)
+        {
+            const int cincin = 5, seg = 9;
+            var v = new List<Vector3>(); var uv = new List<Vector2>(); var tri = new List<int>();
+            for (int r = 0; r <= cincin; r++)
+            {
+                float t = (float)r / cincin, rad = Mathf.Lerp(0.45f, 0.02f, t);
+                for (int s = 0; s <= seg; s++)
+                {
+                    float a = s * Mathf.PI * 2f / seg;
+                    float d = rad * (0.75f + 0.45f * Mathf.PerlinNoise(seed * 0.4f + s * 0.7f, r * 0.9f));
+                    v.Add(new Vector3(Mathf.Cos(a) * d, -t, Mathf.Sin(a) * d));
+                    uv.Add(new Vector2((float)s / seg, t));
+                }
+            }
+            int w = seg + 1;
+            for (int r = 0; r < cincin; r++)
+                for (int s = 0; s < seg; s++)
+                {
+                    int v0 = r * w + s, v1 = v0 + 1, v2 = v0 + w, v3 = v2 + 1;
+                    tri.Add(v0); tri.Add(v1); tri.Add(v2); tri.Add(v1); tri.Add(v3); tri.Add(v2);
+                }
+            var m = new Mesh { name = nama };
+            m.SetVertices(v); m.SetUVs(0, uv); m.SetTriangles(tri, 0);
+            m.RecalculateNormals(); m.RecalculateBounds();
+            return m;
+        }
     }
 }

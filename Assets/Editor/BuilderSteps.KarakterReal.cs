@@ -32,6 +32,10 @@ namespace AlasKeramat.EditorTools
                 case J.Pocong:return "Pocong";
                 case J.Kuntilanak:return "Kuntilanak";
                 case J.Genderuwo:return "Genderuwo";
+                case J.Kuyang:return "Kuyang";
+                case J.Tuyul:return "Tuyul";
+                case J.HantuAir:return "HantuAir";
+                case J.Penyerupa:return "Ningsih";
                 case J.AbdiWanita:return "SekteWanita";
                 case J.AbdiButo:return "SekteButo";
                 default:return "SektePria";
@@ -80,8 +84,9 @@ namespace AlasKeramat.EditorTools
             root.AddComponent<PenandaModelReal>().Sumber="MakeHuman CC0 hm08";
             var face=root.AddComponent<AlasKeramat.AI.FaceController>();
             face.Pasang(root.GetComponentsInChildren<SkinnedMeshRenderer>(),jenis==J.Deden?"Kang Deden":jenis==J.KiRogo?"Ki Rogo":jenis.ToString());
-            if(jenis==J.Pocong || jenis==J.Kuntilanak)face.SetEkspresi(AlasKeramat.AI.EkspresiWajahG3.Ngeri,0.85f);
+            if(jenis==J.Pocong || jenis==J.Kuntilanak || jenis==J.Kuyang)face.SetEkspresi(AlasKeramat.AI.EkspresiWajahG3.Ngeri,0.9f);
             else if(jenis==J.Genderuwo)face.SetEkspresi(AlasKeramat.AI.EkspresiWajahG3.Teriak,0.9f);
+            else if(jenis==J.Penyerupa || jenis==J.Tuyul)face.SetEkspresi(AlasKeramat.AI.EkspresiWajahG3.Curiga,0.9f);
             EditorUtility.SetDirty(face);
             AksesoriReal(jenis,bones,andi);
             JumlahKarakterReal++;return true;
@@ -202,7 +207,8 @@ namespace AlasKeramat.EditorTools
         {
             string src="Assets/ThirdParty/Characters/System/skins/"+skinRel+".png";
             var source=BacaReadableKarakter(src);if(source==null)return null;
-            if(j!=J.Pocong && j!=J.Kuntilanak && j!=J.Genderuwo)return source;
+            bool hantu=j==J.Pocong || j==J.Kuntilanak || j==J.Genderuwo || j==J.Kuyang || j==J.Tuyul || j==J.HantuAir || j==J.Penyerupa;
+            if(!hantu)return source;
             int w=source.width,h=source.height;var px=source.GetPixels();
             for(int i=0;i<px.Length;i++)
             {
@@ -215,15 +221,24 @@ namespace AlasKeramat.EditorTools
                     Color baseBeast=new Color(0.22f,0.15f,0.12f)*Mathf.Lerp(0.45f,1.35f,lum);
                     px[i]=Color.Lerp(baseBeast,new Color(0.11f,0.08f,0.07f),n*0.45f);
                 }
+                else if(j==J.Tuyul)
+                {
+                    Color imp=new Color(0.42f,0.52f,0.38f)*Mathf.Lerp(0.4f,1.25f,lum);
+                    px[i]=Color.Lerp(imp,new Color(0.20f,0.26f,0.19f),veins*0.5f+Mathf.Max(0f,n-0.5f)*0.5f);
+                }
+                else if(j==J.HantuAir)
+                {
+                    Color drowned=new Color(0.40f,0.54f,0.51f)*Mathf.Lerp(0.4f,1.2f,lum);
+                    px[i]=Color.Lerp(drowned,new Color(0.14f,0.22f,0.20f),veins*0.65f+Mathf.Max(0f,n-0.45f)*0.55f);
+                }
                 else
                 {
-                    Color corpse=j==J.Pocong?new Color(0.56f,0.61f,0.52f):new Color(0.68f,0.72f,0.71f);
+                    Color corpse=j==J.Pocong?new Color(0.56f,0.61f,0.52f):j==J.Penyerupa?new Color(0.75f,0.77f,0.78f):new Color(0.68f,0.72f,0.71f);
                     Color col=corpse*Mathf.Lerp(0.38f,1.22f,lum);
-                    // Urat kebiruan & lebam busuk mayat.
                     col=Color.Lerp(col,new Color(0.22f,0.25f,0.28f),veins*0.55f+Mathf.Max(0f,n-0.55f)*0.6f);
-                    // Noda darah gelap di dagu/mulut & ujung jari (UV rendah = badan/anggota bawah, tinggi = wajah).
-                    float darah=Mathf.Clamp01((Mathf.PerlinNoise(u*16f+12f,v*16f+3f)-0.58f)*3.5f);
-                    if(v>0.46f && v<0.62f && u>0.36f && u<0.64f)col=Color.Lerp(col,new Color(0.18f,0.03f,0.03f),darah*0.7f);
+                    float darah=Mathf.Clamp01((Mathf.PerlinNoise(u*16f+12f,v*16f+3f)-0.52f)*3.5f);
+                    if((j==J.Kuyang && v<0.55f) || (v>0.46f && v<0.62f && u>0.36f && u<0.64f))
+                        col=Color.Lerp(col,new Color(0.24f,0.02f,0.02f),j==J.Kuyang?0.85f:darah*0.75f);
                     px[i]=col;
                 }
                 px[i].a=1f;
@@ -236,23 +251,25 @@ namespace AlasKeramat.EditorTools
         static Material[] BahanMakeHuman(J j)
         {
             Material[] hasil;if(_bahanReal.TryGetValue(j,out hasil))return hasil;
-            bool wanita=j==J.Ningsih || j==J.Kuntilanak || j==J.AbdiWanita;
-            bool tua=j==J.KiRogo || j==J.Pocong || j==J.Genderuwo || j==J.AbdiButo;
-            string skin=wanita?"young_asian_female/young_lightskinned_female_diffuse3":j==J.Deden || j==J.AbdiSekte || j==J.PemimpinPatroli?"middleage_asian_male/middleage_lightskinned_male_diffuse2":tua?"old_asian_male/old_lightskinned_male_diffuse2":"young_asian_male/young_lightskinned_male_diffuse3";
-            string suit=(j==J.Ningsih || j==J.Kuntilanak || j==J.AbdiWanita)?"female_elegantsuit01":(j==J.KiRogo || j==J.AbdiSekte || j==J.AbdiLumpur || j==J.PemimpinPatroli)?"male_casualsuit01":"male_worksuit01";
+            bool wanita=j==J.Ningsih || j==J.Kuntilanak || j==J.AbdiWanita || j==J.Kuyang || j==J.Penyerupa;
+            bool tua=j==J.KiRogo || j==J.Pocong || j==J.Genderuwo || j==J.AbdiButo || j==J.Tuyul;
+            string skin=wanita?"young_asian_female/young_lightskinned_female_diffuse3":(j==J.Deden || j==J.AbdiSekte || j==J.PemimpinPatroli || j==J.HantuAir)?"middleage_asian_male/middleage_lightskinned_male_diffuse2":tua?"old_asian_male/old_lightskinned_male_diffuse2":"young_asian_male/young_lightskinned_male_diffuse3";
+            string suit=(j==J.Ningsih || j==J.Kuntilanak || j==J.AbdiWanita || j==J.Kuyang || j==J.Penyerupa)?"female_elegantsuit01":(j==J.KiRogo || j==J.AbdiSekte || j==J.AbdiLumpur || j==J.PemimpinPatroli || j==J.HantuAir)?"male_casualsuit01":"male_worksuit01";
             string hair=wanita?"ponytail01":"short01";
 
-            Color skinTint=j==J.Deden?new Color(0.92f,0.81f,0.70f):j==J.Ningsih?new Color(0.98f,0.92f,0.87f):j==J.KiRogo?new Color(0.88f,0.79f,0.71f):
-                j==J.AbdiLumpur?new Color(0.58f,0.50f,0.42f):j>=J.Pocong?Color.white:new Color(0.94f,0.85f,0.78f);
-            float skinSmooth=j==J.Genderuwo?0.2f:j==J.Pocong || j==J.Kuntilanak?0.24f:0.34f;
+            Color skinTint=j==J.Deden?new Color(0.94f,0.82f,0.72f):j==J.Ningsih?new Color(0.99f,0.93f,0.88f):j==J.KiRogo?new Color(0.89f,0.80f,0.72f):
+                j==J.AbdiLumpur?new Color(0.58f,0.50f,0.42f):(j>=J.Pocong || j==J.Penyerupa)?Color.white:new Color(0.95f,0.86f,0.78f);
+            float skinSmooth=j==J.Genderuwo?0.2f:(j==J.Pocong || j==J.Kuntilanak || j==J.Kuyang)?0.28f:0.35f;
             var skinMat=SafeMaterialFactory.CreatePBR("M_Skin_"+j,skinTint,0f,skinSmooth,KulitHororTex(j,skin),NormalKulitWajah());
             var sh=AmbilShaderAK("AlasKeramat/KulitManusia");if(sh!=null)skinMat.shader=sh;
 
             Texture2D clothNorm=null;
             Texture2D clothTex=PakaianBerwarna(j,suit,out clothNorm);
             if(clothNorm==null)clothNorm=TeksturKarakter("clothes/"+suit+"/"+suit+"_normal.png",true);
-            var cloth=SafeMaterialFactory.CreatePBR("M_Pakaian_"+j,Color.white,0f,0.22f,clothTex,clothNorm);
-            if(j==J.Kuntilanak)SafeMaterialFactory.SetF(cloth,"_Cull",0f);
+            float clothSmooth=j==J.Kuyang?0.86f:0.22f;
+            Color? clothEm=j==J.Kuyang?new Color(0.24f,0.03f,0.02f):(Color?)null;
+            var cloth=SafeMaterialFactory.CreatePBR("M_Pakaian_"+j,Color.white,0f,clothSmooth,clothTex,clothNorm,clothEm);
+            if(j==J.Kuntilanak || j==J.Kuyang)SafeMaterialFactory.SetF(cloth,"_Cull",0f);
 
             var boots=BuatMaterialSub2(j);
             var rambut=BuatMaterialRambut(j,hair);
@@ -265,10 +282,10 @@ namespace AlasKeramat.EditorTools
         {
             if(j==J.Pocong)
                 return SafeMaterialFactory.CreatePBR("M_Tali_"+j,ProcTex.Hex("#3A3024"),0f,0.15f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kain.png"),AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kulit_kayu_n.png"));
-            if(j==J.Genderuwo)
-                return SafeMaterialFactory.CreatePBR("M_Tanduk_"+j,ProcTex.Hex("#6E5E4A"),0.05f,0.38f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/tanah.png"),AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/tanah_n.png"));
-            if(j==J.Kuntilanak)
-                return SafeMaterialFactory.CreatePBR("M_Kaki_"+j,ProcTex.Hex("#6C706E"),0f,0.25f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/tanah.png"));
+            if(j==J.Genderuwo || j==J.Kuyang)
+                return SafeMaterialFactory.CreatePBR("M_Tanduk_"+j,ProcTex.Hex("#82705A"),0.05f,0.38f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/tanah.png"),AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/tanah_n.png"));
+            if(j==J.Kuntilanak || j==J.Tuyul || j==J.HantuAir)
+                return SafeMaterialFactory.CreatePBR("M_Kaki_"+j,j==J.Tuyul?ProcTex.Hex("#50604A"):ProcTex.Hex("#6C706E"),0f,0.25f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/tanah.png"));
             if(j>=J.AbdiSekte && j<=J.PemimpinPatroli)
             {
                 var shoeSrc=BacaReadableKarakter("Assets/ThirdParty/Characters/System/clothes/shoes01/shoes01_diffuse.png");
@@ -302,15 +319,15 @@ namespace AlasKeramat.EditorTools
 
         static Material BuatMaterialRambut(J j,string hair)
         {
-            if(j==J.Kuntilanak || j==J.Genderuwo)
+            if(j==J.Kuntilanak || j==J.Genderuwo || j==J.Kuyang || j==J.HantuAir)
             {
-                Color c=j==J.Kuntilanak?new Color(0.9f,0.92f,0.95f):new Color(0.75f,0.68f,0.62f);
-                var m=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,c,0f,0.28f,TeksturRambutSeram(),null,null,SurfaceMode.Cutout,0.24f);
+                Color c=j==J.HantuAir?new Color(0.24f,0.38f,0.26f):j==J.Kuntilanak || j==J.Kuyang?new Color(0.88f,0.90f,0.94f):new Color(0.75f,0.68f,0.62f);
+                var m=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,c,0f,j==J.HantuAir?0.62f:0.28f,TeksturRambutSeram(),null,null,SurfaceMode.Cutout,0.24f);
                 SafeMaterialFactory.SetF(m,"_Cull",0f);return m;
             }
-            if(j==J.Pocong)
-                return SafeMaterialFactory.CreatePBR("M_Rambut_"+j,ProcTex.Hex("#8D8472"),0f,0.15f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kain.png"),null,null,SurfaceMode.Opaque);
-            Color tint=j==J.KiRogo?new Color(0.95f,0.94f,0.92f):new Color(0.85f,0.81f,0.78f);
+            if(j==J.Pocong || j==J.Tuyul)
+                return SafeMaterialFactory.CreatePBR("M_Rambut_"+j,j==J.Tuyul?ProcTex.Hex("#5E6E58"):ProcTex.Hex("#8D8472"),0f,0.15f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kain.png"),null,null,SurfaceMode.Opaque);
+            Color tint=j==J.KiRogo?new Color(0.95f,0.94f,0.92f):new Color(0.86f,0.82f,0.79f);
             var mr=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,tint,0f,0.34f,TeksturKarakter("hair/"+hair+"/"+hair+"_diffuse.png"),null,null,SurfaceMode.Cutout,0.35f);
             SafeMaterialFactory.SetF(mr,"_Cull",0f);return mr;
         }
@@ -320,10 +337,14 @@ namespace AlasKeramat.EditorTools
             var tex=TeksturKarakter("eyes/materials/brown_eye.png");
             if(j==J.Pocong)
                 return SafeMaterialFactory.CreatePBR("M_Mata_"+j,new Color(0.9f,0.95f,0.8f),0f,0.9f,tex,null,new Color(0.62f,0.72f,0.52f));
-            if(j==J.Kuntilanak)
-                return SafeMaterialFactory.CreatePBR("M_Mata_"+j,new Color(1f,0.75f,0.7f),0f,0.9f,tex,null,new Color(1.1f,0.22f,0.16f));
+            if(j==J.Kuntilanak || j==J.Kuyang)
+                return SafeMaterialFactory.CreatePBR("M_Mata_"+j,new Color(1f,0.75f,0.7f),0f,0.9f,tex,null,new Color(1.25f,0.20f,0.14f));
             if(j==J.Genderuwo)
-                return SafeMaterialFactory.CreatePBR("M_Mata_"+j,new Color(1f,0.4f,0.2f),0f,0.9f,tex,null,new Color(1.8f,0.32f,0.05f));
+                return SafeMaterialFactory.CreatePBR("M_Mata_"+j,new Color(1f,0.4f,0.2f),0f,0.9f,tex,null,new Color(1.9f,0.34f,0.05f));
+            if(j==J.Tuyul || j==J.Penyerupa)
+                return SafeMaterialFactory.CreatePBR("M_Mata_"+j,new Color(0.04f,0.04f,0.05f),0f,0.96f,tex);
+            if(j==J.HantuAir)
+                return SafeMaterialFactory.CreatePBR("M_Mata_"+j,new Color(0.75f,0.95f,0.92f),0f,0.92f,tex,null,new Color(0.28f,0.85f,0.78f));
             return SafeMaterialFactory.CreatePBR("M_Mata_"+j,Color.white,0f,0.88f,tex);
         }
 
@@ -333,10 +354,28 @@ namespace AlasKeramat.EditorTools
             string src="Assets/ThirdParty/Characters/System/clothes/"+suit+"/"+suit+"_diffuse.png";
             var source=BacaReadableKarakter(src);
             if(source==null)return AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kain.png");
+            var aoSrc=BacaReadableKarakter("Assets/ThirdParty/Characters/System/clothes/"+suit+"/"+suit+"_ao.png");
             int w=source.width,h=source.height;
             var px=new Color[w*h];
 
-            if(j==J.Ningsih)
+            if(j==J.Kuyang)
+            {
+                // Tekstur organ dalam basah berdarah (paru, jantung, trakea, usus mengilap!).
+                for(int y=0;y<h;y++)for(int x=0;x<w;x++)
+                {
+                    float u=(float)x/w,v=(float)y/h;
+                    float vein=Mathf.Pow(1f-Mathf.Abs(Mathf.PerlinNoise(u*26f,v*26f)-0.5f)*2f,4f);
+                    Color flesh=u<0.45f?new Color(0.45f,0.08f,0.08f):new Color(0.56f,0.14f,0.12f);
+                    Color c=Color.Lerp(flesh,new Color(0.18f,0.015f,0.02f),vein*0.7f+Mathf.PerlinNoise(u*14f,v*14f)*0.3f);
+                    c.a=1f;px[y*w+x]=c;
+                }
+                normalOut=AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/lumpur_n.png");
+                var tKu=new Texture2D(w,h,TextureFormat.RGBA32,true);tKu.SetPixels(px);tKu.Apply();
+                string pKu=FolderKarakter+"/Pakaian_"+j+".png";SimpanPng(tKu,pKu);AssetDatabase.ImportAsset(pKu);AturImpor(pKu,false,false,1024);
+                return AssetDatabase.LoadAssetAtPath<Texture2D>(pKu);
+            }
+
+            if(j==J.Ningsih || j==J.Penyerupa)
             {
                 var nSrc=BacaReadableKarakter("Assets/ThirdParty/Characters/System/clothes/"+suit+"/"+suit+"_normal.png");
                 var npix=new Color[w*h];
@@ -346,19 +385,23 @@ namespace AlasKeramat.EditorTools
                     bool skirt=u>=0.50f;
                     float ou=skirt?Mathf.Clamp01((u-0.52f)/0.47f):Mathf.Clamp01((u-0.01f)/0.47f);
                     Color orig=source.GetPixelBilinear(ou,v);float lum=orig.grayscale;
+                    float ao=aoSrc!=null?(0.42f+0.58f*aoSrc.GetPixelBilinear(ou,v).grayscale):1f;
                     float grain=0.93f+0.07f*Mathf.PerlinNoise(u*300f,v*300f);
                     if(!skirt)
                     {
-                        Color col=new Color(0.93f,0.90f,0.83f)*Mathf.Lerp(0.45f,1.12f,lum)*grain;
+                        Color kebaya=j==J.Penyerupa?new Color(0.68f,0.68f,0.64f):new Color(0.95f,0.92f,0.85f);
+                        Color col=kebaya*Mathf.Lerp(0.42f,1.10f,lum)*ao*grain;
                         col.a=1f;px[y*w+x]=col;
                     }
                     else
                     {
-                        // Batik Parang & Kawung Jawa di atas jarik coklat-sogan.
-                        float rx=Mathf.Repeat(ou*16f+v*12f,1f)-0.5f,ry=Mathf.Repeat(ou*16f-v*12f,1f)-0.5f;
-                        float kawung=Mathf.SmoothStep(0.18f,0.28f,Mathf.Abs(rx)+Mathf.Abs(ry));
-                        Color motif=Color.Lerp(new Color(0.76f,0.56f,0.26f),new Color(0.24f,0.12f,0.06f),kawung);
-                        Color col=motif*Mathf.Lerp(0.45f,1.15f,lum)*grain;
+                        // Batik Parang Rusak + Kawung Sogan Jawa klasik berdetail tinggi.
+                        float wave=Mathf.Sin((ou*18f+v*14f)*Mathf.PI*2f+Mathf.Sin(ou*36f)*0.8f)*0.5f+0.5f;
+                        float dot=Mathf.Clamp01(1f-Mathf.Abs(Mathf.Repeat(ou*22f-v*18f,1f)-0.5f)*4f);
+                        float pat=Mathf.Clamp01(wave*0.65f+dot*0.35f);
+                        Color motif=Color.Lerp(new Color(0.18f,0.09f,0.045f),new Color(0.74f,0.52f,0.22f),pat);
+                        Color col=motif*Mathf.Lerp(0.45f,1.15f,lum)*ao*grain;
+                        if(j==J.Penyerupa)col=Color.Lerp(col,new Color(0.2f,0.22f,0.24f),0.4f);
                         col.a=1f;px[y*w+x]=col;
                     }
                     npix[y*w+x]=nSrc!=null?nSrc.GetPixelBilinear(ou,v):new Color(0.5f,0.5f,1f,1f);
@@ -443,11 +486,14 @@ namespace AlasKeramat.EditorTools
                 }
                 float ou=remapped?Mathf.Clamp01(u/0.88f):u;
                 Color asli=source.GetPixelBilinear(ou,v);float lum=asli.grayscale;
+                float ao=aoSrc!=null?(0.42f+0.58f*aoSrc.GetPixelBilinear(ou,v).grayscale):1f;
                 float denim=Mathf.Clamp01((asli.b-asli.r)*6f);
-                Color dyed=tone*Mathf.Lerp(0.18f,1.22f,lum);
-                Color res=(j==J.Andi || j==J.Deden)?Color.Lerp(asli*0.92f,dyed,denim):dyed;
-                float grime=Mathf.Clamp01((Mathf.PerlinNoise(ou*14f+2f,v*14f+6f)-0.52f)*2.4f);
-                if(j>=J.Deden)res=Color.Lerp(res,new Color(0.20f,0.16f,0.11f),grime*0.35f);
+                Color dyed=tone*Mathf.Lerp(0.20f,1.20f,lum);
+                Color shirt=j==J.Deden?asli*new Color(0.82f,0.80f,0.75f):asli*0.92f;
+                Color res=(j==J.Andi || j==J.Deden)?Color.Lerp(shirt,dyed,denim):dyed;
+                res*=ao;
+                float grime=Mathf.Clamp01((Mathf.PerlinNoise(ou*14f+2f,v*14f+6f)-0.48f)*2.4f);
+                if(j>=J.Deden)res=Color.Lerp(res,new Color(0.18f,0.14f,0.09f),grime*0.38f);
                 res.a=1f;px[y*w+x]=res;
                 if(npix2!=null)npix2[y*w+x]=nBase!=null?nBase.GetPixelBilinear(ou,v):new Color(0.5f,0.5f,1f,1f);
             }

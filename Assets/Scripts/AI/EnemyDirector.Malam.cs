@@ -123,6 +123,19 @@ namespace AlasKeramat.AI
                 float x = PusatSawit.x + Mathf.Cos(s) * 60f, z = PusatSawit.z + Mathf.Sin(s) * 60f;
                 BuatHantu(2, new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z) + 1.4f, z));
             }
+            Biome bi = WorldTerrainGenerator.GetBiome(a.x, a.z);
+            if (prefabHantu != null && prefabHantu.Length > 6)
+            {
+                Vector3 p;
+                if ((bi == Biome.Desa || BiomaHutan(bi)) && HitungHantu(EnemyArchetype.Kuyang) < 1 && TitikTersembunyi(a, _andi.transform.forward, 55f, Random.Range(-50f, 50f), out p))
+                    BuatHantu(3, p + Vector3.up * 2.2f);
+                if (HitungHantu(EnemyArchetype.Tuyul) < 1 && !AlasKeramat.Building.FungsiBangunan.MenangkalTuyul(a) && TitikTersembunyi(a, _andi.transform.forward, 28f, Random.Range(-60f, 60f), out p))
+                    BuatHantu(4, p);
+                if ((bi == WorldTerrainGenerator.AlasWingit || bi == Biome.HutanCampuran) && HitungHantu(EnemyArchetype.GenderuwoHutan) < 1 && TitikTersembunyi(a, _andi.transform.forward, 65f, Random.Range(-45f, 45f), out p))
+                    BuatHantu(5, p);
+                if ((bi == Biome.TepiSungai || bi == Biome.Pantai) && HitungHantu(EnemyArchetype.HantuAir) < 1 && TitikTersembunyi(a, _andi.transform.forward, 42f, Random.Range(-45f, 45f), out p))
+                    BuatHantu(6, p);
+            }
         }
 
         HantuAI BuatHantu(int idx, Vector3 pos)
