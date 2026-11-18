@@ -617,8 +617,9 @@ def make(name,recipe):
             t=(v.y-bottom)/height
             if t<0.34:v.y+=0.08*math.sin(v.x*18.0)*height
         clothes=(garment,guv,gfaces,gweights,clothes[-1])
-        body_faces=[(g,f) for g,f in FACES if (g=='body' and not any((base[vi].y-bottom)/height>0.33 and (base[vi].y-bottom)/height<0.55 for vi,_ in f)) or g in ('helper-upper-teeth','helper-lower-teeth')]
+        body_faces=[(g,f) for g,f in FACES if (g=='body' and not any((base[vi].y-bottom)/height>0.29 and (base[vi].y-bottom)/height<0.57 for vi,_ in f)) or g in ('helper-upper-teeth','helper-lower-teeth')]
         shoes=([Vector((0,0.02,0)),Vector((0.01,0.02,0)),Vector((0,0.03,0))],[(0.5,0.5)]*3,[('',[(0,0),(1,1),(2,2)])],[{18:1.0},{18:1.0},{18:1.0}],set())
+        hair=([],[],[],[],set())
         shoes,hair=add_genderuwo_features(shoes,hair)
     elif role=='sekte':
         shoes=add_topeng(shoes,base,not recipe['female'])

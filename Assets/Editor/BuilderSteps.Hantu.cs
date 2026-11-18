@@ -22,20 +22,22 @@ namespace AlasKeramat.EditorTools
         static void LangkahHantu()
         {
             EnsureFolder(FolderPrefabMusuh);
-            var hantu = new GameObject[8];
+            var hantu = new GameObject[3];
             hantu[0] = PrefabHantuManusia(EnemyArchetype.PocongHutan, J.Pocong, ProceduralAnimator.Mode.Pocong);
             hantu[1] = PrefabHantuManusia(EnemyArchetype.Kuntilanak, J.Kuntilanak, ProceduralAnimator.Mode.Melayang);
             hantu[2] = PrefabBanaspati();
-            hantu[3] = PrefabHantuManusia(EnemyArchetype.Kuyang, J.Kuyang, ProceduralAnimator.Mode.Melayang);
-            hantu[4] = PrefabHantuManusia(EnemyArchetype.Tuyul, J.Tuyul, ProceduralAnimator.Mode.Normal);
-            hantu[5] = PrefabHantuManusia(EnemyArchetype.GenderuwoHutan, J.Genderuwo, ProceduralAnimator.Mode.Normal);
-            hantu[6] = PrefabHantuManusia(EnemyArchetype.HantuAir, J.HantuAir, ProceduralAnimator.Mode.Normal);
-            hantu[7] = PrefabHantuManusia(EnemyArchetype.Penyerupa, J.Penyerupa, ProceduralAnimator.Mode.Normal);
+            var hantuTambahan = new GameObject[5];
+            hantuTambahan[0] = PrefabHantuManusia(EnemyArchetype.Kuyang, J.Kuyang, ProceduralAnimator.Mode.Melayang);
+            hantuTambahan[1] = PrefabHantuManusia(EnemyArchetype.Tuyul, J.Tuyul, ProceduralAnimator.Mode.Normal);
+            hantuTambahan[2] = PrefabHantuManusia(EnemyArchetype.GenderuwoHutan, J.Genderuwo, ProceduralAnimator.Mode.Normal);
+            hantuTambahan[3] = PrefabHantuManusia(EnemyArchetype.HantuAir, J.HantuAir, ProceduralAnimator.Mode.Normal);
+            hantuTambahan[4] = PrefabHantuManusia(EnemyArchetype.Penyerupa, J.Penyerupa, ProceduralAnimator.Mode.Normal);
             var jarahan = PrefabJarahan();
             var bambu = PrefabBambu();
             var dir = Object.FindFirstObjectByType<EnemyDirector>();
             if (dir == null) { Debug.LogError("[AK][Builder] EnemyDirector belum ada (langkah 7n), hantu dilewati"); return; }
             dir.PasangMalam(hantu, jarahan, bambu);
+            dir.PasangMalamTambahan(hantuTambahan);
             EditorUtility.SetDirty(dir);
             Anak(_sistem, "MusikTempur").AddComponent<MusikTempur>();
 
@@ -68,10 +70,11 @@ namespace AlasKeramat.EditorTools
                 new Vector4(1.3f, 0f, 2.4f, 186f),
                 new Vector4(-1.8f, 1.55f, -0.5f, 175f),
             };
-            for (int i = 0; i < 6; i++)
+            var dioramaPrefabs = new[] { hantu[0], hantu[1], hantuTambahan[0], hantuTambahan[1], hantuTambahan[2], hantu[2] };
+            for (int i = 0; i < dioramaPrefabs.Length; i++)
             {
-                if (hantu[i] == null) continue;
-                var g = (GameObject)PrefabUtility.InstantiatePrefab(hantu[i]);
+                if (dioramaPrefabs[i] == null) continue;
+                var g = (GameObject)PrefabUtility.InstantiatePrefab(dioramaPrefabs[i]);
                 g.transform.SetParent(dio.transform, false);
                 float x = PosDioramaHantu.x + formasi[i].x, z = PosDioramaHantu.z + formasi[i].z;
                 g.transform.position = new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z) + formasi[i].y, z);
