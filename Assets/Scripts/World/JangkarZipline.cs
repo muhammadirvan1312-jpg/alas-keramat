@@ -18,6 +18,8 @@ namespace AlasKeramat.World
         { pasangan=ujung;tali=garis;berangkat=asal;tiba=akhir;kunci=id; }
         public string CaptureJson() { return Terpasang?"1":"0"; }
         public void RestoreJson(string json) { Terpasang=json=="1"; if(tali!=null)tali.enabled=Terpasang; }
+        public bool BisaBidik(GameObject actor)
+        { return !Terpasang && pasangan!=null && actor!=null && Vector3.Distance(actor.transform.position,pasangan.berangkat)<3f; }
         public bool CanInteract(GameObject actor) { return pasangan!=null && actor!=null; }
         public string GetPromptText(GameObject actor) { return Terpasang?"MELUNCUR":"TEMBAK TALI"; }
         public void Interact(GameObject actor)

@@ -22,9 +22,10 @@ namespace AlasKeramat.EditorTools
             Vector3 ug1=new Vector3(-600f,-80f,-600f),ug2=new Vector3(0f,-80f,-600f),ug3=new Vector3(600f,-80f,-600f);
             Vector3 s1=PermukaanGua(264f,-276f),s2=PermukaanGua(-560f,290f),s3=PermukaanGua(0f,684f);
             BuatGerbang(root,"PintuUG1",s1,JenisGerbangGua.Masuk,ug1+new Vector3(-120f,0.2f,0f),null);
-            BuatGerbang(root,"PalkaUG2",s2,JenisGerbangGua.Gali,ug2+new Vector3(0f,0.2f,-110f),null);
+            var palka=BuatGerbang(root,"PalkaUG2",s2,JenisGerbangGua.Gali,ug2+new Vector3(0f,0.2f,-110f),null);
             // Dua pancang X menandai tanah gembur.
             var tanah=KotakGua(root,"TanahGembur",s2-Vector3.up*0.15f,new Vector3(4f,0.25f,4f),AmbilMat("M_Batu"));
+            palka.Pasang(JenisGerbangGua.Gali,ug2+new Vector3(0f,0.2f,-110f),"gua_PalkaUG2",tanah);
             for(int i=0;i<2;i++) { var p=KotakGua(root,"PancangX",s2+new Vector3(i==0?-1f:1f,0.8f,0f),new Vector3(0.13f,2f,0.13f),AmbilMat("M_Kayu"));p.transform.rotation=Quaternion.Euler(0f,0f,i==0?35f:-35f); }
             BuatGerbang(root,"PintuUG3",s3,JenisGerbangGua.Masuk,ug3+new Vector3(0f,0.2f,-140f),null);
             BuatGerbang(root,"KeluarUG1",ug1+new Vector3(-124f,0.2f,0f),JenisGerbangGua.Keluar,s1+Vector3.right*3f,null);

@@ -20,14 +20,18 @@ namespace AlasKeramat.World
         public string SaveKey { get { return kunci; } }
         public float HoldDuration { get { return jenis==JenisGerbangGua.Gali && !Terbuka ? 0.6f : 0f; } }
         [System.Serializable] class KeadaanGerbangT10 { public int pukulan; public bool terbuka; }
-        public void Pasang(JenisGerbangGua j,Vector3 p,string id,GameObject blok=null,bool positif=false) { jenis=j;tujuan=p;kunci=id;penghalang=blok;sisiPositif=positif; }
+        public void Pasang(JenisGerbangGua j,Vector3 p,string id,GameObject blok=null,bool positif=false) { jenis=j;tujuan=p;kunci=id;penghalang=blok;sisiPositif=positif; Terapkan(); }
         public string CaptureJson() { return JsonUtility.ToJson(new KeadaanGerbangT10 { pukulan=Pukulan,terbuka=Terbuka }); }
         public void RestoreJson(string json)
         {
             var d=JsonUtility.FromJson<KeadaanGerbangT10>(json); if(d==null)return;
             Pukulan=Mathf.Clamp(d.pukulan,0,PukulanBunker); Terbuka=d.terbuka; Terapkan();
         }
-        void Terapkan() { if(penghalang!=null)penghalang.SetActive(!Terbuka); }
+        void Terapkan()
+        {
+            if(penghalang!=null)penghalang.SetActive(!Terbuka);
+            if(jenis==JenisGerbangGua.Gali) { var r=GetComponent<Renderer>(); if(r!=null)r.enabled=Terbuka; }
+        }
         public string GetPromptText(GameObject actor)
         {
             switch(jenis)

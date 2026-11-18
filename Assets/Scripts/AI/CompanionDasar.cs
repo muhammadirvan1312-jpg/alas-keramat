@@ -77,7 +77,7 @@ namespace AlasKeramat.AI
         // Dipanggil subclass tiap frame saat mengikuti / dari mana pun.
         protected void CekTeleport(float dt)
         {
-            if (_andi == null) return;
+            if (_andi == null || (_andi.transform.position.y < -40f) != (transform.position.y < -40f)) return;
             float d = Datar(_andi.transform.position - transform.position).magnitude;
             if (d <= JarakTeleport || TerlihatKamera()) { _tTakTerlihat = 0f; return; }
             _tTakTerlihat += dt;
@@ -111,6 +111,7 @@ namespace AlasKeramat.AI
 
         protected void Menuju(Vector3 tujuan, float laju, float dt)
         {
+            if ((tujuan.y < -40f) != (transform.position.y < -40f)) { Diam(dt); return; }
             float d = Datar(tujuan - transform.position).magnitude;
             if (d < JarakLangsung || _pf == null || _pf.Grid == null) { Gerak(tujuan, laju, dt); return; }
             _tJalur -= dt;

@@ -54,7 +54,7 @@ namespace AlasKeramat.EditorTools
             bTangan.gameObject.AddComponent<TanganTahan>();
             var prompt = BuatTeks(bTangan.gameObject, "Prompt", "", font, 26, new Vector2(0.5f, 1f), new Vector2(0f, 26f), new Vector2(520f, 40f));
             prompt.color = ProcTex.Hex("#F2C14E");
-            var bObor = Tombol(kontrol.gameObject, "TombolObor", "OBOR", lingkaran, font, 120f, new Vector2(-500f, 160f), ProcTex.Hex("#C0612B"));
+            var bObor = Tombol(kontrol.gameObject, "TombolObor", "CAHAYA", lingkaran, font, 120f, new Vector2(-500f, 160f), ProcTex.Hex("#C0612B"));
             UnityEventTools.AddPersistentListener(bObor.onClick, tc.TekanObor);
             tc.PasangTangan(bTangan.GetComponent<Image>(), prompt, bObor.gameObject);
             EditorUtility.SetDirty(tc);

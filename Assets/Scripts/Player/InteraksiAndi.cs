@@ -48,6 +48,11 @@ namespace AlasKeramat.Player
                 var t = hit.collider.GetComponentInParent<IInteractable>();
                 if (t != null && t.CanInteract(gameObject)) _target = t;
             }
+            if (_target == null && Physics.Raycast(cam.position,cam.forward,out hit,AlasKeramat.World.JangkarZipline.JarakMaks,_mask | (1<<GameLayers.Ground),QueryTriggerInteraction.Ignore))
+            {
+                var jangkar=hit.collider.GetComponent<AlasKeramat.World.JangkarZipline>();
+                if(jangkar!=null && jangkar.BisaBidik(gameObject))_target=jangkar;
+            }
             if (_target == null) _air = CariAir(cam.position, cam.forward);
             string p = _target != null ? _target.GetPromptText(gameObject) : (_air ? TeksMinum : "");
             if (_pembangun == null) _pembangun = GameServices.Get<Building.ShoulderLogAndFreeformBuilder>();

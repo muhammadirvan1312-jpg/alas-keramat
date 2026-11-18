@@ -78,11 +78,11 @@ namespace AlasKeramat.Core
             k.sanity = _vital.Sanity;
             k.tidur = _vital.Tidur;
             k.kemarahan = _dir != null ? _dir.Kemarahan : 10f;
-            k.bawaCahaya = _kiri != null && _kiri.OborMenyala;
+            k.bawaCahaya = _kiri != null && (_kiri.OborMenyala || _kiri.SenterMenyala);
             ApiUnggun apiDekat = null; float dApi = 999f;
             foreach (var api in ApiUnggun.Semua) { if (api == null) continue; float d = Vector3.Distance(api.transform.position, a); if (d < dApi) { dApi = d; apiDekat = api; } }
             bool apiMenyala = apiDekat != null && apiDekat.Menyala && dApi <= JarakGelap;
-            k.gelap = k.malam && !k.bawaCahaya && !apiMenyala;
+            k.gelap = (k.malam || k.bawahTanah) && !k.bawaCahaya && !apiMenyala;
             k.jarakDariKemah = dApi;
             var deden = GameServices.Get<KangDedenKelvinAI>(); var ningsih = GameServices.Get<NingsihVirginiaAI>();
             bool temanDekat = (deden != null && deden.Bergabung && !deden.Gugur && Vector3.Distance(deden.transform.position, a) <= 10f)

@@ -10,13 +10,14 @@ namespace AlasKeramat.Player
         public bool Duduk { get; private set; }
         Transform _rakitRoot;
         public string SaveKey { get { return "posisi_andi"; } }
-        [System.Serializable] class PosisiAndiT6 { public Vector3 posisi; public float yaw, pitch; }
-        public string CaptureJson() { return JsonUtility.ToJson(new PosisiAndiT6 { posisi=transform.position, yaw=_yaw, pitch=_pitch }); }
+        [System.Serializable] class PosisiAndiT6 { public Vector3 posisi; public float yaw, pitch; public bool zipline; public Vector3 ujungTali; }
+        public string CaptureJson() { return JsonUtility.ToJson(new PosisiAndiT6 { posisi=transform.position, yaw=_yaw, pitch=_pitch, zipline=SedangZipline, ujungTali=_ujungTali }); }
         public void RestoreJson(string json)
         {
             var d=JsonUtility.FromJson<PosisiAndiT6>(json); if(d==null)return;
             LepasZipline(); GerakDikunci=false; TurunRakit(); Duduk=false; Teleport(d.posisi); _yaw=d.yaw; _pitch=d.pitch;
             transform.rotation=Quaternion.Euler(0f,_yaw,0f);
+            if(d.zipline)MulaiZipline(d.posisi,d.ujungTali);
         }
         public void Teleport(Vector3 posisi)
         {

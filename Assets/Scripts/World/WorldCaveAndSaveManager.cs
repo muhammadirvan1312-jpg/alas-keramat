@@ -77,15 +77,20 @@ namespace AlasKeramat.World
             if(_andi==null)_andi=GameServices.Get<AndiFPSController>();
             if(_andi==null)return;
             Sinkron(_andi);
+            TerapkanLampu(_andi.transform.position);
+        }
+        public void TerapkanLampu(Vector3 posisi)
+        {
+            var kompleks=KompleksPada(posisi);
             // Empat lampu terdekat; tanpa sorting/alokasi per frame.
             for(int k=0;k<4;k++)_dekat[k]=-1;
             for(int i=0;i<lampu.Length;i++)
             {
                 if(lampu[i]==null)continue;
                 lampu[i].enabled=false;
-                if(Aktif==UndergroundId.None || KompleksPada(lampu[i].transform.position)!=Aktif)continue;
-                float d=(lampu[i].transform.position-_andi.transform.position).sqrMagnitude;
-                for(int k=0;k<4;k++)if(_dekat[k]<0 || d<(lampu[_dekat[k]].transform.position-_andi.transform.position).sqrMagnitude)
+                if(kompleks==UndergroundId.None || KompleksPada(lampu[i].transform.position)!=kompleks)continue;
+                float d=(lampu[i].transform.position-posisi).sqrMagnitude;
+                for(int k=0;k<4;k++)if(_dekat[k]<0 || d<(lampu[_dekat[k]].transform.position-posisi).sqrMagnitude)
                 { for(int j=3;j>k;j--)_dekat[j]=_dekat[j-1]; _dekat[k]=i; break; }
             }
             for(int k=0;k<4;k++)if(_dekat[k]>=0)lampu[_dekat[k]].enabled=true;
