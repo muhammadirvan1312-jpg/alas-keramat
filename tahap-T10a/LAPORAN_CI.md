@@ -1,12 +1,14 @@
 # LAPORAN CI
-- Commit: 7364b7e11d2d9337858dc2883e972696dffc9a43
-- Hasil langkah Unity: cancelled
-- Waktu: 2026-11-18T00:30:05Z
+- Commit: a0884b7c74557d73d9910bfd723543fc03ec3e6c
+- Hasil langkah Unity: failure
+- Waktu: 2026-11-18T00:45:57Z
 
 [LULUS] pengaturan pemain
 [LULUS] builder
-[LULUS] self-test
+[GAGAL] self-test: RunAll melaporkan gagal
 [LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
 [LULUS] build APK
 
 ## Baris error yang ditemukan
+[Error] [AK][GAGAL] self-test: [GAGAL] T10a: maksimal empat lampu interior aktif
+[Error] [AK][GAGAL] self-test: System.Exception: RunAll melaporkan gagal

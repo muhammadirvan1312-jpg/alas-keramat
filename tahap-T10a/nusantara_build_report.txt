@@ -1,0 +1,68 @@
+Laporan Builder Alas Keramat - 2026-11-18 00:41:38
+[LULUS] 0. Bersihkan Assets/Generated
+  - Tag 15 & layer 6-18 terdaftar
+  - Player Settings: Linear, landscape, com.alaskeramat.game
+  - Aset URP dipasang di 6 level Quality
+[LULUS] 1. Proyek
+  - 14 tekstur
+  - 20 ikon
+  - 6 material
+  - 52 klip WAV
+[LULUS] 2. Aset
+  - Scene, matahari, bulan, langit prosedural
+[LULUS] 3. Scene & langit
+  - Terrain 16 tile @1025, laut, 2 sungai
+[LULUS] 3b. Dunia 2x2 km
+  - Vegetasi: 15453 pohon, 22115 semak/pakis, 2287 sel instancing
+[LULUS] 3c. Vegetasi
+  - Landmark: 38 objek (Beringin Agung, heli, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula, 2 mulut gua, altar)
+[LULUS] 3d. Landmark
+  - Ambien: 23 klip, 1112 emitter titik
+[LULUS] 3e. Ambien hidup
+  - Pasca-proses: ACES, color grading, bloom, vignette, split-tone + dinamis jam/cuaca
+[LULUS] 3f. Pasca-proses
+  - Sistem: Bootstrap, Diagnostik, Jam, Atmosfer, Synth (29 klip)
+[LULUS] 6. Sistem
+  - UI: judul, label zona & jam tur pratinjau, EventSystem
+[LULUS] 7. UI
+  - Andi di (-4.00, 10.70, -424.00), kontrol sentuh (joystick, geser, LOMPAT, JONGKOK), baris info HUD
+[LULUS] 7b. Andi & kontrol sentuh
+  - Interaksi: inventaris, 3 koper, 3 puing, tombol TANGAN & OBOR, toast, radar GPS
+[LULUS] 7c. Interaksi, koper, radar
+  - Vital Andi + 5 bar HUD + suhu/basah
+[LULUS] 7e. Vital Andi & bar HUD
+  - Foley Andi, subtitle + monolog pembuka, sabuk cepat 4 slot
+[LULUS] 7f. Foley, subtitle, sabuk cepat
+  - Karakter: Andi (2 renderer), Deden di heli, Ningsih di Sarang, galeri 12 humanoid
+[LULUS] 7g. Karakter & animasi
+  - Tebang: pool pohon interaktif, melee golok/kapak, model senjata FP, tombol TEBAS
+[LULUS] 7h. Tebang & melee
+  - Hewan: 5 template (rusa, kancil, babi hutan, ayam hutan, biawak); titik pungut pool 40
+[LULUS] 7i. Hewan & titik pungut
+  - Tikar Pandan 3D: panggung, kamera, layar rakit/makan/zirah, tombol TAS, kotak zirah
+[LULUS] 7j. Tikar Pandan & zirah
+  - Bangun bebas: pemanggul kayu, hantu, tombol LEMPAR & MODE
+[LULUS] 7k. Panggul & bangun bebas
+  - Buku Panduan 26 blueprint, penempatan cetak biru, SaveSystem
+[LULUS] 7l. Buku Panduan & simpan
+  - T6c: dunia tersimpan, 26 blueprint, rakit, bongkar dan misi M01-M04
+[LULUS] 7m. Dunia, bangunan & misi
+  - Musuh: SurfaceGrid 500x500 (lewat 178177/188416 darat), prefab Sekte x5, EnemyDirector, TANGKIS
+[LULUS] 7n. Musuh, jalur & tempur
+  - Hantu: prefab Pocong/Kuntilanak/Banaspati, jarahan, bambu lempar, 6 Totem Topeng, MusikTempur
+[LULUS] 7o. Hantu, raid & totem
+  - Gore: 4 percikan, genangan, atlas luka 8, tutup potongan, partikel darah, GoreSystem, peringatan 18+
+[LULUS] 7p. Gore, luka & peringatan 18+
+  - Senjata jarak: 5 proyektil, 10 model FP, tombol GANTI, cincin suara, 3 titik lumpur
+[LULUS] 7q. Senjata jarak, elak, stealth
+  - Companion: Kang Deden (15 perintah) & Ningsih (Trust 3 tahap), Buku Catatan & menu Ningsih
+[LULUS] 7r. Companion Kang Deden & Ningsih
+  - Teror: TerrorDirector (25 kejadian), WorldEventScheduler, 20 catatan Deden
+[LULUS] 7s. Sutradara Teror & dunia hidup
+  - T10a: UG1-UG3, gerbang alat, air gua, reverb, zipline, 23 lampu (maks 4 aktif)
+[LULUS] 7t. Gua & Bunker
+[LULUS] 7d. Pasca-proses kamera
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2175
+[LULUS] 9. Simpan scene
+Durasi: 144.0 detik
+HASIL: SEMUA LANGKAH LULUS
