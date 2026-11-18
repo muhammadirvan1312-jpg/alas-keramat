@@ -54,8 +54,8 @@ namespace AlasKeramat.EditorTools
             }
             if(j==J.Deden)
             {
-                DetailReal(head,"IketDeden",new Vector3(0f,0.14f,-0.005f),new Vector3(0.19f,0.012f,0.18f),"#514A3C",PrimitiveType.Cylinder);
-                for(int i=0;i<2;i++)DetailReal(head,"PerbanTelinga",new Vector3(i==0?-0.078f:0.078f,0.06f,0f),new Vector3(0.025f,0.07f,0.045f),"#C9C0A9",PrimitiveType.Sphere);
+                DetailReal(head,"IketDeden",new Vector3(0f,0.128f,-0.005f),new Vector3(0.172f,0.01f,0.176f),"#514A3C",PrimitiveType.Cylinder);
+                DetailReal(head,"PerbanTelinga",new Vector3(0.077f,0.055f,-0.006f),new Vector3(0.014f,0.026f,0.022f),"#C9C0A9",PrimitiveType.Sphere);
             }
             if(j==J.KiRogo)DetailReal(head,"Blangkon",new Vector3(0f,0.15f,-0.014f),new Vector3(0.18f,0.065f,0.18f),"#221C18",PrimitiveType.Sphere);
             if(j==J.Ningsih)

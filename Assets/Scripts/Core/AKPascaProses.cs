@@ -33,7 +33,7 @@ namespace AlasKeramat.Core
         }
 
         // x eksposur (EV), y saturasi, z suhu WB, w intensitas vignette.
-        public static Vector4 TargetGua { get { return new Vector4(0.95f,-6f,-2f,0.2f); } }
+        public static Vector4 TargetGua { get { return new Vector4(1.22f,-6f,-2f,0.2f); } }
         public static Vector4 Target(float jam, WeatherState cuaca)
         {
             Vector4 siang = new Vector4(0.28f, -2f, 3f, 0.16f);

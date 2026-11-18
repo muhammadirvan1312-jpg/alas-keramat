@@ -81,8 +81,8 @@ namespace AlasKeramat.EditorTools
         // ---------- UG3 Kuil Akar Beringin Hitam ----------
         static GameObject BangunUG3(GameObject induk)
         {
-            var akarMat = MatPolos("M_AkarHitam", "#1A1210");
-            _matUrat = MatEmisi("M_UratMerah", "#3A0806", new Color(0.9f, 0.08f, 0.04f) * 1.2f, false);
+            var akarMat = MatPolos("M_AkarHitam", "#2C1F1B");
+            _matUrat = MatEmisi("M_UratMerah", "#3A0806", new Color(0.9f, 0.08f, 0.04f) * 2.2f, false);
             var k = MulaiKompleks(induk, UndergroundId.UG3_KuilAkar, akarMat, AmbilMat("M_Batu"));
             var k0 = R("K0_CelahAkar", new Vector3(0f, 0f, -70f), new Vector3(6f, 5f, 6f), true);
             var k2 = R("K2_RuangSesaji", new Vector3(-18f, 0f, -15f), new Vector3(12f, 5f, 10f), true);
@@ -101,10 +101,10 @@ namespace AlasKeramat.EditorTools
             angin.transform.localPosition = new Vector3(0f, 0f, -42.5f);
             var za = angin.AddComponent<ZonaAngin>(); za.Pasang(new Vector3(4.5f, 5f, 15f)); EditorUtility.SetDirty(za);
             Color merah = new Color(1f, 0.25f, 0.12f);
-            Lampu(hias, "Lampu_K0", k0.pos + Vector3.up * 3f, merah, 9f, 0.8f);
-            Lampu(hias, "Lampu_K1", new Vector3(0f, 3f, -28f), merah, 9f, 0.8f);
-            Lampu(hias, "Lampu_K2", k2.pos + Vector3.up * 3f, new Color(1f, 0.85f, 0.4f), 9f, 0.9f);
-            Lampu(hias, "Lampu_K4", k4.pos + Vector3.up * 2.5f, new Color(1f, 0.8f, 0.3f), 8f, 1.2f);
+            Lampu(hias, "Lampu_K0", k0.pos + Vector3.up * 3f, merah, 13f, 1.8f);
+            Lampu(hias, "Lampu_K1", new Vector3(0f, 3f, -28f), merah, 13f, 1.8f);
+            Lampu(hias, "Lampu_K2", k2.pos + Vector3.up * 3f, new Color(1f, 0.85f, 0.4f), 13f, 2.0f);
+            Lampu(hias, "Lampu_K4", k4.pos + Vector3.up * 2.5f, new Color(1f, 0.8f, 0.3f), 12f, 2.2f);
             Wadah(k, "Wasiat_Lore6", "Wasiat Juru Kunci", k2.pos + new Vector3(0f, 0f, 2.5f), new Vector3(0.5f, 0.1f, 0.4f), MatPolos("M_KainKuning", "#C9A227"), new ItemID[0], new int[0], (int)LoreID.L06, false);
 
             // K4 di balik akar yang harus dibakar.

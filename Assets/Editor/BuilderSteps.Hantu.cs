@@ -87,8 +87,8 @@ namespace AlasKeramat.EditorTools
             var pendar = new GameObject("PendarHantu").AddComponent<Light>();
             pendar.transform.SetParent(go.transform, false);
             pendar.transform.localPosition = new Vector3(0f, d.tinggi * 0.78f, 0.18f);
-            pendar.type = LightType.Point; pendar.range = 4.2f;
-            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 0.65f : 0.45f;
+            pendar.type = LightType.Point; pendar.range = 6.5f;
+            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 1.35f : 1.05f;
             pendar.color = a == EnemyArchetype.Kuntilanak ? new Color(0.75f, 0.22f, 0.22f) : new Color(0.55f, 0.72f, 0.65f);
             pendar.shadows = LightShadows.None;
             var h = go.AddComponent<HantuAI>(); h.Pasang(a, pendar);

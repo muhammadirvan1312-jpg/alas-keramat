@@ -29,7 +29,7 @@ namespace AlasKeramat.EditorTools
                 float b = i * 45f * Mathf.Deg2Rad;
                 var dasar = Balok(arena, "Tungku_" + i, new Vector3(Mathf.Sin(b) * 17f, 0.6f, Mathf.Cos(b) * 17f), Quaternion.identity, new Vector3(1f, 1.2f, 1f), batu, true);
                 var api = Hias(dasar, PrimitiveType.Cube, "Api", new Vector3(0f, 0.65f, 0f), new Vector3(0.6f, 0.4f, 0.6f), apiMat, false);
-                var l = Lampu(dasar, "Cahaya", new Vector3(0f, 1.4f, 0f), new Color(1f, 0.3f, 0.12f), 12f, 2.6f);
+                var l = Lampu(dasar, "Cahaya", new Vector3(0f, 1.4f, 0f), new Color(1f, 0.38f, 0.14f), 22f, 4.2f);
                 tungku[i] = dasar.AddComponent<TungkuObor>();
                 if (i % 2 == 1) panggil[i / 2] = dasar.transform;
             }

@@ -295,7 +295,7 @@ namespace AlasKeramat.EditorTools
         // ---------- UG1 Gua Sungai Bioluminesensi ----------
         static GameObject BangunUG1(GameObject induk)
         {
-            _matLumut = MatEmisi("M_LumutGua", "#1E5A50", new Color(0.24f, 0.95f, 0.78f) * 1.6f, false);
+            _matLumut = MatEmisi("M_LumutGua", "#1E5A50", new Color(0.24f, 0.95f, 0.78f) * 2.4f, false);
             _matAir = MatEmisi("M_AirGua", "#0A1418B0", Color.black, true);
             var k = MulaiKompleks(induk, UndergroundId.UG1_GuaSungai, AmbilMat("M_Batu"), AmbilMat("M_Batu"));
             var r0 = R("R0_MulutDalam", new Vector3(-60f, 0f, 0f), new Vector3(10f, 6f, 8f), true);
@@ -327,20 +327,20 @@ namespace AlasKeramat.EditorTools
                 float a = (float)rng.NextDouble() * Mathf.PI * 2f, rr = (float)rng.NextDouble() * 7f;
                 Hias(hias, PrimitiveType.Capsule, "Stalaktit_" + i, r1.pos + new Vector3(Mathf.Cos(a) * rr, 7.5f + (float)rng.NextDouble() * 1.5f, Mathf.Sin(a) * rr * 0.8f), new Vector3(0.25f, 0.6f + (float)rng.NextDouble() * 0.9f, 0.25f), _matDinding, false);
             }
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 45; i++)
             {
-                var r = i < 14 ? r1 : i < 20 ? r0 : i < 25 ? r4 : r2;
+                var r = i < 24 ? r1 : i < 31 ? r0 : i < 38 ? r4 : r2;
                 float a = (float)rng.NextDouble() * Mathf.PI * 2f;
                 Vector3 tepi = ProcGua.Tepi(r.ukuran, true, a * Mathf.Rad2Deg, 0.9f);
-                Hias(hias, PrimitiveType.Cube, "Lumut_" + i, r.pos + tepi + Vector3.up * (0.1f + (float)rng.NextDouble() * 2f), new Vector3(0.9f, 0.08f + (float)rng.NextDouble() * 0.5f, 0.9f), _matLumut, false);
+                Hias(hias, PrimitiveType.Cube, "Lumut_" + i, r.pos + tepi + Vector3.up * (0.1f + (float)rng.NextDouble() * 2.2f), new Vector3(1.15f, 0.1f + (float)rng.NextDouble() * 0.6f, 1.15f), _matLumut, false);
             }
             Color cyan = ProcTex.Hex("#3CF2C8");
-            Lampu(hias, "Lampu_R0", r0.pos + Vector3.up * 3f, cyan, 10f, 1.2f);
-            Lampu(hias, "Lampu_R1a", r1.pos + new Vector3(-5f, 4f, 3f), cyan, 14f, 1.6f);
-            Lampu(hias, "Lampu_R1b", r1.pos + new Vector3(5f, 4f, -3f), cyan, 14f, 1.6f);
-            Lampu(hias, "Lampu_R2", r2.pos + Vector3.up * 3f, cyan, 10f, 1.2f);
-            Lampu(hias, "Lampu_R3", r3.pos + Vector3.up * 4f, cyan, 12f, 1.2f);
-            Lampu(hias, "Lampu_R4", r4.pos + Vector3.up * 5f, cyan, 14f, 1.6f);
+            Lampu(hias, "Lampu_R0", r0.pos + Vector3.up * 3f, cyan, 12f, 2.0f);
+            Lampu(hias, "Lampu_R1a", r1.pos + new Vector3(-5f, 4.5f, 3f), cyan, 18f, 2.6f);
+            Lampu(hias, "Lampu_R1b", r1.pos + new Vector3(5f, 4.5f, -3f), cyan, 18f, 2.6f);
+            Lampu(hias, "Lampu_R2", r2.pos + Vector3.up * 3f, cyan, 12f, 2.0f);
+            Lampu(hias, "Lampu_R3", r3.pos + Vector3.up * 4f, cyan, 14f, 2.2f);
+            Lampu(hias, "Lampu_R4", r4.pos + Vector3.up * 5f, cyan, 16f, 2.4f);
 
             // Isi ruang.
             var batu = AmbilMat("M_Batu"); var kayu = AmbilMat("M_Kayu"); var kain = AmbilMat("M_CatOranye");
