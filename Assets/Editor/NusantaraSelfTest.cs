@@ -32,7 +32,7 @@ namespace AlasKeramat.EditorTools
             bool semua = true;
             System.Action<string, bool> cek = (nama, ok) => { hasil.Add((ok ? "[LULUS] " : "[GAGAL] ") + nama); if (!ok) semua = false; };
 
-            NusantaraMasterBuilder.BuildAll();
+            if (!NusantaraMasterBuilder.LastBuildSucceeded || NusantaraMasterBuilder.HitungObjek() == 0) NusantaraMasterBuilder.BuildAll();
             cek("Builder pertama tanpa langkah gagal", NusantaraMasterBuilder.LastBuildSucceeded);
             int objek1 = NusantaraMasterBuilder.HitungObjek();
             NusantaraMasterBuilder.BuildAll();
@@ -339,6 +339,7 @@ namespace AlasKeramat.EditorTools
             PemeriksaanT9.Jalankan(cek);
             PemeriksaanT10.Jalankan(cek);
             PemeriksaanG3.Jalankan(cek);
+            PemeriksaanT11.Jalankan(cek);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)

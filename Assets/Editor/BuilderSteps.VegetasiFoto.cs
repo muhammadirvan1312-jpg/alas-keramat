@@ -15,7 +15,7 @@ namespace AlasKeramat.EditorTools
             Color avg=new Color(0.22f,0.34f,0.16f,0f);float wSum=0f;
             for(int y=0;y<size;y++)for(int x=0;x<size;x++)
             {
-                float u=(x+0.5f)/size,v=(y+0.5f)/size;var c=a.GetPixelBilinear(u,v);float al=mask.GetPixelBilinear(u,v).r;
+                float u=(x+0.5f)/size,v=(y+0.5f)/size;var c=a.GetPixelBilinear(u,v);c.r*=0.78f;c.g*=1.08f;c.b*=0.68f;float al=mask.GetPixelBilinear(u,v).r;
                 if(al>0.5f) { avg+=c*al;wSum+=al; }
                 c.a=al;p[y*size+x]=c;
             }
@@ -44,7 +44,7 @@ namespace AlasKeramat.EditorTools
                     cp.a=ap;px[y*size+x]=cp;continue;
                 }
                 if(cell==1) { float old=u;u=v;v=1f-old; }
-                Color c=foto.GetPixelBilinear(u,v);float alpha=mask.GetPixelBilinear(u,v).r;
+                Color c=foto.GetPixelBilinear(u,v);c.r*=0.78f;c.g*=1.08f;c.b*=0.68f;float alpha=mask.GetPixelBilinear(u,v).r;
                 if(cell==0)c=Color.Lerp(c,new Color(c.r*1.06f,c.g*1.04f,c.b*0.88f),0.35f);
                 else if(cell==1)c=Color.Lerp(c,new Color(c.r*0.88f,c.g*1.02f,c.b*0.86f),0.4f);
                 else if(cell==3)c=new Color(c.grayscale*0.28f,c.grayscale*0.21f,c.grayscale*0.14f);
@@ -62,7 +62,7 @@ namespace AlasKeramat.EditorTools
                 string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,1024);
                 norm=AssetDatabase.LoadAssetAtPath<Texture2D>(pn);
             }
-            return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_"+slot,Color.white,0f,0.32f,tex,norm,null,SurfaceMode.Cutout,0.38f),ShaderDaun,0.025f,0.45f));
+            return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_"+slot,Color.white,0f,0.14f,tex,norm,null,SurfaceMode.Cutout,0.38f),ShaderDaun,0.025f,0.45f));
         }
         static Mesh ScanMesh(string nama)
         {

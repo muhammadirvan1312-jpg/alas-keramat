@@ -135,16 +135,17 @@ Shader "AlasKeramat/Daun"
             s.albedo = c.rgb * (0.82h + 0.18h * ao);
             s.alpha = 1;
             s.metallic = 0;
-            s.smoothness = saturate(_Smoothness + 0.18h * saturate(d.normalWS.y));
+            s.smoothness = _Smoothness * 0.35h;
             s.occlusion = ao;
             s.normalTS = half3(0,0,1);
             half4 lit = UniversalFragmentPBR(d, s);
             Light sun = GetMainLight(d.shadowCoord, d.positionWS, half4(1,1,1,1));
             half back = saturate(dot(-d.normalWS, sun.direction) * 0.75h + 0.25h);
             half towardSun = pow(saturate(dot(-d.viewDirectionWS, sun.direction)), 3);
-            half rim = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3) * 0.22h;
-            lit.rgb += s.albedo * sun.color * ((_Translucency * back * (0.35h + 0.65h * towardSun) + rim)
-                * sun.distanceAttenuation * lerp(0.35h, 1.0h, sun.shadowAttenuation));
+            half rim = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3) * 0.12h * back;
+            half3 sssTint = s.albedo * half3(0.85h, 1.18h, 0.62h);
+            lit.rgb += sssTint * sun.color * ((_Translucency * back * (0.30h + 0.70h * towardSun) + rim)
+                * sun.distanceAttenuation * sun.shadowAttenuation);
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;
         }

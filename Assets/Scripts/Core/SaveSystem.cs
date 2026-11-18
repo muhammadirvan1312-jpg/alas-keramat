@@ -10,6 +10,7 @@ namespace AlasKeramat.Core
     public class SaveSystem : MonoBehaviour
     {
         public const string NamaBerkas = "alas_keramat_simpan.json";
+        public static int SlotAktif = 1;
         [Serializable] class Entri { public string kunci; public string json; }
         [Serializable] class Berkas { public int versi = 1; public string waktu; public List<Entri> data = new List<Entri>(); }
 
@@ -56,6 +57,57 @@ namespace AlasKeramat.Core
 
         static int Urutan(string kunci) { return kunci == "dunia" ? 0 : kunci == "posisi_andi" ? 2 : 1; }
 
+        public static string PathSlot(int slot)
+        {
+            int s = Mathf.Clamp(slot, 1, 3);
+            return System.IO.Path.Combine(Application.persistentDataPath, "alas_keramat_slot" + s + ".json");
+        }
+        public static bool AdaSlot(int slot) { return File.Exists(PathSlot(slot)); }
+        public static void HapusSlot(int slot)
+        {
+            string ps = PathSlot(slot);
+            if (File.Exists(ps)) File.Delete(ps);
+        }
+        public static string RingkasanSlot(int slot)
+        {
+            string ps = PathSlot(slot);
+            if (!File.Exists(ps)) return "Kosong";
+            try
+            {
+                var info = new FileInfo(ps);
+                return "Tersimpan (" + info.LastWriteTime.ToString("yyyy-MM-dd HH:mm") + ")";
+            }
+            catch { return "Tersimpan"; }
+        }
+        public void SimpanSlot(int slot)
+        {
+            SlotAktif = Mathf.Clamp(slot, 1, 3);
+            try
+            {
+                string isi = KeJson(Kumpulkan());
+                string ps = PathSlot(SlotAktif);
+                File.WriteAllText(ps + ".tmp", isi);
+                if (File.Exists(ps)) File.Copy(ps, ps + ".bak", true);
+                File.Copy(ps + ".tmp", ps, true); File.Delete(ps + ".tmp");
+                File.WriteAllText(Path, isi);
+                GameEvents.RaiseToast("Permainan tersimpan di Slot " + SlotAktif);
+            }
+            catch (Exception e) { Debug.LogError("[AK][SaveSystem] SimpanSlot gagal: " + e.Message); }
+        }
+        public bool MuatSlot(int slot)
+        {
+            SlotAktif = Mathf.Clamp(slot, 1, 3);
+            try
+            {
+                string ps = PathSlot(SlotAktif);
+                if (!File.Exists(ps)) ps = Path;
+                if (!File.Exists(ps)) return false;
+                DariJson(File.ReadAllText(ps), Kumpulkan());
+                GameEvents.RaiseToast("Slot " + SlotAktif + " dimuat");
+                return true;
+            }
+            catch (Exception e) { Debug.LogError("[AK][SaveSystem] MuatSlot gagal: " + e.Message); return false; }
+        }
         public void Simpan()
         {
             try { string isi = KeJson(Kumpulkan());

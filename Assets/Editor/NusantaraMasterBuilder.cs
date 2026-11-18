@@ -89,6 +89,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7u. Ritual Beringin, siege & lore", 0.968f, LangkahBossAltar);
                 Langkah("7v. Heli SAR, ending & statistik", 0.969f, LangkahEnding);
                 Langkah("7w. G3 visual realistis", 0.979f, LangkahG3);
+                Langkah("7x. Menu, pengaturan & debug T11", 0.985f, LangkahT11);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

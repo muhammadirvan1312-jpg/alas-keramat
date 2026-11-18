@@ -149,9 +149,10 @@ namespace AlasKeramat.Player
             // Haus, istirahat, gizi
             float pHaus = (k.sprint ? 1.2f : 1f) * (kemarau && k.jam >= 10f && k.jam < 15f ? 1.4f : 1f) * (Tidur ? PengaliTidur : 1f) * (SuhuTubuh > SuhuKepanasan ? 1.8f : 1f);
             if (k.cuaca == WeatherState.KabutAsap) pHaus *= 1.2f;
-            Hydration = Mathf.Max(0f, Hydration - LajuHaus * pHaus * dt);
-            Rest = Tidur ? Mathf.Min(Maks, Rest + 1.5f * dt) : Mathf.Max(0f, Rest - LajuIstirahat * dt);
-            TickGizi(k.sprint, dt);
+            float pKesulitan = AI.EnemyDirector.Kesulitan == Difficulty.Damai ? 0.7f : AI.EnemyDirector.Kesulitan == Difficulty.Sulit ? 1.25f : 1f;
+            Hydration = Mathf.Max(0f, Hydration - LajuHaus * pHaus * pKesulitan * dt);
+            Rest = Tidur ? Mathf.Min(Maks, Rest + 1.5f * dt) : Mathf.Max(0f, Rest - LajuIstirahat * pKesulitan * dt);
+            TickGizi(k.sprint, dt * pKesulitan);
             TickSuhu(k, dt);
             TickPenyakit(dt);
 
@@ -207,6 +208,8 @@ namespace AlasKeramat.Player
         public void TakeDamage(DamageInfo info)
         {
             if (!IsAlive || info.amount <= 0f) return;
+            float pDmg = AI.EnemyDirector.Kesulitan == Difficulty.Damai ? 0.5f : AI.EnemyDirector.Kesulitan == Difficulty.Sulit ? 1.4f : 1f;
+            info.amount *= pDmg;
             float sisa = Serap(info);
             Health = Mathf.Max(0f, Health - sisa);
             _sejakDamage = 0f;

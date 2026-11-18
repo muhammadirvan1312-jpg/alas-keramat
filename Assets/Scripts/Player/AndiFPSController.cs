@@ -25,7 +25,10 @@ namespace AlasKeramat.Player
         public Vector2 InputLihatPx;    // piksel layar yang diakumulasi sejak frame lalu
         public bool MintaLari;
         public bool LariDiblokir;
-        public float PengaliKecepatan = 1f; // diset pemanggul kayu (07 §4)   // diset AndiVitalsAndSanity saat stamina habis
+        public float PengaliKecepatan = 1f;
+        public float PengaliSensitivitas = 1f;
+        public bool BalikY;
+        public bool PakaiHeadBob = true; // diset pemanggul kayu (07 §4)   // diset AndiVitalsAndSanity saat stamina habis
         public event System.Action OnLompat;
         public bool Jongkok { get; private set; }
         public bool Berenang { get; private set; }
@@ -80,16 +83,17 @@ namespace AlasKeramat.Player
         void LateUpdate()
         {
             if (kamera == null) return;
-            _yaw += InputLihatPx.x * SensH;
-            _pitch = Mathf.Clamp(_pitch - InputLihatPx.y * SensV, -PitchMaks, PitchMaks);
+            _yaw += InputLihatPx.x * SensH * PengaliSensitivitas;
+            _pitch = Mathf.Clamp(_pitch - InputLihatPx.y * SensV * PengaliSensitivitas * (BalikY ? -1f : 1f), -PitchMaks, PitchMaks);
             InputLihatPx = Vector2.zero;
             transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
             float targetMata = Jongkok ? MataJongkok : MataBerdiri;
             _mata = Mathf.Lerp(_mata, targetMata, Time.deltaTime * LerpTinggi);
             float laju = DiTanah && !Berenang ? KecepatanDatar / JalanMaks : 0f;
             _faseBob += Time.deltaTime * FrekBob * Mathf.PI * 2f * Mathf.Max(0.0001f, laju);
-            float bobV = Mathf.Sin(_faseBob * 2f) * BobV * Mathf.Clamp01(laju);
-            float bobL = Mathf.Sin(_faseBob) * BobL * Mathf.Clamp01(laju);
+            float fBob = PakaiHeadBob ? 1f : 0f;
+            float bobV = Mathf.Sin(_faseBob * 2f) * BobV * Mathf.Clamp01(laju) * fBob;
+            float bobL = Mathf.Sin(_faseBob) * BobL * Mathf.Clamp01(laju) * fBob;
             kamera.localPosition = new Vector3(bobL, _mata + bobV, 0f);
             kamera.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
         }
