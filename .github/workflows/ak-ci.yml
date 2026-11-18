@@ -67,14 +67,16 @@ jobs:
           python Tools/ambil_aset.py --semua --keluar Assets/ThirdParty
 
       - name: Panggang visual G3 (MakeHuman CC0 dan LOD pohon)
+        id: visual
         if: steps.cekproyek.outputs.ada == '1'
         shell: bash
         run: |
           if ! python Tools/visual/siapkan.py --cek; then
             sudo apt-get update -qq
-            sudo apt-get install --no-install-recommends -y blender > /tmp/ak-blender-install.log
+            sudo apt-get install --no-install-recommends -y blender python3-numpy > /tmp/ak-blender-install.log
           fi
-          python Tools/visual/siapkan.py
+          mkdir -p Logs/ci
+          python Tools/visual/siapkan.py 2>&1 | tee Logs/ci/visual.log
 
       # Cache Library dipulihkan dari run terbaru & DISIMPAN ULANG setiap run (termasuk saat gagal),
       # supaya shader & impor aset tidak dikompilasi ulang dari nol (build APK pertama ±16 menit untuk shader).
@@ -127,13 +129,15 @@ jobs:
           LAP=Logs/ci/LAPORAN_CI.md
           {
             echo "# LAPORAN CI"
-            echo "- Commit: ${GITHUB_SHA}"
+            echo "- Commit: $(git rev-parse HEAD)"
+            echo "- Hasil aset visual: ${{ steps.visual.outcome }}"
             echo "- Hasil langkah Unity: ${{ steps.build.outcome }}"
             echo "- Waktu: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             echo
             if [ -f Logs/ci/ringkasan.md ]; then cat Logs/ci/ringkasan.md; else echo "Ringkasan dari NusantaraCI tidak ada (kemungkinan error kompilasi sebelum kode berjalan)."; fi
             echo
             echo "## Baris error yang ditemukan"
+            if [ "${{ steps.visual.outcome }}" != "success" ] && [ -f Logs/ci/visual.log ]; then tail -n 35 Logs/ci/visual.log; fi
             grep -h -E "error CS[0-9]+|Exception|\[AK\]\[GAGAL\]|Scripts have compiler errors" Logs/ci/*.log 2>/dev/null | head -n 80 || true
           } > "$LAP"
           cat "$LAP"
@@ -143,7 +147,7 @@ jobs:
         shell: bash
         run: |
           sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true
-          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/ci/LAPORAN_CI.md Logs/ci/ringkasan.md Logs/nusantara_selftest.txt Logs/nusantara_build_report.txt
+          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/ci/LAPORAN_CI.md Logs/ci/ringkasan.md Logs/nusantara_selftest.txt Logs/nusantara_build_report.txt Logs/ci/visual.log
 
       - name: Unggah artefak (APK, log, foto)
         if: always() && steps.cekproyek.outputs.ada == '1'
@@ -194,7 +198,7 @@ jobs:
           python3 Tools/ambil_aset.py --semua --wajib
           if ! python3 Tools/visual/siapkan.py --cek; then
             sudo apt-get update -qq
-            sudo apt-get install --no-install-recommends -y blender > /tmp/ak-blender-foto.log
+            sudo apt-get install --no-install-recommends -y blender python3-numpy > /tmp/ak-blender-foto.log
           fi
           python3 Tools/visual/siapkan.py
 
