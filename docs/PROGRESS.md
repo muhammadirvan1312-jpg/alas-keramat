@@ -113,3 +113,4 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
 
 - Lanjutan audit: pemeriksa bukti foto otomatis (`Tools/cek_foto.py`) dengan lima skenario lokal lulus; job foto melaporkan gagal bila capture/provenance/pemeriksaan teknis gagal, walau tetap tidak memblokir build APK. JSON audit ikut disimpan di ci-hasil.
 - Snapshot foto juga membawa ProjectSettings dan ThirdParty beserta .meta agar GUID material/tekstur, pipeline URP, dan preset bayangan cocok dengan scene yang diuji.
+- CI `23da31d`: kompilasi dan APK berhasil; self-test berhenti pada pengujian PlayerPrefs T11 yang menimpa preset tersimpan lewat setter autosave. Pemeriksaan diperbaiki menggunakan instance pembaca terpisah untuk dua preset; semua key yang disentuh dan file slot 3/.bak dipulihkan di finally. Tidak mengubah perilaku autosave pemain. Render belum dijalankan karena gerbang self-test gagal; revisi pengujian menunggu CI ulang.

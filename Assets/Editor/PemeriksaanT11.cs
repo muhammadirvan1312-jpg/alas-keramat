@@ -12,7 +12,7 @@ namespace AlasKeramat.EditorTools
 {
     // Self-test T11 (12 §T11): MenuScreens, preset grafis (Rendah/Sedang/Tinggi/Ultra), pengali kesulitan (Damai/Normal/Sulit),
     // 6 kartu Cara Bermain, penyimpanan pengaturan PlayerPrefs, 3 slot simpan, panel debug 5 ketukan, AKTexturePostprocessor, dan Android build.
-    public static class PemeriksaanT11
+    public static partial class PemeriksaanT11
     {
         public static void Jalankan(Action<string, bool> cek)
         {
@@ -67,24 +67,13 @@ namespace AlasKeramat.EditorTools
             for (int i = 0; i < 6; i++) caraOk &= MenuScreens.JudulCara[i].Length > 5 && MenuScreens.IsiCara[i].Length > 40;
             cek("T11: 6 kartu Cara Bermain & teks Kredit lengkap", caraOk && MenuScreens.TeksKredit.Contains("ALAS KERAMAT"));
 
-            // Simpan & muat pengaturan PlayerPrefs
-            if (menu != null)
-            {
-                var presetLama = menu.Preset;
-                menu.SetPreset((int)PresetGrafis.Tinggi);
-                menu.SiklusSkalaTombol();
-                float skalaSimpan = menu.SkalaTombol;
-                menu.SimpanPengaturan();
-                menu.SetPreset((int)PresetGrafis.Rendah);
-                menu.MuatPengaturan();
-                bool prefOk = menu.Preset == PresetGrafis.Tinggi && Mathf.Approximately(menu.SkalaTombol, skalaSimpan);
-                menu.SetPreset((int)presetLama);
-                menu.SimpanPengaturan();
-                cek("T11: Pengaturan tersimpan & dimuat kembali dari PlayerPrefs", prefOk);
-            }
+            if(menu!=null)CekPengaturanT11(menu,cek);
 
             // Slot simpan 1-3
             int slotAwal = SaveSystem.SlotAktif;
+            string pathUji=SaveSystem.PathSlot(3),bakUji=pathUji+".bak";
+            byte[] isiAwal=File.Exists(pathUji)?File.ReadAllBytes(pathUji):null;
+            byte[] bakAwal=File.Exists(bakUji)?File.ReadAllBytes(bakUji):null;
             try
             {
                 bool pathBerbeda = SaveSystem.PathSlot(1) != SaveSystem.PathSlot(2) && SaveSystem.PathSlot(2) != SaveSystem.PathSlot(3);
@@ -97,6 +86,8 @@ namespace AlasKeramat.EditorTools
             }
             finally
             {
+                if(isiAwal!=null)File.WriteAllBytes(pathUji,isiAwal);else if(File.Exists(pathUji))File.Delete(pathUji);
+                if(bakAwal!=null)File.WriteAllBytes(bakUji,bakAwal);else if(File.Exists(bakUji))File.Delete(bakUji);
                 SaveSystem.SlotAktif = slotAwal;
             }
 
