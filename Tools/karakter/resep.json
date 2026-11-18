@@ -1,0 +1,38 @@
+{
+  "Andi": {
+    "height": 1.75,
+    "width": 1.0,
+    "old": 0.12,
+    "female": false,
+    "outfit": "male_worksuit01",
+    "hair": "short01",
+    "skin": "young_asian_male"
+  },
+  "Deden": {
+    "height": 1.68,
+    "width": 1.12,
+    "old": 0.4,
+    "female": false,
+    "outfit": "male_worksuit01",
+    "hair": "short01",
+    "skin": "middleage_asian_male"
+  },
+  "Ningsih": {
+    "height": 1.55,
+    "width": 0.94,
+    "old": 0.0,
+    "female": true,
+    "outfit": "female_elegantsuit01",
+    "hair": "ponytail01",
+    "skin": "young_asian_female"
+  },
+  "KiRogo": {
+    "height": 1.71,
+    "width": 0.91,
+    "old": 0.95,
+    "female": false,
+    "outfit": "male_casualsuit01",
+    "hair": "short01",
+    "skin": "old_asian_male"
+  }
+}

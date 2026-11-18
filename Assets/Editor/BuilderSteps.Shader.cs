@@ -37,6 +37,9 @@ namespace AlasKeramat.EditorTools
             if (m.HasProperty("_BumpMap") && normal != null) m.SetTexture("_BumpMap", normal);
             if (m.HasProperty("_Translucency")) m.SetFloat("_Translucency", translucency);
             if (m.HasProperty("_Cutoff")) m.SetFloat("_Cutoff", 0.5f);
+            string nom=m.name.Contains("Palem")?"palem":"kulit_kayu";
+            var mask=AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/"+nom+"_mask.png");
+            if(mask!=null && m.HasProperty("_MaskMap")) { m.SetTexture("_MaskMap",mask);m.SetFloat("_PakaiMask",1f); }
             m.enableInstancing = true;
             return m;
         }

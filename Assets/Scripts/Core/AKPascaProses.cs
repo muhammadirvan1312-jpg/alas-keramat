@@ -33,11 +33,12 @@ namespace AlasKeramat.Core
         }
 
         // x eksposur (EV), y saturasi, z suhu WB, w intensitas vignette.
+        public static Vector4 TargetGua { get { return new Vector4(0.8f,-8f,-3f,0.2f); } }
         public static Vector4 Target(float jam, WeatherState cuaca)
         {
-            Vector4 siang = new Vector4(0.15f, 12f, 4f, 0.22f);
-            Vector4 maghrib = new Vector4(0.0f, 18f, 28f, 0.30f);
-            Vector4 malam = new Vector4(-0.45f, -18f, -22f, 0.38f);
+            Vector4 siang = new Vector4(0.2f, -3f, 2f, 0.16f);
+            Vector4 maghrib = new Vector4(0.25f, 5f, 18f, 0.22f);
+            Vector4 malam = new Vector4(0.45f, -14f, -14f, 0.24f);
             Vector4 fajar = new Vector4(0.05f, 4f, 14f, 0.28f);
             Vector4 v;
             if (jam >= 7f && jam < 16.5f) v = siang;
@@ -52,6 +53,14 @@ namespace AlasKeramat.Core
             return v;
         }
 
+        public static void TerapkanFoto(VolumeProfile profile,float jam,WeatherState cuaca,bool bawah)
+        {
+            if(profile==null)return;var v=bawah?TargetGua:Target(jam,cuaca);
+            ColorAdjustments ca;WhiteBalance wb;Vignette vig;
+            if(profile.TryGet(out ca)) { ca.postExposure.value=v.x;ca.saturation.value=v.y; }
+            if(profile.TryGet(out wb))wb.temperature.value=v.z;
+            if(profile.TryGet(out vig))vig.intensity.value=v.w;
+        }
         void Update()
         {
             _t += Time.deltaTime;
@@ -60,7 +69,7 @@ namespace AlasKeramat.Core
                 _t = 0f;
                 if (_jam == null) _jam = GameServices.Get<TimeOfDayClock>();
                 if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
-                _target = Target(_jam != null ? _jam.Jam : TimeOfDayClock.JamMulai, _atmos != null ? _atmos.Cuaca : WeatherState.Cerah);
+                _target = URPAtmosphereAndWeather.DalamRuangan ? TargetGua : Target(_jam != null ? _jam.Jam : TimeOfDayClock.JamMulai, _atmos != null ? _atmos.Cuaca : WeatherState.Cerah);
             }
             _skrg = Vector4.Lerp(_skrg, _target, Time.deltaTime * Lerp);
             if (_ca != null) { _ca.postExposure.value = _skrg.x; _ca.saturation.value = _skrg.y; }

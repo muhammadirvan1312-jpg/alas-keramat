@@ -220,10 +220,11 @@ namespace AlasKeramat.EditorTools
                 int tri = 0; foreach (var r in smrs) if (r.sharedMesh != null) tri += r.sharedMesh.triangles.Length / 3;
                 bool namaOk = true;
                 foreach (var nm in Kerangka.Nama) if (FindRekursif(an.transform, nm) == null) namaOk = false;
-                bool ok = smrs.Length == (isAndi ? 2 : 1) && tri >= 400 && tri <= 6500 && namaOk;
+                bool real=an.GetComponent<PenandaModelReal>()!=null;
+                bool ok = smrs.Length == (isAndi ? 2 : 1) && tri >= 400 && tri <= (real?30000:6500) && namaOk;
                 if (ok) karOk++; else karGagal += " " + an.name + "(smr " + smrs.Length + ", tri " + tri + ", nama " + namaOk + ")";
             }
-            cek("Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga 400-6500, 24 sendi bernama (" + karOk + "/" + karTotal + ")" + karGagal, karTotal >= 14 && karOk == karTotal);
+            cek("Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga sesuai anggaran (real <=30000), 24 sendi bernama (" + karOk + "/" + karTotal + ")" + karGagal, karTotal >= 14 && karOk == karTotal);
             var tahi = GameObject.Find("TahiLalat");
             bool tahiOk = false;
             if (tahi != null)
@@ -337,6 +338,7 @@ namespace AlasKeramat.EditorTools
             PemeriksaanT8.Jalankan(cek);
             PemeriksaanT9.Jalankan(cek);
             PemeriksaanT10.Jalankan(cek);
+            PemeriksaanG3.Jalankan(cek);
             cek("HUDInfo ada", Object.FindFirstObjectByType<AlasKeramat.UI.HUDInfo>() != null);
             cek("Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s", Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, false, false), 3.4f)
                 && Mathf.Approximately(AlasKeramat.Player.AndiFPSController.KecepatanTarget(1f, true, false), 6.2f)

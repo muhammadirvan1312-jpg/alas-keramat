@@ -59,3 +59,6 @@ Pecah jadi beberapa PR kecil agar mudah lulus CI:
 - Pengguna mengetik sendiri password/login/2FA. Jangan pernah menulis token/password/lisensi ke repo; rahasia hanya di GitHub Secrets.
 - Lisensi Unity Personal (`UNITY_LICENSE`) berakhir 16 Des 2026: pengguna memperpanjang lewat Unity Hub lalu paste ulang ke secret.
 - Laporan ke pengguna singkat, Bahasa Indonesia santai: tahap apa selesai, link rilis APK, apa yang bisa dicoba di HP.
+
+## 9. Arahan pengguna terbaru (18 Nov 2026)
+Pengguna meminta melewati kelanjutan T10 dan memprioritaskan G3a Cahaya & Atmosfer, G3b Tekstur/Pohon nyata, G3c Karakter Realistis serta peningkatan visual. Pekerjaan ada di cabang tahap-G3; status CI/foto dicatat di PROGRESS. T10d tetap tahap cerita berikutnya setelah pengguna melanjutkannya.

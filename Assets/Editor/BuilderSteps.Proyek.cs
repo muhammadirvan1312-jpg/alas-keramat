@@ -16,7 +16,7 @@ namespace AlasKeramat.EditorTools
         public const string PathUrpAsset = FolderRender + "/AK_URP.asset";
         public const string PathUrpRenderer = FolderRender + "/AK_URP_Renderer.asset";
         const string PathPostProcessData = "Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset";
-        const float JarakBayangan = 60f;
+        const float JarakBayangan = 90f;
 
         public static readonly string[] NamaLayer =
         {
@@ -89,7 +89,10 @@ namespace AlasKeramat.EditorTools
             AssetDatabase.CreateAsset(data, PathUrpRenderer);
             var urp = UniversalRenderPipelineAsset.Create(data);
             urp.shadowDistance = JarakBayangan;
-            urp.msaaSampleCount = 1;
+            urp.msaaSampleCount = 2;
+            urp.shadowCascadeCount=2;
+            urp.mainLightShadowmapResolution=2048;
+            urp.supportsSoftShadows=true;
             urp.supportsHDR = true;
             urp.supportsCameraDepthTexture = true; // shader air AK butuh kedalaman (buih tepi, warna dalam)
             AssetDatabase.CreateAsset(urp, PathUrpAsset);

@@ -26,7 +26,7 @@ namespace AlasKeramat.EditorTools
         static void LangkahKarakter()
         {
             EnsureFolder(FolderKarakter);
-            _meshKarakter.Clear(); _matKarakter.Clear();
+            _meshKarakter.Clear(); _matKarakter.Clear();SiapkanKarakterReal();
             var andi = Object.FindFirstObjectByType<AndiFPSController>();
             Transform kamAndi = andi != null ? andi.Kamera : null;
 
@@ -79,7 +79,8 @@ namespace AlasKeramat.EditorTools
             var root = new GameObject(nama);
             var tulang = Kerangka.Buat(root.transform, d.tinggi, d.lebar);
             var mat = MaterialKarakter(j);
-            if (andi)
+            bool real=CobaKarakterReal(j,root,tulang,andi);
+            if (!real && andi)
             {
                 Renderer(root, "Andi_Body", MeshKarakter(j, ResepKarakter.Bagian.BadanSaja, root.transform, tulang), tulang, mat, ShadowCastingMode.On);
                 Renderer(root, "Andi_HeadArms", MeshKarakter(j, ResepKarakter.Bagian.KepalaLengan, root.transform, tulang), tulang, mat, ShadowCastingMode.ShadowsOnly);
@@ -87,7 +88,7 @@ namespace AlasKeramat.EditorTools
                 tl.SetParent(tulang[Kerangka.Head], false);
                 tl.position = tulang[Kerangka.Head].position + new Vector3(0f, 0.085f, 0.01f) + TahiLalatLokal;
             }
-            else Renderer(root, "Tubuh", MeshKarakter(j, ResepKarakter.Bagian.Semua, root.transform, tulang), tulang, mat, ShadowCastingMode.On);
+            else if(!real) Renderer(root, "Tubuh", MeshKarakter(j, ResepKarakter.Bagian.Semua, root.transform, tulang), tulang, mat, ShadowCastingMode.On);
             var anim = root.AddComponent<ProceduralAnimator>();
             anim.Pasang(tulang, mode, d.tinggi);
             EditorUtility.SetDirty(anim);

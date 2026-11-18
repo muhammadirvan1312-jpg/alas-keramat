@@ -46,6 +46,7 @@ namespace AlasKeramat.EditorTools
             foreach (var f in new[] { FolderTex, FolderIkon, FolderMat, FolderMesh, FolderAudio }) EnsureFolder(f);
             _mat.Clear(); _klip.Clear();
             BuatTekstur(cepat);
+            PanggangFotoPBR();
             BuatIkon(cepat);
             BuatMaterial();
             BuatAudio(cepat);
@@ -110,6 +111,7 @@ namespace AlasKeramat.EditorTools
             var albedo = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + tex + ".png");
             var normal = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + tex + "_n.png");
             var m = SafeMaterialFactory.CreatePBR(nama, warna, metal, halus, albedo, normal, null, mode);
+            MaskPBR(m,tex);
             string p = FolderMat + "/" + nama + ".mat";
             AssetDatabase.DeleteAsset(p);
             AssetDatabase.CreateAsset(m, p);
@@ -164,6 +166,7 @@ namespace AlasKeramat.EditorTools
             if (imp == null) throw new Exception("importer tekstur tidak ada: " + path);
             imp.textureType = normal ? TextureImporterType.NormalMap : sprite ? TextureImporterType.Sprite : TextureImporterType.Default;
             imp.mipmapEnabled = !sprite;
+            imp.streamingMipmaps = !sprite; imp.anisoLevel=sprite?1:4;
             imp.wrapMode = sprite ? TextureWrapMode.Clamp : TextureWrapMode.Repeat;
             imp.alphaIsTransparency = sprite;
             imp.maxTextureSize = maks;

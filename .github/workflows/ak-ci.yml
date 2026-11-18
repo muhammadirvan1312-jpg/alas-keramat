@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: Assets/ThirdParty
-          key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json') }}
+          key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}
 
       - name: Unduh aset CC0 & mocap sesuai lock
         if: steps.cekproyek.outputs.ada == '1' && hashFiles('Tools/ambil_aset.py') != ''
@@ -60,6 +60,16 @@ jobs:
         run: |
           python -m pip install --quiet requests
           python Tools/ambil_aset.py --semua --keluar Assets/ThirdParty
+
+      - name: Panggang visual G3 (MakeHuman CC0 dan LOD pohon)
+        if: steps.cekproyek.outputs.ada == '1'
+        shell: bash
+        run: |
+          if ! python Tools/visual/siapkan.py --cek; then
+            sudo apt-get update -qq
+            sudo apt-get install --no-install-recommends -y blender > /tmp/ak-blender-install.log
+          fi
+          python Tools/visual/siapkan.py
 
       # Cache Library dipulihkan dari run terbaru & DISIMPAN ULANG setiap run (termasuk saat gagal),
       # supaya shader & impor aset tidak dikompilasi ulang dari nol (build APK pertama ±16 menit untuk shader).
@@ -166,6 +176,22 @@ jobs:
         with:
           ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 1
+
+      - name: Pulihkan aset visual G3
+        uses: actions/cache/restore@v4
+        with:
+          path: Assets/ThirdParty
+          key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}
+
+      - name: Pastikan aset foto siap
+        shell: bash
+        run: |
+          python3 Tools/ambil_aset.py --semua --wajib
+          if ! python3 Tools/visual/siapkan.py --cek; then
+            sudo apt-get update -qq
+            sudo apt-get install --no-install-recommends -y blender > /tmp/ak-blender-foto.log
+          fi
+          python3 Tools/visual/siapkan.py
 
       - name: Pulihkan cache Library Unity
         uses: actions/cache/restore@v4

@@ -11,12 +11,12 @@ namespace AlasKeramat.Core
     // napas 60 s dengan Rebreather, bendera gerbang tersimpan, kejadian terskrip (Pocong jatuh, penjaga, alarm bunker).
     public partial class WorldCaveAndSaveManager : MonoBehaviour, ISaveable
     {
-        public const float LamaFade = 1.2f, JarakPandangGua = 80f, KabutGua = 0.06f, TickDetik = 0.5f, NapasRebreather = 60f;
+        public const float LamaFade = 1.2f, JarakPandangGua = 80f, KabutGua = 0.035f, TickDetik = 0.5f, NapasRebreather = 60f;
         public const int MaksLampu = 4, GaliPerlu = 4;
         public const int B_Palka = 1, B_PintuKartu = 2, B_Rintangan = 4, B_Tali = 8, B_AkarK4 = 16, B_Alarm = 32, B_PocongJatuh = 64,
             B_PenjagaR4 = 128, B_Penyergap = 256, B_MalamDarah1 = 512, B_MalamDarah2 = 1024;
         public static readonly Vector3[] Pusat = { Vector3.zero, new Vector3(-600f, -80f, -600f), new Vector3(0f, -80f, -600f), new Vector3(600f, -80f, -600f) };
-        public static readonly Color AmbienGua = new Color(0.039f, 0.055f, 0.071f);
+        public static readonly Color AmbienGua = new Color(0.11f, 0.14f, 0.17f);
 
         [SerializeField] Transform[] kompleks = new Transform[4];
         [SerializeField] Image layarHitam;
@@ -134,6 +134,19 @@ namespace AlasKeramat.Core
             _urut.Clear(); _urut.AddRange(daftar);
             _urut.Sort((x, y) => (x.transform.position - a).sqrMagnitude.CompareTo((y.transform.position - a).sqrMagnitude));
             for (int i = 0; i < _urut.Count; i++) if (_urut[i] != null) _urut[i].enabled = i < MaksLampu;
+        }
+
+        // Khusus inspeksi foto Editor, juga bekerja sebelum Awake.
+        public void TerapkanLampuFoto(Vector3 posisi)
+        {
+            var u=KompleksDi(posisi);
+            for(int i=1;i<4;i++)
+            {
+                if(kompleks==null || i>=kompleks.Length || kompleks[i]==null)continue;
+                var daftar=kompleks[i].GetComponentsInChildren<Light>(true);
+                System.Array.Sort(daftar,(a,b)=>(a.transform.position-posisi).sqrMagnitude.CompareTo((b.transform.position-posisi).sqrMagnitude));
+                for(int k=0;k<daftar.Length;k++)daftar[k].enabled=i==(int)u && k<MaksLampu;
+            }
         }
 
         bool Punya(ItemID id) { var inv = GameServices.Get<TikarPandan3DInventory>(); return inv != null && inv.Punya(id); }

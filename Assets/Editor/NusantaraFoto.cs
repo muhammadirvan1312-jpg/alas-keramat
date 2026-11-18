@@ -28,6 +28,10 @@ namespace AlasKeramat.EditorTools
         // Daftar shot aktif (T2a: dunia). Tahap berikutnya menambah shot (12 money shot 19 §8).
         public static readonly Shot[] ShotAktif =
         {
+            new Shot("g3_01_deden_wajah", new Vector3(23f,1.35f,-437.6f),new Vector3(24f,1.45f,-440f),9f,38f),
+            new Shot("g3_02_ningsih_wajah", new Vector3(201.3f,1.3f,-352f),new Vector3(200f,1.36f,-350f),10f,38f),
+            new Shot("g3_03_hutan_malam", new Vector3(-58f,1.7f,-312f),new Vector3(-57f,1.6f,-297f),21f,60f),
+            new Shot("g3_04_lantai_hutan", new Vector3(65f,1.65f,-335f),new Vector3(68f,0.3f,-328f),8f,70f),
             new Shot("t10_01_gua_lumut", new Vector3(-623f, -78.2f, -595f), new Vector3(-608f, -78.5f, -602f), 0.5f, 70f),
             new Shot("t10_02_kubah_akar_boss", new Vector3(600f, -76.5f, -597f), new Vector3(600f, -77.5f, -578f), 0.5f, 70f),
             new Shot("t7_02_pocong_kuntilanak_malam", new Vector3(-58f, 1.7f, -312f), new Vector3(-57f, 1.6f, -297f), 21f, 60f),
@@ -85,6 +89,9 @@ namespace AlasKeramat.EditorTools
                 if (dataCam != null) dataCam.renderPostProcessing = true;
                 var rt = new RenderTexture(Lebar, Tinggi, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
                 var atmos = UnityEngine.Object.FindFirstObjectByType<URPAtmosphereAndWeather>();
+                var volumeFoto=UnityEngine.Object.FindFirstObjectByType<UnityEngine.Rendering.Volume>();
+                var guaFoto=UnityEngine.Object.FindFirstObjectByType<WorldCaveAndSaveManager>();
+                var kabutLokal=UnityEngine.Object.FindFirstObjectByType<AtmosferHutan>();
                 var veg = UnityEngine.Object.FindFirstObjectByType<AlasKeramat.Building.VegetationManager>();
                 if (veg != null) veg.PengaliJarak = 0.5f; // ringankan render perangkat lunak
                 // Ringankan terrain untuk render perangkat lunak (tidak disimpan ke scene).
@@ -117,6 +124,12 @@ namespace AlasKeramat.EditorTools
                         var tgt = new Vector3(s.target.x, (bawah ? 0f : TinggiDasar(s.target.x, s.target.z)) + s.target.y, s.target.z);
                         cam.transform.SetPositionAndRotation(pos, Quaternion.LookRotation(tgt - pos));
                         cam.fieldOfView = s.fov;
+                        URPAtmosphereAndWeather.DalamRuangan=bawah;
+                        if(bawah && atmos!=null)atmos.TerapkanRuangan();
+                        if(guaFoto!=null)guaFoto.TerapkanLampuFoto(pos);
+                        cam.farClipPlane=bawah?80f:2600f;cam.clearFlags=bawah?CameraClearFlags.SolidColor:CameraClearFlags.Skybox;cam.backgroundColor=Color.black;
+                        if(volumeFoto!=null)AKPascaProses.TerapkanFoto(volumeFoto.profile,s.jam,(WeatherState)s.cuaca,bawah);
+                        if(kabutLokal!=null)kabutLokal.Terapkan(cam,s.jam,(WeatherState)s.cuaca);
                         if (veg != null) veg.Gambar(cam);
                         cam.Render();
                         if (veg != null) veg.Gambar(cam);
@@ -135,6 +148,7 @@ namespace AlasKeramat.EditorTools
                         Debug.LogWarning("[AK][Foto] Shot " + s.nama + " gagal: " + e.Message);
                     }
                 }
+                URPAtmosphereAndWeather.DalamRuangan=false;
                 if (atmos != null) { atmos.SetCuaca(WeatherState.Cerah, true); atmos.Terapkan(TimeOfDayClock.JamMulai); }
                 if (veg != null) veg.PengaliJarak = 1f;
                 cam.targetTexture = null;

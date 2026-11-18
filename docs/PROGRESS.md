@@ -6,7 +6,7 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T10d
 
 > Serah terima: mulai 18 Nov 2026 dikerjakan ChatGPT, baca `docs/HANDOVER_GPT.md`.
 
-- Tahap aktif: **T2a selesai ditulis (dunia 2x2 km), menunggu AK CI**. T2 dipecah: T2a medan/air/waktu/langit/tur, T2b zona & props & vegetasi & cuaca, T2c ambien audio v5 + shader AK.
+- Tahap aktif: **G3a–G3c: cahaya/atmosfer, tekstur/pohon CC0, karakter MakeHuman** sesuai arahan pengguna 18 Nov 2026. T10d ditunda sementara.
 - Versi Unity yang dipakai: 6000.0.58f2 (image GameCI `unityci/editor:ubuntu-6000.0.58f2-android-3`), URP 17.0.3
 - Mode input proyek: default proyek baru; EventSystem memakai AddCorrectInputModule (H3)
 - Hasil cek kompilasi terakhir: cek_statis.py 0 masalah; kompilasi Unity diuji AK CI (tidak ada Unity di container)
@@ -57,6 +57,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T10d
 
 | T6c | 2026-11-17 | Ditulis, cek statis lulus; menunggu AK CI | Building: BagianStruktur, ShoulderLogAndFreeformBuilder (+Lanjut/+Simpan), PotongCelah, GuidebookBlueprintsAndCooking (+Lokasi), CetakBiru, BangunanBlueprint (+V3), FungsiBangunan (+V3), IdentitasBangunan, JeratanPunji, ApiUnggun, PanciMasak, VegetationManager, KayuFisik. Core: SimpanDunia, SaveSystem, QuestManager. Player: AndiFPSController (+Dunia), InteraksiAndi, DedenTutorial, CombatAndLeftHandController, AndiVitalsAndSanity. Inventory: WadahItem. UI: TanganTahan, PetiUI, HUDMisi, TouchControls. Editor: BuilderSteps.T6c/Blueprint/Interaksi, NusantaraMasterBuilder, NusantaraSelfTest, PemeriksaanT6c. AI: WildAnimalAI (nama enum internal unik) | Cek statis 0 masalah; self-test Edit Mode ditambahkan: 26 ID unik & item/biaya valid, bongkar -> KayuFisik papan, sudut atap/tangga, struktur/graf/HP/isi peti identik setelah muat dua kali, objek v3 bercollider, urutan M01-M04 & progres paralel | BONGKAR tahan 1 s; ATAP/TANGGA & anak tangga papan; Batu Besar dan Potong Celah 3 tebasan; 12 blueprint v3; peti 40 unit dengan panel transfer; rakit joystick 2,5 m/s + TURUN; simpan dunia, bahu, kayu fisik, koper, pohon, posisi dan misi; SIMPAN/MUAT HUD. Kompilasi/Play/Android belum dijalankan lokal (Unity tidak tersedia). |
 
+| G3a–G3c | 2026-11-18 | Menunggu CI & foto | Cahaya lingkungan SH eksplisit (termasuk headless), grading siang/malam/gua, bayangan 2 kaskade, kabut lokal, basah bark; 11 bahan PBR foto 2K Poly Haven, mask roughness/AO, pohon & pakis scan LOD + 3 varian; 4 karakter utama MakeHuman CC0 (24–27rb tris, 4 bobot), pakaian, rambut, 12 ekspresi + kedip & gerak mulut subtitle. Pipeline Blender headless & cache aset, sumber/hash di lock. `BuilderSteps.CC0/G3/KarakterReal/VegetasiFoto`, `ImporMeshVisual`, `FaceController`, `AtmosferHutan`, shader kulit manusia/kabut; foto G3 & `PemeriksaanG3`. | Cek statis 0 masalah, Python compile & panggang Blender lokal lolos; verifikasi format, LOD, bobot, ekspresi & identitas bahan; kompilasi Unity/APK dan foto akhir melalui AK CI cabang tahap-G3. | Pengguna memprioritaskan visual. T10a PR #24 dipindah draft (T10a-c lain sudah di main via #25). Belum menilai kualitas akhir atau FPS HP tanpa foto/gameplay aktual. |
+
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
 ## Keputusan Teknis Baru
@@ -90,3 +92,10 @@ _(Daftar checklist yang belum lulus beserta dugaan penyebab.)_
 ## Tahap Berikutnya
 - T10d: cutscene intro/boss/ending (04 §7), heli SAR + layar Pilihan Takdir + Ending A/B + statistik + sandbox (EnemyDirector.TanpaMalamDarah), musik, Golok Api Pusaka, Peta Kertas, Rendra (UG2 R2) & S01-S04. Keputusan T10a-c: pintu gua memakai interaksi (bukan trigger) agar aman di HP; tanda pisah panjang di lore diganti "-" (font); Lore #7 diletakkan di kaki mercusuar; mati saat siege = paku terakhir lepas (bukan muat ulang simpanan).
 _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
+
+### Poles G3 (prioritas pengguna 18 Nov 2026)
+- Sumber foto: Poly Haven CC0; inti tubuh, target wajah, bobot, pakaian, rambut, kulit: MakeHuman Community CC0. Lock menyimpan URL, SHA256 dan sumber lisensi. Aset tidak dikomit dan tidak diunduh saat bermain.
+- Blender memanggang langsung ke format mesh/bobot AKV1 agar memakai kerangka dan pengendali gerak gameplay yang sama. Tidak memasukkan plugin ke APK dan tidak memerlukan penyambungan Inspector.
+- Pohon scan dipakai pada satu varian Mahoni, pakis scan pada tumbuhan bawah. Jati, bambu, palem dan tebang tetap memakai bentuk spesies prosedural bertekstur foto; bukan semua spesies sudah berupa pemindaian.
+- Model utama: Andi, Deden, Ningsih, Ki Rogo. Sekte/hantu tetap mesh tahap sebelumnya; belum ada retarget mocap CMU baru. Kedip/ekspresi memakai target wajah MakeHuman; gerak mulut subtitle bersifat dasar.
+- Ningsih tetap atasan putih dan jarik batik, Deden perban telinga/iket, Ki Rogo blangkon, Andi tahi lalat. LOD vegetasi mengurangi beban; tolok ukur FPS di HP masih perlu pengujian perangkat.

@@ -6,7 +6,7 @@ namespace AlasKeramat.Core
     public partial class URPAtmosphereAndWeather : MonoBehaviour
     {
         public const float SudutUtara = -35f;
-        const float IntensitasMatahari = 1.35f, IntensitasBulan = 0.12f;
+        const float IntensitasMatahari = 1.35f, IntensitasBulan = 0.32f;
         const float KabutSiang = 0.00055f, KabutMalam = 0.0016f, KabutMaghrib = 0.0012f; // dunia 2 km: jarak pandang siang ~ 1,5 km
 
         [SerializeField] Light sun;
@@ -38,12 +38,13 @@ namespace AlasKeramat.Core
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetRuangan() { DalamRuangan = false; }
 
-        void TerapkanRuangan()
+        public void TerapkanRuangan()
         {
             if (sun != null) sun.intensity = 0f;
             if (moon != null) moon.intensity = 0f;
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientLight = WorldCaveAndSaveManager.AmbienGua;
+            TerapkanProbeAmbien(WorldCaveAndSaveManager.AmbienGua,WorldCaveAndSaveManager.AmbienGua);
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
             RenderSettings.fogColor = Color.black;
@@ -82,9 +83,9 @@ namespace AlasKeramat.Core
             _warnaMatahari = G("#2A3550@0", "#FF8A4C@5.8", "#FFD9A8@7.5", "#FFF4E0@12", "#FF5A2A@18", "#B31E12@18.6", "#2A3550@19.5", "#2A3550@24");
             _warnaLangit = G("#05070D@0", "#F09A62@6", "#8FB4D8@8", "#7FA8D6@13", "#D2502A@18", "#7A1410@18.6", "#0A0C16@19.6", "#05070D@24");
             _warnaKabut = G("#0B0F18@0", "#5A5868@5.5", "#C9B9A6@7", "#B9C8D2@12", "#B0402A@18", "#5A1210@18.7", "#0D1018@19.6", "#0B0F18@24");
-            _ambienAtas = G("#101828@0", "#4A4A64@5.6", "#9FB5CC@8", "#B8CDE0@12", "#B5523A@18", "#3A1412@18.8", "#121A2C@19.6", "#101828@24");
-            _ambienTengah = G("#0C1018@0", "#3E3A40@5.6", "#7A8A70@8", "#8C9C80@12", "#7A3424@18", "#24100E@18.8", "#0E121C@19.6", "#0C1018@24");
-            _ambienBawah = G("#06080C@0", "#262022@5.6", "#3E3A2E@8", "#4A4434@12", "#3A1A12@18", "#140A08@18.8", "#080A0E@19.6", "#06080C@24");
+            _ambienAtas = G("#29384A@0", "#4A4A64@5.6", "#9FB5CC@8", "#B8CDE0@12", "#B5523A@18", "#3A1412@18.8", "#29384A@19.6", "#29384A@24");
+            _ambienTengah = G("#1C2936@0", "#3E3A40@5.6", "#7A8A70@8", "#8C9C80@12", "#7A3424@18", "#24100E@18.8", "#1C2936@19.6", "#1C2936@24");
+            _ambienBawah = G("#101820@0", "#262022@5.6", "#3E3A2E@8", "#4A4434@12", "#3A1A12@18", "#140A08@18.8", "#080A0E@19.6", "#101820@24");
         }
 
         public void Terapkan(float jam)
@@ -114,6 +115,7 @@ namespace AlasKeramat.Core
             RenderSettings.ambientSkyColor = _ambienAtas.Evaluate(u);
             RenderSettings.ambientEquatorColor = _ambienTengah.Evaluate(u);
             RenderSettings.ambientGroundColor = _ambienBawah.Evaluate(u);
+            TerapkanProbeAmbien(RenderSettings.ambientEquatorColor,RenderSettings.ambientSkyColor);
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
             RenderSettings.fogColor = _warnaKabut.Evaluate(u);
@@ -132,6 +134,15 @@ namespace AlasKeramat.Core
             }
             TerapkanCuaca();
             if (sun != null) RenderSettings.sun = sun.enabled ? sun : moon;
+        }
+
+        // Isi SH secara eksplisit: Builder/foto headless tidak menunggu bake langit atau GI realtime.
+        public static void TerapkanProbeAmbien(Color tengah,Color atas)
+        {
+            var probe=new UnityEngine.Rendering.SphericalHarmonicsL2();
+            probe.AddAmbientLight(tengah.linear);
+            probe.AddDirectionalLight(Vector3.up,atas.linear,0.35f);
+            RenderSettings.ambientProbe=probe;
         }
 
         // 0 = siang penuh, 1 = malam penuh (transisi 17:00-20:00 dan 05:00-07:00).

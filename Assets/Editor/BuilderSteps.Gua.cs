@@ -199,7 +199,7 @@ namespace AlasKeramat.EditorTools
             var go = Anak(induk, nama);
             go.transform.localPosition = posLokal;
             var l = go.AddComponent<Light>();
-            l.type = LightType.Point; l.color = warna; l.range = jangkau; l.intensity = kuat; l.shadows = LightShadows.None;
+            l.type = LightType.Point; l.color = warna; l.range = jangkau; l.intensity = kuat * 2f; l.shadows = LightShadows.None;
             return l;
         }
 

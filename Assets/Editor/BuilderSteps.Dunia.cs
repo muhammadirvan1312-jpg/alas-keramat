@@ -60,7 +60,9 @@ namespace AlasKeramat.EditorTools
                 {
                     diffuseTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + ".png"),
                     normalMapTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + "_n.png"),
-                    tileSize = new Vector2(UkuranUbin, UkuranUbin),
+                    maskMapTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + "_mask.png"),
+                    normalScale = 0.75f,
+                    tileSize = new Vector2(i==L_Daun?4f:3f, i==L_Daun?4f:3f),
                     smoothness = i == L_Lumpur ? 0.35f : 0.1f
                 };
                 if (tl.diffuseTexture == null) throw new Exception("tekstur terrain hilang: " + LapisTerrain[i]);
