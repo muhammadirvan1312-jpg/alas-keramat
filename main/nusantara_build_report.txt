@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-17 23:48:11
+Laporan Builder Alas Keramat - 2026-11-18 05:21:32
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -59,8 +59,13 @@ Laporan Builder Alas Keramat - 2026-11-17 23:48:11
 [LULUS] 7r. Companion Kang Deden & Ningsih
   - Teror: TerrorDirector (25 kejadian), WorldEventScheduler, 20 catatan Deden
 [LULUS] 7s. Sutradara Teror & dunia hidup
+  - Gerbang permukaan: tanah gali bunker, 2 mulut gua, zipline jurang, 5 lore dunia + Cangkul
+  - Bawah tanah: 3 kompleks (Gua Sungai, Bunker, Kuil Akar), 7 pintu gua, kolam & terowongan selam
+[LULUS] 7t. Gua, bunker & kuil bawah tanah
+  - Ritual Beringin: altar 3 lubang, siege 60 detik (9 gelombang), cahaya emas, suar hijau SAR; layar lore + jurnal, bar boss
+[LULUS] 7u. Ritual Beringin, siege & lore
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2050
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2591
 [LULUS] 9. Simpan scene
-Durasi: 144.0 detik
+Durasi: 117.1 detik
 HASIL: SEMUA LANGKAH LULUS

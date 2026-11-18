@@ -1,11 +1,11 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (2050 = 2050)
+[LULUS] Idempoten: jumlah objek sama (2591 = 2591)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
 [LULUS] Tekstur >= 10 (14)
-[LULUS] Material >= 5 (63)
+[LULUS] Material >= 5 (83)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
 [LULUS] WAV >= 8 (52)
@@ -61,7 +61,7 @@
 [LULUS] Tepat 1 AudioListener aktif (1)
 [LULUS] Tur pratinjau mati saat Andi ada
 [LULUS] TouchControls & joystick & area geser
-[LULUS] Semua tombol HUD punya handler (36)
+[LULUS] Semua tombol HUD punya handler (37)
 [LULUS] 3 koper berisi item sesuai 03 §9 (3)
 [LULUS] Inventaris menghormati Maks (golok 3 -> 1)
 [LULUS] Radar, toast, interaksi, tangan kiri ada
@@ -77,7 +77,7 @@
 [LULUS] Permukaan langkah: pantai=pasir, air=air, struktur=kayu
 [LULUS] Foley, subtitle, sabuk cepat ada
 [LULUS] Subtitle: lama tampil min 2,5 s
-[LULUS] Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga 400-6500, 24 sendi bernama (22/22)
+[LULUS] Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga 400-6500, 24 sendi bernama (25/25)
 [LULUS] Tahi lalat Andi di bawah mata kiri (02 §2)
 [LULUS] Deden di heli & Ningsih di Sarang
 [LULUS] Pohon rebah menjauhi takikan (tebang dari selatan -> rebah ke utara)
@@ -117,7 +117,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 291 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 243 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -169,6 +169,32 @@
 [LULUS] Kejadian dunia: Hari 4 pesawat terskrip, maks 2 per pagi, jenazah maks 5
 [LULUS] TerrorDirector (sosok, layar kedip) & WorldEventScheduler di scene
 [LULUS] Suara teror prosedural (12 klip)
+[LULUS] M05 butuh pemicu (Lore #1 / Hari 2) sebelum selesai
+[LULUS] M05 selesai -> semua perintah Deden (m05)
+[LULUS] M09 terkunci sebelum M07 (Lore #3)
+[LULUS] M11 butuh boss kalah + Paku 3
+[LULUS] M12 menunggu siege selesai
+[LULUS] 13 misi selesai berurutan tanpa event ganda (13)
+[LULUS] Misi awal: HUD M01, M06/M13 belum aktif
+[LULUS] Teks HUD 13 misi ada
+[LULUS] 12 lore: judul & isi tidak kosong
+[LULUS] Lore #1-#6 sesuai 04 §6.1
+[LULUS] Kompleks UG1_GuaSungai punya pintu masuk & keluar
+[LULUS] Kompleks UG2_Bunker punya pintu masuk & keluar
+[LULUS] Kompleks UG3_KuilAkar punya pintu masuk & keluar
+[LULUS] WorldCaveAndSaveManager ada
+[LULUS] Air gua terdaftar (kolam R3, R4, terowongan U1)
+[LULUS] Gerbang: gali, kartu, reruntuhan, angin, zipline, akar
+[LULUS] Reruntuhan T2 hanya didorong dari sisi R4
+[LULUS] KompleksDi: permukaan None, (-600,-80,-600) UG1
+[LULUS] Fase boss 06 §10: 100-60% = 1, 60-25% = 2, < 25% = 3
+[LULUS] Titik lemah punggung hanya dari belakang
+[LULUS] Teka-teki Akar (Damai): urutan I-II-III-IV
+[LULUS] Siege: semua gelombang muncul tepat sekali (16 musuh)
+[LULUS] Siege 06 §11: 0 s 4 Abdi + 1 Pemimpin, 15 s 3 Pocong, 25 s 2 Wanita + 1 Buto, 35 s Kunti, 45 s 2 Banaspati + 2 Pocong
+[LULUS] Titik spawn siege di cincin 35-45 m
+[LULUS] Arena: Genderuwo, Ki Rogo, 8 tungku, altar ritual
+[LULUS] Malam Darah tambahan: malam berikutnya setelah paku
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas
