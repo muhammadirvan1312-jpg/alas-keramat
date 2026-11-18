@@ -97,7 +97,7 @@ namespace AlasKeramat.UI
             if (!r.HasValue) return;
             var v = GameServices.Get<AndiVitalsAndSanity>();
             if (r.Value.recipeId == 17 && (v == null || !v.DekatApi)) { GameEvents.RaiseToast(ApiResep17); return; }
-            if (TikarPanggung.Rakit(r.Value, _inv)) GameEvents.RaiseToast("Berhasil merakit " + ItemDatabase.Get(r.Value.output.id).displayName);
+            if (TikarPanggung.Rakit(r.Value, _inv)) { StatistikPemain.CatatRakit(); GameEvents.RaiseToast("Berhasil merakit " + ItemDatabase.Get(r.Value.output.id).displayName); }
             else GameEvents.RaiseToast("Gagal merakit: tas penuh");
             _p.BatalPilih(); _p.Segarkan(); Perbarui();
         }

@@ -16,7 +16,7 @@ namespace AlasKeramat.Core
         public const int B_Palka = 1, B_PintuKartu = 2, B_Rintangan = 4, B_Tali = 8, B_AkarK4 = 16, B_Alarm = 32, B_PocongJatuh = 64,
             B_PenjagaR4 = 128, B_Penyergap = 256, B_MalamDarah1 = 512, B_MalamDarah2 = 1024;
         public static readonly Vector3[] Pusat = { Vector3.zero, new Vector3(-600f, -80f, -600f), new Vector3(0f, -80f, -600f), new Vector3(600f, -80f, -600f) };
-        public static readonly Color AmbienGua = new Color(0.11f, 0.14f, 0.17f);
+        public static readonly Color AmbienGua = new Color(0.12f, 0.14f, 0.17f); // 03 §10 #0A0E12 terlalu gelap di HP (foto CI T10); dinaikkan
 
         [SerializeField] Transform[] kompleks = new Transform[4];
         [SerializeField] Image layarHitam;

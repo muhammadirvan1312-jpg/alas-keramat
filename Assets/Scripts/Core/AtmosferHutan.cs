@@ -23,8 +23,9 @@ namespace AlasKeramat.Core
             Vector3 p=cam.transform.position;
             bool aktif=!WorldTerrainGenerator.DiBawahTanah(p.y) && p.y<WorldTerrainGenerator.SampleHeight(p.x,p.z)+18f;
             float malam=URPAtmosphereAndWeather.Malam01(jam);
-            float tebal=w==WeatherState.KabutPagi?0.12f:w==WeatherState.HujanBadai?0.08f:0.045f;
-            Color warna=Color.Lerp(new Color(0.52f,0.59f,0.57f),new Color(0.12f,0.19f,0.25f),malam);warna.a=tebal;
+            bool maghrib=jam>=17.4f && jam<19.2f;
+            float tebal=w==WeatherState.KabutPagi?0.13f:w==WeatherState.HujanBadai?0.09f:maghrib?0.065f:0.048f;
+            Color warna=maghrib?new Color(0.68f,0.34f,0.22f):Color.Lerp(new Color(0.54f,0.62f,0.58f),new Color(0.14f,0.22f,0.29f),malam);warna.a=tebal;
             _blok.SetColor("_BaseColor",warna);
             float gridX=Mathf.Floor(p.x/16f)*16f,gridZ=Mathf.Floor(p.z/16f)*16f;
             for(int i=0;i<kartu.Length;i++)

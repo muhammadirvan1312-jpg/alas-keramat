@@ -33,13 +33,13 @@ namespace AlasKeramat.Core
         }
 
         // x eksposur (EV), y saturasi, z suhu WB, w intensitas vignette.
-        public static Vector4 TargetGua { get { return new Vector4(0.8f,-8f,-3f,0.2f); } }
+        public static Vector4 TargetGua { get { return new Vector4(0.95f,-6f,-2f,0.2f); } }
         public static Vector4 Target(float jam, WeatherState cuaca)
         {
-            Vector4 siang = new Vector4(0.2f, -3f, 2f, 0.16f);
-            Vector4 maghrib = new Vector4(0.25f, 5f, 18f, 0.22f);
-            Vector4 malam = new Vector4(0.45f, -14f, -14f, 0.24f);
-            Vector4 fajar = new Vector4(0.05f, 4f, 14f, 0.28f);
+            Vector4 siang = new Vector4(0.22f, -2f, 3f, 0.16f);
+            Vector4 maghrib = new Vector4(0.28f, 6f, 20f, 0.22f);
+            Vector4 malam = new Vector4(0.52f, -12f, -14f, 0.24f);
+            Vector4 fajar = new Vector4(0.12f, 5f, 14f, 0.25f);
             Vector4 v;
             if (jam >= 7f && jam < 16.5f) v = siang;
             else if (jam >= 16.5f && jam < 18f) v = Vector4.Lerp(siang, maghrib, (jam - 16.5f) / 1.5f);

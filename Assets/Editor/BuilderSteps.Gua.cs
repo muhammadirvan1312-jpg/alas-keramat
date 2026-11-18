@@ -19,7 +19,7 @@ namespace AlasKeramat.EditorTools
             public readonly List<ProcGua.Bukaan> bukaan = new List<ProcGua.Bukaan>();
             public GameObject go;
         }
-        class LorongGua { public readonly List<Vector3> titik = new List<Vector3>(); public float lebar, tinggi; public string nama; }
+        class LorongGua { public readonly List<Vector3> titik = new List<Vector3>(); public float lebar, tinggi; public string nama; public RuangGua a, b; }
 
         static readonly List<RuangGua> _ruang = new List<RuangGua>();
         static readonly List<LorongGua> _lorong = new List<LorongGua>();
@@ -71,7 +71,7 @@ namespace AlasKeramat.EditorTools
             float sa = ProcGua.SudutKe(a.pos, ka), sb = ProcGua.SudutKe(b.pos, kb);
             a.bukaan.Add(new ProcGua.Bukaan { sudut = sa, lebar = lebar + 0.8f, tinggi = tinggi + 0.3f });
             b.bukaan.Add(new ProcGua.Bukaan { sudut = sb, lebar = lebar + 0.8f, tinggi = tinggi + 0.3f });
-            var l = new LorongGua { lebar = lebar, tinggi = tinggi, nama = "Lorong_" + a.nama + "_" + b.nama };
+            var l = new LorongGua { lebar = lebar, tinggi = tinggi, nama = "Lorong_" + a.nama + "_" + b.nama, a = a, b = b };
             l.titik.Add(a.pos + ProcGua.Tepi(a.ukuran, a.kubah, sa, 0.85f));
             l.titik.AddRange(tengah);
             l.titik.Add(b.pos + ProcGua.Tepi(b.ukuran, b.kubah, sb, 0.85f));
@@ -104,6 +104,50 @@ namespace AlasKeramat.EditorTools
                 var go = Anak(_kompleks, l.nama);
                 for (int i = 0; i + 1 < l.titik.Count; i++) Segmen(go, l.titik[i], l.titik[i + 1], l.lebar, l.tinggi);
             }
+            PanggangGraf();
+            AudioKompleks();
+        }
+
+        // WaypointGraph: pusat ruang + titik lorong berjalan kaki (terowongan selam dilewati: musuh tidak menyelam).
+        static void PanggangGraf()
+        {
+            var titik = new List<Vector3>(); var sisi = new List<Vector2Int>();
+            Vector3 o = _kompleks.transform.position + Vector3.up * 0.3f;
+            for (int i = 0; i < _ruang.Count; i++) titik.Add(o + _ruang[i].pos);
+            foreach (var l in _lorong)
+            {
+                if (l.a == null || l.b == null) continue;
+                int awal = titik.Count;
+                for (int i = 0; i < l.titik.Count; i++) { titik.Add(o + l.titik[i]); if (i > 0) sisi.Add(new Vector2Int(awal + i - 1, awal + i)); }
+                sisi.Add(new Vector2Int(_ruang.IndexOf(l.a), awal));
+                sisi.Add(new Vector2Int(awal + l.titik.Count - 1, _ruang.IndexOf(l.b)));
+            }
+            var g = _kompleks.AddComponent<AlasKeramat.AI.WaypointGraph>();
+            g.Pasang(WorldCaveAndSaveManager.KompleksDi(_kompleks.transform.position), titik.ToArray(), sisi.ToArray());
+            EditorUtility.SetDirty(g);
+        }
+
+        // Dengung + tetes air per kompleks (resep dari versi T10a ChatGPT), WAV 12 s berulang.
+        static void AudioKompleks()
+        {
+            const int sr = 22050, detik = 12;
+            int id = (int)WorldCaveAndSaveManager.KompleksDi(_kompleks.transform.position);
+            var s = new float[sr * detik]; var acak = new System.Random(100 + id);
+            for (int i = 0; i < s.Length; i++)
+            {
+                float t = (float)i / sr, fade = Mathf.Min(1f, Mathf.Min(t, detik - t) * 2f);
+                float hum = id == 1 ? Mathf.Sin(t * 2f * Mathf.PI * 48f) + Mathf.Sin(t * 2f * Mathf.PI * 50.5f)
+                    : id == 2 ? Mathf.Sin(t * 2f * Mathf.PI * 50f) + 0.3f * Mathf.Sin(t * 2f * Mathf.PI * 100f)
+                    : Mathf.Sin(t * 2f * Mathf.PI * 40f) * (0.5f + 0.5f * Mathf.Sin(t * 2f * Mathf.PI / 1.4f));
+                float tetes = id == 1 ? Mathf.Sin(t * 2f * Mathf.PI * 1700f) * Mathf.Exp(-Mathf.Repeat(t, 1.3f) * 32f) : 0f;
+                s[i] = fade * (hum * 0.035f + tetes * 0.06f + ((float)acak.NextDouble() - 0.5f) * 0.003f);
+            }
+            string path = FolderGua + "/ambien_ug" + id + ".wav";
+            System.IO.File.WriteAllBytes(path, WavWriter.Encode(s, sr));
+            AssetDatabase.ImportAsset(path);
+            var a = _kompleks.AddComponent<AudioSource>();
+            a.clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path); a.loop = true; a.playOnAwake = false; a.spatialBlend = 0f; a.volume = AudioGua.Volume;
+            _kompleks.AddComponent<AudioGua>().Pasang((UndergroundId)id, a);
         }
 
         static void Segmen(GameObject induk, Vector3 p, Vector3 q, float lebar, float tinggi)
@@ -199,7 +243,8 @@ namespace AlasKeramat.EditorTools
             var go = Anak(induk, nama);
             go.transform.localPosition = posLokal;
             var l = go.AddComponent<Light>();
-            l.type = LightType.Point; l.color = warna; l.range = jangkau; l.intensity = kuat * 2f; l.shadows = LightShadows.None;
+            bool gua = _kompleks != null;
+            l.type = LightType.Point; l.color = warna; l.range = jangkau * (gua ? 1.4f : 1f); l.intensity = kuat * 2f; l.shadows = LightShadows.None;
             return l;
         }
 

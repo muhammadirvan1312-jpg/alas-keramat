@@ -46,28 +46,39 @@ namespace AlasKeramat.Core
                     }
             }
 
-            // Kartu daun dua sisi (quad) dengan sel atlas 2x2.
-            public void Kartu(Vector3 pusat, Vector3 kanan, Vector3 atas, int sel, Color warna)
+            // Kartu daun dua sisi (quad) dengan sel atlas 2x2 dan sedikit lengkungan + AO ke pusat tajuk.
+            public void Kartu(Vector3 pusat, Vector3 kanan, Vector3 atas, int sel, Color warna, Vector3 pusatTajuk)
             {
                 float u0 = (sel % 2) * 0.5f, v0 = (sel / 2) * 0.5f;
+                Vector3 keluar = (pusat - pusatTajuk);
+                Vector3 nKeluar = keluar.sqrMagnitude > 0.001f ? keluar.normalized : Vector3.up;
                 Vector3 nrm = Vector3.Cross(kanan, atas).normalized;
-                Vector3 nAtas = (nrm + Vector3.up * 0.8f).normalized; // normal condong ke atas agar tajuk tidak gelap
+                Vector3 nAtas = (nrm * 0.35f + nKeluar * 0.55f + Vector3.up * 0.55f).normalized;
+                Vector3 tekuk = nKeluar * (kanan.magnitude * 0.16f);
                 int i = v.Count;
-                v.Add(pusat - kanan - atas); v.Add(pusat + kanan - atas); v.Add(pusat + kanan + atas); v.Add(pusat - kanan + atas);
+                v.Add(pusat - kanan - atas - tekuk); v.Add(pusat + kanan - atas - tekuk); v.Add(pusat + kanan + atas + tekuk); v.Add(pusat - kanan + atas + tekuk);
                 for (int k = 0; k < 4; k++) { n.Add(nAtas); c.Add(warna); }
                 uv.Add(new Vector2(u0, v0)); uv.Add(new Vector2(u0 + 0.5f, v0)); uv.Add(new Vector2(u0 + 0.5f, v0 + 0.5f)); uv.Add(new Vector2(u0, v0 + 0.5f));
                 daun.Add(i); daun.Add(i + 2); daun.Add(i + 1); daun.Add(i); daun.Add(i + 3); daun.Add(i + 2);
             }
 
-            // Gumpalan daun: banyak kartu berorientasi acak di sekitar pusat.
+            // Gumpalan daun: kartu berlapis dari inti gelap (AO) ke pucuk terang menghadap luar.
             public void Gumpal(System.Random r, Vector3 pusat, float rad, int kartu, float ukuran, int sel)
             {
                 for (int k = 0; k < kartu; k++)
                 {
-                    Vector3 off = Random3(r) * rad * 0.7f; off.y *= 0.6f;
-                    Vector3 kanan = Random3(r).normalized * ukuran, atas = Vector3.Cross(kanan, Random3(r)).normalized * ukuran;
-                    float g = 0.75f + (float)r.NextDouble() * 0.35f;
-                    Kartu(pusat + off, kanan, atas, sel, new Color(g, g, g, 1f));
+                    Vector3 arah = Random3(r);
+                    if (arah.sqrMagnitude < 0.001f) arah = Vector3.up;
+                    arah.Normalize();
+                    float lapis = Mathf.Pow((float)r.NextDouble(), 0.65f);
+                    Vector3 off = new Vector3(arah.x * rad * 0.8f, (arah.y * 0.55f + 0.15f) * rad, arah.z * rad * 0.8f) * lapis;
+                    Vector3 tangen = Vector3.Cross(arah, Mathf.Abs(arah.y) > 0.9f ? Vector3.right : Vector3.up).normalized;
+                    Vector3 bitangen = Vector3.Cross(tangen, arah).normalized;
+                    float putar = (float)r.NextDouble() * Mathf.PI * 2f;
+                    Vector3 kanan = (tangen * Mathf.Cos(putar) + bitangen * Mathf.Sin(putar)) * (ukuran * Mathf.Lerp(1.08f, 0.86f, lapis));
+                    Vector3 atas = (-tangen * Mathf.Sin(putar) + bitangen * Mathf.Cos(putar) + Vector3.up * 0.25f).normalized * (ukuran * Mathf.Lerp(1.08f, 0.86f, lapis));
+                    float ao = Mathf.Lerp(0.58f, 1.06f, lapis) * (0.88f + (float)r.NextDouble() * 0.22f);
+                    Kartu(pusat + off, kanan, atas, sel, new Color(ao, ao, ao, 1f), pusat);
                 }
             }
 
@@ -83,7 +94,8 @@ namespace AlasKeramat.Core
                     Vector3 q = pangkal + arah * panjang * t2 + Vector3.down * lengkung * t2 * t2;
                     Vector3 tengah = (p + q) * 0.5f;
                     float w = lebar * Mathf.Sin(Mathf.PI * Mathf.Lerp(t, t2, 0.5f) * 0.9f + 0.15f);
-                    Kartu(tengah, samping * w, (q - p) * 0.5f, sel, Color.white);
+                    float ao = Mathf.Lerp(0.72f, 1.04f, t2);
+                    Kartu(tengah, samping * w, (q - p) * 0.5f, sel, new Color(ao, ao, ao, 1f), pangkal);
                     p = q;
                 }
             }
@@ -141,9 +153,19 @@ namespace AlasKeramat.Core
             {
                 float t = (float)i / seg;
                 jalur[i] = new Vector3(lean.x * t * tinggi + Mathf.Sin(t * 5f) * 0.15f, t * tinggi * 0.92f, lean.z * t * tinggi);
-                rad[i] = rBatang * Mathf.Lerp(1.35f, 0.35f, t) * (i == 0 ? 1.4f : 1f);
+                rad[i] = rBatang * Mathf.Lerp(1.38f, 0.32f, t) * (i == 0 ? 1.55f : i == 1 ? 1.15f : 1f);
             }
-            b.Tabung(jalur, rad, sisi, new Color(0.55f, 0.55f, 0.55f, 1f));
+            b.Tabung(jalur, rad, sisi, new Color(0.52f, 0.52f, 0.52f, 1f));
+            if (kurang >= 1f)
+            {
+                for (int ak = 0; ak < 4; ak++)
+                {
+                    float a = ak * Mathf.PI * 0.5f + R(r, -0.25f, 0.25f);
+                    Vector3 arah = new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a));
+                    b.Tabung(new[] { new Vector3(0f, rBatang * 2.8f, 0f) + arah * (rBatang * 0.45f), new Vector3(0f, rBatang * 1.1f, 0f) + arah * (rBatang * 1.35f), arah * (rBatang * 2.3f) },
+                        new[] { rBatang * 0.36f, rBatang * 0.48f, rBatang * 0.22f }, 4, new Color(0.45f, 0.45f, 0.45f, 1f));
+                }
+            }
             int nGumpal = Mathf.Max(3, Mathf.RoundToInt(gumpal * Mathf.Lerp(0.6f, 1f, kurang)));
             for (int g = 0; g < nGumpal; g++)
             {

@@ -81,9 +81,11 @@ namespace AlasKeramat.EditorTools
             var matDaunHangus = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_DaunHangus", ProcTex.Hex("#3A3028"), 0f, 0.1f, texAtlas, null, null, SurfaceMode.Cutout, 0.5f), ShaderDaun, 0.015f, 0.1f));
             var kulit = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu.png");
             var kulitN = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu_n.png");
-            var matKulit = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_KulitPohon", Color.white, 0f, 0.15f, kulit, kulitN), ShaderKulit, 0.02f, 0f));
-            var matPalem = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangPalem", ProcTex.Hex("#B8AE9C"), 0f, 0.15f, kulit, kulitN), ShaderKulit, 0.035f, 0f));
-            var matBambu = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_Bambu", ProcTex.Hex("#9DA85A"), 0f, 0.35f, AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kayu.png")), ShaderKulit, 0.05f, 0f));
+            var palem = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/palem.png");
+            var palemN = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/palem_n.png");
+            var matKulit = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_KulitPohon", Color.white, 0f, 0.18f, kulit, kulitN), ShaderKulit, 0.02f, 0f));
+            var matPalem = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangPalem", Color.white, 0f, 0.2f, palem != null ? palem : kulit, palemN != null ? palemN : kulitN), ShaderKulit, 0.035f, 0f));
+            var matBambu = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_Bambu", ProcTex.Hex("#9DA85A"), 0f, 0.35f, AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kayu.png"), AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kayu_n.png")), ShaderKulit, 0.05f, 0f));
             var matHangus = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangHangus", ProcTex.Hex("#2A2420"), 0f, 0.1f, kulit, kulitN), ShaderKulit, 0.01f, 0f));
 
             var data = ScriptableObject.CreateInstance<VegetationData>();

@@ -131,18 +131,20 @@ Shader "AlasKeramat/Daun"
             d.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(i.positionCS);
             d.shadowMask = half4(1,1,1,1);
             SurfaceData s = (SurfaceData)0;
-            s.albedo = c.rgb;
+            half ao = saturate(0.55h + 0.45h * i.color.g) * saturate(0.7h + 0.3h * d.normalWS.y);
+            s.albedo = c.rgb * (0.82h + 0.18h * ao);
             s.alpha = 1;
             s.metallic = 0;
-            s.smoothness = _Smoothness;
-            s.occlusion = 1;
+            s.smoothness = saturate(_Smoothness + 0.18h * saturate(d.normalWS.y));
+            s.occlusion = ao;
             s.normalTS = half3(0,0,1);
             half4 lit = UniversalFragmentPBR(d, s);
             Light sun = GetMainLight(d.shadowCoord, d.positionWS, half4(1,1,1,1));
-            half back = saturate(dot(-d.normalWS, sun.direction));
-            half towardSun = pow(saturate(dot(-d.viewDirectionWS, sun.direction)), 4);
-            lit.rgb += s.albedo * sun.color * (_Translucency * back * (0.25h + 0.75h * towardSun))
-                * sun.distanceAttenuation * sun.shadowAttenuation;
+            half back = saturate(dot(-d.normalWS, sun.direction) * 0.75h + 0.25h);
+            half towardSun = pow(saturate(dot(-d.viewDirectionWS, sun.direction)), 3);
+            half rim = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3) * 0.22h;
+            lit.rgb += s.albedo * sun.color * ((_Translucency * back * (0.35h + 0.65h * towardSun) + rim)
+                * sun.distanceAttenuation * lerp(0.35h, 1.0h, sun.shadowAttenuation));
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;
         }

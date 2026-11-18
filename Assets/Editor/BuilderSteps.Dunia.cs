@@ -56,14 +56,15 @@ namespace AlasKeramat.EditorTools
             var hasil = new TerrainLayer[LapisTerrain.Length];
             for (int i = 0; i < LapisTerrain.Length; i++)
             {
+                float ubin = i == L_Batu ? 6.5f : i == L_Pasir ? 5f : i == L_Daun ? 4.2f : i == L_Rumput ? 3.6f : 3.2f;
                 var tl = new TerrainLayer
                 {
                     diffuseTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + ".png"),
                     normalMapTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + "_n.png"),
                     maskMapTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + "_mask.png"),
-                    normalScale = 0.75f,
-                    tileSize = new Vector2(i==L_Daun?4f:3f, i==L_Daun?4f:3f),
-                    smoothness = i == L_Lumpur ? 0.35f : 0.1f
+                    normalScale = i == L_Batu ? 1.15f : i == L_Rumput || i == L_Daun ? 0.95f : 0.85f,
+                    tileSize = new Vector2(ubin, ubin),
+                    smoothness = i == L_Lumpur ? 0.42f : i == L_Batu ? 0.18f : 0.12f
                 };
                 if (tl.diffuseTexture == null) throw new Exception("tekstur terrain hilang: " + LapisTerrain[i]);
                 string p = FolderTerrain + "/L_" + LapisTerrain[i] + ".terrainlayer";
@@ -126,9 +127,13 @@ namespace AlasKeramat.EditorTools
                     for (int i = 0; i < nL; i++) w[i] *= 1f - Mathf.Max(kTanah, kBatu);
                     w[L_Tanah] += kTanah * (1f - kBatu);
                     w[L_Batu] += kBatu;
-                    float variasi = Mathf.PerlinNoise(wx * 0.05f + 3f, wz * 0.05f + 7f);
-                    w[L_Daun] *= 0.6f + 0.8f * variasi;
-                    w[L_Rumput] *= 1.4f - 0.8f * variasi;
+                    float variasi = Mathf.PerlinNoise(wx * 0.045f + 3f, wz * 0.045f + 7f);
+                    float mikro = Mathf.PerlinNoise(wx * 0.18f + 19f, wz * 0.18f + 41f);
+                    float lembap = Mathf.Clamp01((6f - WorldTerrainGenerator.SampleHeight(wx, wz)) * 0.08f);
+                    w[L_Daun] *= 0.55f + 0.75f * variasi + 0.25f * mikro;
+                    w[L_Rumput] *= 1.35f - 0.65f * variasi + 0.2f * (1f - mikro);
+                    w[L_Tanah] += 0.12f * Mathf.Clamp01(mikro - 0.58f);
+                    w[L_Lumpur] += 0.18f * lembap * (1f - kBatu);
                     float total = 0f;
                     for (int i = 0; i < nL; i++) total += w[i];
                     if (total < 1e-4f) { w[L_Tanah] = 1f; total = 1f; }

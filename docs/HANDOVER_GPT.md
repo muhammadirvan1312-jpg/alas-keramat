@@ -1,6 +1,6 @@
-# Serah Terima ke ChatGPT (dari Claude, 18 Nov 2026)
+# Serah Terima ke AI Berikutnya (ChatGPT / Gemini Jules) - dari Claude, 18 Nov 2026
 
-Mulai sekarang ChatGPT mengerjakan proyek ini sendiri: menulis kode, membuka PR, membaca hasil CI, dan memperbaiki error. Pengguna non-coder, bicara santai (gua/lu), mau hasil bagus tapi hemat.
+Mulai sekarang AI berikutnya (ChatGPT atau Gemini/Jules) mengerjakan proyek ini sendiri: menulis kode, membuka PR, membaca hasil CI, dan memperbaiki error. Pengguna non-coder, bicara santai (gua/lu), mau hasil bagus tapi hemat.
 
 ## 1. Status sekarang
 - Tahap SELESAI & ter-merge ke `main`: T1-T6c, T7a (tempur inti + Sekte), T7b (hantu, raid, totem), T7c (gore), T7d (senjata jarak, stealth), T8 (Kang Deden 15 perintah + 20 catatan, Ningsih + Trust), T9 (Sutradara Teror 25 kejadian, penjadwal kejadian dunia). PR terakhir #23.
@@ -39,6 +39,18 @@ Bila merah: baca file itu, perbaiki di cabang yang sama, push lagi (run lama oto
 - Gore: satu sumber `GoreSystem.Tingkat` (PlayerPrefs `ak_gore`). Layer dari `GameLayers` (Player 7, Companion 8, Enemy 9, Interactable 10, Tree 11, LogPhysics 12, Structure 13, Projectile 16).
 - Interaksi: `IInteractable` di layer Interactable (prompt KAPITAL Bahasa Indonesia, mendukung tahan via HoldDuration). Companion turunan `CompanionDasar`. Teror lewat `PenjadwalTeror` (logika murni, mudah diuji).
 - Musuh/hantu: `NusantaraEnemyAndMutantAI` (13 arketipe di `StatMusuh`), `HantuAI` (Pocong/Kuntilanak/Banaspati), `EnemyDirector` (+ `.Malam`, `.Jadwal`; ISaveable "musuh"). Paku Kuning sudah dipakai `HantuAI` (TANCAPKAN PAKU).
+
+## 6c. Kerja lokal di Google Antigravity (laptop pengguna)
+- Tidak perlu Unity di laptop: hakimnya tetap AK CI di GitHub. Butuh Git + Python 3 saja.
+- Clone: `git clone https://github.com/muhammadirvan1312-jpg/alas-keramat.git`. Login GitHub (saat push pertama) dilakukan PENGGUNA sendiri lewat jendela browser; jangan pernah menulis token/password ke file.
+- G3: `git checkout tahap-G3 && git merge origin/main`, kerjakan, `python3 Tools/cek_statis.py` sampai 0 masalah, commit, `git push`. PR #26 otomatis ikut ter-update (tidak perlu PR baru). Tahap baru: buat cabang `tahap-<KODE>`, push, lalu buka PR lewat tombol "Compare & pull request" di GitHub (atau `gh pr create` bila gh terpasang).
+- Hasil CI (20-30 menit setelah push): `git fetch origin ci-hasil` lalu baca `git show origin/ci-hasil:tahap-G3/ringkasan.md` dan `.../nusantara_selftest.txt`; foto di `tahap-G3/foto_kualitas/`.
+- Laptop pengguna adalah laptop kantor: jangan menginstal hal yang tidak perlu, jangan mengubah pengaturan sistem.
+
+## 6b. Update 18 Nov sore (TERBARU)
+- T10d SUDAH selesai & ter-merge (PR #27): intro Kabut Merah, Heli SAR, Pilihan Takdir, Ending A/B, statistik, Mode Sandbox + Golok Api Pusaka. WaypointGraph & audio gua dari PR #24 sudah dipasang; cahaya gua dinaikkan. APK: `uji-20261118-0648`.
+- PR #24 (T10a lama ChatGPT) = DUPLIKAT, tutup saja. PR #26 (G3 visual ChatGPT) belum hijau: lanjutkan/perbaiki di cabang `tahap-G3` (merge `main` dulu karena main sudah berubah).
+- Tahap berikutnya: **G3 visual** (prioritas pengguna), lalu **T11** (menu, pengaturan, kesulitan, performa). Sisa opsional T10: Peta Kertas + kabut, Rendra UG2, S01-S04.
 
 ## 6a. Update 18 Nov siang
 - T10a-c SUDAH selesai & ter-merge (PR #25, CI hijau sekali jalan): gua/bunker/kuil, M05-M13, 12 lore + jurnal, boss Genderuwo + Ki Rogo, altar + siege. Lanjut dari **T10d** (cutscene, heli SAR, Pilihan Takdir, Ending A/B, statistik, sandbox, musik).
