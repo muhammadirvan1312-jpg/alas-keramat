@@ -112,8 +112,8 @@ namespace AlasKeramat.Player
         void Gerak(float dt)
         {
             Vector3 p = transform.position;
-            float? air = WorldTerrainGenerator.GetWaterLevelAt(p.x, p.z);
-            float dasar = WorldTerrainGenerator.SampleHeight(p.x, p.z);
+            float? air = WorldTerrainGenerator.AirDi(p);
+            float dasar = WorldTerrainGenerator.Lantai(p);
             bool airDalam = air.HasValue && air.Value - dasar > AirMinRenang && p.y + _mata < air.Value + 0.1f;
             Berenang = airDalam;
             if (Berenang && Jongkok) Jongkok = false;

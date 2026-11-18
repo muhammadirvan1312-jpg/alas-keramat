@@ -78,6 +78,7 @@ namespace AlasKeramat.AI
         protected void CekTeleport(float dt)
         {
             if (_andi == null) return;
+            if (WorldTerrainGenerator.DiBawahTanah(_andi.transform.position.y)) { _tTakTerlihat = 0f; return; } // tetap di permukaan selama Andi di gua
             float d = Datar(_andi.transform.position - transform.position).magnitude;
             if (d <= JarakTeleport || TerlihatKamera()) { _tTakTerlihat = 0f; return; }
             _tTakTerlihat += dt;
@@ -112,7 +113,7 @@ namespace AlasKeramat.AI
         protected void Menuju(Vector3 tujuan, float laju, float dt)
         {
             float d = Datar(tujuan - transform.position).magnitude;
-            if (d < JarakLangsung || _pf == null || _pf.Grid == null) { Gerak(tujuan, laju, dt); return; }
+            if (d < JarakLangsung || _pf == null || _pf.Grid == null || WorldTerrainGenerator.DiBawahTanah(transform.position.y)) { Gerak(tujuan, laju, dt); return; }
             _tJalur -= dt;
             if (!_menungguJalur && (_tJalur <= 0f || Datar(tujuan - _tujuanJalur).sqrMagnitude > 25f))
             {
@@ -145,8 +146,8 @@ namespace AlasKeramat.AI
             _vy = _cc.isGrounded ? -2f : _vy - Gravitasi * dt;
             _cc.Move((datar + Vector3.up * _vy) * dt);
             Vector3 p = transform.position;
-            float h = WorldTerrainGenerator.SampleHeight(p.x, p.z);
-            float? air = WorldTerrainGenerator.GetWaterLevelAt(p.x, p.z);
+            float h = WorldTerrainGenerator.Lantai(p);
+            float? air = WorldTerrainGenerator.AirDi(p);
             float lantai = h;
             if (air.HasValue && air.Value - _cc.height * 0.75f > h) lantai = air.Value - _cc.height * 0.75f; // berenang
             if (p.y < lantai - 0.05f) { transform.position = new Vector3(p.x, lantai, p.z); _vy = 0f; }

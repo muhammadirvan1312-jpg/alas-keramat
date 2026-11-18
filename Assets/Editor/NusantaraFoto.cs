@@ -28,6 +28,8 @@ namespace AlasKeramat.EditorTools
         // Daftar shot aktif (T2a: dunia). Tahap berikutnya menambah shot (12 money shot 19 §8).
         public static readonly Shot[] ShotAktif =
         {
+            new Shot("t10_01_gua_lumut", new Vector3(-623f, -78.2f, -595f), new Vector3(-608f, -78.5f, -602f), 0.5f, 70f),
+            new Shot("t10_02_kubah_akar_boss", new Vector3(600f, -76.5f, -597f), new Vector3(600f, -77.5f, -578f), 0.5f, 70f),
             new Shot("t7_02_pocong_kuntilanak_malam", new Vector3(-58f, 1.7f, -312f), new Vector3(-57f, 1.6f, -297f), 21f, 60f),
             new Shot("t7_01_sekte_ritual_desa", new Vector3(533f, 1.7f, 190f), new Vector3(540f, 1.0f, 200f), 10f, 60f),
             new Shot("t4_01_galeri_karakter", new Vector3(56f, 1.7f, -386f), new Vector3(56f, 1.1f, -376f), 10f, 75f),
@@ -110,8 +112,9 @@ namespace AlasKeramat.EditorTools
                     try
                     {
                         if (atmos != null) { atmos.SetCuaca((WeatherState)s.cuaca, true); atmos.Terapkan(s.jam); }
-                        var pos = new Vector3(s.posisi.x, TinggiDasar(s.posisi.x, s.posisi.z) + s.posisi.y, s.posisi.z);
-                        var tgt = new Vector3(s.target.x, TinggiDasar(s.target.x, s.target.z) + s.target.y, s.target.z);
+                        bool bawah = WorldTerrainGenerator.DiBawahTanah(s.posisi.y); // T10: shot gua memakai Y absolut
+                        var pos = new Vector3(s.posisi.x, (bawah ? 0f : TinggiDasar(s.posisi.x, s.posisi.z)) + s.posisi.y, s.posisi.z);
+                        var tgt = new Vector3(s.target.x, (bawah ? 0f : TinggiDasar(s.target.x, s.target.z)) + s.target.y, s.target.z);
                         cam.transform.SetPositionAndRotation(pos, Quaternion.LookRotation(tgt - pos));
                         cam.fieldOfView = s.fov;
                         if (veg != null) veg.Gambar(cam);

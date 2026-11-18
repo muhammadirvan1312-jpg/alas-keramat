@@ -145,6 +145,7 @@ namespace AlasKeramat.Building
         // Tidur: malam -> sampai 06:00; siang -> tidur sebentar 2 jam. Istirahat (tenda) memulihkan tanpa melompat ke pagi bila siang.
         void Tidur(bool kasur)
         {
+            if (AlasKeramat.AI.RitualAltar.SiegeBerlangsung) { GameEvents.RaiseToast("Tidak bisa tidur saat ritual berlangsung!"); return; }
             var jam = GameServices.Get<TimeOfDayClock>();
             var v = GameServices.Get<AndiVitalsAndSanity>();
             if (jam == null) return;
@@ -152,6 +153,7 @@ namespace AlasKeramat.Building
             float lama = (j >= 18f || j < JamBangun) ? (j >= 18f ? 24f - j + JamBangun : JamBangun - j) : TidurSiang;
             jam.Maju(lama);
             if (v != null) v.Pulihkan(lama, kasur);
+            if (kasur && lama > TidurSiang) { var n = GameServices.Get<AlasKeramat.AI.NingsihVirginiaAI>(); if (n != null) n.UbahTrust(AlasKeramat.AI.NingsihVirginiaAI.KejadianTrust.TidurDiSaung); } // 08: +3 tidur di Saung
             GameEvents.RaiseToast(lama > TidurSiang ? "Kamu tidur sampai pagi" : "Kamu beristirahat sejenak");
             var simpan = GameServices.Get<Core.SaveSystem>();
             if (simpan != null) simpan.Simpan();

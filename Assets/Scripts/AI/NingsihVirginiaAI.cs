@@ -45,7 +45,7 @@ namespace AlasKeramat.AI
 
         int HariIni() { return _jam != null ? _jam.Hari : 1; }
         bool Dekat(float r) { return _andi != null && Datar(_andi.transform.position - transform.position).magnitude <= r; }
-        bool Tampak { get { return Sikap != SikapNingsih.DiSarang; } }
+        public bool Tampak { get { return Sikap != SikapNingsih.DiSarang; } }
 
         public void UbahTrust(KejadianTrust k) { Trust = Terapkan(Trust, k); }
 
