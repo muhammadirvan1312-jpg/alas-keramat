@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-18 05:21:32
+Laporan Builder Alas Keramat - 2026-11-18 06:43:06
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -64,8 +64,10 @@ Laporan Builder Alas Keramat - 2026-11-18 05:21:32
 [LULUS] 7t. Gua, bunker & kuil bawah tanah
   - Ritual Beringin: altar 3 lubang, siege 60 detik (9 gelombang), cahaya emas, suar hijau SAR; layar lore + jurnal, bar boss
 [LULUS] 7u. Ritual Beringin, siege & lore
+  - Ending: Heli SAR, layar intro/Pilihan Takdir/Ending A-B/statistik, Mode Sandbox
+[LULUS] 7v. Heli SAR, ending & statistik
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2591
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 2613
 [LULUS] 9. Simpan scene
-Durasi: 117.1 detik
+Durasi: 147.5 detik
 HASIL: SEMUA LANGKAH LULUS

@@ -1,6 +1,6 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (2591 = 2591)
+[LULUS] Idempoten: jumlah objek sama (2613 = 2613)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
@@ -117,7 +117,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 243 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 274 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -194,6 +194,12 @@
 [LULUS] Siege 06 §11: 0 s 4 Abdi + 1 Pemimpin, 15 s 3 Pocong, 25 s 2 Wanita + 1 Buto, 35 s Kunti, 45 s 2 Banaspati + 2 Pocong
 [LULUS] Titik spawn siege di cincin 35-45 m
 [LULUS] Arena: Genderuwo, Ki Rogo, 8 tungku, altar ritual
+[LULUS] WaypointGraph 3 kompleks; UG1 R0 -> R4 lewat jalan pintas (13 titik)
+[LULUS] Audio gua per kompleks
+[LULUS] Statistik 04 §7.10 (9 baris, km 1 desimal)
+[LULUS] Heli SAR hanya datang setelah siege & sebelum ending
+[LULUS] Teks ending A/B 04 §7.8-7.9
+[LULUS] Scene: Heli SAR, layar sinema, statistik
 [LULUS] Malam Darah tambahan: malam berikutnya setelah paku
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
