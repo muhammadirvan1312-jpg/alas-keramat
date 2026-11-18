@@ -41,13 +41,17 @@ namespace AlasKeramat.EditorTools
             else RendererReal(root,"Tubuh",mesh,bones,materials,ShadowCastingMode.On);
             root.AddComponent<PenandaModelReal>().Sumber="MakeHuman CC0 hm08";
             var face=root.AddComponent<AlasKeramat.AI.FaceController>();face.Pasang(root.GetComponentsInChildren<SkinnedMeshRenderer>(),jenis==J.Deden?"Kang Deden":jenis==J.KiRogo?"Ki Rogo":jenis.ToString());EditorUtility.SetDirty(face);
-            AksesoriReal(jenis,bones);
+            AksesoriReal(jenis,bones,andi);
             JumlahKarakterReal++;return true;
         }
-        static void AksesoriReal(J j,Transform[] bones)
+        static void AksesoriReal(J j,Transform[] bones,bool firstPerson)
         {
             Transform head=bones[Kerangka.Head];
-            if(j==J.Andi)DetailReal(head,"TahiLalatVisual",new Vector3(-0.032f,0.07f,0.082f),Vector3.one*0.006f,"#2C2118",PrimitiveType.Sphere);
+            if(j==J.Andi)
+            {
+                var mole=DetailReal(head,"TahiLalatVisual",new Vector3(-0.032f,0.07f,0.082f),Vector3.one*0.006f,"#2C2118",PrimitiveType.Sphere);
+                if(firstPerson)mole.GetComponent<Renderer>().shadowCastingMode=ShadowCastingMode.ShadowsOnly;
+            }
             if(j==J.Deden)
             {
                 DetailReal(head,"IketDeden",new Vector3(0f,0.14f,-0.005f),new Vector3(0.19f,0.012f,0.18f),"#514A3C",PrimitiveType.Cylinder);
@@ -59,11 +63,11 @@ namespace AlasKeramat.EditorTools
                 for(int i=0;i<5;i++)DetailReal(head,"Kantil",new Vector3(0.065f+Mathf.Cos(i*1.25f)*0.008f,0.075f+Mathf.Sin(i*1.25f)*0.012f,-0.05f),new Vector3(0.008f,0.024f,0.006f),"#DDD5AE",PrimitiveType.Sphere);
             }
         }
-        static void DetailReal(Transform parent,string nama,Vector3 pos,Vector3 scale,string warna,PrimitiveType bentuk)
+        static GameObject DetailReal(Transform parent,string nama,Vector3 pos,Vector3 scale,string warna,PrimitiveType bentuk)
         {
             var go=GameObject.CreatePrimitive(bentuk);go.name=nama;go.transform.SetParent(parent,false);go.transform.localPosition=pos;go.transform.localScale=scale;
             Object.DestroyImmediate(go.GetComponent<Collider>());
-            string path=FolderMat+"/M_DetailReal_"+warna.Substring(1)+".mat";var mat=AssetDatabase.LoadAssetAtPath<Material>(path);if(mat==null)mat=MatPolos("M_DetailReal_"+warna.Substring(1),warna);go.GetComponent<Renderer>().sharedMaterial=mat;
+            string path=FolderMat+"/M_DetailReal_"+warna.Substring(1)+".mat";var mat=AssetDatabase.LoadAssetAtPath<Material>(path);if(mat==null)mat=MatPolos("M_DetailReal_"+warna.Substring(1),warna);go.GetComponent<Renderer>().sharedMaterial=mat;return go;
         }
         static Mesh BagiReal(Mesh source,bool kepalaLengan)
         {

@@ -68,7 +68,7 @@ namespace AlasKeramat.EditorTools
         static void LangkahVegetasi()
         {
             EnsureFolder(FolderVeg);
-            var atlas = ProcPohon.AtlasDaun(1024);
+            var atlas = AtlasDaunCampuran();
             string pAtlas = FolderVeg + "/atlas_daun.png";
             SimpanPng(atlas, pAtlas);
             AssetDatabase.Refresh();

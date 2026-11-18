@@ -17,6 +17,22 @@ namespace AlasKeramat.EditorTools
             var imp=(TextureImporter)AssetImporter.GetAtPath(path);imp.alphaIsTransparency=true;imp.mipMapsPreserveCoverage=true;imp.alphaTestReferenceValue=0.4f;imp.SaveAndReimport();
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
+        static Texture2D AtlasDaunCampuran()
+        {
+            var atlas=ProcPohon.AtlasDaun(1024);var foto=BacaFoto("DaunAsli","Albedo");var mask=BacaFoto("DaunAsli","Alpha");
+            if(foto==null || mask==null)return atlas;
+            int size=atlas.width,half=size/2;var px=atlas.GetPixels();
+            for(int y=0;y<size;y++)for(int x=0;x<size;x++)
+            {
+                int cell=x/half+(y/half)*2;if(cell==2)continue; // palem/bambu mempertahankan bentuk daun panjang
+                float u=(x%half+0.5f)/half,v=(y%half+0.5f)/half;
+                if(cell==1) { float old=u;u=v;v=1f-old; }
+                Color c=foto.GetPixelBilinear(u,v);float alpha=mask.GetPixelBilinear(u,v).r;
+                if(cell==3)c=new Color(c.grayscale*0.25f,c.grayscale*0.19f,c.grayscale*0.12f);
+                c.a=alpha;px[y*size+x]=c;
+            }
+            atlas.SetPixels(px);atlas.Apply();return atlas;
+        }
         static Material MaterialDaunFoto(string slot)
         {
             var tex=DaunFoto(slot);if(tex==null)return null;

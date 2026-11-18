@@ -67,6 +67,13 @@ jobs:
           python -m pip install --quiet requests
           python Tools/ambil_aset.py --semua --keluar Assets/ThirdParty
 
+      - name: Cache Blender resmi 4.3.2
+        id: cacheblender
+        uses: actions/cache@v4
+        with:
+          path: .tools/blender43/archive.tar.xz
+          key: ak-blender-4.3.2-linux-x64
+
       - name: Panggang visual G3 (MakeHuman CC0 dan LOD pohon)
         id: visual
         if: steps.cekproyek.outputs.ada == '1'
@@ -74,10 +81,18 @@ jobs:
         run: |
           if ! python Tools/visual/siapkan.py --cek; then
             sudo apt-get update -qq
-            sudo apt-get install --no-install-recommends -y blender python3-numpy > /tmp/ak-blender-install.log
+            sudo apt-get install --no-install-recommends -y libxi6 libxrender1 libxfixes3 libxxf86vm1 libgl1 > /tmp/ak-blender-install.log
+            python Tools/visual/pasang_blender.py
           fi
           mkdir -p Logs/ci
           python Tools/visual/siapkan.py 2>&1 | tee Logs/ci/visual.log
+
+      - name: Simpan arsip Blender sebelum uji Unity
+        if: steps.visual.outcome == 'success' && steps.cacheblender.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .tools/blender43/archive.tar.xz
+          key: ak-blender-4.3.2-linux-x64
 
       - name: Simpan cache hasil panggang visual
         if: steps.visual.outcome == 'success' && steps.cacheaset.outputs.cache-hit != 'true'
@@ -200,13 +215,20 @@ jobs:
           path: Assets/ThirdParty
           key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}
 
+      - name: Pulihkan arsip Blender resmi
+        uses: actions/cache/restore@v4
+        with:
+          path: .tools/blender43/archive.tar.xz
+          key: ak-blender-4.3.2-linux-x64
+
       - name: Pastikan aset foto siap
         shell: bash
         run: |
           python3 Tools/ambil_aset.py --semua --wajib
           if ! python3 Tools/visual/siapkan.py --cek; then
             sudo apt-get update -qq
-            sudo apt-get install --no-install-recommends -y blender python3-numpy > /tmp/ak-blender-foto.log
+            sudo apt-get install --no-install-recommends -y libxi6 libxrender1 libxfixes3 libxxf86vm1 libgl1 > /tmp/ak-blender-foto.log
+            python3 Tools/visual/pasang_blender.py
           fi
           python3 Tools/visual/siapkan.py
 
