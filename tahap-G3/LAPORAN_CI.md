@@ -1,15 +1,9 @@
 # LAPORAN CI
-- Commit: 23da31d8afb6f3feba8c112da4327513870e3bc8
+- Commit: ef15bef2a913cc7438341a00ad18948d3de884c6
 - Hasil aset visual: success
-- Hasil langkah Unity: failure
-- Waktu: 2026-11-18T13:14:14Z
+- Hasil langkah Unity: cancelled
+- Waktu: 2026-11-18T13:37:47Z
 
-[LULUS] pengaturan pemain
-[LULUS] builder
-[GAGAL] self-test: RunAll melaporkan gagal
-[LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
-[LULUS] build APK
+Ringkasan dari NusantaraCI tidak ada (kemungkinan error kompilasi sebelum kode berjalan).
 
 ## Baris error yang ditemukan
-[Error] [AK][GAGAL] self-test: [GAGAL] T11: Pengaturan tersimpan & dimuat kembali dari PlayerPrefs
-[Error] [AK][GAGAL] self-test: System.Exception: RunAll melaporkan gagal
