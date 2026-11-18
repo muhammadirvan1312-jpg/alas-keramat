@@ -60,6 +60,15 @@ jobs:
           path: Assets/ThirdParty
           key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}
 
+      - name: Pulihkan aset impor beserta GUID
+        if: steps.cekproyek.outputs.ada == '1'
+        uses: actions/cache/restore@v4
+        with:
+          path: Assets/ThirdParty
+          key: imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-${{ github.run_id }}
+          restore-keys: |
+            imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-
+
       - name: Unduh aset CC0 & mocap sesuai lock
         if: steps.cekproyek.outputs.ada == '1' && hashFiles('Tools/ambil_aset.py') != ''
         shell: bash
@@ -143,16 +152,20 @@ jobs:
           path: Library
           key: Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-${{ github.run_id }}
 
+      - name: Simpan aset impor beserta GUID
+        if: always() && steps.build.outcome != 'skipped' && steps.build.outcome != 'cancelled'
+        uses: actions/cache/save@v4
+        with:
+          path: Assets/ThirdParty
+          key: imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-${{ github.run_id }}
+
       - name: Simpan scene untuk audit foto
         if: steps.build.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: scene-foto-${{ github.run_id }}
           path: |
-            Assets/Generated
-            Assets/Generated.meta
-            Assets/Scenes
-            Assets/ThirdParty
+            Assets
             ProjectSettings
           retention-days: 2
 
