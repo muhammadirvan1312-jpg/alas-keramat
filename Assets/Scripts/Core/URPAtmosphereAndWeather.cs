@@ -13,6 +13,23 @@ namespace AlasKeramat.Core
         [SerializeField] Light moon;
         [SerializeField] Material skybox;
 
+        public bool DalamRuangan { get; private set; }
+        public void SetDalamRuangan(bool aktif)
+        {
+            DalamRuangan=aktif;
+            if(aktif)
+            {
+                if(sun!=null)sun.intensity=0f;
+                if(moon!=null)moon.intensity=0f;
+                if(kilat!=null)kilat.intensity=0f;
+                if(_hujan!=null)_hujan.Stop(true,ParticleSystemStopBehavior.StopEmittingAndClear);
+                RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
+                RenderSettings.ambientLight=ProcTex.Hex("#0A0E12");
+                RenderSettings.fog=true; RenderSettings.fogColor=Color.black; RenderSettings.fogDensity=0.06f;
+                RenderSettings.skybox=null;
+            }
+            else Terapkan(_jam!=null?_jam.Jam:9f);
+        }
         TimeOfDayClock _jam;
         float _jamTerapan = -1f;
 
@@ -34,7 +51,7 @@ namespace AlasKeramat.Core
 
         void Update()
         {
-            if (_jam == null) return;
+            if (_jam == null || DalamRuangan) return;
             UpdateCuaca();
             // Update visual 50x per jam game cukup halus; saat transisi cuaca diperbarui tiap frame.
             if (Mathf.Abs(_jam.Jam - _jamTerapan) > 0.02f || _transisi < 1f) Terapkan(_jam.Jam);
@@ -67,6 +84,7 @@ namespace AlasKeramat.Core
 
         public void Terapkan(float jam)
         {
+            if(DalamRuangan)return;
             SiapkanGradien();
             _jamTerapan = jam;
             float u = Mathf.Repeat(jam, 24f) / 24f;

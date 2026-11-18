@@ -112,8 +112,8 @@ namespace AlasKeramat.Player
                     renangCepat = _ctrl != null && _ctrl.Berenang && _ctrl.SedangLari,
                     napasHabis = _ctrl != null && _ctrl.Berenang && _ctrl.Napas <= 0f,
                     dekatApi = _dekatApi || Building.ApiUnggun.AdaApiDekat(transform.position, Building.ApiUnggun.JarakHangat),
-                    berteduh = _berteduh || CekAtap(),
-                    cahaya = _dekatApi || Building.ApiUnggun.AdaApiDekat(transform.position, 6f) || (_kiri != null && _kiri.OborMenyala),
+                    berteduh = transform.position.y < -40f || _berteduh || CekAtap(),
+                    cahaya = _dekatApi || Building.ApiUnggun.AdaApiDekat(transform.position, 6f) || (_kiri != null && (_kiri.OborMenyala || _kiri.SenterMenyala)),
                     biome = WorldTerrainGenerator.GetBiome(transform.position.x, transform.position.z)
                 };
                 Tick(k, Time.deltaTime);

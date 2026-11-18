@@ -15,7 +15,7 @@ namespace AlasKeramat.Player
         public void RestoreJson(string json)
         {
             var d=JsonUtility.FromJson<PosisiAndiT6>(json); if(d==null)return;
-            TurunRakit(); Duduk=false; Teleport(d.posisi); _yaw=d.yaw; _pitch=d.pitch;
+            LepasZipline(); GerakDikunci=false; TurunRakit(); Duduk=false; Teleport(d.posisi); _yaw=d.yaw; _pitch=d.pitch;
             transform.rotation=Quaternion.Euler(0f,_yaw,0f);
         }
         public void Teleport(Vector3 posisi)

@@ -60,7 +60,7 @@ namespace AlasKeramat.Core
                 _t = 0f;
                 if (_jam == null) _jam = GameServices.Get<TimeOfDayClock>();
                 if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
-                _target = Target(_jam != null ? _jam.Jam : TimeOfDayClock.JamMulai, _atmos != null ? _atmos.Cuaca : WeatherState.Cerah);
+                _target = _atmos!=null && _atmos.DalamRuangan ? new Vector4(-0.1f,-10f,-5f,0.35f) : Target(_jam != null ? _jam.Jam : TimeOfDayClock.JamMulai, _atmos != null ? _atmos.Cuaca : WeatherState.Cerah);
             }
             _skrg = Vector4.Lerp(_skrg, _target, Time.deltaTime * Lerp);
             if (_ca != null) { _ca.postExposure.value = _skrg.x; _ca.saturation.value = _skrg.y; }

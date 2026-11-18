@@ -39,6 +39,7 @@ namespace AlasKeramat.Player
         {
             var cam = _ctrl != null ? _ctrl.Kamera : null;
             if (cam == null) return;
+            if (_ctrl.SedangZipline) { LepasTahan(); _target=null; _air=false; _bangun=false; Prompt="LEPAS"; return; }
             if (_ctrl.RakitAktif != null || _ctrl.Duduk) { LepasTahan(); _target=null; _air=false; _bangun=false; Prompt=_ctrl.Duduk ? "BERDIRI" : "TURUN"; return; }
             _target = null; _air = false;
             RaycastHit hit;
@@ -69,6 +70,7 @@ namespace AlasKeramat.Player
 
         static bool CariAir(Vector3 asal, Vector3 arah)
         {
+            if(asal.y < -40f)return false;
             for (float d = LangkahAir; d <= Jarak; d += LangkahAir)
             {
                 Vector3 q = asal + arah * d;
@@ -83,6 +85,7 @@ namespace AlasKeramat.Player
         {
             try
             {
+                if (_ctrl != null && _ctrl.SedangZipline) { _ctrl.LepasZipline(); return; }
                 if (_ctrl != null && _ctrl.RakitAktif != null) { _ctrl.TurunRakit(); return; }
                 if (_ctrl != null && _ctrl.Duduk) { _ctrl.Berdiri(); return; }
                 if (_bangun && _pembangun != null) { _pembangun.PasangSekarang(); return; }

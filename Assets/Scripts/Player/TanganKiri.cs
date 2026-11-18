@@ -14,6 +14,8 @@ namespace AlasKeramat.Player
         [SerializeField] Light lampu;
 
         public bool OborMenyala { get; private set; }
+        public bool SenterMenyala { get; private set; }
+        public void PadamkanObor() { if(!OborMenyala)return; OborMenyala=false; if(lampu!=null)lampu.enabled=false; }
         TikarPandan3DInventory _inv;
 
         public void Pasang(Light l) { lampu = l; }
@@ -44,10 +46,18 @@ namespace AlasKeramat.Player
 
         public void ToggleObor()
         {
-            if (OborMenyala) { OborMenyala = false; if (lampu != null) lampu.enabled = false; return; }
+            if (OborMenyala || SenterMenyala) { OborMenyala = false; SenterMenyala=false; if (lampu != null) lampu.enabled = false; return; }
+            if (_inv == null) _inv = GameServices.Get<TikarPandan3DInventory>();
+            if(_inv!=null && _inv.Punya(ItemID.SenterTaktis))
+            {
+                SenterMenyala=true;
+                if(lampu!=null) { lampu.type=LightType.Spot; lampu.spotAngle=65f; lampu.range=30f; lampu.intensity=4f; lampu.color=Color.white; lampu.enabled=true; }
+                return;
+            }
             if (!BisaObor()) { GameEvents.RaiseToast("Kamu tidak punya obor"); return; }
             if (!_inv.Punya(ItemID.KorekGas)) { GameEvents.RaiseToast("Butuh Korek Gas untuk menyalakan obor"); return; }
             OborMenyala = true;
+            if(lampu!=null) { lampu.type=LightType.Point; lampu.range=JangkauanObor; lampu.color=WarnaObor; }
             if (lampu != null) lampu.enabled = true;
         }
 

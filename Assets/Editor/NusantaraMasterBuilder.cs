@@ -85,6 +85,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7q. Senjata jarak, elak, stealth", 0.96f, LangkahJarak);
                 Langkah("7r. Companion Kang Deden & Ningsih", 0.962f, LangkahCompanion);
                 Langkah("7s. Sutradara Teror & dunia hidup", 0.964f, LangkahTeror);
+                Langkah("7t. Gua & Bunker", 0.970f, LangkahGua);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

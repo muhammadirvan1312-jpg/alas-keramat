@@ -163,7 +163,7 @@ namespace AlasKeramat.Core
                 Snapshot == AmbienSnapshot.Gua ? 2000f : ClearHz;
             gain = Mathf.MoveTowards(gain, target, Time.deltaTime / Transition);
             cutoff = Mathf.MoveTowards(cutoff, hz, ClearHz * Time.deltaTime / Transition);
-            float volume = gain * rain * ProceduralAudioSynth.VolMaster;
+            float volume = gain * rain * ProceduralAudioSynth.VolMaster * (p.y < -40f ? 0f : 1f);
             beds[active].volume = BedVolume * blend * volume;
             beds[1 - active].volume = BedVolume * (1f - blend) * volume;
             if (blend >= 1f) beds[1 - active].Stop();

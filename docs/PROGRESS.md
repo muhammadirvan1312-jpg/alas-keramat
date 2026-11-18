@@ -2,7 +2,7 @@
 File ini DIPERBARUI CODEX di akhir setiap sesi (Hukum H14). Pengguna boleh membaca, tidak perlu mengedit.
 
 ## Status Saat Ini
-AUTOPILOT_TAHAP_BERIKUTNYA: T10
+AUTOPILOT_TAHAP_BERIKUTNYA: T10b
 
 > Serah terima: mulai 18 Nov 2026 dikerjakan ChatGPT, baca `docs/HANDOVER_GPT.md`.
 
@@ -56,6 +56,8 @@ AUTOPILOT_TAHAP_BERIKUTNYA: T10
 
 | T6c | 2026-11-17 | Ditulis, cek statis lulus; menunggu AK CI | Building: BagianStruktur, ShoulderLogAndFreeformBuilder (+Lanjut/+Simpan), PotongCelah, GuidebookBlueprintsAndCooking (+Lokasi), CetakBiru, BangunanBlueprint (+V3), FungsiBangunan (+V3), IdentitasBangunan, JeratanPunji, ApiUnggun, PanciMasak, VegetationManager, KayuFisik. Core: SimpanDunia, SaveSystem, QuestManager. Player: AndiFPSController (+Dunia), InteraksiAndi, DedenTutorial, CombatAndLeftHandController, AndiVitalsAndSanity. Inventory: WadahItem. UI: TanganTahan, PetiUI, HUDMisi, TouchControls. Editor: BuilderSteps.T6c/Blueprint/Interaksi, NusantaraMasterBuilder, NusantaraSelfTest, PemeriksaanT6c. AI: WildAnimalAI (nama enum internal unik) | Cek statis 0 masalah; self-test Edit Mode ditambahkan: 26 ID unik & item/biaya valid, bongkar -> KayuFisik papan, sudut atap/tangga, struktur/graf/HP/isi peti identik setelah muat dua kali, objek v3 bercollider, urutan M01-M04 & progres paralel | BONGKAR tahan 1 s; ATAP/TANGGA & anak tangga papan; Batu Besar dan Potong Celah 3 tebasan; 12 blueprint v3; peti 40 unit dengan panel transfer; rakit joystick 2,5 m/s + TURUN; simpan dunia, bahu, kayu fisik, koper, pohon, posisi dan misi; SIMPAN/MUAT HUD. Kompilasi/Play/Android belum dijalankan lokal (Unity tidak tersedia). |
 
+| T10a | Gua & Bunker: UG1–UG3 pada Y=-80, mesh/collider interior dan waypoint, fade 1,2 s, mode ruangan gelap & reverb/ambien, galian Cangkul 4×, kartu D1, terowongan Rebreather 60 s, pintas satu arah, Lorong Angin & senter, zipline Jurang Kapur, loot alat/Paku 1–2 & persistensi gerbang/tali. `BuilderSteps.Gua/.GuaHias`, `WorldCaveAndSaveManager`, `GerbangGua`, `WaypointGraph`, `AudioGua`, `LorongAnginGua`, `JangkarZipline`, `AndiFPSController.Zipline`, `PemeriksaanT10a`. | `python3 Tools/cek_statis.py`: 0 masalah. Self-test EditMode ditambahkan (3 kompleks, lantai/graph, masuk-keluar, gerbang/save, air & zipline). Kompilasi/Builder/APK menunggu AK CI PR tahap-T10a; belum mengklaim uji main HP. |
+
 Catatan spesifikasi: v3.0 (tahap T1–T11 + T12 opsional; T9 = Teror & Dunia Hidup).
 
 ## Keputusan Teknis Baru
@@ -88,3 +90,9 @@ _(Daftar checklist yang belum lulus beserta dugaan penyebab.)_
 
 ## Tahap Berikutnya
 _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
+
+### Batas tahap T10a / sambungan berikutnya
+- T10b: misi/lore/jurnal; pickup T10a belum memicu dokumen lore. T10c: musuh/set-piece bunker, Rendra, boss, Paku 3 & pintu keluar boss. T10d: ending/cutscene/peta. UG4–UG6 dan poles visual lanjut tetap di luar tahap ini sesuai HANDOVER.
+- Pintu masuk memakai TANGAN, fade 1,2 s tiap arah; pintas UG1 hanya didorong dari sisi altar. Keluar utama setiap kompleks selalu tersedia sehingga pemain tidak terkunci sebelum boss dibuat.
+- Tombol cahaya lama memilih Senter Taktis setelah item didapat; angin hanya memadamkan obor. Cangkul disediakan dekat rumah kepala desa.
+- Dunia bawah tanah memakai raycast lantai & air lokal; tidak memakai tinggi/air permukaan. Waypoint dipanggang untuk rute gua; AI penghuni dihubungkan pada T10c.

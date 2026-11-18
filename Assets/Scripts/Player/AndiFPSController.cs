@@ -72,7 +72,7 @@ namespace AlasKeramat.Player
             try
             {
                 BacaKeyboardMouse();
-                if (!GerakKendaraan(Time.deltaTime)) Gerak(Time.deltaTime);
+                if (!GerakDikunci && !GerakZipline(Time.deltaTime) && !GerakKendaraan(Time.deltaTime)) Gerak(Time.deltaTime);
             }
             catch (System.Exception e) { Debug.LogError("[AK][AndiFPSController] " + e.Message); }
         }
@@ -112,8 +112,12 @@ namespace AlasKeramat.Player
         void Gerak(float dt)
         {
             Vector3 p = transform.position;
-            float? air = WorldTerrainGenerator.GetWaterLevelAt(p.x, p.z);
-            float dasar = WorldTerrainGenerator.SampleHeight(p.x, p.z);
+            bool gua = p.y < -40f;
+            var kompleks = GameServices.Get<AlasKeramat.World.WorldCaveAndSaveManager>();
+            float? air = gua ? (kompleks != null ? kompleks.AirPada(p) : null) : WorldTerrainGenerator.GetWaterLevelAt(p.x, p.z);
+            float dasar = gua ? DasarGua(p) : WorldTerrainGenerator.SampleHeight(p.x, p.z);
+            var inv = GameServices.Get<AlasKeramat.Inventory.TikarPandan3DInventory>();
+            NapasMaks = inv != null && inv.Punya(ItemID.AlatSelamRebreather) ? 60f : NapasNormal;
             bool airDalam = air.HasValue && air.Value - dasar > AirMinRenang && p.y + _mata < air.Value + 0.1f;
             Berenang = airDalam;
             if (Berenang && Jongkok) Jongkok = false;
