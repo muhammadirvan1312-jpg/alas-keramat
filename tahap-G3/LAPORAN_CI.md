@@ -1,19 +1,9 @@
 # LAPORAN CI
-- Commit: 42a27d7ce41d2896207516cbd72a720e9f59e7b6
-- Hasil aset visual: failure
-- Hasil langkah Unity: skipped
-- Waktu: 2026-11-18T06:18:57Z
+- Commit: ec47209f017af8ac26542d12ed90a5e2cff47db5
+- Hasil aset visual: success
+- Hasil langkah Unity: failure
+- Waktu: 2026-11-18T08:32:35Z
 
 Ringkasan dari NusantaraCI tidak ada (kemungkinan error kompilasi sebelum kode berjalan).
 
 ## Baris error yang ditemukan
-/home/runner/work/alas-keramat/alas-keramat/.tools/blender43/blender-4.3.2-linux-x64/blender: error while loading shared libraries: libSM.so.6: cannot open shared object file: No such file or directory
-Traceback (most recent call last):
-  File "/home/runner/work/alas-keramat/alas-keramat/Tools/visual/siapkan.py", line 23, in <module>
-    if __name__=='__main__':sys.exit(main())
-                                     ^^^^^^
-  File "/home/runner/work/alas-keramat/alas-keramat/Tools/visual/siapkan.py", line 19, in main
-    subprocess.run([blender,'-b','-t','2','--python-exit-code','1','--python',str(ROOT/script)],cwd=ROOT,check=True)
-  File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/subprocess.py", line 571, in run
-    raise CalledProcessError(retcode, process.args,
-subprocess.CalledProcessError: Command '['/home/runner/work/alas-keramat/alas-keramat/.tools/blender43/blender-4.3.2-linux-x64/blender', '-b', '-t', '2', '--python-exit-code', '1', '--python', '/home/runner/work/alas-keramat/alas-keramat/Tools/karakter/buat_karakter.py']' returned non-zero exit status 127.
