@@ -6,7 +6,7 @@ namespace AlasKeramat.Core
     public partial class URPAtmosphereAndWeather : MonoBehaviour
     {
         public const float SudutUtara = -35f;
-        const float IntensitasMatahari = 1.42f, IntensitasBulan = 0.38f;
+        const float IntensitasMatahari = 1.42f, IntensitasBulan = 0.45f;
         const float KabutSiang = 0.00052f, KabutMalam = 0.00145f, KabutMaghrib = 0.00115f; // dunia 2 km: jarak pandang siang ~ 1,5 km
 
         [SerializeField] Light sun;
