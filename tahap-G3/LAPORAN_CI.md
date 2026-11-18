@@ -1,13 +1,9 @@
 # LAPORAN CI
-- Commit: 1986adce35cfd8d8e423b87b6f589fbdc0fc0c6c
+- Commit: 82b40680ee191a3013b7fe9342b9c4c4d75a55c1
 - Hasil aset visual: success
-- Hasil langkah Unity: success
-- Waktu: 2026-11-18T15:37:14Z
+- Hasil langkah Unity: cancelled
+- Waktu: 2026-11-18T16:26:53Z
 
-[LULUS] pengaturan pemain
-[LULUS] builder
-[LULUS] self-test
-[LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
-[LULUS] build APK
+Ringkasan dari NusantaraCI tidak ada (kemungkinan error kompilasi sebelum kode berjalan).
 
 ## Baris error yang ditemukan

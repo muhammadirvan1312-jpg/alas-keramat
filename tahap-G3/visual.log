@@ -1,7 +1,14 @@
-[AK] {'name': 'Andi', 'triangles': 26673, 'height': 1.75, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
-[AK] {'name': 'Deden', 'triangles': 26674, 'height': 1.68, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
-[AK] {'name': 'Ningsih', 'triangles': 23065, 'height': 1.55, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
-[AK] {'name': 'KiRogo', 'triangles': 25384, 'height': 1.71, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'Andi', 'triangles': 27274, 'height': 1.75, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'Deden', 'triangles': 27275, 'height': 1.68, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'Ningsih', 'triangles': 23500, 'height': 1.55, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'KiRogo', 'triangles': 25986, 'height': 1.71, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'Pocong', 'triangles': 6380, 'height': 1.74, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'Kuntilanak', 'triangles': 28620, 'height': 1.68, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'Genderuwo', 'triangles': 32287, 'height': 2.35, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'SektePria', 'triangles': 25985, 'height': 1.73, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'SekteWanita', 'triangles': 25208, 'height': 1.61, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'SekteButo', 'triangles': 27275, 'height': 2.04, 'materials': 5, 'maxInfluences': 4, 'source': 'MakeHuman CC0'}
+[AK] {'name': 'Banaspati', 'triangles': 5236, 'materials': 2, 'source': 'MakeHuman CC0 skull'}
 Blender 4.3.2 (hash 32f5fdce0a0a built 2024-12-17 01:31:14)
 
 Blender quit
