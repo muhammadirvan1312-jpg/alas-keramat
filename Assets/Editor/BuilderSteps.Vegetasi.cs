@@ -74,6 +74,7 @@ namespace AlasKeramat.EditorTools
             AssetDatabase.Refresh();
             var imp = (TextureImporter)AssetImporter.GetAtPath(pAtlas);
             imp.alphaIsTransparency = true; imp.mipmapEnabled = true; imp.wrapMode = TextureWrapMode.Clamp; imp.maxTextureSize = 1024;
+            imp.mipMapsPreserveCoverage=true;imp.alphaTestReferenceValue=0.5f;imp.filterMode=FilterMode.Trilinear;
             imp.SaveAndReimport();
             var texAtlas = AssetDatabase.LoadAssetAtPath<Texture2D>(pAtlas);
 

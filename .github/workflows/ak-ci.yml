@@ -59,6 +59,8 @@ jobs:
         with:
           path: Assets/ThirdParty
           key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}
+          restore-keys: |
+            thirdparty-
 
       - name: Pulihkan aset impor beserta GUID
         if: steps.cekproyek.outputs.ada == '1'
@@ -68,6 +70,7 @@ jobs:
           key: imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-${{ github.run_id }}
           restore-keys: |
             imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-
+            imported-aset-
 
       - name: Unduh aset CC0 & mocap sesuai lock
         if: steps.cekproyek.outputs.ada == '1' && hashFiles('Tools/ambil_aset.py') != ''

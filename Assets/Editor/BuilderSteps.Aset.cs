@@ -149,7 +149,8 @@ namespace AlasKeramat.EditorTools
                 }
                 var c = AssetDatabase.LoadAssetAtPath<AudioClip>(p);
                 if (c == null) throw new Exception("klip gagal diimpor: " + p);
-                _klip[nama] = c;
+                var rekaman=RekamanCC0(nama);
+                _klip[nama] = rekaman!=null?rekaman:c;
             }
             Catat(_klip.Count + " klip WAV");
         }

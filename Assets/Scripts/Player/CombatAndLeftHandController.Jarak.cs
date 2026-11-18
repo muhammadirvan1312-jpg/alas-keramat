@@ -100,6 +100,8 @@ namespace AlasKeramat.Player
         }
 
         // ---------- Input tombol TEBAS ----------
+        public void BatalkanTebas() { _tTekan=-1f;_menarik=false; }
+
         public void TekanTebas()
         {
             _tTekan = Time.unscaledTime;

@@ -24,9 +24,9 @@ namespace AlasKeramat.EditorTools
             var pSedang = MenuScreens.AmbilPreset(PresetGrafis.Sedang);
             var pTinggi = MenuScreens.AmbilPreset(PresetGrafis.Tinggi);
             var pUltra = MenuScreens.AmbilPreset(PresetGrafis.Ultra);
-            cek("T11: Preset grafis 11 §7.2 (Rendah 0.7/0m, Sedang 0.85/35m, Tinggi 1.0/60m, Ultra 90m)",
+            cek("T11: Preset grafis 11 §7.2 (Rendah 0.7/0m, Sedang 0.95/35m, Tinggi 1.0/60m, Ultra 90m)",
                 Mathf.Approximately(pRendah.renderScale, 0.7f) && Mathf.Approximately(pRendah.bayangan, 0f) && pRendah.targetFps == 30
-                && Mathf.Approximately(pSedang.renderScale, 0.85f) && Mathf.Approximately(pSedang.bayangan, 35f) && pSedang.hdr
+                && Mathf.Approximately(pSedang.renderScale, 0.95f) && Mathf.Approximately(pSedang.bayangan, 35f) && pSedang.hdr
                 && Mathf.Approximately(pTinggi.renderScale, 1.0f) && Mathf.Approximately(pTinggi.bayangan, 60f) && pTinggi.targetFps == 60
                 && pUltra.bayangan >= 90f);
 

@@ -17,7 +17,7 @@ namespace AlasKeramat.UI
     [Serializable]
     public struct DataPresetGrafis
     {
-        public float renderScale, bayangan, farKamera, kabutTambah, pengaliVeg;
+        public float renderScale, bayangan, farKamera, kabutTambah, pengaliVeg, detailVeg, rumput;
         public int cascade, msaa, targetFps;
         public bool hdr, bloom;
     }
@@ -59,7 +59,7 @@ namespace AlasKeramat.UI
             "ALAS KERAMAT: SONS OF NUSANTARA\n\n" +
             "Pengarah Permainan & Arsitektur Dunia\nTim Alas Keramat Studio\n\n" +
             "Sistem Prosedural, AI Folklor & Audio Sintetis\nNusantara Engine Pipeline\n\n" +
-            "Aset Visual CC0 & Animasi\nPoly Haven, ambientCG, MakeHuman CC0, CMU Mocap\n\n" +
+            "Aset Visual CC0 & Animasi\nPoly Haven, ambientCG, MakeHuman CC0, CMU Mocap\n\nRekaman Alam & Foley CC0\nTinyWorlds, Wolfgang_, qubodup / pdsounds.org\n\n" +
             "Terima kasih telah bermain dan menjaga Alas Keramat.";
 
         [SerializeField] GameObject panelMenuUtama, panelJeda, panelPengaturan, panelCara, panelKredit, panelSlot, panelDebug;
@@ -105,13 +105,13 @@ namespace AlasKeramat.UI
             switch (p)
             {
                 case PresetGrafis.Rendah:
-                    return new DataPresetGrafis { renderScale = 0.7f, bayangan = 0f, cascade = 1, msaa = 1, hdr = false, bloom = false, farKamera = 140f, kabutTambah = 0.006f, pengaliVeg = 0.65f, targetFps = 30 };
+                    return new DataPresetGrafis { renderScale = 0.7f, bayangan = 0f, cascade = 1, msaa = 1, hdr = false, bloom = false, farKamera = 140f, kabutTambah = 0.006f, pengaliVeg = 0.65f, detailVeg = 0.55f, rumput = 0.15f, targetFps = 30 };
                 case PresetGrafis.Tinggi:
-                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 60f, cascade = 2, msaa = 2, hdr = true, bloom = true, farKamera = 260f, kabutTambah = 0f, pengaliVeg = 1.35f, targetFps = 60 };
+                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 60f, cascade = 2, msaa = 2, hdr = true, bloom = true, farKamera = 260f, kabutTambah = 0f, pengaliVeg = 1.35f, detailVeg = 1f, rumput = 0.7f, targetFps = 60 };
                 case PresetGrafis.Ultra:
-                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 90f, cascade = 2, msaa = 4, hdr = true, bloom = true, farKamera = 360f, kabutTambah = 0f, pengaliVeg = 1.75f, targetFps = 60 };
+                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 90f, cascade = 2, msaa = 4, hdr = true, bloom = true, farKamera = 360f, kabutTambah = 0f, pengaliVeg = 1.75f, detailVeg = 1.25f, rumput = 1f, targetFps = 30 };
                 default:
-                    return new DataPresetGrafis { renderScale = 0.85f, bayangan = 35f, cascade = 1, msaa = 1, hdr = true, bloom = true, farKamera = 200f, kabutTambah = 0.002f, pengaliVeg = 1.0f, targetFps = 30 };
+                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 1, hdr = true, bloom = false, farKamera = 200f, kabutTambah = 0.002f, pengaliVeg = 1.0f, detailVeg = 0.7f, rumput = 0.4f, targetFps = 30 };
             }
         }
 
@@ -137,6 +137,15 @@ namespace AlasKeramat.UI
             MuatPengaturan();
             TerapkanPengaturan();
             SembunyikanSemua();
+        }
+
+        void Start() { TerapkanPengaturan(); }
+
+        public static PresetGrafis RekomendasiPreset(int ramMb, int vramMb)
+        {
+            if(ramMb>0 && ramMb<6000)return PresetGrafis.Rendah;
+            if(ramMb>=12000 && vramMb>=4000)return PresetGrafis.Tinggi;
+            return PresetGrafis.Sedang;
         }
 
         void OnEnable() { GameEvents.OnPlayerDamaged += SaatKenaDamage; }
@@ -195,7 +204,7 @@ namespace AlasKeramat.UI
         // ---------- Pengaturan (PlayerPrefs + Runtime) ----------
         public void MuatPengaturan()
         {
-            Preset = (PresetGrafis)Mathf.Clamp(PlayerPrefs.GetInt(PrefPreset, (int)PresetGrafis.Sedang), 0, 3);
+            Preset = (PresetGrafis)Mathf.Clamp(PlayerPrefs.GetInt(PrefPreset, (int)RekomendasiPreset(SystemInfo.systemMemorySize,SystemInfo.graphicsMemorySize)), 0, 3);
             TargetFps = PlayerPrefs.GetInt(GameBootstrap.PrefFps, AmbilPreset(Preset).targetFps);
             Sensitivitas = Mathf.Clamp(PlayerPrefs.GetFloat(PrefSens, 1f), 0.5f, 2f);
             BalikY = PlayerPrefs.GetInt(PrefBalikY, 0) != 0;
@@ -271,7 +280,17 @@ namespace AlasKeramat.UI
             }
 
             var veg = GameServices.Get<VegetationManager>();
-            if (veg != null) veg.PengaliJarak = dp.pengaliVeg;
+            if (veg != null) { veg.PengaliJarak = dp.pengaliVeg; veg.PengaliDetail = dp.detailVeg; }
+            var serasah=GameServices.Get<SerasahHutan>();
+            if(serasah!=null)serasah.Kepadatan=dp.rumput;
+            if(Application.isPlaying)
+            {
+                var volume=UnityEngine.Object.FindFirstObjectByType<Volume>();
+                Bloom bloom;
+                if(volume!=null && volume.profile!=null && volume.profile.TryGet(out bloom))bloom.active=dp.bloom;
+                foreach(var tanah in Terrain.activeTerrains)tanah.heightmapPixelError=Preset==PresetGrafis.Rendah?18f:Preset==PresetGrafis.Sedang?10f:5f;
+                if(cam!=null)cam.GetUniversalAdditionalCameraData().antialiasing=AntialiasingMode.FastApproximateAntialiasing;
+            }
 
             var andi = GameServices.Get<AndiFPSController>();
             if (andi != null)
@@ -498,6 +517,16 @@ namespace AlasKeramat.UI
             BunyiKlik();
         }
 
+        public void SiklusVolumeKategori(int kategori)
+        {
+            if(kategori<0 || kategori>2)return;
+            float v=kategori==0?VolEfek:kategori==1?VolAmbien:VolMusik;
+            v=v>0.9f?0.7f:v>0.6f?0.4f:v>0.2f?0f:1f;
+            if(kategori==0)VolEfek=v;else if(kategori==1)VolAmbien=v;else VolMusik=v;
+            TerapkanPengaturan();SimpanPengaturan();
+            GameEvents.RaiseToast("VOLUME "+((AudioCategory)kategori).ToString().ToUpperInvariant()+" "+(v*100f).ToString("0")+"%");
+        }
+
         public void SiklusFov()
         {
             Fov = Fov < 68f ? 70f : Fov < 74f ? 78f : Fov < 82f ? 85f : 62f;
@@ -639,6 +668,8 @@ namespace AlasKeramat.UI
             }
         }
 
+        public void SalinLaporanHp() { var d=GameServices.Get<DiagnostikMain>();if(d!=null)d.SalinLaporan(); }
+
         public void TutupDebug() { if (panelDebug != null) panelDebug.SetActive(false); }
 
         public void DebugIsiVital()
@@ -713,6 +744,8 @@ namespace AlasKeramat.UI
                 foreach (var b in diag.EntriTerakhir) { if (n == 0) s += "\nLog: "; if (n++ < 2) s += b + " "; }
             }
             teksDebug.text = s;
+            var diagnostik=GameServices.Get<DiagnostikMain>();
+            if(diagnostik!=null)teksDebug.text+="\n"+diagnostik.Ringkas;
         }
 
         static void BunyiKlik()

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Unduh aset CC0 yang dikunci SHA256; tidak ada panggilan internet saat game dimainkan."""
+import io, zipfile
 import argparse, concurrent.futures, hashlib, json, os, struct, sys, time, urllib.request, zlib
 from pathlib import Path
 UA='AlasKeramatBuilder/1.0 (+github.com/muhammadirvan1312-jpg/alas-keramat)'
@@ -27,6 +28,9 @@ def unduh(entry,output):
         data=data[offset:offset+header[7]]
         if header[3]==8:data=zlib.decompress(data,-15)
         elif header[3]!=0:raise ValueError('Kompresi ZIP tidak didukung')
+    if 'zip_entry' in entry:
+        if hashlib.sha256(data).hexdigest()!=entry['archive_sha256']:raise ValueError('SHA256 arsip tidak cocok')
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:data=archive.read(entry['zip_entry'])
     if expected and hashlib.sha256(data).hexdigest()!=expected:raise ValueError('SHA256 tidak cocok')
     target.parent.mkdir(parents=True,exist_ok=True);temp=target.with_suffix(target.suffix+'.part');temp.write_bytes(data);temp.replace(target)
     return 'unduh'

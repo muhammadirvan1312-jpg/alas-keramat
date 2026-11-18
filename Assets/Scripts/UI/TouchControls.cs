@@ -5,6 +5,7 @@ using UnityEngine;
 namespace AlasKeramat.UI
 {
     // Penghubung kontrol sentuh -> AndiFPSController. Tombol memanggil method publik di sini (listener persisten dari Builder).
+    [DefaultExecutionOrder(100)]
     public class TouchControls : MonoBehaviour
     {
         [SerializeField] ZonaJoystick joystick;
@@ -39,6 +40,7 @@ namespace AlasKeramat.UI
         void Update()
         {
             if (_andi == null) { _andi = GameServices.Get<AndiFPSController>(); if (_andi == null) return; }
+            if (Time.timeScale <= 0f) { HentikanInput(); return; }
             if (joystick != null)
             {
                 bool aktif = joystick.Nilai.sqrMagnitude > 0.0001f;
@@ -49,6 +51,18 @@ namespace AlasKeramat.UI
             PerbaruiTangan();
             PerbaruiLabelTempur();
         }
+
+        public void HentikanInput()
+        {
+            if (joystick != null) joystick.ResetSentuh();
+            if (geser != null) geser.ResetSentuh();
+            if (_andi != null) { _andi.InputGerak = Vector2.zero; _andi.InputLihatPx = Vector2.zero; _andi.MintaLari = false; }
+            var tempur=GameServices.Get<CombatAndLeftHandController>();
+            if(tempur!=null){tempur.BatalkanTebas();tempur.TangkisLepas();}
+            _adaJoy = false;
+        }
+        void OnDisable() { HentikanInput(); }
+        void OnApplicationFocus(bool fokus) { if (!fokus) HentikanInput(); }
 
         void PerbaruiTangan()
         {
@@ -83,6 +97,7 @@ namespace AlasKeramat.UI
         // Sensitivitas 09 §3 dinyatakan per piksel referensi 1080p.
         static float SkalaLayar() { return Screen.height > 0 ? 1080f / Screen.height : 1f; }
 
+        public void GeserDariTombol(Vector2 delta) { if(_andi!=null && Time.timeScale>0f)_andi.InputLihatPx+=delta*SkalaLayar(); }
         public void TekanLompat()
         {
             var c = GameServices.Get<CombatAndLeftHandController>();

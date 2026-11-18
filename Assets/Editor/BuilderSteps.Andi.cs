@@ -56,6 +56,7 @@ namespace AlasKeramat.EditorTools
 
             // Kontrol sentuh: area geser (belakang) -> zona joystick -> tombol (depan).
             var kontrol = UIStretch(kanvas.gameObject, "Kontrol", Vector2.zero, Vector2.one);
+            kontrol.AddComponent<RuangAmanKontrol>();
             var geser = UIStretch(kontrol, "ZonaGeser", new Vector2(0.45f, 0f), Vector2.one);
             Transparan(geser);
             var zg = geser.AddComponent<ZonaGeser>();

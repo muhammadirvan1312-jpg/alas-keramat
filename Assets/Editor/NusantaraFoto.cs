@@ -91,7 +91,7 @@ namespace AlasKeramat.EditorTools
                 if (utama != null) { cam.CopyFrom(utama); utama.enabled = false; }
                 cam.allowHDR = true;
                 var dataCam = UnityEngine.Rendering.Universal.CameraExtensions.GetUniversalAdditionalCameraData(cam);
-                if (dataCam != null) dataCam.renderPostProcessing = true;
+                if (dataCam != null) { dataCam.renderPostProcessing = true; dataCam.antialiasing = UnityEngine.Rendering.Universal.AntialiasingMode.FastApproximateAntialiasing; }
                 var rt = new RenderTexture(Lebar, Tinggi, 24, RenderTextureFormat.ARGB32) { antiAliasing = 1 };
                 var atmos = UnityEngine.Object.FindFirstObjectByType<URPAtmosphereAndWeather>();
                 var volumeFoto=UnityEngine.Object.FindFirstObjectByType<UnityEngine.Rendering.Volume>();

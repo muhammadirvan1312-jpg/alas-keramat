@@ -8,10 +8,15 @@ namespace AlasKeramat.Building
     public class VegetationManager : MonoBehaviour, ISaveable
     {
         public const int MaksBatch = 1023;
+        public const int MaksRender = 511;
         [SerializeField] VegetationData data;
         [SerializeField] float pengaliJarak = 1f;
 
         readonly Plane[] _frustum = new Plane[6];
+        readonly Matrix4x4[] _dekat = new Matrix4x4[MaksBatch], _jauh = new Matrix4x4[MaksBatch];
+        public float PengaliDetail = 1f;
+        public int InstanceTerlihat { get; private set; }
+        public int SegitigaTerlihat { get; private set; }
         RenderParams[] _rpKayu, _rpDaun;
         bool _siap;
         Matrix4x4[][] _mat;                                   // salinan runtime (aset tidak diubah saat pohon ditebang)
@@ -127,6 +132,7 @@ namespace AlasKeramat.Building
             if (!_siap) return;
             GeometryUtility.CalculateFrustumPlanes(cam, _frustum);
             Vector3 posKam = cam.transform.position;
+            InstanceTerlihat = 0; SegitigaTerlihat = 0;
             for (int i = 0; i < data.sel.Length; i++)
             {
                 var s = data.sel[i];
@@ -134,15 +140,39 @@ namespace AlasKeramat.Building
                 float jarak = Vector3.Distance(posKam, s.pusat) - s.radius;
                 if (jarak > j.jarakMaks * pengaliJarak) continue;
                 if (!GeometryUtility.TestPlanesAABB(_frustum, new Bounds(s.pusat, Vector3.one * (s.radius * 2f + 30f)))) continue;
-                Mesh m = jarak > j.jarakLod1 * pengaliJarak && j.lod1 != null ? j.lod1 : j.lod0;
-                if (m == null) continue;
-                var rpK = _rpKayu[s.jenis]; rpK.camera = cam;
-                var rpD = _rpDaun[s.jenis]; rpD.camera = cam;
+                float batas = Mathf.Min(j.jarakMaks * pengaliJarak, cam.farClipPlane);
+                int dekat = 0, jauh = 0;
                 var mt = _mat[i];
-                int n = Mathf.Min(mt.Length, MaksBatch);
-                if (j.kayu != null && m.GetSubMesh(0).indexCount > 0) Graphics.RenderMeshInstanced(rpK, m, 0, mt, n);
-                if (j.daun != null && m.subMeshCount > 1 && m.GetSubMesh(1).indexCount > 0) Graphics.RenderMeshInstanced(rpD, m, 1, mt, n);
+                for (int k = 0; k < mt.Length; k++)
+                {
+                    var matrix = mt[k];
+                    if (matrix.GetColumn(0).sqrMagnitude < 0.00001f) continue;
+                    float d = Vector3.Distance(posKam, matrix.GetColumn(3));
+                    if (d > batas) continue;
+                    if (PakaiLodJauh(d, j.jarakLod1 * PengaliDetail) && j.lod1 != null) _jauh[jauh++] = matrix;
+                    else _dekat[dekat++] = matrix;
+                }
+                GambarKelompok(cam, j, s, j.lod0, _dekat, dekat);
+                GambarKelompok(cam, j, s, j.lod1, _jauh, jauh);
             }
+        }
+
+        public static bool PakaiLodJauh(float jarak, float ambang) { return jarak > ambang; }
+        void GambarKelompok(Camera cam, VegetationData.JenisVeg jenis, VegetationData.Sel sel, Mesh mesh, Matrix4x4[] matriks, int jumlah)
+        {
+            if (mesh == null || jumlah == 0) return;
+            var rpK = _rpKayu[sel.jenis]; rpK.camera = cam;
+            var rpD = _rpDaun[sel.jenis]; rpD.camera = cam;
+            var bounds = new Bounds(sel.pusat, Vector3.one * (sel.radius * 2f + 30f));
+            rpK.worldBounds = bounds; rpD.worldBounds = bounds;
+            for(int awal=0;awal<jumlah;awal+=MaksRender)
+            {
+                int n=Mathf.Min(MaksRender,jumlah-awal);
+                if (jenis.kayu != null && mesh.GetSubMesh(0).indexCount > 0) Graphics.RenderMeshInstanced(rpK, mesh, 0, matriks, n, awal);
+                if (jenis.daun != null && mesh.subMeshCount > 1 && mesh.GetSubMesh(1).indexCount > 0) Graphics.RenderMeshInstanced(rpD, mesh, 1, matriks, n, awal);
+            }
+            InstanceTerlihat += jumlah;
+            for (int sub = 0; sub < mesh.subMeshCount; sub++) SegitigaTerlihat += (int)(mesh.GetIndexCount(sub) / 3) * jumlah;
         }
     }
 }

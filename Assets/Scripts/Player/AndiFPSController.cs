@@ -6,6 +6,7 @@ namespace AlasKeramat.Player
     // T3a: gerak orang pertama Andi (09 §3): jalan/lari/jongkok/lompat, coyote time, berenang & menyelam dasar,
     // damage jatuh lewat IDamageable di objek yang sama, kamera pitch/yaw + head bob. Input dari TouchControls atau keyboard/mouse.
     [RequireComponent(typeof(CharacterController))]
+    [DefaultExecutionOrder(200)]
     public partial class AndiFPSController : MonoBehaviour
     {
         public const float JalanMaks = 3.4f, Sprint = 6.2f, JongkokMaks = 1.8f, Renang = 2.2f, RenangCepat = 3.2f;
@@ -61,6 +62,8 @@ namespace AlasKeramat.Player
             return JalanMaks * Mathf.Clamp01((magnitudo - JoyMati) / (JoyPenuh - JoyMati));
         }
 
+        public static Vector2 ArahGerak(Vector2 input) { return input.sqrMagnitude>0.000001f?input.normalized:Vector2.zero; }
+
         void Awake()
         {
             _cc = GetComponent<CharacterController>();
@@ -74,6 +77,7 @@ namespace AlasKeramat.Player
         {
             try
             {
+                if (Time.timeScale <= 0f) { InputGerak = Vector2.zero; InputLihatPx = Vector2.zero; return; }
                 BacaKeyboardMouse();
                 if (!GerakKendaraan(Time.deltaTime)) Gerak(Time.deltaTime);
             }
@@ -82,7 +86,7 @@ namespace AlasKeramat.Player
 
         void LateUpdate()
         {
-            if (kamera == null) return;
+            if (kamera == null || Time.timeScale <= 0f) { InputLihatPx = Vector2.zero; return; }
             _yaw += InputLihatPx.x * SensH * PengaliSensitivitas;
             _pitch = Mathf.Clamp(_pitch - InputLihatPx.y * SensV * PengaliSensitivitas * (BalikY ? -1f : 1f), -PitchMaks, PitchMaks);
             InputLihatPx = Vector2.zero;
@@ -125,7 +129,7 @@ namespace AlasKeramat.Player
             float mag = Mathf.Clamp01(InputGerak.magnitude);
             SedangLari = MintaLari && !LariDiblokir && !Jongkok && InputGerak.y > 0.5f && mag >= JoyPenuh;
             float target = Berenang ? (mag < JoyMati ? 0f : (SedangLari ? RenangCepat : Renang)) : KecepatanTarget(mag, SedangLari, Jongkok);
-            Vector2 arah = mag > 0.001f ? InputGerak / Mathf.Max(mag, 1f) : Vector2.zero;
+            Vector2 arah = ArahGerak(InputGerak);
             float faktor = arah.y < 0f ? FaktorMundur : (Mathf.Abs(arah.x) > Mathf.Abs(arah.y) ? FaktorSamping : 1f);
             Vector3 lokal = new Vector3(arah.x, 0f, arah.y);
             if (lokal.sqrMagnitude > 1f) lokal.Normalize();

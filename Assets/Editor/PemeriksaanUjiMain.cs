@@ -1,0 +1,49 @@
+using System;
+using AlasKeramat.Building;
+using AlasKeramat.Core;
+using AlasKeramat.Player;
+using AlasKeramat.UI;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using Object=UnityEngine.Object;
+namespace AlasKeramat.EditorTools
+{
+    public static class PemeriksaanUjiMain
+    {
+        public static void Jalankan(Action<string,bool> cek)
+        {
+            var arah=AndiFPSController.ArahGerak(new Vector2(0,0.575f));
+            cek("Analog: setengah rentang menghasilkan setengah laju tanpa redaman kedua",Mathf.Abs((arah*AndiFPSController.KecepatanTarget(0.575f,false,false)).y-AndiFPSController.JalanMaks*0.5f)<0.001f);
+            cek("Analog: diagonal dinormalisasi dan nol tidak bergerak",Mathf.Abs(AndiFPSController.ArahGerak(Vector2.one).magnitude-1f)<0.001f && AndiFPSController.ArahGerak(Vector2.zero)==Vector2.zero);
+            var go=new GameObject("UjiMultitouchMain");var es=Object.FindFirstObjectByType<EventSystem>();
+            try
+            {
+                var look=go.AddComponent<ZonaGeser>();var satu=new PointerEventData(es){pointerId=1,delta=new Vector2(12,4)};var dua=new PointerEventData(es){pointerId=2,delta=new Vector2(90,90)};
+                look.OnPointerDown(satu);look.OnPointerDown(dua);look.OnDrag(dua);look.OnPointerUp(dua);look.OnDrag(satu);
+                cek("Sentuh: jari kedua tidak merebut kamera",look.AmbilDelta()==new Vector2(12,4));
+                look.ResetSentuh();look.OnDrag(satu);cek("Sentuh: reset membuang delta dan kepemilikan jari",look.AmbilDelta()==Vector2.zero);
+            }
+            finally { Object.DestroyImmediate(go); }
+            cek("LOD: dua pohon dalam satu petak tetap memilih detail berdasarkan jaraknya sendiri",!VegetationManager.PakaiLodJauh(8,40) && VegetationManager.PakaiLodJauh(100,40));
+            cek("Preset otomatis konservatif & tidak menganggap RAM sebagai bukti Ultra",MenuScreens.RekomendasiPreset(4096,0)==PresetGrafis.Rendah && MenuScreens.RekomendasiPreset(8192,2048)==PresetGrafis.Sedang && MenuScreens.RekomendasiPreset(16384,8192)==PresetGrafis.Tinggi);
+            cek("Preset: rumput bertingkat dan Ultra 30 FPS",MenuScreens.AmbilPreset(PresetGrafis.Rendah).rumput<MenuScreens.AmbilPreset(PresetGrafis.Sedang).rumput && MenuScreens.AmbilPreset(PresetGrafis.Sedang).rumput<MenuScreens.AmbilPreset(PresetGrafis.Ultra).rumput && MenuScreens.AmbilPreset(PresetGrafis.Ultra).targetFps==30);
+            Vector2 p=new Vector2(-560,290);
+            cek("Peta: koordinat dunia dua kilometer pulang-pergi & utara benar",Vector2.Distance(p,PetaSurveiUI.KeDunia(PetaSurveiUI.KeUV(p)))<0.001f && Mathf.Abs(PetaSurveiUI.Bearing(Vector2.up))<0.001f && Mathf.Abs(PetaSurveiUI.Bearing(Vector2.right)-90f)<0.001f);
+            var peta=Object.FindFirstObjectByType<PetaSurveiUI>(FindObjectsInactive.Include);
+            cek("Peta: panel, gambar, GPS, tujuan & kompas tersambung",peta!=null && peta.Panel!=null && peta.Bidang!=null && peta.Andi!=null && peta.Tujuan!=null && peta.Kompas!=null);
+            cek("Diagnostik main & safe area kontrol terpasang",Object.FindFirstObjectByType<DiagnostikMain>()!=null && Object.FindFirstObjectByType<RuangAmanKontrol>()!=null);
+            bool rekaman=true;
+            foreach(var file in new[]{"forest_day.mp3","forest_night.mp3","leaves01.ogg","wood01.ogg","stone01.ogg"})
+            {
+                string path="Assets/ThirdParty/CC0/Audio/"+file;var clip=AssetDatabase.LoadAssetAtPath<AudioClip>(path);var imp=AssetImporter.GetAtPath(path) as AudioImporter;
+                rekaman &= clip!=null && clip.length>0f && imp!=null;
+                if(imp!=null && file.EndsWith("mp3"))rekaman &= imp.defaultSampleSettings.loadType==AudioClipLoadType.Streaming;
+            }
+            cek("Audio: rekaman CC0 alam/langkah terimpor dan bed streaming",rekaman);
+            float lama=ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien);
+            try { ProceduralAudioSynth.SetVolume(AudioCategory.Ambien,0f);cek("Audio: kategori ambien dapat dimatikan",ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien)==0f); }
+            finally { ProceduralAudioSynth.SetVolume(AudioCategory.Ambien,lama); }
+        }
+    }
+}

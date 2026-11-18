@@ -507,6 +507,122 @@
       "source": "https://polyhaven.com/a/fern_02",
       "author": "Poly Haven",
       "sha256": "6d8238b9cc1bbb5f5766396c2db26f2219c0d0e5ca226fb81dcc44bdb35045e8"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/Forest_Ambience.mp3",
+      "path": "CC0/Audio/forest_day.mp3",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/forest-ambience",
+      "author": "TinyWorlds",
+      "slot": "Audio",
+      "size": 716670,
+      "sha256": "9850aa1d0d5d66bd9c5daf8bb77c6d852e01f2f4de22f283bd5621e8bed13b75"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/crickets_1.mp3",
+      "path": "CC0/Audio/forest_night.mp3",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/crickets-ambient-noise-loopable",
+      "author": "Wolfgang_",
+      "slot": "Audio",
+      "size": 184393,
+      "sha256": "5b5bd1f744087888c5623543c3ff80be9c2ce106093993e7c8a8492b0280b2c0"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/%5Bkdd%5DDifferentSteps_0.zip",
+      "path": "CC0/Audio/wood03.ogg",
+      "zip_entry": "wood03.ogg",
+      "archive_sha256": "987d072b7deaa65177e005ddd8185f2351be7c9a76cd7575dea560549c39b33b",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+      "author": "qubodup / pdsounds.org",
+      "slot": "Audio",
+      "size": 9832,
+      "sha256": "9b677c284389163f132b94e1323ea713a4c7ac9d5fba849cf7cbf8b53a1627e2"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/%5Bkdd%5DDifferentSteps_0.zip",
+      "path": "CC0/Audio/wood02.ogg",
+      "zip_entry": "wood02.ogg",
+      "archive_sha256": "987d072b7deaa65177e005ddd8185f2351be7c9a76cd7575dea560549c39b33b",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+      "author": "qubodup / pdsounds.org",
+      "slot": "Audio",
+      "size": 8672,
+      "sha256": "588bb121bd3db005b4c2a5b55c1cf39b8ec620f820c2123ac1f62748d132dac2"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/%5Bkdd%5DDifferentSteps_0.zip",
+      "path": "CC0/Audio/wood01.ogg",
+      "zip_entry": "wood01.ogg",
+      "archive_sha256": "987d072b7deaa65177e005ddd8185f2351be7c9a76cd7575dea560549c39b33b",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+      "author": "qubodup / pdsounds.org",
+      "slot": "Audio",
+      "size": 8569,
+      "sha256": "482d97c5e1e6eb7b239be46f25d093ebebb94cefb56eedb04807b6a5dc68e972"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/%5Bkdd%5DDifferentSteps_0.zip",
+      "path": "CC0/Audio/stone01.ogg",
+      "zip_entry": "stone01.ogg",
+      "archive_sha256": "987d072b7deaa65177e005ddd8185f2351be7c9a76cd7575dea560549c39b33b",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+      "author": "qubodup / pdsounds.org",
+      "slot": "Audio",
+      "size": 9329,
+      "sha256": "99b04d784eb6b531777a64fb0e319f104eb7cdd6b625c1fac68f511605930a2c"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/%5Bkdd%5DDifferentSteps_0.zip",
+      "path": "CC0/Audio/mud02.ogg",
+      "zip_entry": "mud02.ogg",
+      "archive_sha256": "987d072b7deaa65177e005ddd8185f2351be7c9a76cd7575dea560549c39b33b",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+      "author": "qubodup / pdsounds.org",
+      "slot": "Audio",
+      "size": 9925,
+      "sha256": "354682c2cb340cd787d892d31beb87c45dda94ca6e8363b16828ab2f1d129b82"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/%5Bkdd%5DDifferentSteps_0.zip",
+      "path": "CC0/Audio/leaves02.ogg",
+      "zip_entry": "leaves02.ogg",
+      "archive_sha256": "987d072b7deaa65177e005ddd8185f2351be7c9a76cd7575dea560549c39b33b",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+      "author": "qubodup / pdsounds.org",
+      "slot": "Audio",
+      "size": 11823,
+      "sha256": "477c35bfd3f740915b24f93cb66364523217692d2749057f9b8be162eb8209f4"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/%5Bkdd%5DDifferentSteps_0.zip",
+      "path": "CC0/Audio/leaves01.ogg",
+      "zip_entry": "leaves01.ogg",
+      "archive_sha256": "987d072b7deaa65177e005ddd8185f2351be7c9a76cd7575dea560549c39b33b",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+      "author": "qubodup / pdsounds.org",
+      "slot": "Audio",
+      "size": 11761,
+      "sha256": "93b3bbcd06380eec54335d1869924db6ff2cc6c1cb103502133d78484c5ca836"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/%5Bkdd%5DDifferentSteps_0.zip",
+      "path": "CC0/Audio/gravel.ogg",
+      "zip_entry": "gravel.ogg",
+      "archive_sha256": "987d072b7deaa65177e005ddd8185f2351be7c9a76cd7575dea560549c39b33b",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud",
+      "author": "qubodup / pdsounds.org",
+      "slot": "Audio",
+      "size": 21087,
+      "sha256": "34e6057ec1581b5cb8802e4942952b00b1dac235bfcb0ed8cff0ceb15a3ebbbf"
     }
   ]
 }

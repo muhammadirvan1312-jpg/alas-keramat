@@ -28,9 +28,10 @@ namespace AlasKeramat.EditorTools
 
             Langkah("pengaturan pemain", AturPemain);
             Langkah("builder", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraMasterBuilder", "BuildAll"));
+            Langkah("self-test", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraSelfTest", "RunAll"));
+            // Self-test membangun ulang Generated; penanda mengikuti scene terakhir.
             if(NusantaraMasterBuilder.LastBuildSucceeded)
                 File.WriteAllText("Assets/Generated/foto_commit.txt",SourceCommit());
-            Langkah("self-test", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraSelfTest", "RunAll"));
             Tulis("[LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)");
             Langkah("build APK", () => BangunApk(buildPath));
 
@@ -81,7 +82,7 @@ namespace AlasKeramat.EditorTools
                 scenes = scene,
                 locationPathName = path,
                 target = BuildTarget.Android,
-                options = BuildOptions.Development
+                options = BuildOptions.None
             };
             var hasil = BuildPipeline.BuildPlayer(opsi);
             if (hasil.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)

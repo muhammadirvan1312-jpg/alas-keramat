@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace AlasKeramat.UI
 {
     // Joystick mengambang (09 §2.3): muncul di titik sentuh pada zona kiri-bawah. Input lewat event pointer uGUI (H3).
-    public class ZonaJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+    public class ZonaJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IInitializePotentialDragHandler
     {
         public const float RadiusGerak = 110f, AlphaDiam = 0.35f, AlphaAktif = 0.8f;
         public const float AmbangSprint = 0.95f, SudutSprint = 30f, TahanSprint = 0.25f;
@@ -36,6 +36,9 @@ namespace AlasKeramat.UI
             Lepas();
         }
 
+        public void OnInitializePotentialDrag(PointerEventData e) { e.useDragThreshold = false; }
+        void OnDisable() { ResetSentuh(); }
+        void OnApplicationFocus(bool fokus) { if (!fokus) ResetSentuh(); }
         public void OnPointerDown(PointerEventData e)
         {
             if (_jari != int.MinValue) return;
@@ -62,6 +65,8 @@ namespace AlasKeramat.UI
             if (e.pointerId != _jari) return;
             Lepas();
         }
+
+        public void ResetSentuh() { Lepas(); }
 
         void Lepas()
         {

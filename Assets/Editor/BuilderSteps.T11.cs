@@ -120,9 +120,15 @@ namespace AlasKeramat.EditorTools
             var bGetar = TombolPanel(pAtur, "TombolGetar", "GETAR HAPTIK", font, new Vector2(440f, 240f), new Vector2(360f, 70f), ProcTex.Hex("#3B4A3E"), out tx);
             UnityEventTools.AddPersistentListener(bGetar.onClick, menu.ToggleGetar);
 
-            var bImersif = TombolPanel(pAtur, "TombolImersif", "MODE IMERSIF HUD", font, new Vector2(-220f, 110f), new Vector2(360f, 74f), ProcTex.Hex("#3D405B"), out tx);
+            for(int i=0;i<3;i++)
+            {
+                string nama=i==0?"EFEK":i==1?"AMBIEN":"MUSIK";
+                var bAudio=TombolPanel(pAtur,"VolumeKategori"+i,"VOLUME "+nama,font,new Vector2(-440f+i*440f,160f),new Vector2(360f,56f),ProcTex.Hex("#3B4A3E"),out tx);
+                UnityEventTools.AddIntPersistentListener(bAudio.onClick,menu.SiklusVolumeKategori,i);
+            }
+            var bImersif = TombolPanel(pAtur, "TombolImersif", "MODE IMERSIF HUD", font, new Vector2(-220f, 65f), new Vector2(360f, 74f), ProcTex.Hex("#3D405B"), out tx);
             UnityEventTools.AddPersistentListener(bImersif.onClick, menu.ToggleImersif);
-            var bTutupAtur = TombolPanel(pAtur, "TombolTutupPengaturan", "SIMPAN & KEMBALI", font, new Vector2(220f, 110f), new Vector2(380f, 74f), ProcTex.Hex("#2F5D3A"), out tx);
+            var bTutupAtur = TombolPanel(pAtur, "TombolTutupPengaturan", "SIMPAN & KEMBALI", font, new Vector2(220f, 65f), new Vector2(380f, 74f), ProcTex.Hex("#2F5D3A"), out tx);
             UnityEventTools.AddPersistentListener(bTutupAtur.onClick, menu.TutupPengaturan);
             pAtur.SetActive(false);
 
@@ -185,6 +191,8 @@ namespace AlasKeramat.EditorTools
             UnityEventTools.AddPersistentListener(bDbgDesa.onClick, menu.DebugTeleportDesa);
             var bDbgCuaca = TombolPanel(pDebug, "DebugCuaca", "CUACA BADAI", font, new Vector2(300f, 105f), new Vector2(260f, 64f), ProcTex.Hex("#4A4E69"), out tx);
             UnityEventTools.AddPersistentListener(bDbgCuaca.onClick, menu.DebugCuacaBadai);
+            var bSalin=TombolPanel(pDebug,"SalinLaporanHp","SALIN LAPORAN HP",font,new Vector2(300f,32f),new Vector2(280f,56f),ProcTex.Hex("#36563A"),out tx);
+            UnityEventTools.AddPersistentListener(bSalin.onClick,menu.SalinLaporanHp);
             var bDbgTutup = TombolPanel(pDebug, "DebugTutup", "TUTUP DEBUG", font, new Vector2(0f, 32f), new Vector2(260f, 56f), ProcTex.Hex("#7A1F1F"), out tx);
             UnityEventTools.AddPersistentListener(bDbgTutup.onClick, menu.TutupDebug);
             pDebug.SetActive(false);
