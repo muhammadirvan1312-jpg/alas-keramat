@@ -295,6 +295,7 @@ jobs:
         with:
           targetPlatform: Android
           buildMethod: AlasKeramat.EditorTools.NusantaraCI.FotoSaja
+          manualExit: true
           allowDirtyBuild: true
           customParameters: -akLaporan Logs/ci -akSource ${{ github.event.pull_request.head.sha || github.sha }}
 

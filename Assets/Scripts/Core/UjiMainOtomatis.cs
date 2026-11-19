@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using AlasKeramat.Building;
 using AlasKeramat.Inventory;
 using AlasKeramat.Player;
@@ -16,6 +15,7 @@ namespace AlasKeramat.Core
     public class UjiMainOtomatis : MonoBehaviour
     {
         public static Action<bool, string[]> Selesai;
+        public static Action<string> AmbilFoto;
         readonly List<string> _hasil = new List<string>();
         bool _lulus = true;
         void Cek(string nama, bool benar) { _hasil.Add((benar ? "[LULUS] " : "[GAGAL] ") + nama); _lulus &= benar; }
@@ -97,35 +97,6 @@ namespace AlasKeramat.Core
             return hasil[0].gameObject;
         }
 
-        static void AmbilFoto(string nama)
-        {
-            var cam = Camera.main; if (cam == null) throw new InvalidOperationException("Kamera pemain tidak ada");
-            var canvases = UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None);
-            var mode = new RenderMode[canvases.Length]; var kamera = new Camera[canvases.Length]; var jarak = new float[canvases.Length];
-            var lama = cam.targetTexture; var aktif = RenderTexture.active;
-            var target = new RenderTexture(960, 540, 24, RenderTextureFormat.ARGB32); Texture2D tex = null;
-            try
-            {
-                cam.targetTexture = target;
-                for (int i = 0; i < canvases.Length; i++)
-                {
-                    mode[i] = canvases[i].renderMode; kamera[i] = canvases[i].worldCamera; jarak[i] = canvases[i].planeDistance;
-                    if (mode[i] != RenderMode.ScreenSpaceOverlay) continue;
-                    canvases[i].renderMode = RenderMode.ScreenSpaceCamera; canvases[i].worldCamera = cam; canvases[i].planeDistance = cam.nearClipPlane + 0.2f;
-                }
-                Canvas.ForceUpdateCanvases();
-                var veg = GameServices.Get<VegetationManager>(); if (veg != null) veg.Gambar(cam);
-                var serasah = GameServices.Get<SerasahHutan>(); if (serasah != null) serasah.Gambar(cam);
-                cam.Render(); RenderTexture.active = target;
-                tex = new Texture2D(960, 540, TextureFormat.RGB24, false); tex.ReadPixels(new Rect(0, 0, 960, 540), 0, 0); tex.Apply();
-                Directory.CreateDirectory("Logs/foto_kualitas"); File.WriteAllBytes("Logs/foto_kualitas/" + nama + ".png", tex.EncodeToPNG());
-            }
-            finally
-            {
-                for (int i = 0; i < canvases.Length; i++) { canvases[i].renderMode = mode[i]; canvases[i].worldCamera = kamera[i]; canvases[i].planeDistance = jarak[i]; }
-                cam.targetTexture = lama; RenderTexture.active = aktif; target.Release(); Destroy(target); if (tex != null) Destroy(tex);
-            }
-        }
     }
 }
 #endif
