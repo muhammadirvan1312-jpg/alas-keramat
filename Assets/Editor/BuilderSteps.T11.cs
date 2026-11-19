@@ -201,11 +201,10 @@ namespace AlasKeramat.EditorTools
             var daftarSkala = new List<RectTransform>();
             if (kontrol != null)
             {
-                foreach (var b in kontrol.GetComponentsInChildren<Button>(true))
+                foreach (var rt in kontrol.GetComponentsInChildren<RectTransform>(true))
                 {
-                    if (b.name == "AreaKetukDebug" || b.name == "TombolJeda") continue;
-                    var rt = b.GetComponent<RectTransform>();
-                    if (rt != null) daftarSkala.Add(rt);
+                    if(rt.name=="AreaKetukDebug" || rt.name=="TombolJeda")continue;
+                    if(rt.GetComponent<Button>()!=null || rt.GetComponent<TombolTahan>()!=null || rt.GetComponent<TombolTangkis>()!=null)daftarSkala.Add(rt);
                 }
             }
 

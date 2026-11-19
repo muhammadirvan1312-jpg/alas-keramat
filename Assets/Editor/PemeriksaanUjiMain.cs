@@ -31,6 +31,7 @@ namespace AlasKeramat.EditorTools
             cek("Preset: rumput bertingkat dan Ultra 30 FPS",MenuScreens.AmbilPreset(PresetGrafis.Rendah).rumput<MenuScreens.AmbilPreset(PresetGrafis.Sedang).rumput && MenuScreens.AmbilPreset(PresetGrafis.Sedang).rumput<MenuScreens.AmbilPreset(PresetGrafis.Ultra).rumput && MenuScreens.AmbilPreset(PresetGrafis.Ultra).targetFps==30);
             Vector2 p=new Vector2(-560,290);
             cek("Peta: koordinat dunia dua kilometer pulang-pergi & utara benar",Vector2.Distance(p,PetaSurveiUI.KeDunia(PetaSurveiUI.KeUV(p)))<0.001f && Mathf.Abs(PetaSurveiUI.Bearing(Vector2.up))<0.001f && Mathf.Abs(PetaSurveiUI.Bearing(Vector2.right)-90f)<0.001f);
+            CekRuangTombol(cek);
             Canvas.ForceUpdateCanvases();bool tumpuk=false;
             var sabuk=Object.FindFirstObjectByType<SabukCepat>();
             foreach(string nama in new[]{"TombolSimpan","TombolMuat","TombolBatu"})
@@ -64,6 +65,30 @@ namespace AlasKeramat.EditorTools
                 cek("Audio: kategori ambien dapat dimatikan",ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien)==0f);
             }
             finally { ProceduralAudioSynth.SetVolume(AudioCategory.Ambien,kategori);ProceduralAudioSynth.VolMaster=master; }
+        }
+        static void CekRuangTombol(Action<string,bool> cek)
+        {
+            var tc=Object.FindFirstObjectByType<TouchControls>();
+            string[] nama={"TombolTebas","TombolLompat","TombolGanti","TombolTangkis","TombolTangan","TombolMode","TombolJongkok","TombolLempar","TombolObor","TombolTas","TombolBuku","TombolSimpan","TombolMuat","TombolBatu"};
+            var tombol=new RectTransform[nama.Length];var ukuran=new Vector2[nama.Length];bool lengkap=tc!=null,bersih=true;
+            for(int i=0;i<nama.Length;i++)
+            {
+                tombol[i]=tc!=null?tc.transform.Find(nama[i]) as RectTransform:null;
+                if(tombol[i]==null && tc!=null)tombol[i]=tc.transform.parent.Find(nama[i]) as RectTransform;
+                lengkap &= tombol[i]!=null;if(tombol[i]!=null)ukuran[i]=tombol[i].sizeDelta;
+            }
+            try
+            {
+                foreach(float skala in new[]{0.85f,1f,1.15f,1.3f})
+                {
+                    for(int i=0;i<tombol.Length;i++)if(tombol[i]!=null)tombol[i].sizeDelta=ukuran[i]*(i<11?skala:1f);
+                    Canvas.ForceUpdateCanvases();
+                    for(int i=0;i<tombol.Length;i++)for(int j=i+1;j<tombol.Length;j++)
+                        if(tombol[i]!=null && tombol[j]!=null && KotakUI(tombol[i]).Overlaps(KotakUI(tombol[j])))bersih=false;
+                }
+            }
+            finally { for(int i=0;i<tombol.Length;i++)if(tombol[i]!=null)tombol[i].sizeDelta=ukuran[i];Canvas.ForceUpdateCanvases(); }
+            cek("HUD: 14 tombol aksi/tas/buku/simpan tidak bertumpuk pada skala 85 sampai 130 persen",lengkap && bersih);
         }
         static Rect KotakUI(RectTransform rt)
         {
