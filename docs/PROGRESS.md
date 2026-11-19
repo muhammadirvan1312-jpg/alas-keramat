@@ -138,3 +138,5 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
 ### Koreksi verifikasi 19 November 2026 pagi
 - CI 44377467614 / 7f79c50 GAGAL sebelum Builder: CS0111 VolumeKategori duplikat antara ProceduralAudioSynth.cs dan partial .Tempur.cs. Audit kode semalam belum cukup untuk menyatakan revisi berhasil.
 - Hapus anggota tambahan, pertahankan kontrak lama VolumeKategori = master x kategori, dan perbaiki dua pemanggil AmbienceDirector agar master tidak dikalikan lagi. Tambah regresi master 0,5 x ambien 0,4 = 0,2 serta mute ambien. Menunggu CI koreksi; APK, FPS HP dan kelulusan visual tetap belum diklaim.
+
+- Audit HUD: SIMPAN/MUAT/PANGGUL BATU sebelumnya menumpuk slot cepat pada Y=50/70. Toolbar dipindah ke kiri atas di bawah informasi vital, kartu misi ke tengah atas; self-test memeriksa perpotongan rect tombol terhadap semua slot sabuk.

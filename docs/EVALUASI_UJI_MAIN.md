@@ -5,6 +5,7 @@ Build pemain: 02aee43, artifact hasil-92. Pemain menyatakan performa, visual, se
 | Area | Bukti sebelum revisi | Perbaikan | Bukti yang masih diperlukan |
 |---|---|---|---|
 | Gerak | Magnitudo mengurangi laju lalu mengalikan arah lagi. Pada input 0,575, laju maju 0,9775 m/s, seharusnya 1,7 m/s | Normalisasi arah; tes regresi laju setengah rentang dan diagonal | Rasa analog di layar HP |
+| HUD | SIMPAN/MUAT/PANGGUL BATU pada Y=50 menutup slot cepat Y=70; kartu misi bertabrakan area aksi kanan | Toolbar terpisah di bawah vital dan kartu misi tengah atas; tes rect overlap slot | Keterbacaan pada ukuran layar perangkat |
 | Sentuh | Tidak ada reset fokus/disable; drag memakai threshold bawaan, konsumsi delta tidak diurutkan dengan gerak | Reset kepemilikan jari/delta, urutan eksekusi, drag tombol serang, safe area | Dua jari, pause/tas/home/resume, bidik sambil menyerang |
 | Vegetasi | Satu pohon dekat memaksa seluruh petak 125 m memakai mesh terinci; semua rumput memakai jarak/kepadatan tetap | Seleksi LOD dan jarak per instance, buffer tetap, kepadatan rumput per preset, penghitung segitiga | FPS dan P95 serta biaya GPU; tidak menjanjikan 30 FPS dari tes logika |
 | Setelan | Diterapkan di Awake ketika layanan lain belum tentu terdaftar; Ultra 60 FPS, kategori bloom tidak diterapkan | Terapkan ulang di Start, rekomendasi awal konservatif, Ultra 30 FPS, bloom sesuai preset | Persistensi, pilihan manual, suhu dan memori perangkat |
