@@ -1,42 +1,42 @@
 {
-  "commit": "02aee43fc207ea4aad6b7b1ffa281ff51722fbb4",
+  "commit": "e4e681b9c8804a2b28c492bf71076d29b958032b",
   "passed": true,
   "photos": [
     {
       "shot": "g3_01_deden_wajah",
       "width": 960,
       "height": 540,
-      "p95": 0.6765,
-      "variation": 0.1991,
+      "p95": 0.6832,
+      "variation": 0.1733,
       "pink": 0.0,
-      "sha256": "0c9073fa41bc3b895df200b76a1ef637ffb32cd4a3edb18b8e6acea5283bb06a"
+      "sha256": "fba4a1ecb117e3e3d0d7cd66ad25c2f33ba9d643c485d3b8b686b5d4183b74e2"
     },
     {
       "shot": "g3_02_ningsih_wajah",
       "width": 960,
       "height": 540,
-      "p95": 0.5378,
-      "variation": 0.1664,
+      "p95": 0.5682,
+      "variation": 0.1815,
       "pink": 0.0,
-      "sha256": "f783e7eac6fe48c0fde000eb67667c5a12c4bd344f421d30ee0cb455eea73c20"
+      "sha256": "ad993d0e10467f7eaebe78ca75a4aaa85a12bcc58111f210bd6f84437cb9c7e9"
     },
     {
       "shot": "g3_03_hutan_malam",
       "width": 960,
       "height": 540,
-      "p95": 0.1764,
-      "variation": 0.0825,
+      "p95": 0.2222,
+      "variation": 0.091,
       "pink": 0.0,
-      "sha256": "3e74b010740083939aa7b49d7a6d14f3658cbde85831de83179773f012fb7ccf"
+      "sha256": "dd6e637291d8889aa07ca44c9ef39f3359b3700a223726532b5ea77a26cace76"
     },
     {
       "shot": "g3_04_lantai_hutan",
       "width": 960,
       "height": 540,
-      "p95": 0.4476,
-      "variation": 0.135,
+      "p95": 0.6473,
+      "variation": 0.1804,
       "pink": 0.0,
-      "sha256": "5891ab50c27c5742d048e9b0d7db57cc6ba6f117565d029af76231a1d96e53ac"
+      "sha256": "9a713fdc9ea5f950c70aac1e84d6c70778da240c1349aafe112df7152c731d79"
     },
     {
       "shot": "t10_01_gua_lumut",
@@ -45,16 +45,16 @@
       "p95": 0.1661,
       "variation": 0.0398,
       "pink": 0.0,
-      "sha256": "8c4ede5c48ca34ca9486e9a12560f75bb8750540b9218eb406d8825c976695cf"
+      "sha256": "2ea769d5694a5d326808fb3e42b247fa2e9aa368a64069e60451ddd429a597b9"
     },
     {
       "shot": "t10_02_kubah_akar_boss",
       "width": 960,
       "height": 540,
-      "p95": 0.0945,
+      "p95": 0.0947,
       "variation": 0.0261,
       "pink": 0.0,
-      "sha256": "4a5e5750ef2df1867c10afd517fd29b2e22c2be6590cc16f475ce39905927aa4"
+      "sha256": "05073112f197b6ce33769702428f3b4edb8a3f47ad3384fb62cf97a7bc819ffa"
     }
   ],
   "errors": [],
