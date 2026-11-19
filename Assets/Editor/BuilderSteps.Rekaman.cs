@@ -30,7 +30,7 @@ namespace AlasKeramat.EditorTools
             if(!File.Exists(hasil))
             {
                 var baca=imp.defaultSampleSettings;baca.loadType=AudioClipLoadType.DecompressOnLoad;baca.compressionFormat=AudioCompressionFormat.PCM;
-                imp.defaultSampleSettings=baca;imp.forceToMono=!bed;imp.loadInBackground=false;imp.preloadAudioData=true;imp.SaveAndReimport();
+                imp.defaultSampleSettings=baca;imp.forceToMono=!bed;imp.loadInBackground=false;imp.SaveAndReimport();
                 var raw=AssetDatabase.LoadAssetAtPath<AudioClip>(path);
                 if(raw==null)throw new System.Exception("Rekaman tidak dapat dibaca: "+path);
                 raw.LoadAudioData();var sampel=new float[raw.samples*raw.channels];
@@ -61,7 +61,7 @@ namespace AlasKeramat.EditorTools
         {
             var s=imp.defaultSampleSettings;s.loadType=bed?AudioClipLoadType.Streaming:AudioClipLoadType.DecompressOnLoad;
             s.compressionFormat=bed?AudioCompressionFormat.Vorbis:AudioCompressionFormat.ADPCM;s.quality=0.7f;
-            imp.defaultSampleSettings=s;imp.forceToMono=!bed;imp.preloadAudioData=!bed;imp.loadInBackground=bed;imp.SaveAndReimport();
+            imp.defaultSampleSettings=s;imp.forceToMono=!bed;imp.loadInBackground=bed;imp.SaveAndReimport();
         }
         static void TulisPcmRekaman(string path,float[] sampel,int rate,int channels)
         {
