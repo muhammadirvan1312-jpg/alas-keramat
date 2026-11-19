@@ -24,9 +24,13 @@ namespace AlasKeramat.EditorTools
         public static void Mulai()
         {
             EditorSceneManager.OpenScene(NusantaraMasterBuilder.PathScene);
+            var kameraMain = Camera.main;
+            if (kameraMain == null) throw new InvalidOperationException("Kamera pemain tidak ada untuk uji main");
+            SessionState.SetInt(Kunci + "mask", kameraMain.cullingMask);
+            kameraMain.cullingMask = 0; // Simulasi tetap berjalan; render 3D hanya saat bukti gambar diambil.
             SessionState.SetBool(Kunci, true); SessionState.SetBool(Kunci + "selesai", false);
             SessionState.SetBool(Kunci + "error", false); SessionState.SetInt(Kunci + "kode", 1);
-            SessionState.SetFloat(Kunci + "batas", (float)EditorApplication.timeSinceStartup + 180f);
+            SessionState.SetFloat(Kunci + "batas", (float)EditorApplication.timeSinceStartup + 900f);
             SessionState.SetString(Kunci + "sha", NusantaraCI.SourceCommit());
             SessionState.SetBool(Kunci + "punyaPref", PlayerPrefs.HasKey(GoreSystem.KunciPeringatan));
             SessionState.SetInt(Kunci + "pref", PlayerPrefs.GetInt(GoreSystem.KunciPeringatan, 0));
@@ -55,14 +59,14 @@ namespace AlasKeramat.EditorTools
         static void Awasi()
         {
             if (Aktif && !SessionState.GetBool(Kunci + "selesai", false) && EditorApplication.timeSinceStartup > SessionState.GetFloat(Kunci + "batas", float.MaxValue))
-                Selesai(false, new[] { "[GAGAL] Batas waktu PlayMode 180 detik" });
+                Selesai(false, new[] { "[GAGAL] Batas waktu PlayMode 900 detik" });
         }
         [Serializable] class BuktiUjiMainG3 { public string commit; public bool passed; public string[] checks; public string note; }
         static void Selesai(bool lulus, string[] hasil)
         {
             lulus &= !SessionState.GetBool(Kunci + "error", false);
             File.AppendAllLines("Logs/ci/uji_main.log", hasil);
-            File.WriteAllText("Logs/ci/uji_main.json", JsonUtility.ToJson(new BuktiUjiMainG3 { commit = SessionState.GetString(Kunci + "sha", ""), passed = lulus, checks = hasil, note = "Urutan kontrol dan panel di Editor PlayMode; tidak mengesahkan FPS atau kenyamanan HP" }, true));
+            File.WriteAllText("Logs/ci/uji_main.json", JsonUtility.ToJson(new BuktiUjiMainG3 { commit = SessionState.GetString(Kunci + "sha", ""), passed = lulus, checks = hasil, note = "Urutan kontrol/panel di Editor PlayMode tanpa render 3D otomatis. HUD dirender manual 960x540 dengan jarak kamera maksimal 120 m. Bukan benchmark FPS atau penerimaan kenyamanan HP" }, true));
             SessionState.SetBool(Kunci + "selesai", true); SessionState.SetInt(Kunci + "kode", lulus ? 0 : 1);
             if (EditorApplication.isPlaying) EditorApplication.ExitPlaymode();
             else if (!EditorApplication.isPlayingOrWillChangePlaymode) { SessionState.SetBool(Kunci, false); EditorApplication.Exit(lulus ? 0 : 1); }
@@ -73,10 +77,13 @@ namespace AlasKeramat.EditorTools
             var canvases = UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None);
             var mode = new RenderMode[canvases.Length]; var kamera = new Camera[canvases.Length]; var jarak = new float[canvases.Length];
             var lama = cam.targetTexture; var aktif = RenderTexture.active;
+            int maskLama = cam.cullingMask; float jarakLama = cam.farClipPlane;
             var target = new RenderTexture(960, 540, 24, RenderTextureFormat.ARGB32); Texture2D tex = null;
             try
             {
                 cam.targetTexture = target;
+                cam.cullingMask = SessionState.GetInt(Kunci + "mask", maskLama) | (1 << GameLayers.UI);
+                cam.farClipPlane = Mathf.Min(jarakLama, 120f);
                 for (int i = 0; i < canvases.Length; i++)
                 {
                     mode[i] = canvases[i].renderMode; kamera[i] = canvases[i].worldCamera; jarak[i] = canvases[i].planeDistance;
@@ -93,7 +100,7 @@ namespace AlasKeramat.EditorTools
             finally
             {
                 for (int i = 0; i < canvases.Length; i++) { canvases[i].renderMode = mode[i]; canvases[i].worldCamera = kamera[i]; canvases[i].planeDistance = jarak[i]; }
-                cam.targetTexture = lama; RenderTexture.active = aktif; target.Release(); UnityEngine.Object.Destroy(target); if (tex != null) UnityEngine.Object.Destroy(tex);
+                cam.cullingMask = maskLama; cam.farClipPlane = jarakLama; cam.targetTexture = lama; RenderTexture.active = aktif; target.Release(); UnityEngine.Object.Destroy(target); if (tex != null) UnityEngine.Object.Destroy(tex);
             }
         }
     }

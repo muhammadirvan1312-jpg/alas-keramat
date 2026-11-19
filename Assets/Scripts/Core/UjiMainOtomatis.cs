@@ -32,7 +32,7 @@ namespace AlasKeramat.Core
             Cek("Layanan pemain, tas dan kontrol aktif saat Play", menu != null && andi != null && kontrol != null && tas != null && uiTas != null && tikar != null);
             if (!_lulus) { Akhiri(); yield break; }
             menu.MulaiUjiEditor();
-            for (int i = 0; i < 20; i++) yield return null;
+            for (int i = 0; i < 4; i++) yield return null;
             Cek("Menu awal dapat ditutup tanpa jeda tertinggal", !JedaDunia.Dijeda && Time.timeScale == 1f);
             string awalTas = tas.CaptureJson(), awalAndi = andi.CaptureJson();
             var joy = kontrol.GetComponentInChildren<ZonaJoystick>(true);
@@ -51,7 +51,8 @@ namespace AlasKeramat.Core
             kiri.position += Vector2.up * ZonaJoystick.RadiusGerak * 0.575f * canvas.scaleFactor; ExecuteEvents.Execute(joy.gameObject, kiri, ExecuteEvents.dragHandler);
             Vector3 pos = andi.transform.position; float yaw = andi.transform.eulerAngles.y;
             ExecuteEvents.ExecuteHierarchy(targetLihat, kanan, ExecuteEvents.pointerDownHandler); ExecuteEvents.Execute(geser.gameObject, kanan, ExecuteEvents.dragHandler);
-            yield return new WaitForSecondsRealtime(1f);
+            float mulaiGerak = Time.time;
+            while (Time.time - mulaiGerak < 1f) yield return null;
             float gerak = Vector2.Distance(new Vector2(pos.x, pos.z), new Vector2(andi.transform.position.x, andi.transform.position.z));
             Cek("Analog setengah rentang memindahkan kapsul nyata (" + gerak.ToString("0.00") + " m)", gerak > 0.7f && gerak < 2.6f);
             Cek("Jari kanan memutar POV sambil jari kiri berjalan", Mathf.Abs(Mathf.DeltaAngle(yaw, andi.transform.eulerAngles.y)) > 1f && andi.SedangMembidikManual == false);
