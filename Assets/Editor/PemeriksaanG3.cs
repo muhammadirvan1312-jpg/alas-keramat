@@ -8,6 +8,10 @@ namespace AlasKeramat.EditorTools
 {
     public static class PemeriksaanG3
     {
+        static float BobotLenganG3(BoneWeight w,int bone)
+        {
+            return (w.boneIndex0==bone?w.weight0:0)+(w.boneIndex1==bone?w.weight1:0)+(w.boneIndex2==bone?w.weight2:0)+(w.boneIndex3==bone?w.weight3:0);
+        }
         public static void Jalankan(Action<string,bool> cek)
         {
             var serasah=Object.FindFirstObjectByType<SerasahHutan>();
@@ -32,6 +36,16 @@ namespace AlasKeramat.EditorTools
                 var m=AssetDatabase.LoadAssetAtPath<Mesh>(NusantaraMasterBuilder.FolderKarakter+"/MakeHuman_"+nama+".asset");
                 if(m==null) { real=false;continue; }
                 real &= m.triangles.Length/3<=30000 && m.triangles.Length/3>12000 && m.bindposes.Length==24 && m.subMeshCount==5 && m.blendShapeCount>=13 && m.bounds.size.y>1.45f && m.bounds.size.y<1.9f;
+                if(nama=="Ningsih")
+                {
+                    int kiri=0,kanan=0;var bobot=m.boneWeights;
+                    foreach(int i in m.GetTriangles(0))
+                    {
+                        if(BobotLenganG3(bobot[i],Kerangka.LFore)>0.5f)kiri++;
+                        if(BobotLenganG3(bobot[i],Kerangka.RFore)>0.5f)kanan++;
+                    }
+                    cek("G3c: kulit kedua lengan bawah Ningsih tidak terhapus bersama torso ("+kiri+"/"+kanan+")",kiri>=12 && kanan>=12);
+                }
                 foreach(var w in m.boneWeights)
                 {
                     float total=w.weight0+w.weight1+w.weight2+w.weight3;

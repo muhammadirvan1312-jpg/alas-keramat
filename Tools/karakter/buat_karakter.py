@@ -10,6 +10,12 @@ SOURCE=ROOT/'Assets/ThirdParty/Characters'
 OUT=ROOT/'Assets/ThirdParty/Prepared'
 OUT.mkdir(parents=True,exist_ok=True)
 BONES=['pelvis','spine_01','spine_03','neck_01','head',None,'clavicle_l','clavicle_r','upperarm_l','upperarm_r','lowerarm_l','lowerarm_r','hand_l','hand_r','thigh_l','thigh_r','calf_l','calf_r','foot_l','foot_r',None,None,None,None]
+BONES_LENGAN=tuple(i for i,name in enumerate(BONES) if name and name.startswith(('upperarm_','lowerarm_','hand_')))
+
+def kulit_ningsih_terlihat(tinggi_rel,x,z,weights):
+    # Mask pakaian tetap diperiksa pemanggil; lengan telanjang tidak ikut dipotong bersama dada.
+    lengan=sum(weights.get(bone,0) for bone in BONES_LENGAN)>0.25
+    return tinggi_rel>0.822 or (abs(x)<0.65 and z>0.1 and tinggi_rel>0.75) or lengan
 
 def obj_read(path):
     vertices=[];uv=[];faces=[];groups={};group=''
@@ -569,7 +575,7 @@ def make(name,recipe):
         clothes=add_kirogo_blangkon(clothes,base)
     elif name=='Ningsih':
         body_faces=[(g,f) for g,f in FACES if g=='body' and not any(p[0] in hidden for p in f) and all(
-            (base[vi].y-bottom)/height>0.822 or (abs(base[vi].x)<0.65 and base[vi].z>0.1 and (base[vi].y-bottom)/height>0.75) or W[vi].get(12,0)+W[vi].get(13,0)>0.5
+            kulit_ningsih_terlihat((base[vi].y-bottom)/height,base[vi].x,base[vi].z,W[vi])
             for vi,_ in f)]
         garment,guv,gfaces,gweights,_=clothes
         hem=min((v.y-bottom)/height for v in garment)
