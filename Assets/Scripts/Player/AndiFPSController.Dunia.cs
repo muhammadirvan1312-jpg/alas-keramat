@@ -20,6 +20,7 @@ namespace AlasKeramat.Player
         }
         public void Teleport(Vector3 posisi)
         {
+            HentikanInputGerak(); KecepatanDatar=0f; DiTanah=false; Berenang=false; Menyelam=false;
             var c=GetComponent<CharacterController>(); bool aktif=c!=null && c.enabled;
             if(c!=null)c.enabled=false;
             transform.position=posisi; _vDatar=Vector3.zero; _vy=0f; _diUdara=false; _puncakY=posisi.y;

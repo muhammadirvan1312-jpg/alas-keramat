@@ -71,7 +71,20 @@ namespace AlasKeramat.Player
             _mintaLompat = false; _vDatar = Vector3.zero; SedangLari = false;
         }
         public void Lompat() { _mintaLompat = true; }
-        public void ToggleJongkok() { Jongkok = !Jongkok; }
+        public void ToggleJongkok()
+        {
+            if (Jongkok && !BisaBerdiri()) { GameEvents.RaiseToast("Ruang di atas kepala terlalu sempit"); return; }
+            Jongkok = !Jongkok;
+        }
+        public bool BisaBerdiri()
+        {
+            Vector3 kaki = transform.position;
+            int mask = (1 << GameLayers.Ground) | (1 << GameLayers.Structure) | 1;
+            return !Physics.CheckCapsule(kaki + Vector3.up * (TinggiJongkok - Radius),
+                kaki + Vector3.up * (TinggiKapsul - Radius), Radius - 0.02f, mask, QueryTriggerInteraction.Ignore);
+        }
+        public static float VertikalSetelahTabrakan(float kecepatan, CollisionFlags flags)
+        { return kecepatan > 0f && (flags & CollisionFlags.Above) != 0 ? 0f : kecepatan; }
 
         public static float KecepatanTarget(float magnitudo, bool lari, bool jongkok)
         {
@@ -188,6 +201,7 @@ namespace AlasKeramat.Player
             if (!Mathf.Approximately(_cc.height, tinggi)) { _cc.height = tinggi; _cc.center = new Vector3(0f, tinggi * 0.5f, 0f); }
 
             var flags = _cc.Move((_vDatar + Vector3.up * _vy) * dt);
+            _vy = VertikalSetelahTabrakan(_vy, flags);
             bool tanahBaru = (flags & CollisionFlags.Below) != 0;
             CekJatuh(tanahBaru);
             DiTanah = tanahBaru;

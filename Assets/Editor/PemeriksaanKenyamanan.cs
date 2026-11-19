@@ -22,6 +22,7 @@ namespace AlasKeramat.EditorTools
                 cek("Jeda: hit-stop saat panel tidak meninggalkan slow motion", !JedaDunia.Dijeda && Time.timeScale == 1f);
             }
             finally { JedaDunia.Atur(a.GetInstanceID(), false); JedaDunia.Atur(b.GetInstanceID(), false); Time.timeScale = skala; Object.DestroyImmediate(a); Object.DestroyImmediate(b); }
+            CekGerakSempitDanBangkit(cek);
             var rect = new Rect(0, 0, 864, 756);
             cek("Analog: basis tidak keluar zona di tepi layar", ZonaJoystick.BatasBasis(new Vector2(0, 0), rect, 150) == new Vector2(150, 150) && ZonaJoystick.BatasBasis(new Vector2(860, 750), rect, 150) == new Vector2(714, 606));
             cek("Langkah: jalan dan sprint tidak menjadi rentetan 5-7 bunyi per detik", AndiFPSController.JalanMaks / FoleyAndi.LangkahJalan < 3f && AndiFPSController.Sprint / FoleyAndi.LangkahLari < 4f);
@@ -57,6 +58,45 @@ namespace AlasKeramat.EditorTools
                 break;
             }
             cek("Pose nyata: kedua lengan bawah Ningsih berada di luar bahu, bukan terlipat masuk torso", lengan);
+        }
+
+        static void CekGerakSempitDanBangkit(Action<string, bool> cek)
+        {
+            var lama = GameServices.Get<AndiFPSController>();
+            var go = new GameObject("UjiGerakSempitG3"); go.layer = GameLayers.Player;
+            go.transform.position = new Vector3(4000, 100, 4000);
+            GameObject atap = null;
+            try
+            {
+                var ctrl = go.AddComponent<AndiFPSController>(); ctrl.SendMessage("Awake");
+                var cc = go.GetComponent<CharacterController>();
+                ctrl.ToggleJongkok(); cc.height = AndiFPSController.TinggiJongkok; cc.center = Vector3.up * (cc.height * 0.5f);
+                atap = GameObject.CreatePrimitive(PrimitiveType.Cube); atap.layer = GameLayers.Structure;
+                atap.transform.position = go.transform.position + Vector3.up * 1.4f; atap.transform.localScale = new Vector3(2, 0.1f, 2);
+                Physics.SyncTransforms(); ctrl.ToggleJongkok(); bool tetap = ctrl.Jongkok;
+                Object.DestroyImmediate(atap); atap = null; Physics.SyncTransforms(); ctrl.ToggleJongkok();
+                cek("Jongkok: tidak berdiri menembus atap rendah, bisa berdiri setelah bebas", tetap && !ctrl.Jongkok);
+                cek("Lompat: benturan kepala menghentikan gerak naik tanpa menghentikan jatuh",
+                    AndiFPSController.VertikalSetelahTabrakan(4, CollisionFlags.Above) == 0f &&
+                    AndiFPSController.VertikalSetelahTabrakan(-4, CollisionFlags.Above) == -4f &&
+                    AndiFPSController.VertikalSetelahTabrakan(4, CollisionFlags.Sides) == 4f);
+                var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+                typeof(AndiFPSController).GetField("_vy", flags).SetValue(ctrl, -35f);
+                typeof(AndiFPSController).GetField("_puncakY", flags).SetValue(ctrl, 120f);
+                typeof(AndiFPSController).GetField("_diUdara", flags).SetValue(ctrl, true);
+                ctrl.InputGerak = Vector2.up; ctrl.MintaLari = true;
+                var vital = go.AddComponent<AndiVitalsAndSanity>();
+                typeof(AndiVitalsAndSanity).GetMethod("TungguBangkit", flags).Invoke(vital, new object[] { 10f });
+                float vy = (float)typeof(AndiFPSController).GetField("_vy", flags).GetValue(ctrl);
+                typeof(AndiFPSController).GetMethod("CekJatuh", flags).Invoke(ctrl, new object[] { true });
+                cek("Respawn: jatuh lama dan analog dibersihkan sehingga tidak mati berulang saat mendarat",
+                    vy == 0f && ctrl.InputGerak == Vector2.zero && !ctrl.MintaLari && vital.IsAlive && ctrl.TinggiJatuhTerakhir < 0.01f);
+            }
+            finally
+            {
+                if (atap != null) Object.DestroyImmediate(atap); Object.DestroyImmediate(go);
+                if (lama != null) GameServices.Register(lama);
+            }
         }
     }
 }

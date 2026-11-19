@@ -252,7 +252,7 @@ namespace AlasKeramat.Player
             var h = OnMati; if (h != null) h();
         }
 
-        // Sementara sampai sistem simpan T6: bangun lagi di titik awal dengan vital setengah.
+        // Pingsan: bangun di titik awal dengan vital setengah dan riwayat jatuh dibersihkan.
         void TungguBangkit(float dt)
         {
             _tMati -= dt;
@@ -260,10 +260,16 @@ namespace AlasKeramat.Player
             _tMati = 0f;
             Health = Maks * 0.5f; Stamina = Maks * 0.5f; Hydration = Mathf.Max(Hydration, 40f); Sanity = Mathf.Max(Sanity, 40f);
             SetGiziMinimal(40f); SuhuTubuh = SuhuNormal; Wetness = 0f;
-            var cc = GetComponent<CharacterController>();
-            if (cc != null) cc.enabled = false;
-            transform.position = new Vector3(-4f, Mathf.Max(0f, WorldTerrainGenerator.SampleHeight(-4f, -424f)) + 0.3f, -424f);
-            if (cc != null) cc.enabled = true;
+            Vector3 awal = new Vector3(-4f, Mathf.Max(0f, WorldTerrainGenerator.SampleHeight(-4f, -424f)) + 0.3f, -424f);
+            var gerak = GetComponent<AndiFPSController>();
+            if (gerak != null) gerak.Teleport(awal);
+            else
+            {
+                var cc = GetComponent<CharacterController>(); bool aktif = cc != null && cc.enabled;
+                if (cc != null) cc.enabled = false;
+                transform.position = awal;
+                if (cc != null) cc.enabled = aktif;
+            }
             GameEvents.RaiseToast("Kamu tersadar di dekat heli");
         }
 

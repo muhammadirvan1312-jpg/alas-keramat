@@ -52,6 +52,10 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Pemeriksa statis
+        if: steps.cekproyek.outputs.ada == '1'
+        run: python3 Tools/cek_statis.py
+
       - name: Cache aset CC0 & mocap
         id: cacheaset
         if: steps.cekproyek.outputs.ada == '1'
