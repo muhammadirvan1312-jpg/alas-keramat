@@ -46,6 +46,9 @@ namespace AlasKeramat.EditorTools
             cek("Peta: panel, gambar, GPS, tujuan & kompas tersambung",peta!=null && peta.Panel!=null && peta.Bidang!=null && peta.Andi!=null && peta.Tujuan!=null && peta.Kompas!=null);
             cek("Spawn dan koper darurat tidak tertutup dekorasi tinggi",NusantaraMasterBuilder.DekorasiMenutupAwal(NusantaraMasterBuilder.SpawnAndi.x,NusantaraMasterBuilder.SpawnAndi.z) && NusantaraMasterBuilder.DekorasiMenutupAwal(16,-460) && !NusantaraMasterBuilder.DekorasiMenutupAwal(250,-300));
             cek("Diagnostik main & safe area kontrol terpasang",Object.FindFirstObjectByType<DiagnostikMain>()!=null && Object.FindFirstObjectByType<RuangAmanKontrol>()!=null);
+            float g=NusantaraMasterBuilder.GainRekaman(Mathf.Pow(10f,-50.9f/20f),Mathf.Pow(10f,-28.2f/20f),true);
+            cek("Audio: rekaman pelan diangkat ke RMS sasaran tanpa clipping",g>1f && Mathf.Abs(20f*Mathf.Log10(Mathf.Pow(10f,-50.9f/20f)*g)+25f)<0.01f && Mathf.Pow(10f,-28.2f/20f)*g<=Mathf.Pow(10f,-1f/20f));
+            cek("Audio: normalisasi membatasi peak dan menolak hening",NusantaraMasterBuilder.GainRekaman(0.01f,0.99f,false)*0.99f<=Mathf.Pow(10f,-1f/20f)+0.00001f && NusantaraMasterBuilder.GainRekaman(0,0,true)==0f);
             bool rekaman=true;
             foreach(var file in new[]{"forest_day.mp3","forest_night.mp3","leaves01.ogg","wood01.ogg","stone01.ogg"})
             {
@@ -53,7 +56,12 @@ namespace AlasKeramat.EditorTools
                 rekaman &= clip!=null && clip.length>0f && imp!=null;
                 if(imp!=null && file.EndsWith("mp3"))rekaman &= imp.defaultSampleSettings.loadType==AudioClipLoadType.Streaming;
             }
-            cek("Audio: rekaman CC0 alam/langkah terimpor dan bed streaming",rekaman);
+            foreach(string file in new[]{"forest_day","forest_night","leaves01","wood01","stone01"})
+            {
+                var klip=AssetDatabase.LoadAssetAtPath<AudioClip>(NusantaraMasterBuilder.FolderAudio+"/Rekaman_"+file+".wav");
+                rekaman &= klip!=null && klip.length>0;
+            }
+            cek("Audio: rekaman CC0 dinormalisasi ke aset panggang dan bed streaming",rekaman);
             float master=ProceduralAudioSynth.VolMaster;
             ProceduralAudioSynth.VolMaster=1f;
             float kategori=ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien);
