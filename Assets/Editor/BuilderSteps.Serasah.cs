@@ -15,9 +15,9 @@ namespace AlasKeramat.EditorTools
             {
                 float a=i*(Mathf.PI*2f/14f)+(float)r.NextDouble()*0.3f;
                 float ox=Mathf.Cos(a)*(0.05f+(float)r.NextDouble()*0.25f),oz=Mathf.Sin(a)*(0.05f+(float)r.NextDouble()*0.25f);
-                float rot=a+(float)r.NextDouble()*0.6f,h=0.45f+(float)r.NextDouble()*0.45f,w=0.22f+(float)r.NextDouble()*0.14f;
+                float rot=a+(float)r.NextDouble()*0.6f,h=0.16f+(float)r.NextDouble()*0.24f,w=0.08f+(float)r.NextDouble()*0.09f;
                 Vector3 side=new Vector3(Mathf.Cos(rot)*w,0f,Mathf.Sin(rot)*w);
-                Vector3 lean=new Vector3(-Mathf.Sin(rot),0f,Mathf.Cos(rot))*(0.12f+(float)r.NextDouble()*0.16f);
+                Vector3 lean=new Vector3(-Mathf.Sin(rot),0f,Mathf.Cos(rot))*(0.04f+(float)r.NextDouble()*0.08f);
                 Vector3 p=new Vector3(ox,-0.04f,oz);int bi=v.Count;
                 v.Add(p-side);v.Add(p+side);v.Add(p+Vector3.up*h+lean+side*0.35f);v.Add(p+Vector3.up*h+lean-side*0.35f);
                 for(int k=0;k<4;k++) { n.Add(Vector3.up);c.Add(k<2?new Color(0.55f,0.62f,0.52f,1f):Color.white); }
@@ -121,7 +121,7 @@ namespace AlasKeramat.EditorTools
                     Vector3 pos;Quaternion rot;Vector3 scale;
                     if(tipe==0) { float s=0.35f+(float)rand.NextDouble()*0.95f;pos=new Vector3(px,y-0.08f,pz);rot=Quaternion.Euler((float)rand.NextDouble()*18f,rY,0f);scale=new Vector3(s,s*0.65f,s*0.85f); }
                     else if(tipe==1) { float s=0.28f+(float)rand.NextDouble()*0.32f;pos=new Vector3(px,y+s*0.18f,pz);rot=Quaternion.Euler((float)rand.NextDouble()*8f,rY,0f);scale=new Vector3(s,s,0.8f+(float)rand.NextDouble()*0.9f); }
-                    else { float s=0.75f+(float)rand.NextDouble()*0.95f;pos=new Vector3(px,y-0.02f,pz);rot=Quaternion.Euler(0f,rY,0f);scale=new Vector3(s,s*(0.8f+0.4f*(float)rand.NextDouble()),s); }
+                    else { float s=0.8f+(float)rand.NextDouble()*0.5f;pos=new Vector3(px,y-0.02f,pz);rot=Quaternion.Euler(0f,rY,0f);scale=new Vector3(s,s*(0.8f+0.4f*(float)rand.NextDouble()),s); }
                     daftar[tipe].Add(Matrix4x4.TRS(pos,rot,scale));
                     if(daftar[tipe].Count==1)bounds[tipe]=new Bounds(pos,Vector3.one*5f);else bounds[tipe].Encapsulate(new Bounds(pos,Vector3.one*5f));
                 }

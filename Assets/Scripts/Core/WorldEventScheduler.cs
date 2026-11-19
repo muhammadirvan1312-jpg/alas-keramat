@@ -21,7 +21,7 @@ namespace AlasKeramat.Core
         float _jamPesawat = -1f, _tPesawat;
         bool _penyuBesok;
 
-        public string SaveKey { get { return "dunia"; } }
+        public string SaveKey { get { return "peristiwa_dunia"; } }
         public int JumlahJenazah { get { return _jenazah; } }
 
         void Awake() { GameServices.Register(this); }

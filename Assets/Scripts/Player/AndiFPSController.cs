@@ -46,7 +46,7 @@ namespace AlasKeramat.Player
         Vector3 _vDatar;
         float _vy, _yaw, _pitch, _sejakTanah, _faseBob, _mata = MataBerdiri, _puncakY;
         bool _mintaLompat, _diUdara;
-#if ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
         bool _keyboardGerak;
 #endif
 
@@ -78,7 +78,12 @@ namespace AlasKeramat.Player
             try
             {
                 if (Time.timeScale <= 0f) { InputGerak = Vector2.zero; InputLihatPx = Vector2.zero; return; }
-                BacaKeyboardMouse();
+                if (AlasKeramat.UI.PengunciInput.Terblokir)
+                {
+                    InputGerak=Vector2.zero; InputLihatPx=Vector2.zero; MintaLari=false;
+                    _mintaLompat=false; _vDatar=Vector3.zero;
+                }
+                else BacaKeyboardMouse();
                 if (!GerakKendaraan(Time.deltaTime)) Gerak(Time.deltaTime);
             }
             catch (System.Exception e) { Debug.LogError("[AK][AndiFPSController] " + e.Message); }
@@ -86,7 +91,7 @@ namespace AlasKeramat.Player
 
         void LateUpdate()
         {
-            if (kamera == null || Time.timeScale <= 0f) { InputLihatPx = Vector2.zero; return; }
+            if (kamera == null || AlasKeramat.UI.PengunciInput.Terblokir) { InputLihatPx = Vector2.zero; return; }
             _yaw += InputLihatPx.x * SensH * PengaliSensitivitas;
             _pitch = Mathf.Clamp(_pitch - InputLihatPx.y * SensV * PengaliSensitivitas * (BalikY ? -1f : 1f), -PitchMaks, PitchMaks);
             InputLihatPx = Vector2.zero;
@@ -105,7 +110,7 @@ namespace AlasKeramat.Player
         // H3: keyboard/mouse hanya untuk uji di Editor/PC, di dalam ENABLE_LEGACY_INPUT_MANAGER.
         void BacaKeyboardMouse()
         {
-#if ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
             float x = (Input.GetKey(KeyCode.D) ? 1f : 0f) - (Input.GetKey(KeyCode.A) ? 1f : 0f);
             float y = (Input.GetKey(KeyCode.W) ? 1f : 0f) - (Input.GetKey(KeyCode.S) ? 1f : 0f);
             if (x != 0f || y != 0f || _keyboardGerak) { InputGerak = Vector2.ClampMagnitude(new Vector2(x, y), 1f); MintaLari = Input.GetKey(KeyCode.LeftShift); }

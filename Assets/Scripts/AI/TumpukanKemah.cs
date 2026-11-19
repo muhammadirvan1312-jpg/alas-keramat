@@ -21,9 +21,14 @@ namespace AlasKeramat.AI
         {
             var cols = Physics.OverlapSphere(kemah, 6f, 1 << GameLayers.Interactable, QueryTriggerInteraction.Collide);
             foreach (var c in cols) { var t = c.GetComponentInParent<TumpukanKemah>(); if (t != null) return t; }
-            var go = new GameObject("TumpukanKemah");
             Vector3 p = kemah + new Vector3(2.5f, 0f, -1.5f);
-            go.transform.position = new Vector3(p.x, WorldTerrainGenerator.SampleHeight(p.x, p.z), p.z);
+            return BuatDi(new Vector3(p.x,WorldTerrainGenerator.SampleHeight(p.x,p.z),p.z),mat);
+        }
+
+        public static TumpukanKemah BuatDi(Vector3 posisi, Material mat)
+        {
+            var go = new GameObject("TumpukanKemah");
+            go.transform.position=posisi;
             go.layer = GameLayers.Interactable;
             var sc = go.AddComponent<SphereCollider>(); sc.isTrigger = true; sc.radius = 1.2f; sc.center = Vector3.up * 0.4f;
             var t2 = go.AddComponent<TumpukanKemah>(); t2._mat = mat;
@@ -44,7 +49,7 @@ namespace AlasKeramat.AI
             {
                 int i = _vis.childCount;
                 var g = GameObject.CreatePrimitive(i < _kayu ? PrimitiveType.Capsule : PrimitiveType.Cube);
-                Destroy(g.GetComponent<Collider>());
+                if(Application.isPlaying)Destroy(g.GetComponent<Collider>());else DestroyImmediate(g.GetComponent<Collider>());
                 g.transform.SetParent(_vis, false);
                 g.transform.localPosition = new Vector3((i % 3 - 1) * 0.35f, 0.15f + (i / 3) * 0.25f, 0f);
                 g.transform.localRotation = Quaternion.Euler(0f, 0f, i < _kayu ? 90f : 0f);

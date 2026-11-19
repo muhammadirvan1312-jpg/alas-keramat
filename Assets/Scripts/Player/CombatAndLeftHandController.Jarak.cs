@@ -77,6 +77,14 @@ namespace AlasKeramat.Player
             GameEvents.RaiseToast("Senjata: " + NamaAktif());
         }
 
+        public bool PakaiDariTas(ItemID id)
+        {
+            if (_inv == null) _inv = GameServices.Get<TikarPandan3DInventory>();
+            if (_inv == null || !_inv.Punya(id) || (IndeksMelee(id)<0 && IndeksJarak(id)<0) || _adaKembalikan) return false;
+            BatalkanTebas(); if(_tersimpan)ToggleSimpan(); _pilihan=id; _pilihTanganKosong=false; _tCekSenjata=0f;
+            PilihSenjata(); GameEvents.RaiseToast("Senjata: " + NamaAktif()); return true;
+        }
+
         public string NamaAktif()
         {
             if (_iJarak >= 0) return ItemDatabase.Get(TabelJarak[_iJarak].id).displayName;
@@ -104,12 +112,14 @@ namespace AlasKeramat.Player
 
         public void TekanTebas()
         {
+            if (AlasKeramat.UI.PengunciInput.Terblokir) return;
             _tTekan = Time.unscaledTime;
             if (_iJarak >= 0 && TabelJarak[_iJarak].jenis == JenisJarak.Busur && AdaAmunisi()) _menarik = true;
         }
 
         public void LepasTebas()
         {
+            if (AlasKeramat.UI.PengunciInput.Terblokir || _tTekan < 0f) { BatalkanTebas(); return; }
             float lama = _tTekan < 0f ? 0f : Time.unscaledTime - _tTekan;
             _tTekan = -1f;
             bool tarik = _menarik; _menarik = false;

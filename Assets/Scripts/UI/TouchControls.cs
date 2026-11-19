@@ -41,7 +41,7 @@ namespace AlasKeramat.UI
         void Update()
         {
             if (_andi == null) { _andi = GameServices.Get<AndiFPSController>(); if (_andi == null) return; }
-            if (Time.timeScale <= 0f) { HentikanInput(); return; }
+            if (PengunciInput.Terblokir) { HentikanInput(); return; }
             if (joystick != null)
             {
                 bool aktif = joystick.Nilai.sqrMagnitude > 0.0001f;
@@ -100,7 +100,7 @@ namespace AlasKeramat.UI
         // Sensitivitas 09 §3 dinyatakan per piksel referensi 1080p.
         static float SkalaLayar() { return Screen.height > 0 ? 1080f / Screen.height : 1f; }
 
-        public void GeserDariTombol(Vector2 delta) { if(_andi!=null && Time.timeScale>0f)_andi.InputLihatPx+=delta*SkalaLayar(); }
+        public void GeserDariTombol(Vector2 delta) { if(_andi!=null && !PengunciInput.Terblokir)_andi.InputLihatPx+=delta*SkalaLayar(); }
         public void TekanLompat()
         {
             var c = GameServices.Get<CombatAndLeftHandController>();

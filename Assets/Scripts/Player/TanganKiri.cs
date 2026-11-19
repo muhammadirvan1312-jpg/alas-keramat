@@ -61,7 +61,7 @@ namespace AlasKeramat.Player
             lampu.intensity = IntensitasObor * (1f - KedipObor + KedipObor * 2f * n);
         }
 
-#if ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
         void LateUpdate() { if (Input.GetKeyDown(KeyCode.F)) ToggleObor(); }
 #endif
     }

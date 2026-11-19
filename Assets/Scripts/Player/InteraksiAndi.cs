@@ -19,6 +19,7 @@ namespace AlasKeramat.Player
         float _lamaTahan;
         public void MulaiTahan()
         {
+            if (AlasKeramat.UI.PengunciInput.Terblokir) return;
             if (_bangun || _target == null || _target.HoldDuration <= 0f) { Tekan(); return; }
             _ditahan = _target; _lamaTahan = 0f;
         }
@@ -37,6 +38,7 @@ namespace AlasKeramat.Player
 
         void Update()
         {
+            if (AlasKeramat.UI.PengunciInput.Terblokir) { LepasTahan(); _target=null; _air=false; _bangun=false; Prompt=""; return; }
             var cam = _ctrl != null ? _ctrl.Kamera : null;
             if (cam == null) return;
             if (_ctrl.RakitAktif != null || _ctrl.Duduk) { LepasTahan(); _target=null; _air=false; _bangun=false; Prompt=_ctrl.Duduk ? "BERDIRI" : "TURUN"; return; }
@@ -81,6 +83,7 @@ namespace AlasKeramat.Player
         // Dipanggil tombol TANGAN atau tombol E (Editor).
         public void Tekan()
         {
+            if (AlasKeramat.UI.PengunciInput.Terblokir) return;
             try
             {
                 if (_ctrl != null && _ctrl.RakitAktif != null) { _ctrl.TurunRakit(); return; }
@@ -97,7 +100,7 @@ namespace AlasKeramat.Player
             catch (System.Exception e) { Debug.LogError("[AK][InteraksiAndi] Interaksi gagal: " + e.Message); }
         }
 
-#if ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
         void LateUpdate() { if (Input.GetKeyDown(KeyCode.E)) MulaiTahan(); if (Input.GetKeyUp(KeyCode.E)) LepasTahan(); }
 #endif
     }

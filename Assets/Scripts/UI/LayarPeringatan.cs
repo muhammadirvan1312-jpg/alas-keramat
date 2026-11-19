@@ -36,7 +36,8 @@ namespace AlasKeramat.UI
             PlayerPrefs.SetInt(GoreSystem.KunciPeringatan, 1);
             PlayerPrefs.Save();
             if (panelGore != null) panelGore.SetActive(false);
-            Time.timeScale = 1f;
+            var menu=GameServices.Get<MenuScreens>();
+            Time.timeScale = menu!=null && !menu.PermainanDimulai ? 0f : 1f;
             GameEvents.RaiseToast("Gore: " + (tingkat == 0 ? "Mati" : tingkat == 1 ? "Sedang" : "Penuh") + ". Bisa diubah di Pengaturan.");
         }
 

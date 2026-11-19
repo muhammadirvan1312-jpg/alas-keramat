@@ -377,20 +377,20 @@ namespace AlasKeramat.EditorTools
 
             if(j==J.Ningsih || j==J.Penyerupa)
             {
-                var nSrc=BacaReadableKarakter("Assets/ThirdParty/Characters/System/clothes/"+suit+"/"+suit+"_normal.png");
+                var kain=KainBase();
                 var npix=new Color[w*h];
                 for(int y=0;y<h;y++)for(int x=0;x<w;x++)
                 {
                     float u=(float)x/w,v=(float)y/h;
                     bool skirt=u>=0.50f;
                     float ou=skirt?Mathf.Clamp01((u-0.52f)/0.47f):Mathf.Clamp01((u-0.01f)/0.47f);
-                    Color orig=source.GetPixelBilinear(ou,v);float lum=orig.grayscale;
+                    float lum=kain!=null?kain.GetPixelBilinear(Mathf.Repeat(ou*5f,1f),Mathf.Repeat(v*5f,1f)).grayscale:0.7f;
                     float ao=aoSrc!=null?(0.42f+0.58f*aoSrc.GetPixelBilinear(ou,v).grayscale):1f;
                     float grain=0.93f+0.07f*Mathf.PerlinNoise(u*300f,v*300f);
                     if(!skirt)
                     {
                         Color kebaya=j==J.Penyerupa?new Color(0.68f,0.68f,0.64f):new Color(0.95f,0.92f,0.85f);
-                        Color col=kebaya*Mathf.Lerp(0.42f,1.10f,lum)*ao*grain;
+                        Color col=kebaya*Mathf.Lerp(0.94f,1.04f,lum)*Mathf.Lerp(0.8f,1f,ao)*grain;
                         col.a=1f;px[y*w+x]=col;
                     }
                     else
@@ -400,11 +400,11 @@ namespace AlasKeramat.EditorTools
                         float dot=Mathf.Clamp01(1f-Mathf.Abs(Mathf.Repeat(ou*22f-v*18f,1f)-0.5f)*4f);
                         float pat=Mathf.Clamp01(wave*0.65f+dot*0.35f);
                         Color motif=Color.Lerp(new Color(0.18f,0.09f,0.045f),new Color(0.74f,0.52f,0.22f),pat);
-                        Color col=motif*Mathf.Lerp(0.45f,1.15f,lum)*ao*grain;
+                        Color col=motif*Mathf.Lerp(0.92f,1.04f,lum)*ao*grain;
                         if(j==J.Penyerupa)col=Color.Lerp(col,new Color(0.2f,0.22f,0.24f),0.4f);
                         col.a=1f;px[y*w+x]=col;
                     }
-                    npix[y*w+x]=nSrc!=null?nSrc.GetPixelBilinear(ou,v):new Color(0.5f,0.5f,1f,1f);
+                    npix[y*w+x]=new Color(0.5f,0.5f,1f,1f);
                 }
                 var ntex=new Texture2D(w,h,TextureFormat.RGBA32,true);ntex.SetPixels(npix);ntex.Apply();
                 string np=FolderKarakter+"/Pakaian_"+j+"_n.png";SimpanPng(ntex,np);AssetDatabase.ImportAsset(np);AturImpor(np,true,false,2048);

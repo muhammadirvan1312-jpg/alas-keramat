@@ -33,6 +33,9 @@ namespace AlasKeramat.UI
         IEnumerator Start()
         {
             yield return null; yield return null; // tunggu layanan & muat
+            while(LayarPeringatan.PerluTampil())yield return null;
+            var menu=GameServices.Get<MenuScreens>();
+            while(menu!=null && !menu.PermainanDimulai)yield return null;
             var q = GameServices.Get<QuestManager>();
             if (q != null && !q.Progres.intro) StartCoroutine(Intro());
         }

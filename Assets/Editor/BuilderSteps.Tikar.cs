@@ -70,6 +70,14 @@ namespace AlasKeramat.EditorTools
             UnityEventTools.AddPersistentListener(bPakai.onClick, ui.TekanPakai);
             UnityEventTools.AddPersistentListener(bBatal.onClick, ui.TekanBatal);
             UnityEventTools.AddPersistentListener(bTutup.onClick, ui.Tutup);
+            var sebelum=TombolPanel(panel,"Sebelum","SEBELUM",font,new Vector2(-720f,200f),new Vector2(280f,70f),ProcTex.Hex("#3A3A3A"),out tx);
+            var berikut=TombolPanel(panel,"Berikut","BERIKUT",font,new Vector2(720f,200f),new Vector2(280f,70f),ProcTex.Hex("#3A3A3A"),out tx);
+            var senjata=TombolPanel(panel,"PakaiSenjata","PAKAI SENJATA",font,new Vector2(0f,200f),new Vector2(380f,70f),ProcTex.Hex("#4A6F8A"),out tx);
+            var halaman=BuatTeks(panel,"Halaman","",font,24,new Vector2(0.5f,1f),new Vector2(0,-100f),new Vector2(500f,40f)); halaman.raycastTarget=false;
+            UnityEventTools.AddPersistentListener(sebelum.onClick,ui.HalamanSebelum);
+            UnityEventTools.AddPersistentListener(berikut.onClick,ui.HalamanBerikut);
+            UnityEventTools.AddPersistentListener(senjata.onClick,ui.TekanSenjata);
+            ui.PasangHalaman(halaman,senjata);
             ui.Pasang(panel, judul, label, bRakit, bMakan, bPakai, teksRakit);
             EditorUtility.SetDirty(ui);
 

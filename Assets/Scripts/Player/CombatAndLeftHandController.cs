@@ -82,7 +82,7 @@ namespace AlasKeramat.Player
 
         public void Tebas(bool berat)
         {
-            if (SedangMenyerang || _tersimpan || _blok || (_ctrl != null && _ctrl.Berenang)) return;
+            if (AlasKeramat.UI.PengunciInput.Terblokir || SedangMenyerang || _tersimpan || _blok || (_ctrl != null && _ctrl.Berenang)) return;
             if (_v == null) _v = GameServices.Get<AndiVitalsAndSanity>();
             if (_v != null && !_v.Pakai(berat ? _aktif.stamB : _aktif.stamR)) { GameEvents.RaiseToast("Terlalu lelah untuk mengayun"); return; }
             _berat = berat; _t = 0f; _sudahKena = false;
@@ -90,12 +90,13 @@ namespace AlasKeramat.Player
 
         void Update()
         {
+            if (AlasKeramat.UI.PengunciInput.Terblokir) { TickTangkis(Time.deltaTime); BatalkanTebas(); TangkisLepas(); _tParry=-1f; _t=-1f; return; }
             _tajam=Mathf.Max(0f,_tajam-Time.deltaTime);
             TickTangkis(Time.deltaTime);
             TickJarak(Time.deltaTime);
             _tCekSenjata -= Time.deltaTime;
             if (_tCekSenjata <= 0f) { PilihSenjata(); _tCekSenjata = 0.5f; }
-#if ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
             if (Input.GetMouseButtonDown(0)) TekanTebas();
             if (Input.GetMouseButtonUp(0)) LepasTebas();
             if (Input.GetKeyDown(KeyCode.G)) Ganti();

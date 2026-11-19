@@ -14,7 +14,7 @@ namespace AlasKeramat.UI
         { panelBaca = baca; judul = j; isi = i; panelJurnal = jurnal; judulJurnal = jj; labelSlot = slot; }
 
         public bool Terbuka { get { return (panelBaca != null && panelBaca.activeSelf) || (panelJurnal != null && panelJurnal.activeSelf); } }
-        void Awake() { GameServices.Register(this); Tutup(); }
+        void Awake() { PengunciInput.Pasang(panelBaca); PengunciInput.Pasang(panelJurnal);  GameServices.Register(this); Tutup(); }
         void OnEnable() { GameEvents.OnLoreFound += Baca; }
         void OnDisable() { GameEvents.OnLoreFound -= Baca; }
 

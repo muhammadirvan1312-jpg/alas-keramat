@@ -38,6 +38,7 @@ namespace AlasKeramat.UI
                 Andi.localRotation=Quaternion.Euler(0,0,-yaw);
             }
         }
+        public bool Terbuka { get { return _terbuka; } }
         public void Toggle()
         {
             if(_terbuka){Tutup();return;}

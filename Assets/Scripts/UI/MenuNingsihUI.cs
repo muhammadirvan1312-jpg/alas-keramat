@@ -15,7 +15,7 @@ namespace AlasKeramat.UI
         NingsihVirginiaAI _n;
 
         public void Pasang(GameObject p, Button[] t, Text j) { panel = p; tombol = t; judul = j; }
-        void Awake() { GameServices.Register(this); if (panel != null) panel.SetActive(false); }
+        void Awake() { PengunciInput.Pasang(panel);  GameServices.Register(this); if (panel != null) panel.SetActive(false); }
 
         public void Buka(NingsihVirginiaAI n)
         {

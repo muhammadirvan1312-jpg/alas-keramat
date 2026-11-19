@@ -39,6 +39,7 @@ namespace AlasKeramat.Player
 
         public void TangkisTekan()
         {
+            if(AlasKeramat.UI.PengunciInput.Terblokir)return;
             if (Time.unscaledTime - _tKetukLalu < KetukGanda) { ToggleSimpan(); _tKetukLalu = -10f; _tTahan = -1f; return; }
             _tKetukLalu = Time.unscaledTime;
             if (_tersimpan) return;
@@ -122,12 +123,14 @@ namespace AlasKeramat.Player
         }
 
         // Aim assist melee selama ancang-ancang: putar yaw menuju musuh terdekat dalam 3 m & kerucut 25 derajat.
+        readonly Collider[] _sasaranAssist = new Collider[64];
         void Assist(float dt)
         {
             if (_ctrl == null || !AimAssist) return;
-            var cols = Physics.OverlapSphere(transform.position, AssistJarak, 1 << GameLayers.Enemy, QueryTriggerInteraction.Ignore);
+            int jumlah=Physics.OverlapSphereNonAlloc(transform.position,AssistJarak,_sasaranAssist,1 << GameLayers.Enemy,QueryTriggerInteraction.Ignore);
+            var cols=_sasaranAssist;
             float terbaik = 999f, yaw = 0f;
-            for (int i = 0; i < cols.Length; i++)
+            for (int i = 0; i < jumlah; i++)
             {
                 Vector3 ke = cols[i].bounds.center - transform.position; ke.y = 0f;
                 if (ke.sqrMagnitude < 0.01f) continue;

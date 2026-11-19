@@ -25,6 +25,10 @@ namespace AlasKeramat.Inventory
         public IEnumerable<ItemID> Pilihan { get { return _pilih; } }
         public int JumlahPilihan { get { return _pilih.Count; } }
         public int JumlahBenda { get { return _benda.Count; } }
+        public int Halaman { get; private set; }
+        public int JumlahHalaman { get; private set; } = 1;
+        public static int HitungHalaman(int jumlah) { return Mathf.Max(1,(jumlah+MaksTampil-1)/MaksTampil); }
+        public void PindahHalaman(int selisih) { Halaman=Mathf.Clamp(Halaman+selisih,0,JumlahHalaman-1); Segarkan(); }
         public ItemID IdBenda(int i) { return _idBenda[i]; }
         public Vector3 PosisiBenda(int i) { return _benda[i].transform.position; }
 
@@ -37,21 +41,23 @@ namespace AlasKeramat.Inventory
             Terbuka = v;
             if (kamera != null) kamera.enabled = v;
             _pilih.Clear();
-            if (v) Segarkan();
+            if (v) { Halaman=0; Segarkan(); }
         }
 
         public void Segarkan()
         {
             if (_inv == null) _inv = GameServices.Get<TikarPandan3DInventory>();
-            foreach (var b in _benda) if (b != null) Destroy(b);
+            foreach (var b in _benda) if (b != null) { b.SetActive(false); Destroy(b); }
             _benda.Clear(); _idBenda.Clear();
             if (_inv == null || wadah == null) return;
             var urut = new List<ItemID>();
             foreach (var kv in _inv.Isi) urut.Add(kv.Key);
             urut.Sort();
-            for (int i = 0; i < urut.Count && i < MaksTampil; i++)
+            _pilih.RemoveWhere(id => !_inv.Punya(id));
+            JumlahHalaman=HitungHalaman(urut.Count); Halaman=Mathf.Clamp(Halaman,0,JumlahHalaman-1);
+            for (int i = 0; i < MaksTampil && Halaman*MaksTampil+i < urut.Count; i++)
             {
-                var id = urut[i];
+                var id = urut[Halaman*MaksTampil+i];
                 var g = Model(id);
                 g.transform.SetParent(wadah, false);
                 g.transform.localPosition = new Vector3((i % Kolom - (Kolom - 1) * 0.5f) * Jarak, 0.05f, -(i / Kolom) * Jarak);
@@ -132,7 +138,9 @@ namespace AlasKeramat.Inventory
         {
             if (inv == null) return false;
             foreach (var b in r.inputs) if (!inv.Punya(b.id, b.count)) return false;
-            if (inv.SisaRuang(r.output.id) <= 0) return false;
+            int dikonsumsi=0;
+            foreach (var b in r.inputs) if(b.id==r.output.id) dikonsumsi+=b.count;
+            if (r.output.count<=0 || inv.SisaRuang(r.output.id)+dikonsumsi < r.output.count) return false;
             foreach (var b in r.inputs) inv.Kurangi(b.id, b.count);
             inv.Tambah(r.output.id, r.output.count);
             return true;

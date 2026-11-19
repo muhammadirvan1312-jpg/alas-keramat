@@ -140,3 +140,10 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
 - Hapus anggota tambahan, pertahankan kontrak lama VolumeKategori = master x kategori, dan perbaiki dua pemanggil AmbienceDirector agar master tidak dikalikan lagi. Tambah regresi master 0,5 x ambien 0,4 = 0,2 serta mute ambien. Menunggu CI koreksi; APK, FPS HP dan kelulusan visual tetap belum diklaim.
 
 - Audit HUD: SIMPAN/MUAT/PANGGUL BATU sebelumnya menumpuk slot cepat pada Y=50/70. Toolbar dipindah ke kiri atas di bawah informasi vital, kartu misi ke tengah atas; self-test memeriksa perpotongan rect tombol terhadap semua slot sabuk.
+
+### Audit lintas-sistem G3 putaran kedua — 19 November 2026
+
+- Temuan tambahan dan daftar kekurangan lintas 19 area dicatat di `docs/EVALUASI_UJI_MAIN.md`. Status keseluruhan tetap GAGAL UJI MAIN, bukan selesai.
+- Revisi: input mouse desktop tidak masuk Android; panel tas/buku/peti/lore/perintah teman mengunci input; halaman tas dan pemilihan senjata; crafting menolak output yang tidak muat utuh; event inventaris setelah muat; kunci save dunia/peristiwa terpisah beserta migrasi lama; slot eksplisit tanpa fallback silang; HUD memakai slot aktif; tumpukan kerja Deden dibuat ulang saat restore; peluncuran berurutan peringatan/menu/muat atau intro; buffer aim assist; rumput lebih kecil dan kebaya tidak membawa motif baju sumber.
+- Ditambahkan regresi save legacy, kunci unik, kegagalan restore, kapasitas crafting, event stok dan tumpukan Deden. Cek statis lokal 0; hasil Unity dan playtest revisi ini belum dinyatakan lulus.
+- Kekurangan nyata: 3/6 kompleks bawah tanah, retarget mocap/42 cutscene belum lengkap, banyak model primitive, bank/mixing audio belum penuh dan belum ada bukti performa HP. PR #26 tetap draft.

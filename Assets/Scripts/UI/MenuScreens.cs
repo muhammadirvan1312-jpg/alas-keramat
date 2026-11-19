@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using AlasKeramat.AI;
 using AlasKeramat.Building;
 using AlasKeramat.Core;
@@ -83,6 +84,11 @@ namespace AlasKeramat.UI
         public int IndeksCara { get; private set; }
         public bool Dijeda { get; private set; }
 
+        bool _sesiDimulai;
+        static bool _mulaiBaruBerikutnya;
+        public bool PermainanDimulai { get { return _sesiDimulai; } }
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetPeluncuran() { _mulaiBaruBerikutnya=false; }
         int _ketukDebug;
         float _tKetukDebug, _tSegarDebug, _fpsHalus = 30f;
         Vector2[] _ukuranAwalTombol;
@@ -137,9 +143,17 @@ namespace AlasKeramat.UI
             MuatPengaturan();
             TerapkanPengaturan();
             SembunyikanSemua();
+            Time.timeScale=0f;
         }
 
-        void Start() { TerapkanPengaturan(); }
+        IEnumerator Start()
+        {
+            TerapkanPengaturan();
+            yield return null; yield return null;
+            while(LayarPeringatan.PerluTampil())yield return null;
+            if(_mulaiBaruBerikutnya) { _mulaiBaruBerikutnya=false; _sesiDimulai=true; Time.timeScale=1f; }
+            else BukaMenuUtama();
+        }
 
         public static PresetGrafis RekomendasiPreset(int ramMb, int vramMb)
         {
@@ -337,6 +351,9 @@ namespace AlasKeramat.UI
         // ---------- Aksi Tombol Menu & Jeda ----------
         public void ToggleJeda()
         {
+            if(!_sesiDimulai) return;
+            var peta=GameServices.Get<PetaSurveiUI>();
+            if(peta!=null && peta.Terbuka) { peta.Tutup(); return; }
             var sinema = GameServices.Get<LayarSinema>();
             if (sinema != null && sinema.Berjalan) return;
             Dijeda = !Dijeda;
@@ -348,6 +365,7 @@ namespace AlasKeramat.UI
 
         public void LanjutkanDariJeda()
         {
+            if(!_sesiDimulai) { TutupMenuUtama(); return; }
             Dijeda = false;
             SembunyikanSemua();
             Time.timeScale = 1f;
@@ -365,6 +383,12 @@ namespace AlasKeramat.UI
 
         public void TutupMenuUtama()
         {
+            if(!_sesiDimulai)
+            {
+                var simpan=GameServices.Get<SaveSystem>();
+                if(simpan!=null && simpan.AdaSimpanan && !simpan.Muat())return;
+                _sesiDimulai=true;
+            }
             Dijeda = false;
             SembunyikanSemua();
             Time.timeScale = 1f;
@@ -376,10 +400,10 @@ namespace AlasKeramat.UI
             Kesulitan = (Difficulty)Mathf.Clamp(kesulitan, 0, 2);
             EnemyDirector.Kesulitan = Kesulitan;
             SimpanPengaturan();
-            SaveSystem.HapusSlot(SaveSystem.SlotAktif);
             Dijeda = false;
             SembunyikanSemua();
             Time.timeScale = 1f;
+            _mulaiBaruBerikutnya=true;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
@@ -394,7 +418,7 @@ namespace AlasKeramat.UI
         public void TutupPanelSlot()
         {
             if (panelSlot != null) panelSlot.SetActive(false);
-            if (Dijeda && panelJeda != null) panelJeda.SetActive(true);
+            if (Dijeda) { var kembali=_sesiDimulai?panelJeda:panelMenuUtama; if(kembali!=null)kembali.SetActive(true); }
             BunyiKlik();
         }
 
@@ -408,6 +432,7 @@ namespace AlasKeramat.UI
 
         public void SimpanKeSlotAktif()
         {
+            if(!_sesiDimulai) { GameEvents.RaiseToast("Mulai atau muat permainan sebelum menyimpan"); return; }
             var sv = GameServices.Get<SaveSystem>();
             if (sv != null) sv.SimpanSlot(SaveSystem.SlotAktif);
             SegarkanInfoSlot();
@@ -419,6 +444,7 @@ namespace AlasKeramat.UI
             var sv = GameServices.Get<SaveSystem>();
             if (sv != null && sv.MuatSlot(SaveSystem.SlotAktif))
             {
+                _sesiDimulai=true;
                 Dijeda = false;
                 SembunyikanSemua();
                 Time.timeScale = 1f;
@@ -456,7 +482,7 @@ namespace AlasKeramat.UI
             SimpanPengaturan();
             TerapkanPengaturan();
             if (panelPengaturan != null) panelPengaturan.SetActive(false);
-            if (Dijeda && panelJeda != null) panelJeda.SetActive(true);
+            if (Dijeda) { var kembali=_sesiDimulai?panelJeda:panelMenuUtama; if(kembali!=null)kembali.SetActive(true); }
             BunyiKlik();
         }
 
@@ -602,7 +628,7 @@ namespace AlasKeramat.UI
         public void TutupCaraBermain()
         {
             if (panelCara != null) panelCara.SetActive(false);
-            if (Dijeda && panelJeda != null) panelJeda.SetActive(true);
+            if (Dijeda) { var kembali=_sesiDimulai?panelJeda:panelMenuUtama; if(kembali!=null)kembali.SetActive(true); }
             BunyiKlik();
         }
 
@@ -637,7 +663,7 @@ namespace AlasKeramat.UI
         public void TutupKredit()
         {
             if (panelKredit != null) panelKredit.SetActive(false);
-            if (Dijeda && panelJeda != null) panelJeda.SetActive(true);
+            if (Dijeda) { var kembali=_sesiDimulai?panelJeda:panelMenuUtama; if(kembali!=null)kembali.SetActive(true); }
             BunyiKlik();
         }
 

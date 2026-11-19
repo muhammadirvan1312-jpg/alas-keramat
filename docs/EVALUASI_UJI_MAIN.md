@@ -35,3 +35,30 @@ Animasi manusia masih belum retarget mocap lengkap. Bangunan dan beberapa landma
 URL, lisensi, ukuran dan SHA256 ada di Tools/aset_cc0.lock.json. Pengunduh memvalidasi hash ZIP sebelum membaca anggota, lalu hash setiap berkas hasil. Rekaman ini tidak diklaim direkam di Indonesia.
 
 Instancing runtime dibagi maksimal 511 instance per pengiriman sesuai batas dua matriks bawaan Unity; kelompok simpanan tetap 1023 agar ID pohon tidak bergeser. Referensi API: https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Graphics.RenderMeshInstanced.html .
+
+## Audit lintas-sistem lanjutan (19 November, putaran kedua)
+
+Temuan berikut berasal dari jalur kode dan foto build 02aee43, bukan klaim sudah menuntaskan playtest semua fitur.
+
+| Sistem | Temuan | Tindakan revisi | Status penerimaan |
+|---|---|---|---|
+| Input Android | Pembacaan mouse tempur ikut dikompilasi ke Android; sentuh dapat ditiru menjadi mouse | Batasi input PC ke Editor/Standalone, tetap gunakan pointer uGUI Android | Menunggu uji multitouch APK |
+| Tas, buku, peti, lore, perintah teman | Panel tidak mengunci input dunia; gerak/serangan lama dapat berlanjut di belakang UI | Kunci per panel, buang gerak/aim/charge/interaksi; tutup satu panel tidak melepas kunci panel lainnya | Menunggu uji buka-tutup dan fokus HP |
+| Inventaris | Hanya 36 jenis pertama terlihat; tidak ada pakai senjata terpilih | Halaman semua jenis, pilihan bahan lintas halaman, PAKAI SENJATA, pembaruan UI digabung per frame | Menunggu uji sentuh dan keterbacaan label |
+| Crafting | Cek hanya ruang lebih dari nol; hasil lebih dari satu dapat terpotong setelah bahan diambil | Tolak sebelum mengurangi bahan bila seluruh hasil tidak muat | Regresi Unity ditambahkan |
+| Restore inventaris | Tidak mengirim perubahan stok, sabuk cepat dapat tetap menampilkan isi sebelumnya | Kirim event untuk item yang hilang dan masuk setelah seluruh stok dipulihkan | Regresi Unity ditambahkan |
+| Save dunia | SimpanDunia dan WorldEventScheduler sama-sama memakai kunci dunia | Pisahkan kunci peristiwa, migrasikan dua entri lama berdasarkan schema, tolak kunci duplikat baru | Regresi Unity ditambahkan |
+| Slot save | Slot kosong memuat berkas global dari slot lain; HUD tidak menyimpan slot aktif; Mulai Baru menghapus slot | Slot eksplisit mandiri, HUD mengikuti slot aktif, Mulai Baru mempertahankan simpanan sampai penyimpanan berikutnya | Uji slot dan relaunch APK masih perlu |
+| Data dinamis Deden | Tumpukan dibuat saat main, tidak dibuat kembali setelah relaunch | Snapshot posisi/isi tumpukan dimiliki SimpanDunia, migrasi entri tumpukan lama | Regresi restore dua kali ditambahkan |
+| Kegagalan save/load | Capture/restore yang gagal ditelan dan masih dapat dilaporkan berhasil | Batalkan penulisan bila snapshot gagal; restore gagal mencoba memulihkan snapshot semula dan melaporkan gagal | Belum menjamin semua komponen memvalidasi seluruh schema |
+| Peluncuran | Intro berjalan di balik peringatan, menu awal disembunyikan, Lanjutkan tidak memuat save | Peringatan -> menu -> muat/baru -> intro jika belum pernah; kembali dari panel awal ke menu awal | Wajib uji fresh install dan relaunch |
+| Tempur | Aim assist mengalokasikan array collider tiap frame ancang-ancang | Buffer overlap tetap; input serang/tangkis diblokir selama panel | Belum menilai rasa ayunan/hit reaction musuh |
+| Rumput | Tinggi mesh 0,45–0,9 m dikali skala sampai >1,7; menutupi pandangan dan tampak bilah lebar | Rumpun 0,16–0,4 m dengan kartu lebih sempit; pertahankan pembersihan spawn/koper | Menunggu foto baru; material masih prosedural |
+| Kebaya Ningsih | Albedo/normal motif baju sumber ikut dikalikan ke kebaya, terlihat garis kotor | Gunakan serat kain terpisah, kurangi AO kebaya, buang emboss motif sumber | Menunggu foto baru; wajah/animasi masih belum mencapai sasaran |
+| Dunia dan gua | Manager bawah tanah masih hanya menampung UG1–UG3; spesifikasi v5 meminta enam kompleks | Dicatat sebagai kekurangan konten, bukan ditutupi status tahap selesai | BELUM SELESAI |
+| Cerita, misi dan teman | Misi inti tersedia; 42 cutscene, mocap dan keluwesan perilaku belum terbukti lengkap | Tidak menganggap tes misi sebagai bukti seluruh pengalaman cerita selesai | BELUM LULUS PLAYTEST |
+| Aset bangunan, loot dan tas | Banyak model tetap primitive/prosedural; atlas foto tidak memperbaiki siluet/model dengan sendirinya | Wajib audit aset per kategori dan penggantian model, bukan tambah efek kamera | BELUM MENCAPAI TARGET |
+| Hujan, audio gua dan tempur | Rekaman alam/langkah baru mencakup sebagian bank, belum seluruh mixing v5 | Uji dengar terpisah kategori dan konteks tetap wajib | BELUM LULUS UJI DENGAR |
+| Performa keseluruhan | Belum ada trace CPU/GPU, P95, panas dan memori HP yang dapat mengesahkan revisi | Diagnostik disediakan, release tanpa Development, LOD/density diperbaiki | BELUM LULUS UJI PERANGKAT |
+
+Kriteria penutupan tetap pengalaman main yang dapat diperiksa pada APK dengan SHA yang benar. CI hijau hanya mengesahkan kompilasi dan pemeriksaan otomatis yang dijalankan; tidak mengesahkan kualitas visual, rasa kontrol, audio, atau kelengkapan konten v5.

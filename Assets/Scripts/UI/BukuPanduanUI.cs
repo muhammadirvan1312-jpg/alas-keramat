@@ -16,7 +16,7 @@ namespace AlasKeramat.UI
 
         public void Pasang(GameObject p, GameObject tempat, GameObject buku) { panel = p; panelTempat = tempat; tombolBuku = buku; }
 
-        void Awake() { if (panel != null) panel.SetActive(false); if (panelTempat != null) panelTempat.SetActive(false); }
+        void Awake() { PengunciInput.Pasang(panel);  if (panel != null) panel.SetActive(false); if (panelTempat != null) panelTempat.SetActive(false); }
 
         bool Siap() { if (_g == null) _g = GameServices.Get<GuidebookBlueprintsAndCooking>(); return _g != null; }
 

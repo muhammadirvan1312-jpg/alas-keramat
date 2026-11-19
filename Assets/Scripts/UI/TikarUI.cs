@@ -19,16 +19,29 @@ namespace AlasKeramat.UI
         [SerializeField] Button tombolRakit, tombolMakan, tombolPakai;
         [SerializeField] Text teksRakit;
 
+        [SerializeField] Text teksHalaman;
+        [SerializeField] Button tombolSenjata;
+        bool _kotor;
+        public void PasangHalaman(Text teks, Button senjata) { teksHalaman=teks; tombolSenjata=senjata; }
         TikarPanggung _p;
         TikarPandan3DInventory _inv;
         readonly List<ItemID> _tmp = new List<ItemID>();
 
         public void Pasang(GameObject p, Text j, Text[] l, Button r, Button m, Button z, Text tr) { panel = p; judul = j; label = l; tombolRakit = r; tombolMakan = m; tombolPakai = z; teksRakit = tr; }
 
-        void Awake() { GameServices.Register(this); if (panel != null) panel.SetActive(false); }
+        void Awake() { PengunciInput.Pasang(panel);  GameServices.Register(this); if (panel != null) panel.SetActive(false); }
         void OnEnable() { GameEvents.OnItemChanged += Berubah; }
         void OnDisable() { GameEvents.OnItemChanged -= Berubah; }
-        void Berubah(ItemID id, int n) { if (_p != null && _p.Terbuka) { _p.Segarkan(); Perbarui(); } }
+        void Berubah(ItemID id, int n) { _kotor=true; }
+        void LateUpdate() { if (_kotor && _p != null && _p.Terbuka) { _kotor=false; _p.Segarkan(); Perbarui(); } }
+        public void HalamanSebelum() { if(Siap()) { _p.PindahHalaman(-1); Perbarui(); } }
+        public void HalamanBerikut() { if(Siap()) { _p.PindahHalaman(1); Perbarui(); } }
+        public void TekanSenjata()
+        {
+            if(!Siap())return;
+            var c=GameServices.Get<CombatAndLeftHandController>();
+            if(c!=null && c.PakaiDariTas(Tunggal()))Tutup();
+        }
 
         bool Siap()
         {
@@ -69,6 +82,8 @@ namespace AlasKeramat.UI
             var t = _p.Terbuka ? Tunggal() : ItemID.None;
             if (tombolMakan != null) tombolMakan.interactable = t != ItemID.None && ItemDatabase.IsFood(t);
             if (tombolPakai != null) tombolPakai.interactable = t != ItemID.None && AndiVitalsAndSanity.Durabilitas(t) > 0f;
+            if(teksHalaman!=null)teksHalaman.text="HALAMAN "+(_p.Halaman+1)+" / "+_p.JumlahHalaman;
+            if(tombolSenjata!=null)tombolSenjata.interactable=t!=ItemID.None && (CombatAndLeftHandController.IndeksMelee(t)>=0 || CombatAndLeftHandController.IndeksJarak(t)>=0);
             TataLabel();
         }
 
