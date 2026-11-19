@@ -1,14 +1,14 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (2927 = 2927)
+[LULUS] Idempoten: jumlah objek sama (2961 = 2961)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
-[LULUS] Tekstur >= 10 (37)
+[LULUS] Tekstur >= 10 (38)
 [LULUS] Material >= 5 (174)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
-[LULUS] WAV >= 8 (52)
+[LULUS] WAV >= 8 (62)
 [LULUS] Scene tersimpan & terdaftar di Build Settings
 [LULUS] Synth punya klip dipanggang
 [LULUS] EventSystem ada
@@ -61,7 +61,7 @@
 [LULUS] Tepat 1 AudioListener aktif (1)
 [LULUS] Tur pratinjau mati saat Andi ada
 [LULUS] TouchControls & joystick & area geser
-[LULUS] Semua tombol HUD punya handler (39)
+[LULUS] Semua tombol HUD punya handler (40)
 [LULUS] 3 koper berisi item sesuai 03 §9 (3)
 [LULUS] Inventaris menghormati Maks (golok 3 -> 1)
 [LULUS] Radar, toast, interaksi, tangan kiri ada
@@ -110,6 +110,7 @@
 [LULUS] Peti memindahkan item tanpa menggandakan
 [LULUS] Simpan -> muat struktur, graf, HP dan isi blueprint identik
 [LULUS] Muat dua kali tidak menggandakan bangunan
+[LULUS] Simpan dunia: hasil kerja Deden dibuat kembali beserta isinya
 [LULUS] Bongkar wajib tahan satu detik
 [LULUS] Bongkar benar-benar menghasilkan KayuFisik papan
 [LULUS] Semua blueprint v3 menghasilkan objek dan collider
@@ -117,7 +118,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 208 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 234 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -210,7 +211,7 @@
 [LULUS] G3 shader AlasKeramat/KulitManusia tanpa error
 [LULUS] G3a: kabut lokal tetap, basah cuaca, malam & gua terbaca
 [LULUS] T11: MenuScreens & TombolJeda terpasang di scene
-[LULUS] T11: Preset grafis 11 §7.2 (Rendah 0.7/0m, Sedang 0.85/35m, Tinggi 1.0/60m, Ultra 90m)
+[LULUS] T11: Preset grafis 11 §7.2 (Rendah 0.7/0m, Sedang 0.95/35m, Tinggi 1.0/60m, Ultra 90m)
 [LULUS] T11: Pengali kesulitan 05 §9 (Damai laju 0.7/dmg 0.5, Normal 1/1, Sulit 1.25/1.4)
 [LULUS] T11: Vital haus turun lebih lambat di Damai daripada Sulit
 [LULUS] T11: 6 kartu Cara Bermain & teks Kredit lengkap
@@ -218,6 +219,33 @@
 [LULUS] T11: 3 slot simpan mandiri (simpan, ringkasan, hapus)
 [LULUS] T11: Ketuk pojok 5x membuka Panel Debug HP
 [LULUS] T11: Getar haptik >= 20 dmg, AKTexturePostprocessor, & NusantaraAndroidBuild
+[LULUS] Tas: perban dapat dipakai saat berdarah meskipun kategorinya alat
+[LULUS] Simpan: struktur dan peristiwa memakai kunci berbeda dan keduanya pulih
+[LULUS] Muat: event stok ditandai sebagai restore dan penanda dilepas setelah selesai
+[LULUS] Simpan: dua entri dunia versi lama dimigrasikan tanpa saling menimpa
+[LULUS] Simpan: kunci ganda dan berkas kosong ditolak; restore gagal memulihkan state
+[LULUS] Simpan: semua pemilik snapshot scene memiliki kunci unik
+[LULUS] Rakit: output tidak muat seluruhnya tidak memakan bahan
+[LULUS] Muat inventaris: penghapusan item mengirim event untuk menyegarkan HUD
+[LULUS] Tas: seluruh jenis item dapat dijangkau melalui halaman, termasuk sesudah item 36
+[LULUS] Analog: setengah rentang menghasilkan setengah laju tanpa redaman kedua
+[LULUS] Analog: diagonal dinormalisasi dan nol tidak bergerak
+[LULUS] Sentuh: jari kedua tidak merebut kamera
+[LULUS] Sentuh: reset membuang delta dan kepemilikan jari
+[LULUS] LOD: dua pohon dalam satu petak tetap memilih detail berdasarkan jaraknya sendiri
+[LULUS] Preset otomatis konservatif & tidak menganggap RAM sebagai bukti Ultra
+[LULUS] Preset: rumput bertingkat dan Ultra 30 FPS
+[LULUS] Peta: koordinat dunia dua kilometer pulang-pergi & utara benar
+[LULUS] HUD: 14 tombol aksi/tas/buku/simpan tidak bertumpuk pada skala 85 sampai 130 persen
+[LULUS] HUD: simpan, muat, dan panggul batu tidak menutup slot cepat
+[LULUS] Peta: panel, gambar, GPS, tujuan & kompas tersambung
+[LULUS] Spawn dan koper darurat tidak tertutup dekorasi tinggi
+[LULUS] Diagnostik main & safe area kontrol terpasang
+[LULUS] Audio: rekaman pelan diangkat ke RMS sasaran tanpa clipping
+[LULUS] Audio: normalisasi membatasi peak dan menolak hening
+[LULUS] Audio: rekaman CC0 dinormalisasi ke aset panggang dan bed streaming
+[LULUS] Audio: master dan kategori dikalikan tepat sekali
+[LULUS] Audio: kategori ambien dapat dimatikan
 [LULUS] HUDInfo ada
 [LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
 [LULUS] Sprint: joystick penuh ke atas
