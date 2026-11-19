@@ -144,6 +144,7 @@ namespace AlasKeramat.EditorTools
             rt.anchoredPosition = posisi;
             rt.sizeDelta = besar;
             var t = go.AddComponent<Text>();
+            t.raycastTarget = false; // Label, subtitle dan teks sinema tidak boleh menelan sentuhan dunia.
             t.text = isi; t.font = font; t.fontSize = ukuran;
             t.alignment = TextAnchor.MiddleCenter;
             t.horizontalOverflow = HorizontalWrapMode.Overflow;

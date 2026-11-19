@@ -43,10 +43,14 @@ namespace AlasKeramat.Core
             var rtJoy = (RectTransform)joy.transform;
             Vector2 sentuh = RectTransformUtility.WorldToScreenPoint(null, rtJoy.TransformPoint(new Vector3(260, 260, 0)));
             var kiri = new PointerEventData(EventSystem.current) { pointerId = 1001, position = sentuh };
-            var kanan = new PointerEventData(EventSystem.current) { pointerId = 1002, delta = new Vector2(40, 0) };
-            joy.OnPointerDown(kiri); kiri.position += Vector2.up * ZonaJoystick.RadiusGerak * 0.575f * canvas.scaleFactor; joy.OnDrag(kiri);
+            var kanan = new PointerEventData(EventSystem.current) { pointerId = 1002, delta = new Vector2(40, 0), position = new Vector2(Screen.width * 0.72f, Screen.height * 0.55f) };
+            var targetJoy = TargetSentuh(kiri); var targetLihat = TargetSentuh(kanan);
+            Cek("Raycast UI benar-benar mencapai analog dan area POV", targetJoy != null && targetJoy.GetComponentInParent<ZonaJoystick>() == joy && targetLihat != null && targetLihat.GetComponentInParent<ZonaGeser>() == geser);
+            if (!_lulus) { Akhiri(); yield break; }
+            ExecuteEvents.ExecuteHierarchy(targetJoy, kiri, ExecuteEvents.pointerDownHandler);
+            kiri.position += Vector2.up * ZonaJoystick.RadiusGerak * 0.575f * canvas.scaleFactor; ExecuteEvents.Execute(joy.gameObject, kiri, ExecuteEvents.dragHandler);
             Vector3 pos = andi.transform.position; float yaw = andi.transform.eulerAngles.y;
-            geser.OnPointerDown(kanan); geser.OnDrag(kanan);
+            ExecuteEvents.ExecuteHierarchy(targetLihat, kanan, ExecuteEvents.pointerDownHandler); ExecuteEvents.Execute(geser.gameObject, kanan, ExecuteEvents.dragHandler);
             yield return new WaitForSecondsRealtime(1f);
             float gerak = Vector2.Distance(new Vector2(pos.x, pos.z), new Vector2(andi.transform.position.x, andi.transform.position.z));
             Cek("Analog setengah rentang memindahkan kapsul nyata (" + gerak.ToString("0.00") + " m)", gerak > 0.7f && gerak < 2.6f);
@@ -84,6 +88,14 @@ namespace AlasKeramat.Core
         }
 
         void Akhiri() { if (Selesai != null) Selesai(_lulus, _hasil.ToArray()); }
+
+        static GameObject TargetSentuh(PointerEventData e)
+        {
+            var hasil = new List<RaycastResult>(); EventSystem.current.RaycastAll(e, hasil);
+            if (hasil.Count == 0) return null;
+            e.pointerPressRaycast = hasil[0]; e.pointerCurrentRaycast = hasil[0];
+            return hasil[0].gameObject;
+        }
 
         static void AmbilFoto(string nama)
         {
