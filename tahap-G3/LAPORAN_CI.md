@@ -1,15 +1,16 @@
 # LAPORAN CI
-- Commit: d8e0ac89998c0e0d6ca8b76a555b3944b441e47d
+- Commit: 0f5e9c92941e312d44b435049ac09f0054d121ab
 - Hasil aset visual: success
 - Hasil langkah Unity: failure
-- Waktu: 2026-11-19T10:38:45Z
+- Waktu: 2026-11-19T11:23:18Z
 
 [LULUS] pengaturan pemain
 [LULUS] builder
-[GAGAL] self-test: RunAll melaporkan gagal
+[LULUS] self-test
 [LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
-[LULUS] build APK
+[GAGAL] build APK: build Failed, error 3
 
 ## Baris error yang ditemukan
-[Error] [AK][GAGAL] self-test: [GAGAL] Pose nyata: kedua lengan bawah Ningsih berada di luar bahu, bukan terlipat masuk torso
-[Error] [AK][GAGAL] self-test: System.Exception: RunAll melaporkan gagal
+[Exception] CommandInvokationFailure: Gradle build failed. 
+Rethrow as GradleInvokationException: Gradle build failed
+[Error] [AK][GAGAL] build APK: System.Exception: build Failed, error 3
