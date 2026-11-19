@@ -12,9 +12,9 @@ namespace AlasKeramat.EditorTools
         {
             public string SaveKey { get; set; }
             public string Isi="{}";
-            public bool Tolak;
+            public bool Tolak, SaatMuat;
             public string CaptureJson() { return Isi; }
-            public void RestoreJson(string json) { if(Tolak) { Tolak=false; throw new InvalidOperationException("uji"); } Isi=json; }
+            public void RestoreJson(string json) { SaatMuat=SaveSystem.SedangMemuat; if(Tolak) { Tolak=false; throw new InvalidOperationException("uji"); } Isi=json; }
         }
         public static void Jalankan(Action<string,bool> cek)
         {
@@ -25,6 +25,7 @@ namespace AlasKeramat.EditorTools
             dunia.Isi="{}";peristiwa.Isi="{}";
             SaveSystem.DariJson(salinan,new ISaveable[]{dunia,peristiwa});
             cek("Simpan: struktur dan peristiwa memakai kunci berbeda dan keduanya pulih",dunia.Isi.Contains("struktur") && peristiwa.Isi.Contains("jenazah"));
+            cek("Muat: event stok ditandai sebagai restore dan penanda dilepas setelah selesai",dunia.SaatMuat && peristiwa.SaatMuat && !SaveSystem.SedangMemuat);
             string lama=salinan.Replace("\"kunci\":\"peristiwa_dunia\"","\"kunci\":\"dunia\"");
             dunia.Isi="{}";peristiwa.Isi="{}";SaveSystem.DariJson(lama,new ISaveable[]{dunia,peristiwa});
             cek("Simpan: dua entri dunia versi lama dimigrasikan tanpa saling menimpa",dunia.Isi.Contains("struktur") && peristiwa.Isi.Contains("jenazah"));
@@ -33,7 +34,7 @@ namespace AlasKeramat.EditorTools
             try { SaveSystem.DariJson("{}",new ISaveable[]{dunia}); } catch(System.IO.InvalidDataException) { kosong=true; }
             dunia.Isi="{\"semula\":1}";peristiwa.Tolak=true;
             try { SaveSystem.DariJson(salinan,new ISaveable[]{dunia,peristiwa}); } catch(InvalidOperationException) { pulih=dunia.Isi.Contains("semula"); }
-            cek("Simpan: kunci ganda dan berkas kosong ditolak; restore gagal memulihkan state",duplikat && kosong && pulih);
+            cek("Simpan: kunci ganda dan berkas kosong ditolak; restore gagal memulihkan state",duplikat && kosong && pulih && !SaveSystem.SedangMemuat);
             var kunci=new HashSet<string>();bool unik=true;
             foreach(var mb in Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include,FindObjectsSortMode.None))
                 if(mb is ISaveable s && !string.IsNullOrEmpty(s.SaveKey))unik &= kunci.Add(s.SaveKey);

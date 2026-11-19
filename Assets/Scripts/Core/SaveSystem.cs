@@ -11,6 +11,9 @@ namespace AlasKeramat.Core
     {
         public const string NamaBerkas = "alas_keramat_simpan.json";
         public static int SlotAktif = 1;
+        public static bool SedangMemuat { get; private set; }
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetMuat() { SedangMemuat=false; }
         [Serializable] class Entri { public string kunci; public string json; }
         [Serializable] class Berkas { public int versi = 1; public string waktu; public List<Entri> data = new List<Entri>(); }
 
@@ -44,6 +47,13 @@ namespace AlasKeramat.Core
         }
 
         public static void DariJson(string json, IEnumerable<ISaveable> daftar)
+        {
+            bool sebelumnya=SedangMemuat; SedangMemuat=true;
+            try { PulihkanJson(json,daftar); }
+            finally { SedangMemuat=sebelumnya; }
+        }
+
+        static void PulihkanJson(string json, IEnumerable<ISaveable> daftar)
         {
             var peta = BacaPeta(json);
             var urut = new List<ISaveable>(daftar);
