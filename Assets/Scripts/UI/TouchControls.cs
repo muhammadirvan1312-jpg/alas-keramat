@@ -102,12 +102,12 @@ namespace AlasKeramat.UI
 
         public void GeserDariTombol(Vector2 delta) { if(_andi!=null && !PengunciInput.Terblokir)_andi.InputLihatPx+=delta*SkalaLayar(); }
         public void TekanLompat()
-        {
+        { if(PengunciInput.Terblokir)return;
             var c = GameServices.Get<CombatAndLeftHandController>();
             if (c != null && c.BisaElak()) { c.Elak(joystick != null ? joystick.Nilai : Vector2.zero); return; } // 17 §2.2: LOMPAT jadi ELAK
             if (_andi != null) _andi.Lompat();
         }
-        public void TekanGanti() { var c = GameServices.Get<CombatAndLeftHandController>(); if (c != null) c.Ganti(); }
+        public void TekanGanti() { if(PengunciInput.Terblokir)return; var c = GameServices.Get<CombatAndLeftHandController>(); if (c != null) c.Ganti(); }
 
         UnityEngine.UI.Text _labelLompat, _labelGanti;
         float _tLabelTempur;
@@ -132,10 +132,10 @@ namespace AlasKeramat.UI
             string g = c.NamaAktif() + (am >= 0 ? " (" + am + ")" : "");
             if (_labelGanti != null && g != _isiGanti) { _isiGanti = g; _labelGanti.text = g; }
         }
-        public void TekanJongkok() { if (_andi != null) _andi.ToggleJongkok(); }
-        public void TekanTangan() { if (_interaksi == null) _interaksi = GameServices.Get<InteraksiAndi>(); if (_interaksi != null) _interaksi.Tekan(); }
-        public void TekanLempar() { var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.Lempar(); }
-        public void TekanModeBangun() { var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.GantiMode(); }
-        public void TekanObor() { if (_kiri == null) _kiri = GameServices.Get<TanganKiri>(); if (_kiri != null) _kiri.ToggleObor(); }
+        public void TekanJongkok() { if(PengunciInput.Terblokir)return; if (_andi != null) _andi.ToggleJongkok(); }
+        public void TekanTangan() { if(PengunciInput.Terblokir)return; if (_interaksi == null) _interaksi = GameServices.Get<InteraksiAndi>(); if (_interaksi != null) _interaksi.Tekan(); }
+        public void TekanLempar() { if(PengunciInput.Terblokir)return; var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.Lempar(); }
+        public void TekanModeBangun() { if(PengunciInput.Terblokir)return; var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.GantiMode(); }
+        public void TekanObor() { if(PengunciInput.Terblokir)return; if (_kiri == null) _kiri = GameServices.Get<TanganKiri>(); if (_kiri != null) _kiri.ToggleObor(); }
     }
 }
