@@ -31,18 +31,19 @@ namespace AlasKeramat.EditorTools
             for (int x = -1; x <= 1; x += 2) for (int y = -1; y <= 1; y += 2) for (int z = -1; z <= 1; z += 2)
                 meliputi &= dunia.Contains(m.MultiplyPoint3x4(lokal.center + Vector3.Scale(lokal.extents, new Vector3(x, y, z))));
             cek("Culling: bounds instance mencakup mesh yang diputar dan diskalakan", meliputi);
-            bool lengan = false;
+            bool lengan = false; string infoLengan = "karakter utama Ningsih belum ditemukan";
             foreach (var model in Object.FindObjectsByType<PenandaModelReal>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
-                var renderer = model.GetComponentInChildren<SkinnedMeshRenderer>();
-                if (renderer == null || renderer.sharedMesh == null || renderer.sharedMesh.name != "Ningsih") continue;
-                var copy = Object.Instantiate(model.gameObject); Mesh mesh = null;
+                if (model.name != "Ningsih") continue;
+                var renderer = model.GetComponentInChildren<SkinnedMeshRenderer>(true);
+                if (renderer == null || renderer.sharedMesh == null) { infoLengan = "renderer Ningsih tidak lengkap"; break; }
+                var copy = Object.Instantiate(model.gameObject); copy.SetActive(true); Mesh mesh = null;
                 try
                 {
                     copy.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity); copy.transform.localScale = Vector3.one;
                     var pose = copy.GetComponent<AlasKeramat.AI.ProceduralAnimator>();
-                    if (pose == null) break;
-                    pose.TerapkanPoseFoto(); var smr = copy.GetComponentInChildren<SkinnedMeshRenderer>();
+                    if (pose == null) { infoLengan = "pengendali pose tidak ada"; break; }
+                    pose.TerapkanPoseFoto(); var smr = copy.GetComponentInChildren<SkinnedMeshRenderer>(true);
                     mesh = new Mesh(); smr.BakeMesh(mesh); var vertices = mesh.vertices; var weights = smr.sharedMesh.boneWeights;
                     float kiri = 0f, kanan = 0f; int nk = 0, nn = 0;
                     for (int i = 0; i < vertices.Length; i++)
@@ -52,12 +53,15 @@ namespace AlasKeramat.EditorTools
                     }
                     float bahuK = smr.transform.InverseTransformPoint(smr.bones[Kerangka.LUpper].position).x;
                     float bahuN = smr.transform.InverseTransformPoint(smr.bones[Kerangka.RUpper].position).x;
+                    infoLengan = smr.sharedMesh.name + " | vertex " + nk + "/" + nn + " | X " +
+                        (nk > 0 ? kiri / nk : 0f).ToString("0.000") + "/" + (nn > 0 ? kanan / nn : 0f).ToString("0.000") +
+                        " | bahu " + bahuK.ToString("0.000") + "/" + bahuN.ToString("0.000");
                     lengan = nk > 100 && nn > 100 && kiri / nk < bahuK - 0.015f && kanan / nn > bahuN + 0.015f;
                 }
                 finally { if (mesh != null) Object.DestroyImmediate(mesh); Object.DestroyImmediate(copy); }
                 break;
             }
-            cek("Pose nyata: kedua lengan bawah Ningsih berada di luar bahu, bukan terlipat masuk torso", lengan);
+            cek("Pose nyata: kedua lengan bawah Ningsih berada di luar bahu, bukan terlipat masuk torso [" + infoLengan + "]", lengan);
         }
 
         static void CekGerakSempitDanBangkit(Action<string, bool> cek)

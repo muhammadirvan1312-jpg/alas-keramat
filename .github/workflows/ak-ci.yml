@@ -21,6 +21,8 @@ permissions:
 jobs:
   unity:
     name: Unity — bangun, uji, APK
+    outputs:
+      snapshot: ${{ steps.scenefoto.outcome }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -167,7 +169,8 @@ jobs:
           key: imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-${{ github.run_id }}
 
       - name: Simpan scene untuk audit foto
-        if: steps.build.outcome == 'success'
+        id: scenefoto
+        if: always() && steps.build.outcome != 'cancelled' && hashFiles('Assets/Generated/foto_commit.txt') != ''
         uses: actions/upload-artifact@v4
         with:
           name: scene-foto-${{ github.run_id }}
@@ -227,7 +230,7 @@ jobs:
   foto:
     name: Foto kualitas (tidak memblokir)
     needs: unity
-    if: always() && needs.unity.result == 'success' && github.event_name == 'pull_request'
+    if: always() && needs.unity.outputs.snapshot == 'success' && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     continue-on-error: true
