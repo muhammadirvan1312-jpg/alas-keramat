@@ -265,6 +265,18 @@ namespace AlasKeramat.EditorTools
                 for (int i = 0; i < fdU.JumlahTitik; i++) adaJenis[(int)fdU.JenisTitik(i)] = true;
                 bool semuaJenis = true; foreach (var a in adaJenis) semuaJenis &= a;
                 cek("Titik pungut deterministik (" + fdU.JumlahTitik + ", 7 jenis ada)", fdU.JumlahTitik > 1500 && semuaJenis);
+                var calon = new int[256]; bool sama = true, hemat = true;
+                foreach (int titik in new[] { 0, fdU.JumlahTitik / 3, fdU.JumlahTitik - 1 })
+                {
+                    Vector3 pusat = fdU.PosisiTitik(titik); int jumlah = fdU.CariDalamRadius(pusat, 22f, calon);
+                    var cocok = new HashSet<int>(); for (int i = 0; i < jumlah; i++) cocok.Add(calon[i]);
+                    int penuh = 0; for (int i = 0; i < fdU.JumlahTitik; i++) if ((fdU.PosisiTitik(i) - pusat).sqrMagnitude <= 22f * 22f) { penuh++; sama &= cocok.Contains(i); }
+                    sama &= penuh == jumlah; hemat &= fdU.KandidatDiperiksa < fdU.JumlahTitik / 10;
+                }
+                cek("Pungutan: indeks sel sama dengan scan penuh, memeriksa kurang dari 10 persen titik", sama && hemat);
+                fdU.Ambil(0); string snapshotPungut = fdU.CaptureJson(); bool habis = !fdU.Tersedia(0);
+                fdU.RestoreJson("{\"id\":[],\"hari\":[]}"); bool tersedia = fdU.Tersedia(0); fdU.RestoreJson(snapshotPungut);
+                cek("Pungutan: hasil panen tidak muncul kembali setelah muat", habis && tersedia && !fdU.Tersedia(0) && fdU.CaptureJson() == snapshotPungut);
             }
             finally { Object.DestroyImmediate(fdGo); }
             var ujiGo = new GameObject("UjiTikar");

@@ -280,7 +280,7 @@ jobs:
       - name: Bersihkan foto warisan
         run: |
           rm -rf Logs/foto_kualitas
-          rm -f Logs/ci/foto.log
+          rm -f Logs/ci/foto.log Logs/ci/uji_main.log Logs/ci/uji_main.json
 
       - name: Unity — Builder + Foto
         id: foto
@@ -306,6 +306,7 @@ jobs:
         run: |
           python3 -m pip install --quiet Pillow
           python3 Tools/cek_foto.py --commit "${{ github.event.pull_request.head.sha || github.sha }}"
+          python3 Tools/cek_uji_main.py --commit "${{ github.event.pull_request.head.sha || github.sha }}"
 
       - name: Simpan foto ke cabang ci-hasil
         if: always()
@@ -313,7 +314,7 @@ jobs:
         run: |
           sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true
           ls -la Logs/foto_kualitas 2>/dev/null || echo "Tidak ada foto."
-          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/foto_kualitas Logs/ci/foto.log Logs/ci/audit_foto.json
+          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/foto_kualitas Logs/ci/foto.log Logs/ci/audit_foto.json Logs/ci/uji_main.log Logs/ci/uji_main.json
 
       - name: Unggah foto
         if: always()
@@ -324,6 +325,8 @@ jobs:
             Logs/foto_kualitas
             Logs/ci/foto.log
             Logs/ci/audit_foto.json
+            Logs/ci/uji_main.log
+            Logs/ci/uji_main.json
           if-no-files-found: ignore
           retention-days: 14
 

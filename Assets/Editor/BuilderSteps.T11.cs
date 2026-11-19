@@ -87,49 +87,8 @@ namespace AlasKeramat.EditorTools
 
             // 3. Panel Pengaturan (09 §4.4, 11 §7.2)
             var pAtur = PanelGelap(akar, "PanelPengaturan", new Vector2(0.08f, 0.06f), new Vector2(0.92f, 0.94f), new Color(0.05f, 0.06f, 0.06f, 0.95f));
-            var jAtur = BuatTeks(pAtur, "Judul", "PENGATURAN PERMAINAN & GRAFIS", font, 42, new Vector2(0.5f, 1f), new Vector2(0f, -45f), new Vector2(1200f, 60f));
-            jAtur.color = ProcTex.Hex("#F2C14E");
-            var infoAtur = BuatTeks(pAtur, "InfoPengaturan", "", font, 25, new Vector2(0.5f, 1f), new Vector2(0f, -150f), new Vector2(1420f, 150f));
-            infoAtur.color = ProcTex.Hex("#F2EFE6"); infoAtur.lineSpacing = 1.25f;
-
-            var bPreset = TombolPanel(pAtur, "TombolPreset", "PRESET GRAFIS", font, new Vector2(-440f, 540f), new Vector2(360f, 70f), ProcTex.Hex("#2F5D3A"), out tx);
-            UnityEventTools.AddPersistentListener(bPreset.onClick, menu.SiklusPreset);
-            var bFps = TombolPanel(pAtur, "TombolFps", "TARGET FPS (30/60)", font, new Vector2(0f, 540f), new Vector2(360f, 70f), ProcTex.Hex("#3D405B"), out tx);
-            UnityEventTools.AddPersistentListener(bFps.onClick, menu.ToggleTargetFps);
-            var bFov = TombolPanel(pAtur, "TombolFov", "FOV KAMERA", font, new Vector2(440f, 540f), new Vector2(360f, 70f), ProcTex.Hex("#3D405B"), out tx);
-            UnityEventTools.AddPersistentListener(bFov.onClick, menu.SiklusFov);
-
-            var bSens = TombolPanel(pAtur, "TombolSens", "SENSITIVITAS LIHAT", font, new Vector2(-440f, 440f), new Vector2(360f, 70f), ProcTex.Hex("#4A4E69"), out tx);
-            UnityEventTools.AddPersistentListener(bSens.onClick, menu.SiklusSensitivitas);
-            var bBalikY = TombolPanel(pAtur, "TombolBalikY", "BALIK SUMBU Y", font, new Vector2(0f, 440f), new Vector2(360f, 70f), ProcTex.Hex("#4A4E69"), out tx);
-            UnityEventTools.AddPersistentListener(bBalikY.onClick, menu.ToggleBalikY);
-            var bSkala = TombolPanel(pAtur, "TombolSkala", "UKURAN TOMBOL", font, new Vector2(440f, 440f), new Vector2(360f, 70f), ProcTex.Hex("#4A4E69"), out tx);
-            UnityEventTools.AddPersistentListener(bSkala.onClick, menu.SiklusSkalaTombol);
-
-            var bVol = TombolPanel(pAtur, "TombolVolume", "VOLUME MASTER", font, new Vector2(-440f, 340f), new Vector2(360f, 70f), ProcTex.Hex("#3B4A3E"), out tx);
-            UnityEventTools.AddPersistentListener(bVol.onClick, menu.SiklusVolume);
-            var bHeadset = TombolPanel(pAtur, "TombolHeadset", "MODE HEADSET 3D", font, new Vector2(0f, 340f), new Vector2(360f, 70f), ProcTex.Hex("#3B4A3E"), out tx);
-            UnityEventTools.AddPersistentListener(bHeadset.onClick, menu.ToggleHeadset);
-            var bGore = TombolPanel(pAtur, "TombolGore", "TINGKAT GORE", font, new Vector2(440f, 340f), new Vector2(360f, 70f), ProcTex.Hex("#6A2A18"), out tx);
-            UnityEventTools.AddPersistentListener(bGore.onClick, menu.SiklusGore);
-
-            var bHoror = TombolPanel(pAtur, "TombolHoror", "INTENSITAS HOROR", font, new Vector2(-440f, 240f), new Vector2(360f, 70f), ProcTex.Hex("#6A2A18"), out tx);
-            UnityEventTools.AddPersistentListener(bHoror.onClick, menu.SiklusHoror);
-            var bSulit = TombolPanel(pAtur, "TombolKesulitan", "TINGKAT KESULITAN", font, new Vector2(0f, 240f), new Vector2(360f, 70f), ProcTex.Hex("#6A2A18"), out tx);
-            UnityEventTools.AddPersistentListener(bSulit.onClick, menu.SiklusKesulitan);
-            var bGetar = TombolPanel(pAtur, "TombolGetar", "GETAR HAPTIK", font, new Vector2(440f, 240f), new Vector2(360f, 70f), ProcTex.Hex("#3B4A3E"), out tx);
-            UnityEventTools.AddPersistentListener(bGetar.onClick, menu.ToggleGetar);
-
-            for(int i=0;i<3;i++)
-            {
-                string nama=i==0?"EFEK":i==1?"AMBIEN":"MUSIK";
-                var bAudio=TombolPanel(pAtur,"VolumeKategori"+i,"VOLUME "+nama,font,new Vector2(-440f+i*440f,160f),new Vector2(360f,56f),ProcTex.Hex("#3B4A3E"),out tx);
-                UnityEventTools.AddIntPersistentListener(bAudio.onClick,menu.SiklusVolumeKategori,i);
-            }
-            var bImersif = TombolPanel(pAtur, "TombolImersif", "MODE IMERSIF HUD", font, new Vector2(-220f, 65f), new Vector2(360f, 74f), ProcTex.Hex("#3D405B"), out tx);
-            UnityEventTools.AddPersistentListener(bImersif.onClick, menu.ToggleImersif);
-            var bTutupAtur = TombolPanel(pAtur, "TombolTutupPengaturan", "SIMPAN & KEMBALI", font, new Vector2(220f, 65f), new Vector2(380f, 74f), ProcTex.Hex("#2F5D3A"), out tx);
-            UnityEventTools.AddPersistentListener(bTutupAtur.onClick, menu.TutupPengaturan);
+            Text infoAtur;
+            BangunPengaturanNyaman(pAtur, menu, font, out infoAtur);
             pAtur.SetActive(false);
 
             // 4. Panel Cara Bermain (09 §4.11 - 6 kartu)

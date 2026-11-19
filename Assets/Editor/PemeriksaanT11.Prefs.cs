@@ -9,7 +9,7 @@ namespace AlasKeramat.EditorTools
     {
         static void CekPengaturanT11(MenuScreens menu,Action<string,bool> cek)
         {
-            string[] ki={MenuScreens.PrefPreset,GameBootstrap.PrefFps,MenuScreens.PrefBalikY,MenuScreens.PrefHeadBob,MenuScreens.PrefGetar,MenuScreens.PrefImersif,MenuScreens.PrefKesulitan,MenuScreens.PrefSlot,MenuScreens.PrefHoror,MenuScreens.PrefHeadset};
+            string[] ki={MenuScreens.PrefPreset,GameBootstrap.PrefFps,MenuScreens.PrefBalikY,MenuScreens.PrefHeadBob,MenuScreens.PrefGetar,MenuScreens.PrefImersif,MenuScreens.PrefKesulitan,MenuScreens.PrefSlot,MenuScreens.PrefHoror,MenuScreens.PrefHeadset,MenuScreens.PrefGoyangan,MenuScreens.PrefJedaPanel,"ak_bantuan_bidik","ak_kontrol_nyaman_v1"};
             string[] kf={MenuScreens.PrefSens,MenuScreens.PrefSkalaTombol,MenuScreens.PrefVolMaster,MenuScreens.PrefVolEfek,MenuScreens.PrefVolAmbien,MenuScreens.PrefVolMusik,MenuScreens.PrefFov};
             var adaI=new bool[ki.Length];var nilaiI=new int[ki.Length];var adaF=new bool[kf.Length];var nilaiF=new float[kf.Length];
             for(int i=0;i<ki.Length;i++) { adaI[i]=PlayerPrefs.HasKey(ki[i]);nilaiI[i]=PlayerPrefs.GetInt(ki[i]); }

@@ -6,7 +6,10 @@ namespace AlasKeramat.Core
     public class SerasahHutan : MonoBehaviour
     {
         [System.Serializable] public class KelompokSerasah
-        { public Mesh mesh;public Material material;public Bounds bounds;public Matrix4x4[] matriks; }
+        {
+            public Mesh mesh;public Material material;public Bounds bounds;public Matrix4x4[] matriks;
+            [System.NonSerialized] public Bounds[] batasInstance;
+        }
         public const float JarakGambar=65f;
         public KelompokSerasah[] kelompok=new KelompokSerasah[0];
         public float Kepadatan = 1f;
@@ -22,13 +25,20 @@ namespace AlasKeramat.Core
             {
                 if(k.mesh==null || k.material==null || k.matriks==null || k.matriks.Length==0)continue;
                 if(k.bounds.SqrDistance(cam.transform.position)>JarakGambar*JarakGambar || !GeometryUtility.TestPlanesAABB(_bidang,k.bounds))continue;
+                if(k.batasInstance==null || k.batasInstance.Length!=k.matriks.Length)
+                {
+                    k.batasInstance=new Bounds[k.matriks.Length];
+                    for(int i=0;i<k.matriks.Length;i++)k.batasInstance[i]=AlasKeramat.Building.VegetationManager.BatasInstance(k.mesh.bounds,k.matriks[i]);
+                }
                 int jumlah=0, batas=Mathf.Min(k.matriks.Length,Mathf.CeilToInt(k.matriks.Length*Mathf.Clamp01(Kepadatan)));
                 float radius=JarakGambar*Mathf.Lerp(0.55f,1f,Mathf.Clamp01(Kepadatan));
                 for(int i=0;i<batas && jumlah<_tampak.Length;i++)
-                    if(((Vector3)k.matriks[i].GetColumn(3)-cam.transform.position).sqrMagnitude<=radius*radius)_tampak[jumlah++]=k.matriks[i];
+                    if(((Vector3)k.matriks[i].GetColumn(3)-cam.transform.position).sqrMagnitude<=radius*radius &&
+                        GeometryUtility.TestPlanesAABB(_bidang,k.batasInstance[i]))_tampak[jumlah++]=k.matriks[i];
                 if(jumlah==0)continue;
                 var rp=new RenderParams(k.material) { camera=cam,layer=GameLayers.Foliage,worldBounds=k.bounds,shadowCastingMode=ShadowCastingMode.Off,receiveShadows=true,lightProbeUsage=LightProbeUsage.Off };
-                Graphics.RenderMeshInstanced(rp,k.mesh,0,_tampak,jumlah);
+                for(int awal=0;awal<jumlah;awal+=AlasKeramat.Building.VegetationManager.MaksRender)
+                    Graphics.RenderMeshInstanced(rp,k.mesh,0,_tampak,Mathf.Min(AlasKeramat.Building.VegetationManager.MaksRender,jumlah-awal),awal);
             }
         }
     }

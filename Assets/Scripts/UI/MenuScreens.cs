@@ -25,7 +25,7 @@ namespace AlasKeramat.UI
 
     // T11 (09 §4 & §10, 05 §9, 11 §7, 17 §8): Menu Utama, Jeda, Pengaturan lengkap (PlayerPrefs + klon URP runtime),
     // Mode Imersif, Getar Haptik, Cara Bermain (6 kartu), Kredit, 3 Slot Simpan, dan Panel Debug HP (ketuk pojok kiri-atas 5x).
-    public class MenuScreens : MonoBehaviour
+    public partial class MenuScreens : MonoBehaviour
     {
         public const string PrefPreset = "ak_preset_grafis", PrefSens = "ak_sens", PrefBalikY = "ak_balik_y";
         public const string PrefSkalaTombol = "ak_skala_tombol", PrefVolMaster = "ak_vol_master", PrefVolEfek = "ak_vol_efek";
@@ -77,7 +77,7 @@ namespace AlasKeramat.UI
         public float VolAmbien { get; private set; } = 1f;
         public float VolMusik { get; private set; } = 1f;
         public float Fov { get; private set; } = 70f;
-        public bool HeadBob { get; private set; } = true;
+        public bool HeadBob { get; private set; }
         public bool Getar { get; private set; } = true;
         public bool ModeImersif { get; private set; }
         public Difficulty Kesulitan { get; private set; } = Difficulty.Normal;
@@ -140,10 +140,13 @@ namespace AlasKeramat.UI
         {
             GameServices.Register(this);
             CatatUkuranTombol();
+            // Build lama menyimpan HeadBob=1 tanpa menyediakan tombol untuk mematikannya.
+            if (!PlayerPrefs.HasKey("ak_kontrol_nyaman_v1"))
+            { PlayerPrefs.SetInt(PrefHeadBob, 0); PlayerPrefs.SetInt("ak_kontrol_nyaman_v1", 1); }
             MuatPengaturan();
             TerapkanPengaturan();
             SembunyikanSemua();
-            Time.timeScale=0f;
+            JedaDunia.Atur(GetInstanceID(), true);
         }
 
         IEnumerator Start()
@@ -151,7 +154,7 @@ namespace AlasKeramat.UI
             TerapkanPengaturan();
             yield return null; yield return null;
             while(LayarPeringatan.PerluTampil())yield return null;
-            if(_mulaiBaruBerikutnya) { _mulaiBaruBerikutnya=false; _sesiDimulai=true; Time.timeScale=1f; }
+            if(_mulaiBaruBerikutnya) { _mulaiBaruBerikutnya=false; _sesiDimulai=true; JedaDunia.Atur(GetInstanceID(), false); }
             else BukaMenuUtama();
         }
 
@@ -163,7 +166,7 @@ namespace AlasKeramat.UI
         }
 
         void OnEnable() { GameEvents.OnPlayerDamaged += SaatKenaDamage; }
-        void OnDisable() { GameEvents.OnPlayerDamaged -= SaatKenaDamage; }
+        void OnDisable() { GameEvents.OnPlayerDamaged -= SaatKenaDamage; JedaDunia.Atur(GetInstanceID(), false); }
 
         void SaatKenaDamage(DamageInfo info)
         {
@@ -228,7 +231,10 @@ namespace AlasKeramat.UI
             VolAmbien = Mathf.Clamp01(PlayerPrefs.GetFloat(PrefVolAmbien, 1f));
             VolMusik = Mathf.Clamp01(PlayerPrefs.GetFloat(PrefVolMusik, 1f));
             Fov = Mathf.Clamp(PlayerPrefs.GetFloat(PrefFov, 70f), 60f, 85f);
-            HeadBob = PlayerPrefs.GetInt(PrefHeadBob, 1) != 0;
+            HeadBob = PlayerPrefs.GetInt(PrefHeadBob, 0) != 0;
+            CombatAndLeftHandController.AimAssist = PlayerPrefs.GetInt("ak_bantuan_bidik", 1) != 0;
+            PengunciInput.AturJedaPanel(PlayerPrefs.GetInt(PrefJedaPanel, 1) != 0);
+            Goyangan = PlayerPrefs.GetInt(PrefGoyangan, 0) != 0;
             Getar = PlayerPrefs.GetInt(PrefGetar, 1) != 0;
             ModeImersif = PlayerPrefs.GetInt(PrefImersif, 0) != 0;
             Kesulitan = (Difficulty)Mathf.Clamp(PlayerPrefs.GetInt(PrefKesulitan, (int)Difficulty.Normal), 0, 2);
@@ -250,6 +256,9 @@ namespace AlasKeramat.UI
             PlayerPrefs.SetFloat(PrefVolMusik, VolMusik);
             PlayerPrefs.SetFloat(PrefFov, Fov);
             PlayerPrefs.SetInt(PrefHeadBob, HeadBob ? 1 : 0);
+            PlayerPrefs.SetInt("ak_bantuan_bidik", CombatAndLeftHandController.AimAssist ? 1 : 0);
+            PlayerPrefs.SetInt(PrefJedaPanel, PengunciInput.JedaPanel ? 1 : 0);
+            PlayerPrefs.SetInt(PrefGoyangan, Goyangan ? 1 : 0);
             PlayerPrefs.SetInt(PrefGetar, Getar ? 1 : 0);
             PlayerPrefs.SetInt(PrefImersif, ModeImersif ? 1 : 0);
             PlayerPrefs.SetInt(PrefKesulitan, (int)Kesulitan);
@@ -312,6 +321,7 @@ namespace AlasKeramat.UI
                 andi.PengaliSensitivitas = Sensitivitas;
                 andi.BalikY = BalikY;
                 andi.PakaiHeadBob = HeadBob;
+                andi.GoyanganTempur = Goyangan;
             }
 
             ProceduralAudioSynth.VolMaster = VolMaster;
@@ -334,10 +344,12 @@ namespace AlasKeramat.UI
                         tombolSkala[i].sizeDelta = _ukuranAwalTombol[i] * SkalaTombol;
             }
             SegarkanTeksPengaturan();
+            SegarkanPenggeser();
         }
 
         void SegarkanTeksPengaturan()
         {
+            SegarkanPenggeser();
             if (teksInfoPengaturan == null) return;
             teksInfoPengaturan.text =
                 "Preset Grafis: " + Preset + "  |  Target FPS: " + TargetFps + "  |  FOV: " + Fov.ToString("0") + "\n" +
@@ -359,7 +371,7 @@ namespace AlasKeramat.UI
             Dijeda = !Dijeda;
             SembunyikanSemua();
             if (panelJeda != null) panelJeda.SetActive(Dijeda);
-            Time.timeScale = Dijeda ? 0f : 1f;
+            JedaDunia.Atur(GetInstanceID(), Dijeda);
             BunyiKlik();
         }
 
@@ -368,14 +380,14 @@ namespace AlasKeramat.UI
             if(!_sesiDimulai) { TutupMenuUtama(); return; }
             Dijeda = false;
             SembunyikanSemua();
-            Time.timeScale = 1f;
+            JedaDunia.Atur(GetInstanceID(), false);
             BunyiKlik();
         }
 
         public void BukaMenuUtama()
         {
             Dijeda = true;
-            Time.timeScale = 0f;
+            JedaDunia.Atur(GetInstanceID(), true);
             SembunyikanSemua();
             if (panelMenuUtama != null) panelMenuUtama.SetActive(true);
             BunyiKlik();
@@ -391,7 +403,7 @@ namespace AlasKeramat.UI
             }
             Dijeda = false;
             SembunyikanSemua();
-            Time.timeScale = 1f;
+            JedaDunia.Atur(GetInstanceID(), false);
             BunyiKlik();
         }
 
@@ -402,7 +414,7 @@ namespace AlasKeramat.UI
             SimpanPengaturan();
             Dijeda = false;
             SembunyikanSemua();
-            Time.timeScale = 1f;
+            JedaDunia.Atur(GetInstanceID(), false);
             _mulaiBaruBerikutnya=true;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
@@ -447,7 +459,7 @@ namespace AlasKeramat.UI
                 _sesiDimulai=true;
                 Dijeda = false;
                 SembunyikanSemua();
-                Time.timeScale = 1f;
+                JedaDunia.Atur(GetInstanceID(), false);
             }
             SegarkanInfoSlot();
             BunyiKlik();

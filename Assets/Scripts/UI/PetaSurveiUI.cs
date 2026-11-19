@@ -15,7 +15,7 @@ namespace AlasKeramat.UI
         public static readonly Vector2[] Lokasi={new Vector2(0,-440),Vector2.zero,new Vector2(540,196),new Vector2(256,-276),new Vector2(0,694),new Vector2(-560,290),new Vector2(0,-840)};
         Vector2 _tujuan=Lokasi[0]; string _nama="HELI";
         AndiFPSController _pemain; TikarPandan3DInventory _tas;
-        float _jeda,_waktu=1f; bool _terbuka;
+        float _jeda; bool _terbuka;
         public static Vector2 KeUV(Vector2 dunia) { return (dunia+Vector2.one*WorldTerrainGenerator.BatasDunia)/(WorldTerrainGenerator.BatasDunia*2f); }
         public static Vector2 KeDunia(Vector2 uv) { return uv*(WorldTerrainGenerator.BatasDunia*2f)-Vector2.one*WorldTerrainGenerator.BatasDunia; }
         public static float Bearing(Vector2 delta) { return Mathf.Repeat(Mathf.Atan2(delta.x,delta.y)*Mathf.Rad2Deg,360f); }
@@ -45,11 +45,11 @@ namespace AlasKeramat.UI
             if(_tas==null)_tas=GameServices.Get<TikarPandan3DInventory>();
             if(_tas==null || !_tas.Punya(ItemID.PetaKertas)) { GameEvents.RaiseToast("PETA DAN GPS ADA DI KOPER DARURAT DEKAT HELI");return; }
             if(Panel==null)return;
-            _terbuka=true;_waktu=Mathf.Approximately(Time.timeScale,CombatAndLeftHandController.SkalaHitStop)?1f:Time.timeScale;Time.timeScale=0f;
+            _terbuka=true;JedaDunia.Atur(GetInstanceID(),true);
             var kontrol=GameServices.Get<TouchControls>();if(kontrol!=null)kontrol.HentikanInput();
             Panel.SetActive(true);_jeda=0f;
         }
-        public void Tutup() { if(!_terbuka)return;_terbuka=false;if(Panel!=null)Panel.SetActive(false);Time.timeScale=_waktu; }
+        public void Tutup() { if(!_terbuka)return;_terbuka=false;if(Panel!=null)Panel.SetActive(false);JedaDunia.Atur(GetInstanceID(),false); }
         void OnDisable() { Tutup(); }
         public void OnPointerClick(PointerEventData e)
         {

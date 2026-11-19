@@ -57,7 +57,7 @@ namespace AlasKeramat.EditorTools
             }
             catch (Exception e) { Debug.LogError("[AK][Foto] gagal: " + e); }
             File.AppendAllText(Path.Combine(_folder, "foto.log"), "Hasil foto: " + n + " (" + SystemInfo.graphicsDeviceName + ")\n");
-            EditorApplication.Exit(n > 0 ? 0 : 1);
+            if (n > 0) NusantaraUjiMain.Mulai(); else EditorApplication.Exit(1);
         }
 
         static void AturPemain()

@@ -90,7 +90,8 @@ namespace AlasKeramat.Player
 
         public void HentikanAksiPanel()
         {
-            BatalkanTebas(); TangkisLepas(); _tParry=-1f; _tElak=0f; _t=-1f; _guncang=0f;
+            BatalkanTebas(); TangkisLepas(); _tParry=-1f; _tElak=0f; _t=-1f;
+            if (_ctrl != null) _ctrl.GuncangKamera(0f);
             if(_adaKembalikan) { _aktif=_kembalikan; _adaKembalikan=false; }
         }
 

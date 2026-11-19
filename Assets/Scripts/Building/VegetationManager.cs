@@ -20,6 +20,7 @@ namespace AlasKeramat.Building
         RenderParams[] _rpKayu, _rpDaun;
         bool _siap;
         Matrix4x4[][] _mat;                                   // salinan runtime (aset tidak diubah saat pohon ditebang)
+        Bounds[][] _batasInstance;
         readonly System.Collections.Generic.Dictionary<int, Vector2Int> _letak = new System.Collections.Generic.Dictionary<int, Vector2Int>();
         readonly System.Collections.Generic.HashSet<int> _hilang = new System.Collections.Generic.HashSet<int>();
         ProcPohon.Jenis[] _jenisPohon;
@@ -45,11 +46,17 @@ namespace AlasKeramat.Building
                 _rpDaun[i] = new RenderParams(j.daun) { shadowCastingMode = j.bayangan ? ShadowCastingMode.On : ShadowCastingMode.Off, receiveShadows = true, layer = GameLayers.Foliage, lightProbeUsage = LightProbeUsage.Off };
             }
             _mat = new Matrix4x4[data.sel.Length][];
+            _batasInstance = new Bounds[data.sel.Length][];
             _letak.Clear();
             for (int c = 0; c < data.sel.Length; c++)
             {
                 var sel = data.sel[c];
                 _mat[c] = (Matrix4x4[])sel.matriks.Clone();
+                var jenis = data.jenis[sel.jenis];
+                Bounds lokal = jenis.lod0 != null ? jenis.lod0.bounds : new Bounds(Vector3.zero, Vector3.one * 20f);
+                if (jenis.lod1 != null) lokal.Encapsulate(jenis.lod1.bounds);
+                _batasInstance[c] = new Bounds[sel.matriks.Length];
+                for (int k = 0; k < sel.matriks.Length; k++) _batasInstance[c][k] = BatasInstance(lokal, sel.matriks[k]);
                 if (sel.idGlobal != null) for (int k = 0; k < sel.idGlobal.Length; k++) _letak[sel.idGlobal[k]] = new Vector2Int(c, k);
             }
             _jenisPohon = new ProcPohon.Jenis[n];
@@ -133,6 +140,8 @@ namespace AlasKeramat.Building
             GeometryUtility.CalculateFrustumPlanes(cam, _frustum);
             Vector3 posKam = cam.transform.position;
             InstanceTerlihat = 0; SegitigaTerlihat = 0;
+            var urp = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset;
+            float bayangan = urp != null ? urp.shadowDistance : QualitySettings.shadowDistance;
             for (int i = 0; i < data.sel.Length; i++)
             {
                 var s = data.sel[i];
@@ -149,6 +158,8 @@ namespace AlasKeramat.Building
                     if (matrix.GetColumn(0).sqrMagnitude < 0.00001f) continue;
                     float d = Vector3.Distance(posKam, matrix.GetColumn(3));
                     if (d > batas) continue;
+                    // Pertahankan caster dekat di luar pandangan supaya bayangan di tepi layar tidak hilang.
+                    if (!GeometryUtility.TestPlanesAABB(_frustum, _batasInstance[i][k]) && (!j.bayangan || d > bayangan + _batasInstance[i][k].extents.magnitude)) continue;
                     if (PakaiLodJauh(d, j.jarakLod1 * PengaliDetail) && j.lod1 != null) _jauh[jauh++] = matrix;
                     else _dekat[dekat++] = matrix;
                 }
@@ -158,6 +169,14 @@ namespace AlasKeramat.Building
         }
 
         public static bool PakaiLodJauh(float jarak, float ambang) { return jarak > ambang; }
+        public static Bounds BatasInstance(Bounds lokal, Matrix4x4 m)
+        {
+            Vector3 e = lokal.extents;
+            var ukuran = new Vector3(Mathf.Abs(m.m00) * e.x + Mathf.Abs(m.m01) * e.y + Mathf.Abs(m.m02) * e.z,
+                Mathf.Abs(m.m10) * e.x + Mathf.Abs(m.m11) * e.y + Mathf.Abs(m.m12) * e.z,
+                Mathf.Abs(m.m20) * e.x + Mathf.Abs(m.m21) * e.y + Mathf.Abs(m.m22) * e.z);
+            return new Bounds(m.MultiplyPoint3x4(lokal.center), ukuran * 2f + Vector3.one * 2f);
+        }
         void GambarKelompok(Camera cam, VegetationData.JenisVeg jenis, VegetationData.Sel sel, Mesh mesh, Matrix4x4[] matriks, int jumlah)
         {
             if (mesh == null || jumlah == 0) return;

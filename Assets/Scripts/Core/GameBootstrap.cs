@@ -10,6 +10,12 @@ namespace AlasKeramat.Core
     {
         public const int TargetFpsDefault = 30;
         public const string PrefFps = "ak_target_fps";
+        bool _kehilanganFokus, _latar;
+
+        void Update() { JedaDunia.Tick(); }
+        void OnApplicationFocus(bool fokus) { _kehilanganFokus = !fokus; JedaDunia.Atur(GetInstanceID(), _kehilanganFokus || _latar); }
+        void OnApplicationPause(bool jeda) { _latar = jeda; JedaDunia.Atur(GetInstanceID(), _kehilanganFokus || _latar); }
+        void OnDisable() { JedaDunia.Atur(GetInstanceID(), false); }
 
         void Awake()
         {

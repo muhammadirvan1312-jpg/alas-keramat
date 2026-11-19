@@ -29,7 +29,7 @@ namespace AlasKeramat.Player
         public float PengaliKecepatan = 1f;
         public float PengaliSensitivitas = 1f;
         public bool BalikY;
-        public bool PakaiHeadBob = true; // diset pemanggul kayu (07 §4)   // diset AndiVitalsAndSanity saat stamina habis
+        public bool PakaiHeadBob; // Opsional; bawaan tanpa goyangan untuk kenyamanan layar sentuh.
         public event System.Action OnLompat;
         public bool Jongkok { get; private set; }
         public bool Berenang { get; private set; }
@@ -41,6 +41,20 @@ namespace AlasKeramat.Player
         public float NapasMaks = NapasNormal;
         public float TinggiJatuhTerakhir { get; private set; }
         public Transform Kamera { get { return kamera; } }
+        float _lihatManual = -10f, _akhirGuncang, _lamaGuncang;
+        public bool SedangMembidikManual { get { return Time.unscaledTime - _lihatManual < 0.2f; } }
+        public bool GoyanganTempur = true;
+        public void LihatManual(Vector2 delta)
+        {
+            if (delta.sqrMagnitude <= 0.0001f) return;
+            _lihatManual = Time.unscaledTime; InputLihatPx += delta;
+        }
+        public void GuncangKamera(float lama)
+        {
+            if (lama <= 0f) { _akhirGuncang = 0f; return; }
+            if (!GoyanganTempur || lama <= 0f) return;
+            _lamaGuncang = Mathf.Max(lama, 0.01f); _akhirGuncang = Time.unscaledTime + lama;
+        }
 
         CharacterController _cc;
         Vector3 _vDatar;
@@ -51,6 +65,11 @@ namespace AlasKeramat.Player
 #endif
 
         public void Pasang(Transform cam) { kamera = cam; }
+        public void HentikanInputGerak()
+        {
+            InputGerak = Vector2.zero; InputLihatPx = Vector2.zero; MintaLari = false;
+            _mintaLompat = false; _vDatar = Vector3.zero; SedangLari = false;
+        }
         public void Lompat() { _mintaLompat = true; }
         public void ToggleJongkok() { Jongkok = !Jongkok; }
 
@@ -77,11 +96,10 @@ namespace AlasKeramat.Player
         {
             try
             {
-                if (Time.timeScale <= 0f) { InputGerak = Vector2.zero; InputLihatPx = Vector2.zero; return; }
+                if (Time.timeScale <= 0f) { HentikanInputGerak(); return; }
                 if (AlasKeramat.UI.PengunciInput.Terblokir)
                 {
-                    InputGerak=Vector2.zero; InputLihatPx=Vector2.zero; MintaLari=false;
-                    _mintaLompat=false; _vDatar=Vector3.zero;
+                    HentikanInputGerak();
                 }
                 else BacaKeyboardMouse();
                 if (!GerakKendaraan(Time.deltaTime)) Gerak(Time.deltaTime);
@@ -91,7 +109,7 @@ namespace AlasKeramat.Player
 
         void LateUpdate()
         {
-            if (kamera == null || AlasKeramat.UI.PengunciInput.Terblokir) { InputLihatPx = Vector2.zero; return; }
+            if (kamera == null || AlasKeramat.UI.PengunciInput.Terblokir) { InputLihatPx = Vector2.zero; _akhirGuncang = 0f; return; }
             _yaw += InputLihatPx.x * SensH * PengaliSensitivitas;
             _pitch = Mathf.Clamp(_pitch - InputLihatPx.y * SensV * PengaliSensitivitas * (BalikY ? -1f : 1f), -PitchMaks, PitchMaks);
             InputLihatPx = Vector2.zero;
@@ -104,7 +122,9 @@ namespace AlasKeramat.Player
             float bobV = Mathf.Sin(_faseBob * 2f) * BobV * Mathf.Clamp01(laju) * fBob;
             float bobL = Mathf.Sin(_faseBob) * BobL * Mathf.Clamp01(laju) * fBob;
             kamera.localPosition = new Vector3(bobL, _mata + bobV, 0f);
-            kamera.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
+            float sisa = GoyanganTempur ? Mathf.Clamp01((_akhirGuncang - Time.unscaledTime) / Mathf.Max(_lamaGuncang, 0.01f)) : 0f;
+            float guncang = Mathf.Sin(Time.unscaledTime * 95f) * 0.6f * sisa;
+            kamera.localRotation = Quaternion.Euler(_pitch + guncang, guncang * 0.45f, 0f);
         }
 
         // H3: keyboard/mouse hanya untuk uji di Editor/PC, di dalam ENABLE_LEGACY_INPUT_MANAGER.
@@ -118,7 +138,7 @@ namespace AlasKeramat.Player
             if (Input.GetKeyDown(KeyCode.Space)) Lompat();
             if (Input.GetKeyDown(KeyCode.C)) ToggleJongkok();
             if (Input.GetMouseButton(1))
-                InputLihatPx += new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * SensMouse / SensH;
+                LihatManual(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * SensMouse / SensH);
 #endif
         }
 

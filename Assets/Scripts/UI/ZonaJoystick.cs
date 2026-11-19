@@ -21,7 +21,6 @@ namespace AlasKeramat.UI
         Vector2 _asal, _posisiDiam;
         float _tahan;
         RectTransform _rt;
-        Canvas _canvas;
 
         public void Pasang(RectTransform b, RectTransform k, UnityEngine.UI.Image c, UnityEngine.UI.Text lari)
         {
@@ -31,7 +30,6 @@ namespace AlasKeramat.UI
         void Awake()
         {
             _rt = (RectTransform)transform;
-            _canvas = GetComponentInParent<Canvas>();
             if (basis != null) _posisiDiam = basis.anchoredPosition;
             Lepas();
         }
@@ -41,11 +39,11 @@ namespace AlasKeramat.UI
         void OnApplicationFocus(bool fokus) { if (!fokus) ResetSentuh(); }
         public void OnPointerDown(PointerEventData e)
         {
-            if (_jari != int.MinValue) return;
+            if (_jari != int.MinValue || PengunciInput.Terblokir) return;
             _jari = e.pointerId;
             Vector2 lokal;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, e.position, e.pressEventCamera, out lokal)) _asal = lokal;
-            if (basis != null) basis.anchoredPosition = _asal;
+            if (basis != null) basis.anchoredPosition = BatasBasis(_asal, _rt.rect, basis.rect.width * 0.5f);
             Warna(AlphaAktif);
             OnDrag(e);
         }
@@ -80,6 +78,12 @@ namespace AlasKeramat.UI
         public static bool PosisiSprint(Vector2 nilai)
         {
             return nilai.magnitude >= AmbangSprint && Vector2.Angle(Vector2.up, nilai) <= SudutSprint;
+        }
+
+        public static Vector2 BatasBasis(Vector2 titik, Rect zona, float radius)
+        {
+            float rx = Mathf.Min(radius, zona.width * 0.5f), ry = Mathf.Min(radius, zona.height * 0.5f);
+            return new Vector2(Mathf.Clamp(titik.x, zona.xMin + rx, zona.xMax - rx), Mathf.Clamp(titik.y, zona.yMin + ry, zona.yMax - ry));
         }
 
         void Update()

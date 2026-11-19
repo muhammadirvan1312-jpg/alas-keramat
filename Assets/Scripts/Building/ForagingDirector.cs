@@ -5,15 +5,18 @@ using UnityEngine;
 namespace AlasKeramat.Building
 {
     // 03 §7: titik pungut deterministik per sel 25 m (kepadatan per ha per bioma), pool 40 visual dalam 22 m; tumbuh lagi setelah 2 hari game.
-    public class ForagingDirector : MonoBehaviour
+    public class ForagingDirector : MonoBehaviour, ISaveable
     {
         public enum JenisPungut { Batu, Sirih, Kunyit, Jahe, Jamur, JamurBeracun, Sarang }
         public const float Sel = 25f, Setengah = 1000f, RadiusPool = 22f, Interval = 0.5f;
         public const int MaksPool = 40, HariTumbuh = 2, Benih = 7331;
 
         [SerializeField] ForagingNode[] pool = new ForagingNode[0];
-        Vector3[] _pos;
-        JenisPungut[] _jenis;
+        [SerializeField] Vector3[] _pos;
+        [SerializeField] JenisPungut[] _jenis;
+        [SerializeField] int[] _awalSel, _urutanSel;
+        readonly int[] _calon = new int[128];
+        public int KandidatDiperiksa { get; private set; }
         readonly Dictionary<int, int> _diambil = new Dictionary<int, int>();
         TimeOfDayClock _jam;
         float _t;
@@ -75,9 +78,63 @@ namespace AlasKeramat.Building
                     }
                 }
             _pos = pos.ToArray(); _jenis = jen.ToArray();
+            IndeksSel();
         }
 
-        void Awake() { GameServices.Register(this); Bangkitkan(); }
+        void Awake()
+        {
+            GameServices.Register(this);
+            if (_pos == null || _pos.Length == 0 || _jenis == null || _jenis.Length != _pos.Length) Bangkitkan();
+            else if (_awalSel == null || _awalSel.Length != SisiSel * SisiSel + 1 || _urutanSel == null || _urutanSel.Length != _pos.Length) IndeksSel();
+        }
+
+        static int SisiSel { get { return Mathf.RoundToInt(2f * Setengah / Sel); } }
+        static int KoordinatSel(float p) { return Mathf.Clamp(Mathf.FloorToInt((p + Setengah) / Sel), 0, SisiSel - 1); }
+        static int NomorSel(Vector3 p) { return KoordinatSel(p.x) * SisiSel + KoordinatSel(p.z); }
+        void IndeksSel()
+        {
+            int n = SisiSel * SisiSel;
+            var jumlah = new int[n]; foreach (var p in _pos) jumlah[NomorSel(p)]++;
+            _awalSel = new int[n + 1]; for (int i = 0; i < n; i++) _awalSel[i + 1] = _awalSel[i] + jumlah[i];
+            _urutanSel = new int[_pos.Length]; var kursor = (int[])_awalSel.Clone();
+            for (int i = 0; i < _pos.Length; i++) _urutanSel[kursor[NomorSel(_pos[i])]++] = i;
+        }
+
+        public int CariDalamRadius(Vector3 pusat, float radius, int[] hasil)
+        {
+            KandidatDiperiksa = 0;
+            if (_pos == null || _awalSel == null || hasil == null || radius < 0f) return 0;
+            int n = 0; float r2 = radius * radius;
+            for (int x = KoordinatSel(pusat.x - radius); x <= KoordinatSel(pusat.x + radius); x++)
+                for (int z = KoordinatSel(pusat.z - radius); z <= KoordinatSel(pusat.z + radius); z++)
+                {
+                    int sel = x * SisiSel + z;
+                    for (int k = _awalSel[sel]; k < _awalSel[sel + 1]; k++)
+                    {
+                        int i = _urutanSel[k]; KandidatDiperiksa++;
+                        if ((_pos[i] - pusat).sqrMagnitude <= r2 && n < hasil.Length) hasil[n++] = i;
+                    }
+                }
+            return n;
+        }
+
+        public Vector3 PosisiTitik(int i) { return _pos[i]; }
+        [System.Serializable] class PungutSimpanG3 { public int[] id, hari; }
+        public string SaveKey { get { return "pungutan"; } }
+        public string CaptureJson()
+        {
+            var id = new int[_diambil.Count]; _diambil.Keys.CopyTo(id, 0); System.Array.Sort(id);
+            var hari = new int[id.Length]; for (int i = 0; i < id.Length; i++) hari[i] = _diambil[id[i]];
+            return JsonUtility.ToJson(new PungutSimpanG3 { id = id, hari = hari });
+        }
+        public void RestoreJson(string json)
+        {
+            var d = JsonUtility.FromJson<PungutSimpanG3>(json);
+            if (d == null || d.id == null || d.hari == null || d.id.Length != d.hari.Length) throw new System.ArgumentException("Data pungutan tidak sah");
+            _diambil.Clear(); for (int i = 0; i < d.id.Length; i++) if (d.id[i] >= 0 && d.id[i] < JumlahTitik) _diambil[d.id[i]] = d.hari[i];
+            foreach (var p in pool) if (p != null) { p.Indeks = -1; p.gameObject.SetActive(false); }
+            _t = Interval;
+        }
 
         int Hari() { if (_jam == null) _jam = GameServices.Get<TimeOfDayClock>(); return _jam != null ? _jam.Hari : 1; }
 
@@ -104,10 +161,12 @@ namespace AlasKeramat.Building
                 if (p == null || p.Indeks < 0) continue;
                 if ((_pos[p.Indeks] - c).sqrMagnitude > r2 * 1.4f) { p.Indeks = -1; p.gameObject.SetActive(false); }
             }
-            // Pencarian linear murah (±10 rb titik, tiap 0,5 s) tanpa alokasi.
-            for (int i = 0; i < _pos.Length; i++)
+            // Hanya sel sekitar pemain; ID global tetap sama dengan generasi deterministik lama.
+            int calon = CariDalamRadius(c, RadiusPool, _calon);
+            for (int q = 0; q < calon; q++)
             {
-                if ((_pos[i] - c).sqrMagnitude > r2 || !Tersedia(i) || Terpakai(i)) continue;
+                int i = _calon[q];
+                if (!Tersedia(i) || Terpakai(i)) continue;
                 var slot = Kosong();
                 if (slot == null) return;
                 slot.Indeks = i; slot.Tipe = _jenis[i];

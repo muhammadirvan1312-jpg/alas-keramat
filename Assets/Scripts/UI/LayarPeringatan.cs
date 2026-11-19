@@ -19,8 +19,10 @@ namespace AlasKeramat.UI
             if (panelPeringatan == null || panelGore == null) return;
             bool tampil = PerluTampil();
             panelPeringatan.SetActive(tampil); panelGore.SetActive(false);
-            if (tampil) Time.timeScale = 0f;
+            JedaDunia.Atur(GetInstanceID(), tampil);
         }
+
+        void OnDisable() { JedaDunia.Atur(GetInstanceID(), false); }
 
         public void TekanLanjutkan()
         {
@@ -36,8 +38,7 @@ namespace AlasKeramat.UI
             PlayerPrefs.SetInt(GoreSystem.KunciPeringatan, 1);
             PlayerPrefs.Save();
             if (panelGore != null) panelGore.SetActive(false);
-            var menu=GameServices.Get<MenuScreens>();
-            Time.timeScale = menu!=null && !menu.PermainanDimulai ? 0f : 1f;
+            JedaDunia.Atur(GetInstanceID(), false);
             GameEvents.RaiseToast("Gore: " + (tingkat == 0 ? "Mati" : tingkat == 1 ? "Sedang" : "Penuh") + ". Bisa diubah di Pengaturan.");
         }
 

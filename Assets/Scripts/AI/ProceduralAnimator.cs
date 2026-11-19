@@ -75,8 +75,8 @@ namespace AlasKeramat.AI
             pel.localPosition = _restPelvis;
             float skala = tinggi / 1.75f;
 
-            // Pose dasar: lengan sedikit abduksi menjauh dari pinggul (+Z untuk LUpper, -Z untuk RUpper sesuai aturan tangan kiri Unity), siku menekuk alami.
-            R(Kerangka.LUpper, 3f, 0f, 11f); R(Kerangka.RUpper, 3f, 0f, -11f);
+            // Pose dasar: lengan sedikit abduksi menjauh dari pinggul (X kiri model negatif: rotasi Z negatif membuka lengan kiri), siku menekuk alami.
+            R(Kerangka.LUpper, 3f, 0f, -11f); R(Kerangka.RUpper, 3f, 0f, 11f);
             R(Kerangka.LFore, -16f, 0f, 0f); R(Kerangka.RFore, -16f, 0f, 0f);
 
             if (mode == Mode.Galeri) TickGaleri(dt);
@@ -199,7 +199,7 @@ namespace AlasKeramat.AI
             _restPelvis = tulang[Kerangka.Pelvis].localPosition;
             _t = waktu; _kec = 0f;
             float skala = tinggi / 1.75f;
-            R(Kerangka.LUpper, 3f, 0f, 11f); R(Kerangka.RUpper, 3f, 0f, -11f);
+            R(Kerangka.LUpper, 3f, 0f, -11f); R(Kerangka.RUpper, 3f, 0f, 11f);
             R(Kerangka.LFore, -16f, 0f, 0f); R(Kerangka.RFore, -16f, 0f, 0f);
             if (mode == Mode.DudukTerhuyung) Duduk(skala);
             else if (mode == Mode.Pocong) Pocong(skala);

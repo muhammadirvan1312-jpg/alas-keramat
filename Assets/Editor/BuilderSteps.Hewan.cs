@@ -46,6 +46,7 @@ namespace AlasKeramat.EditorTools
                 g.SetActive(false);
             }
             fd.Pasang(pool);
+            fd.Bangkitkan();
             EditorUtility.SetDirty(fd);
             Catat("Hewan: 5 template (rusa, kancil, babi hutan, ayam hutan, biawak); titik pungut pool " + pool.Length);
         }

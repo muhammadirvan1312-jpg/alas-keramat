@@ -11,6 +11,8 @@ namespace AlasKeramat.Player
 
         public string Prompt { get; private set; } = "";
         public bool AdaTarget { get { return Prompt.Length > 0; } }
+        public bool MelihatStruktur { get { return _target is Building.BagianStruktur; } }
+        public float ProgresTahan { get { return _ditahan != null && _ditahan.HoldDuration > 0f ? Mathf.Clamp01(_lamaTahan / _ditahan.HoldDuration) : 0f; } }
 
         AndiFPSController _ctrl;
         IInteractable _target;

@@ -13,6 +13,7 @@ namespace AlasKeramat.EditorTools
     {
         public static void Jalankan(Action<string,bool> cek)
         {
+            PemeriksaanKenyamanan.Jalankan(cek);
             PemeriksaanRegresiSimpan.Jalankan(cek);
             var arah=AndiFPSController.ArahGerak(new Vector2(0,0.575f));
             cek("Analog: setengah rentang menghasilkan setengah laju tanpa redaman kedua",Mathf.Abs((arah*AndiFPSController.KecepatanTarget(0.575f,false,false)).y-AndiFPSController.JalanMaks*0.5f)<0.001f);
