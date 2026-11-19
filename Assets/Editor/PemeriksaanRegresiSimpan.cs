@@ -18,6 +18,7 @@ namespace AlasKeramat.EditorTools
         }
         public static void Jalankan(Action<string,bool> cek)
         {
+            cek("Tas: perban dapat dipakai saat berdarah meskipun kategorinya alat",AlasKeramat.UI.TikarUI.BisaPakaiItem(ItemID.PerbanKain,true) && !AlasKeramat.UI.TikarUI.BisaPakaiItem(ItemID.PerbanKain,false));
             var dunia=new Snapshot{SaveKey="dunia",Isi="{\"struktur\":[],\"bangunan\":[]}"};
             var peristiwa=new Snapshot{SaveKey="peristiwa_dunia",Isi="{\"jenazah\":2,\"hariMeteor\":7}"};
             string salinan=SaveSystem.KeJson(new ISaveable[]{dunia,peristiwa});

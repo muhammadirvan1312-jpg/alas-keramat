@@ -73,6 +73,7 @@ namespace AlasKeramat.UI
 
         ItemID Tunggal() { if (_p.JumlahPilihan != 1) return ItemID.None; foreach (var i in _p.Pilihan) return i; return ItemID.None; }
 
+        public static bool BisaPakaiItem(ItemID id,bool berdarah) { return id!=ItemID.None && (ItemDatabase.IsFood(id) || (berdarah && ReaksiAndi.ItemObatDarah(id))); }
         void Perbarui()
         {
             if (!Siap()) return;
@@ -80,7 +81,13 @@ namespace AlasKeramat.UI
             if (tombolRakit != null) tombolRakit.interactable = r.HasValue;
             if (teksRakit != null) teksRakit.text = r.HasValue ? "RAKIT: " + ItemDatabase.Get(r.Value.output.id).displayName.ToUpperInvariant() : "RAKIT";
             var t = _p.Terbuka ? Tunggal() : ItemID.None;
-            if (tombolMakan != null) tombolMakan.interactable = t != ItemID.None && ItemDatabase.IsFood(t);
+            if (tombolMakan != null)
+            {
+                var reaksi=GameServices.Get<ReaksiAndi>();
+                tombolMakan.interactable=BisaPakaiItem(t,reaksi!=null && reaksi.Berdarah);
+                var teks=tombolMakan.GetComponentInChildren<Text>();
+                if(teks!=null)teks.text=ReaksiAndi.ItemObatDarah(t)?"PAKAI OBAT":"MAKAN / MINUM";
+            }
             if (tombolPakai != null) tombolPakai.interactable = t != ItemID.None && AndiVitalsAndSanity.Durabilitas(t) > 0f;
             if(teksHalaman!=null)teksHalaman.text="HALAMAN "+(_p.Halaman+1)+" / "+_p.JumlahHalaman;
             if(tombolSenjata!=null)tombolSenjata.interactable=t!=ItemID.None && (CombatAndLeftHandController.IndeksMelee(t)>=0 || CombatAndLeftHandController.IndeksJarak(t)>=0);

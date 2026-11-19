@@ -82,11 +82,14 @@ namespace AlasKeramat.Player
         }
 
         // Dipanggil UI saat memakai item: PerbanKain/JamuHerbal menghentikan, DaunSirih memperlambat 50%.
+        public static bool ItemObatDarah(ItemID id) { return id==ItemID.PerbanKain || id==ItemID.JamuHerbal || id==ItemID.DaunSirih; }
         public bool Obati(ItemID id)
         {
-            if (!Berdarah || (id != ItemID.PerbanKain && id != ItemID.JamuHerbal && id != ItemID.DaunSirih)) return false;
+            if (!Berdarah || !ItemObatDarah(id)) return false;
             var inv = GameServices.Get<AlasKeramat.Inventory.TikarPandan3DInventory>();
             if (inv == null || !inv.Kurangi(id, 1)) return false;
+            var vital=GameServices.Get<AndiVitalsAndSanity>();
+            if(vital!=null)vital.TerapkanMakanan(id);
             if (id == ItemID.DaunSirih) { _pengaliDarah = 0.5f; GameEvents.RaiseToast("Daun sirih memperlambat pendarahan"); return true; }
             Berdarah = false;
             GameEvents.RaiseStatusChanged(StatusEffect.None);

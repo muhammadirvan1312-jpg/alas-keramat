@@ -62,3 +62,5 @@ Temuan berikut berasal dari jalur kode dan foto build 02aee43, bukan klaim sudah
 | Performa keseluruhan | Belum ada trace CPU/GPU, P95, panas dan memori HP yang dapat mengesahkan revisi | Diagnostik disediakan, release tanpa Development, LOD/density diperbaiki | BELUM LULUS UJI PERANGKAT |
 
 Kriteria penutupan tetap pengalaman main yang dapat diperiksa pada APK dengan SHA yang benar. CI hijau hanya mengesahkan kompilasi dan pemeriksaan otomatis yang dijalankan; tidak mengesahkan kualitas visual, rasa kontrol, audio, atau kelengkapan konten v5.
+
+Temuan medis tambahan: PerbanKain berkategori Alat sehingga tombol MAKAN sebelumnya nonaktif saat memilih perban. Jalur PAKAI OBAT kini mengaktifkan perban ketika berdarah; jamu/sirih/perban yang dipakai untuk pendarahan juga menerapkan efek vital item tepat sekali. TANGAN dan TANGKIS kini memiliki pemilik pointer dan reset fokus/disable seperti joystick/TEBAS. Pemeriksaan regresi akses perban ditambahkan.
