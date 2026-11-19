@@ -165,7 +165,7 @@ namespace AlasKeramat.Core
                 Snapshot == AmbienSnapshot.Gua ? 2000f : ClearHz;
             gain = Mathf.MoveTowards(gain, target, Time.deltaTime / Transition);
             cutoff = Mathf.MoveTowards(cutoff, hz, ClearHz * Time.deltaTime / Transition);
-            float volume = gain * rain * ProceduralAudioSynth.VolMaster * ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien);
+            float volume = gain * rain * ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien);
             beds[active].volume = BedVolume * blend * volume;
             beds[1 - active].volume = BedVolume * (1f - blend) * volume;
             if (blend >= 1f) beds[1 - active].Stop();
@@ -210,7 +210,7 @@ namespace AlasKeramat.Core
                 if (shots[i].isPlaying) continue;
                 shots[i].transform.position = pos; shots[i].clip = clip;
                 shots[i].pitch = UnityEngine.Random.Range(0.94f, 1.06f);
-                shots[i].volume = ShotVolume * gain * rain * ProceduralAudioSynth.VolMaster * ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien);
+                shots[i].volume = ShotVolume * gain * rain * ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien);
                 owners[i] = owner; shots[i].Play(); return;
             }
         }

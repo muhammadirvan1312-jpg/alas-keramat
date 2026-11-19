@@ -33,7 +33,6 @@ namespace AlasKeramat.Core
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetStatis() { VolMaster = 1f; for (int i = 0; i < _volKategori.Length; i++) _volKategori[i] = 1f; }
 
-        public static float VolumeKategori(AudioCategory k) { return _volKategori[(int)k]; }
         public static void SetVolume(AudioCategory k, float v) { _volKategori[(int)k] = Mathf.Clamp01(v); }
 
         // Dipanggil Builder setelah memanggang WAV.

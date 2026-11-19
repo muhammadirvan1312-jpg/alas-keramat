@@ -134,3 +134,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
 - Validasi lokal revisi uji main: cek statis 0 masalah; 234 file C# lolos parse sintaks tree-sitter (bukan kompilasi Unity). Sepuluh audio berhasil diunduh, SHA256 dan ekstraksi diverifikasi, unduh kedua memakai berkas yang ada, hash ZIP salah ditolak. ffprobe memastikan kedua ambien stereo (44,76 s dan 11,49 s) dan sampel langkah tidak kosong. Unity/HP belum dinyatakan lulus.
 
 - Pemeriksaan tambahan sebelum CI Unity dimulai: tombol serang ikut membuang pointer saat fokus hilang/jeda; area 3 m sekitar koper dan 4 m sekitar spawn bebas dekorasi tinggi agar GPS/peta terlihat. Tidak mengubah isi koper atau ID pohon.
+
+### Koreksi verifikasi 19 November 2026 pagi
+- CI 44377467614 / 7f79c50 GAGAL sebelum Builder: CS0111 VolumeKategori duplikat antara ProceduralAudioSynth.cs dan partial .Tempur.cs. Audit kode semalam belum cukup untuk menyatakan revisi berhasil.
+- Hapus anggota tambahan, pertahankan kontrak lama VolumeKategori = master x kategori, dan perbaiki dua pemanggil AmbienceDirector agar master tidak dikalikan lagi. Tambah regresi master 0,5 x ambien 0,4 = 0,2 serta mute ambien. Menunggu CI koreksi; APK, FPS HP dan kelulusan visual tetap belum diklaim.

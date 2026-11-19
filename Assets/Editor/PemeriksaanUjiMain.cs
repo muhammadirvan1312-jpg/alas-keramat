@@ -42,9 +42,17 @@ namespace AlasKeramat.EditorTools
                 if(imp!=null && file.EndsWith("mp3"))rekaman &= imp.defaultSampleSettings.loadType==AudioClipLoadType.Streaming;
             }
             cek("Audio: rekaman CC0 alam/langkah terimpor dan bed streaming",rekaman);
-            float lama=ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien);
-            try { ProceduralAudioSynth.SetVolume(AudioCategory.Ambien,0f);cek("Audio: kategori ambien dapat dimatikan",ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien)==0f); }
-            finally { ProceduralAudioSynth.SetVolume(AudioCategory.Ambien,lama); }
+            float master=ProceduralAudioSynth.VolMaster;
+            ProceduralAudioSynth.VolMaster=1f;
+            float kategori=ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien);
+            try
+            {
+                ProceduralAudioSynth.VolMaster=0.5f;ProceduralAudioSynth.SetVolume(AudioCategory.Ambien,0.4f);
+                cek("Audio: master dan kategori dikalikan tepat sekali",Mathf.Abs(ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien)-0.2f)<0.0001f);
+                ProceduralAudioSynth.SetVolume(AudioCategory.Ambien,0f);
+                cek("Audio: kategori ambien dapat dimatikan",ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien)==0f);
+            }
+            finally { ProceduralAudioSynth.SetVolume(AudioCategory.Ambien,kategori);ProceduralAudioSynth.VolMaster=master; }
         }
     }
 }
