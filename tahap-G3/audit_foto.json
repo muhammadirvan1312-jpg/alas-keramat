@@ -1,42 +1,42 @@
 {
-  "commit": "230ef0f6774dce4feeae038ce3f75df15c68dcdb",
+  "commit": "0f5e9c92941e312d44b435049ac09f0054d121ab",
   "passed": true,
   "photos": [
     {
       "shot": "g3_01_deden_wajah",
       "width": 960,
       "height": 540,
-      "p95": 0.6829,
-      "variation": 0.1733,
+      "p95": 0.6753,
+      "variation": 0.1788,
       "pink": 0.0,
-      "sha256": "41b22eb599100b6f7ed2a94342d91adb8c3d78dd5e07410023b9183181590d02"
+      "sha256": "c3e5017023d35cf1273594e7fe98281e6cbe2145acc6ece9d0d0bc1a6cf9ecb1"
     },
     {
       "shot": "g3_02_ningsih_wajah",
       "width": 960,
       "height": 540,
-      "p95": 0.5683,
-      "variation": 0.1815,
+      "p95": 0.542,
+      "variation": 0.1675,
       "pink": 0.0,
-      "sha256": "73e976d9c5737dc1fb0dd44fadfa72eec5633fdf28cf962866422e6811c1a17b"
+      "sha256": "8100297cccda4dca9856ec392353b84bd0c07c0057d295a2f976564b3711e6f8"
     },
     {
       "shot": "g3_03_hutan_malam",
       "width": 960,
       "height": 540,
-      "p95": 0.222,
-      "variation": 0.091,
+      "p95": 0.2128,
+      "variation": 0.0907,
       "pink": 0.0,
-      "sha256": "34703fea866af9409f451125d239dd16a68dea4d81c3c7da6429d9cab9901523"
+      "sha256": "329c2140df11c03d322d0bf8acd7d145a87722288286caf4418c9e8ca933f4a6"
     },
     {
       "shot": "g3_04_lantai_hutan",
       "width": 960,
       "height": 540,
-      "p95": 0.6476,
-      "variation": 0.1804,
+      "p95": 0.3359,
+      "variation": 0.0929,
       "pink": 0.0,
-      "sha256": "a1d36d3f9bea848a71154f7b04627271b938855637cbaf0f782b313aed97e465"
+      "sha256": "7522ca342b22f946793e42c6cc5db0755a236693a6d15da203dc1fd4c6c42fe3"
     },
     {
       "shot": "t10_01_gua_lumut",
@@ -54,7 +54,7 @@
       "p95": 0.0947,
       "variation": 0.0261,
       "pink": 0.0,
-      "sha256": "1fb9f881459b042aab8a95936c298fd58c4575282e48ec6bab0fc44c69c095a7"
+      "sha256": "92bd9b39e83d9739c6fd613be58ff9b58647e66fcb0b06a3f03f5c0384012600"
     }
   ],
   "errors": [],

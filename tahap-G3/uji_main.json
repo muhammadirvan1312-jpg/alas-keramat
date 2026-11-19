@@ -1,0 +1,10 @@
+{
+    "commit": "0f5e9c92941e312d44b435049ac09f0054d121ab",
+    "passed": false,
+    "checks": [
+        "[LULUS] Layanan pemain, tas dan kontrol aktif saat Play",
+        "[GAGAL] Menu awal dapat ditutup tanpa jeda tertinggal",
+        "[LULUS] Zona kedua jari tersambung"
+    ],
+    "note": "Urutan kontrol/panel di Editor PlayMode tanpa render 3D otomatis. HUD dirender manual 960x540 dengan jarak kamera maksimal 120 m. Bukan benchmark FPS atau penerimaan kenyamanan HP"
+}
