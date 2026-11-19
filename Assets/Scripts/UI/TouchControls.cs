@@ -61,7 +61,7 @@ namespace AlasKeramat.UI
             if(_tombolSerang!=null)_tombolSerang.ResetSentuh();
             if (_andi != null) { _andi.InputGerak = Vector2.zero; _andi.InputLihatPx = Vector2.zero; _andi.MintaLari = false; }
             var tempur=GameServices.Get<CombatAndLeftHandController>();
-            if(tempur!=null){tempur.BatalkanTebas();tempur.TangkisLepas();}
+            if(tempur!=null)tempur.HentikanAksiPanel();
             _adaJoy = false;
         }
         void OnDisable() { HentikanInput(); }

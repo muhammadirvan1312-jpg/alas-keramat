@@ -45,7 +45,7 @@ namespace AlasKeramat.UI
             if(_tas==null)_tas=GameServices.Get<TikarPandan3DInventory>();
             if(_tas==null || !_tas.Punya(ItemID.PetaKertas)) { GameEvents.RaiseToast("PETA DAN GPS ADA DI KOPER DARURAT DEKAT HELI");return; }
             if(Panel==null)return;
-            _terbuka=true;_waktu=Time.timeScale;Time.timeScale=0f;
+            _terbuka=true;_waktu=Mathf.Approximately(Time.timeScale,CombatAndLeftHandController.SkalaHitStop)?1f:Time.timeScale;Time.timeScale=0f;
             var kontrol=GameServices.Get<TouchControls>();if(kontrol!=null)kontrol.HentikanInput();
             Panel.SetActive(true);_jeda=0f;
         }

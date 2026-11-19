@@ -88,10 +88,19 @@ namespace AlasKeramat.Player
             _berat = berat; _t = 0f; _sudahKena = false;
         }
 
+        public void HentikanAksiPanel()
+        {
+            BatalkanTebas(); TangkisLepas(); _tParry=-1f; _tElak=0f; _t=-1f; _guncang=0f;
+            if(_adaKembalikan) { _aktif=_kembalikan; _adaKembalikan=false; }
+        }
+
         void Update()
         {
-            if (AlasKeramat.UI.PengunciInput.Terblokir) { TickTangkis(Time.deltaTime); BatalkanTebas(); TangkisLepas(); _tParry=-1f; _t=-1f; return; }
             _tajam=Mathf.Max(0f,_tajam-Time.deltaTime);
+            if (AlasKeramat.UI.PengunciInput.Terblokir)
+            {
+                HentikanAksiPanel(); TickTangkis(Time.deltaTime); TickJarak(Time.deltaTime); return;
+            }
             TickTangkis(Time.deltaTime);
             TickJarak(Time.deltaTime);
             _tCekSenjata -= Time.deltaTime;

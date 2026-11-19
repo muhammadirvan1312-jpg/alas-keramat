@@ -26,6 +26,16 @@ namespace AlasKeramat.EditorTools
                 look.ResetSentuh();look.OnDrag(satu);cek("Sentuh: reset membuang delta dan kepemilikan jari",look.AmbilDelta()==Vector2.zero);
             }
             finally { Object.DestroyImmediate(go); }
+            var tempurUji=new GameObject("UjiBatalElakPanel");var vitalSemula=GameServices.Get<AndiVitalsAndSanity>();
+            try
+            {
+                var vital=tempurUji.AddComponent<AndiVitalsAndSanity>();GameServices.Register(vital);
+                var tempur=tempurUji.AddComponent<CombatAndLeftHandController>();tempur.Elak(Vector2.up);
+                bool kebalSaatElak=tempur.Kebal;
+                tempur.HentikanAksiPanel();
+                cek("Panel: membatalkan elak tidak meninggalkan kebal permanen atau serangan",kebalSaatElak && !tempur.Kebal && !tempur.SedangMenyerang);
+            }
+            finally { if(vitalSemula!=null)GameServices.Register(vitalSemula);Object.DestroyImmediate(tempurUji); }
             cek("LOD: dua pohon dalam satu petak tetap memilih detail berdasarkan jaraknya sendiri",!VegetationManager.PakaiLodJauh(8,40) && VegetationManager.PakaiLodJauh(100,40));
             cek("Preset otomatis konservatif & tidak menganggap RAM sebagai bukti Ultra",MenuScreens.RekomendasiPreset(4096,0)==PresetGrafis.Rendah && MenuScreens.RekomendasiPreset(8192,2048)==PresetGrafis.Sedang && MenuScreens.RekomendasiPreset(16384,8192)==PresetGrafis.Tinggi);
             cek("Preset: rumput bertingkat dan Ultra 30 FPS",MenuScreens.AmbilPreset(PresetGrafis.Rendah).rumput<MenuScreens.AmbilPreset(PresetGrafis.Sedang).rumput && MenuScreens.AmbilPreset(PresetGrafis.Sedang).rumput<MenuScreens.AmbilPreset(PresetGrafis.Ultra).rumput && MenuScreens.AmbilPreset(PresetGrafis.Ultra).targetFps==30);
