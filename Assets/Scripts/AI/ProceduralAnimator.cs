@@ -208,7 +208,7 @@ namespace AlasKeramat.AI
             {
                 if (name.Contains("Tuyul")) { R(Kerangka.Spine, 24f, 0f, 0f); R(Kerangka.Head, -14f, 8f, 0f); R(Kerangka.LThigh, -35f, -12f, 0f); R(Kerangka.RThigh, -35f, 12f, 0f); R(Kerangka.LCalf, 55f, 0f, 0f); R(Kerangka.RCalf, 55f, 0f, 0f); R(Kerangka.LUpper, -45f, 0f, 18f); R(Kerangka.RUpper, -45f, 0f, -18f); }
                 else if (name.Contains("Genderuwo")) { R(Kerangka.Spine, 14f, 0f, 0f); R(Kerangka.LUpper, -24f, 0f, 16f); R(Kerangka.RUpper, -24f, 0f, -16f); R(Kerangka.Jaw, 18f, 0f, 0f); }
-                else if (name.Contains("Ningsih")) { R(Kerangka.Pelvis, 0f, 10f, -2.5f); R(Kerangka.Spine, -2f, -6f, 2.5f); R(Kerangka.LUpper, 4f, 0f, -7f); R(Kerangka.RUpper, 5f, 0f, 10f); R(Kerangka.LFore, -26f, 0f, 8f); R(Kerangka.RFore, -34f, 0f, -8f); R(Kerangka.Head, -2f, -10f, 3.5f); }
+                else if (name.Contains("Ningsih")) { R(Kerangka.Pelvis, 0f, 6f, -2f); R(Kerangka.Spine, -2f, -4f, 2f); R(Kerangka.LUpper, 4f, 0f, -6f); R(Kerangka.RUpper, 5f, 0f, 7f); R(Kerangka.LFore, -14f, 0f, -2f); R(Kerangka.RFore, -20f, 0f, 2f); R(Kerangka.Head, -2f, -8f, 3f); }
                 else { R(Kerangka.Pelvis, 0f, 6f, 0f); R(Kerangka.Spine, 2f, -4f, 0f); R(Kerangka.LFore, -22f, 0f, 0f); R(Kerangka.RFore, -28f, 0f, 0f); R(Kerangka.Head, 1f, -6f, 2f); }
             }
             Tatap();

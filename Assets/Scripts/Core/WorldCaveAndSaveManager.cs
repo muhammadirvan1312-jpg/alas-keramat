@@ -125,7 +125,7 @@ namespace AlasKeramat.Core
             if (Kini != UndergroundId.None) { AturLampu(); Skrip(); }
         }
 
-        static bool LampuUtamaGua(Light l) { return l != null && (l.range >= 35f || l.name != "Cahaya"); }
+        static bool LampuUtamaGua(Light l) { return l != null && l.range >= 35f; }
 
         static int BandingLampu(Vector3 pos, Light x, Light y)
         {

@@ -21,7 +21,7 @@ namespace AlasKeramat.EditorTools
                 var rt=(RectTransform)t;rt.SetParent(kontrol,false);
                 rt.anchorMin=rt.anchorMax=(i<9 && i!=2 && i!=8)?new Vector2(1,0):new Vector2(0,1);
                 rt.anchoredPosition=posisi[i];
-                if(nama=="TombolLompat" || nama=="TombolJongkok" || nama=="TombolTangan" || nama=="TombolTangkis")
+                if(nama[i]=="TombolLompat" || nama[i]=="TombolJongkok" || nama[i]=="TombolTangan" || nama[i]=="TombolTangkis")
                     if(t.GetComponent<GeserKameraDariTombol>()==null) t.gameObject.AddComponent<GeserKameraDariTombol>();
                 EditorUtility.SetDirty(rt);
             }
