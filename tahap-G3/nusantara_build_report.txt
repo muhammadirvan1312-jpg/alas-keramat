@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-20 03:05:02
+Laporan Builder Alas Keramat - 2026-11-20 06:39:23
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -25,10 +25,9 @@ Laporan Builder Alas Keramat - 2026-11-20 03:05:02
   - Terrain 16 tile @1025, laut, 2 sungai
 [LULUS] 3b. Dunia 2x2 km
   - G3b: 9 varian scan pohon/pakis tersambung ke instancing dan tebang, dengan LOD
-  - Vegetasi: 15460 pohon, 45637 semak/pakis, 3289 sel instancing
+  - Vegetasi: 25594 pohon, 89421 semak/pakis, 3857 sel instancing
 [LULUS] 3c. Vegetasi
-  - Landmark: 38 objek (Beringin Agung, heli, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula, 2 mulut gua, altar)
-[LULUS] 3d. Landmark
+[GAGAL] 3d. Landmark: Texture 'logam_karat' is not readable, the texture memory can not be accessed from scripts. You can make the texture readable in the Texture Import Settings.
   - Ambien: 23 klip, 1112 emitter titik
 [LULUS] 3e. Ambien hidup
   - Pasca-proses: ACES, color grading, bloom, vignette, split-tone + dinamis jam/cuaca
@@ -78,7 +77,7 @@ Laporan Builder Alas Keramat - 2026-11-20 03:05:02
 [LULUS] 7u. Ritual Beringin, siege & lore
   - Ending: Heli SAR, layar intro/Pilihan Takdir/Ending A-B/statistik, Mode Sandbox
 [LULUS] 7v. Heli SAR, ending & statistik
-  - Lantai hutan selatan: rumput liar 3D, batu lumut alam, & kayu tumbang instanced
+  - Lantai hutan photogrammetry CC0: 1724 batch (rumput scan, pakis, keladi, batu lumut, kayu tumbang, akar)
   - G3a: bulan terbaca, gua tidak hitam, grading netral, bayangan 2 kaskade, kabut lokal 12 kartu & basah dinamis
 [LULUS] 7w. G3 visual realistis
   - Kontrol aksi berjarak, TAS/BUKU ikut safe area, subtitle di atas area aksi
@@ -88,7 +87,7 @@ Laporan Builder Alas Keramat - 2026-11-20 03:05:02
   - Peta Survei: kontur, sungai, legenda lokasi, posisi GPS & tujuan ketuk
 [LULUS] 7y. Peta survei & navigasi
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 3082
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 3114
 [LULUS] 9. Simpan scene
-Durasi: 646.2 detik
-HASIL: SEMUA LANGKAH LULUS
+Durasi: 927.1 detik
+HASIL: GAGAL di 3d. Landmark
