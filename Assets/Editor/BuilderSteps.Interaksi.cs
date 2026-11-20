@@ -50,13 +50,26 @@ namespace AlasKeramat.EditorTools
             var lingkaran = AssetDatabase.LoadAssetAtPath<Sprite>(FolderIkon + "/ui_lingkaran.png");
             var cincin = AssetDatabase.LoadAssetAtPath<Sprite>(FolderIkon + "/ui_cincin.png");
 
-            var bTangan = Tombol(kontrol.gameObject, "TombolTangan", "TANGAN", lingkaran, font, 160f, new Vector2(-320f, 300f), ProcTex.Hex("#E0B33A"));
+            var bTangan = Tombol(kontrol.gameObject, "TombolTangan", "TANGAN", lingkaran, font, 148f, new Vector2(-320f, 235f), ProcTex.Hex("#E0B33A"));
             bTangan.gameObject.AddComponent<TanganTahan>();
-            var prompt = BuatTeks(bTangan.gameObject, "Prompt", "", font, 26, new Vector2(0.5f, 1f), new Vector2(0f, 26f), new Vector2(520f, 40f));
+            var prompt = BuatTeks(bTangan.gameObject, "Prompt", "", font, 24, new Vector2(0.5f, 1f), new Vector2(0f, 22f), new Vector2(460f, 36f));
             prompt.color = ProcTex.Hex("#F2C14E");
-            var bObor = Tombol(kontrol.gameObject, "TombolObor", "OBOR", lingkaran, font, 120f, new Vector2(-500f, 160f), ProcTex.Hex("#C0612B"));
+            var bObor = Tombol(kontrol.gameObject, "TombolObor", "OBOR", lingkaran, font, 104f, new Vector2(-470f, 210f), ProcTex.Hex("#C0612B"));
             UnityEventTools.AddPersistentListener(bObor.onClick, tc.TekanObor);
             tc.PasangTangan(bTangan.GetComponent<Image>(), prompt, bObor.gameObject);
+
+            var dotGo = kanvas.Find("CrosshairDot") != null ? kanvas.Find("CrosshairDot").gameObject : UIGambar(kanvas.gameObject, "CrosshairDot", lingkaran, new Vector2(10f, 10f), new Vector2(0.5f, 0.5f), Vector2.zero);
+            var dotImg = dotGo.GetComponent<Image>(); dotImg.color = new Color(0.96f, 0.95f, 0.92f, 0.78f); dotImg.raycastTarget = false;
+            var pBanner = Anak(kanvas.gameObject, "PromptTengah");
+            pBanner.layer = GameLayers.UI;
+            var prt = pBanner.AddComponent<RectTransform>();
+            prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
+            prt.anchoredPosition = new Vector2(0f, -68f); prt.sizeDelta = new Vector2(560f, 48f);
+            var pImg = pBanner.AddComponent<Image>(); pImg.color = ProcTex.Hex("#0B0A08CC"); pImg.raycastTarget = false;
+            var pTxt = BuatTeks(pBanner, "Teks", "", font, 26, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(540f, 44f));
+            pTxt.color = ProcTex.Hex("#F2C14E"); pTxt.raycastTarget = false;
+            pBanner.SetActive(false);
+            tc.PasangCrosshair(dotImg, pBanner, pTxt);
             EditorUtility.SetDirty(tc);
 
             // Toast bawah-tengah.
@@ -67,7 +80,8 @@ namespace AlasKeramat.EditorTools
             EditorUtility.SetDirty(th);
 
             // Radar kanan-atas.
-            var radar = UIGambar(kanvas.gameObject, "RadarGPS", lingkaran, new Vector2(300f, 300f), new Vector2(1f, 1f), new Vector2(-190f, -182f));
+            var radar = UIGambar(kanvas.gameObject, "RadarGPS", lingkaran, new Vector2(300f, 300f), new Vector2(1f, 1f), new Vector2(-125f, -125f));
+            ((RectTransform)radar.transform).localScale = Vector3.one * 0.72f;
             radar.GetComponent<Image>().color = new Color(0.043f, 0.102f, 0.059f, 0.55f);
             var ring = UIGambar(radar, "Cincin", cincin, new Vector2(300f, 300f), new Vector2(0.5f, 0.5f), Vector2.zero);
             ring.GetComponent<Image>().color = new Color(0.235f, 1f, 0.478f, 0.8f);
@@ -102,6 +116,22 @@ namespace AlasKeramat.EditorTools
             var engsel = Anak(go, "Engsel");
             engsel.transform.localPosition = new Vector3(0f, UkuranKoper.y * 0.7f, -UkuranKoper.z * 0.5f);
             Kotak(engsel, "Tutup", new Vector3(0f, UkuranKoper.y * 0.15f, UkuranKoper.z * 0.5f), new Vector3(UkuranKoper.x, UkuranKoper.y * 0.3f, UkuranKoper.z), mat);
+            var suar = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Object.DestroyImmediate(suar.GetComponent<Collider>());
+            suar.transform.SetParent(engsel.transform, false);
+            suar.transform.localPosition = new Vector3(0f, UkuranKoper.y * 0.31f, UkuranKoper.z * 0.5f);
+            suar.transform.localScale = new Vector3(UkuranKoper.x * 0.85f, 0.02f, 0.08f);
+            var suarMat = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_SuarKoper.mat");
+            if (suarMat == null)
+            {
+                suarMat = SafeMaterialFactory.CreatePBR("M_SuarKoper", ProcTex.Hex("#FF7A28"), 0f, 0.3f, null, null, new Color(1.4f, 0.45f, 0.08f));
+                AssetDatabase.CreateAsset(suarMat, FolderMat + "/M_SuarKoper.mat");
+                suarMat = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_SuarKoper.mat");
+            }
+            suar.GetComponent<MeshRenderer>().sharedMaterial = suarMat;
+            var l = Anak(go, "CahayaSuar").AddComponent<Light>();
+            l.transform.localPosition = new Vector3(0f, 0.55f, 0f);
+            l.type = LightType.Point; l.range = 4.5f; l.intensity = 1.2f; l.color = ProcTex.Hex("#FF7A28"); l.shadows = LightShadows.None;
             var col = go.AddComponent<BoxCollider>();
             col.center = new Vector3(0f, UkuranKoper.y * 0.5f, 0f); col.size = UkuranKoper;
             Object.DestroyImmediate(badan.GetComponent<Collider>());

@@ -22,6 +22,7 @@ namespace AlasKeramat.Core
 
         void ItemBerubah(ItemID id, int n)
         {
+            if(SaveSystem.SedangMemuat)return;
             var inv = GameServices.Get<TikarPandan3DInventory>();
             if (inv == null) return;
             bool ubah = false;

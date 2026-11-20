@@ -26,7 +26,8 @@ namespace AlasKeramat.EditorTools
             }
             var kanvas=_ui.transform.Find("Canvas_HUD"); if(kanvas==null)return;
             var font=ProceduralAssetFactory.GetSafeFont(); Text teks;
-            var kartu=BuatTeks(kanvas.gameObject,"KartuMisi","Ambil Koper Darurat (0/3)",font,24,new Vector2(1f,1f),new Vector2(-310f,-550f),new Vector2(560f,110f));
+            var kartu=BuatTeks(kanvas.gameObject,"KartuMisi","Ambil Koper Darurat (0/3)",font,24,new Vector2(1f,1f),new Vector2(0f,-245f),new Vector2(560f,110f));
+            kartu.rectTransform.anchorMin=kartu.rectTransform.anchorMax=new Vector2(0.5f,1f);
             kartu.color=ProcTex.Hex("#F2C14E"); kartu.raycastTarget=false;
             var hud=kartu.gameObject.AddComponent<HUDMisi>(); hud.Kartu=kartu;
             var simpan=TombolPanel(kanvas.gameObject,"TombolSimpan","SIMPAN",font,new Vector2(-80f,50f),new Vector2(130f,55f),ProcTex.Hex("#3A3A3A"),out teks);
@@ -35,6 +36,12 @@ namespace AlasKeramat.EditorTools
             var builder=Object.FindFirstObjectByType<ShoulderLogAndFreeformBuilder>();
             var batu=TombolPanel(kanvas.gameObject,"TombolBatu","PANGGUL BATU",font,new Vector2(-280f,50f),new Vector2(210f,55f),ProcTex.Hex("#4A4A42"),out teks);
             if(builder!=null)UnityEventTools.AddPersistentListener(batu.onClick,builder.PanggulBatu);
+            var toolbar=new[]{simpan,muat,batu};
+            for(int i=0;i<toolbar.Length;i++)
+            {
+                var rt=(RectTransform)toolbar[i].transform;rt.anchorMin=rt.anchorMax=new Vector2(0f,1f);
+                rt.anchoredPosition=i<2?new Vector2(110f+i*150f,-260f):new Vector2(185f,-335f);
+            }
             var bahu=GameObject.Find("BahuKiri");
             if(bahu!=null)
             {

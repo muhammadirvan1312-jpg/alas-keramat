@@ -12,6 +12,7 @@ namespace AlasKeramat.EditorTools
     // Titik masuk CI (GameCI buildMethod). Lihat docs/tech/18 bagian 4.
     public static class NusantaraCI
     {
+        public static string SourceCommit() { return Arg("-akSource") ?? Environment.GetEnvironmentVariable("AK_SOURCE_SHA") ?? "editor-lokal"; }
         static string _folder = "Logs/ci";
         static readonly List<string> _baris = new List<string>();
         static bool _adaGagal;
@@ -28,6 +29,9 @@ namespace AlasKeramat.EditorTools
             Langkah("pengaturan pemain", AturPemain);
             Langkah("builder", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraMasterBuilder", "BuildAll"));
             Langkah("self-test", () => PanggilBilaAda("AlasKeramat.EditorTools.NusantaraSelfTest", "RunAll"));
+            // Self-test membangun ulang Generated; penanda mengikuti scene terakhir.
+            if(NusantaraMasterBuilder.LastBuildSucceeded)
+                File.WriteAllText("Assets/Generated/foto_commit.txt",SourceCommit());
             Tulis("[LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)");
             Langkah("build APK", () => BangunApk(buildPath));
 
@@ -45,22 +49,20 @@ namespace AlasKeramat.EditorTools
             int n = -2;
             try
             {
-                NusantaraMasterBuilder.BuildAll();
+                string stamp="Assets/Generated/foto_commit.txt";
+                string sumber=SourceCommit();
+                if(sumber=="editor-lokal" || !File.Exists(stamp) || File.ReadAllText(stamp)!=sumber || !File.Exists(NusantaraMasterBuilder.PathScene))
+                    NusantaraMasterBuilder.BuildAll();
                 n = NusantaraFoto.AmbilSemua();
             }
             catch (Exception e) { Debug.LogError("[AK][Foto] gagal: " + e); }
             File.AppendAllText(Path.Combine(_folder, "foto.log"), "Hasil foto: " + n + " (" + SystemInfo.graphicsDeviceName + ")\n");
-            EditorApplication.Exit(n > 0 ? 0 : 1);
+            if (n > 0) NusantaraUjiMain.Mulai(); else EditorApplication.Exit(1);
         }
 
         static void AturPemain()
         {
-            PlayerSettings.companyName = "AlasKeramat";
-            PlayerSettings.productName = "Alas Keramat";
-            PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android, "com.alaskeramat.game");
-            PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android, ScriptingImplementation.Mono2x);
-            PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARMv7;
-            PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel26;
+            NusantaraAndroidBuild.TerapkanPengaturanAndroid(true);
         }
 
         static void BangunApk(string path)
@@ -75,7 +77,7 @@ namespace AlasKeramat.EditorTools
                 scenes = scene,
                 locationPathName = path,
                 target = BuildTarget.Android,
-                options = BuildOptions.Development
+                options = BuildOptions.None
             };
             var hasil = BuildPipeline.BuildPlayer(opsi);
             if (hasil.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)

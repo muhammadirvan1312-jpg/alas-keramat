@@ -9,6 +9,8 @@ Shader "AlasKeramat/Kulit"
         [Normal] _BumpMap ("Normal kulit", 2D) = "bump" {}
         _BumpScale ("Kekuatan normal", Range(0,2)) = 1
         _Metallic ("Metalik", Range(0,1)) = 0
+        _MaskMap ("AO dan roughness",2D)="white"{}
+        _PakaiMask ("Mask aktif",Range(0,1))=0
     }
     SubShader
     {
@@ -20,15 +22,16 @@ Shader "AlasKeramat/Kulit"
         #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Packing.hlsl"
         TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
         TEXTURE2D(_BumpMap); SAMPLER(sampler_BumpMap);
+        TEXTURE2D(_MaskMap); SAMPLER(sampler_MaskMap);
         CBUFFER_START(UnityPerMaterial)
             float4 _BaseMap_ST;
             half4 _BaseColor;
             float _Smoothness, _Goyang;
-            float _BumpScale, _Metallic;
+            float _BumpScale, _Metallic, _PakaiMask;
         CBUFFER_END
         // Global, sengaja bukan Properties/UnityPerMaterial.
         float4 _AK_AnginArah;
-        float _AK_AnginKuat, _AK_AnginWaktu;
+        float _AK_AnginKuat, _AK_AnginWaktu, _AK_Basah;
         float3 _LightDirection, _LightPosition;
         struct Attributes
         {
@@ -133,8 +136,11 @@ Shader "AlasKeramat/Kulit"
             s.albedo = c.rgb;
             s.alpha = 1;
             s.metallic = _Metallic;
-            s.smoothness = _Smoothness;
-            s.occlusion = 1;
+            half4 mask=SAMPLE_TEXTURE2D(_MaskMap,sampler_MaskMap,i.uv);
+            half wet=_AK_Basah*saturate(d.normalWS.y*0.7+0.4);
+            s.albedo*=1-wet*0.2;
+            s.smoothness = saturate(lerp(_Smoothness,mask.a,_PakaiMask)+wet*0.35);
+            s.occlusion = lerp(1,mask.g,_PakaiMask);
             s.normalTS = half3(0,0,1);
             half4 lit = UniversalFragmentPBR(d, s);
 
@@ -176,6 +182,7 @@ Shader "AlasKeramat/Kulit"
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
             #pragma multi_compile _ _FORWARD_PLUS
+            #pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
             #pragma multi_compile_fog
             ENDHLSL
         }

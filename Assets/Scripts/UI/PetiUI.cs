@@ -14,7 +14,7 @@ namespace AlasKeramat.UI
         readonly List<ItemID> _tas=new List<ItemID>(), _peti=new List<ItemID>();
         FungsiBangunan _buka;
         int _halaman;
-        void Awake() { GameServices.Register(this); }
+        void Awake() { PengunciInput.Pasang(Panel);  GameServices.Register(this); }
         public void Buka(FungsiBangunan b) { _buka=b; _halaman=0; Panel.SetActive(true); Segarkan(); }
         public void Tutup() { Panel.SetActive(false); _buka=null; }
         public void Berikut() { _halaman++; Segarkan(); }

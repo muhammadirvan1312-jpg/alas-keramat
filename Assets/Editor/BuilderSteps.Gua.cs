@@ -87,6 +87,7 @@ namespace AlasKeramat.EditorTools
 
         static void BangunKerangka()
         {
+            bool guaAlam = _kompleks != null && WorldCaveAndSaveManager.KompleksDi(_kompleks.transform.position) != UndergroundId.UG2_Bunker;
             foreach (var r in _ruang)
             {
                 r.go = Anak(_kompleks, r.nama);
@@ -98,6 +99,19 @@ namespace AlasKeramat.EditorTools
                 r.go.AddComponent<MeshCollider>().sharedMesh = mesh;
                 if (r.berlubang) LantaiBerlubang(r);
                 else Balok(r.go, "Lantai", new Vector3(0f, -0.25f, 0f), Quaternion.identity, new Vector3(r.ukuran.x + 1f, 0.5f, r.ukuran.z + 1f), _matLantai, false);
+                if (guaAlam)
+                {
+                    for (int i = 0; i < r.bukaan.Count; i++)
+                    {
+                        var b = r.bukaan[i];
+                        var bm = Anak(r.go, "BingkaiMulut_" + i);
+                        bm.transform.localPosition = ProcGua.Tepi(r.ukuran, r.kubah, b.sudut, 0.98f);
+                        bm.transform.localRotation = Quaternion.Euler(0f, b.sudut, 0f);
+                        var bMesh = SimpanMeshGua(ProcGua.BingkaiMulut("Bingkai_" + _kompleks.name + "_" + r.nama + "_" + i, b.lebar * 1.05f, b.tinggi * 1.04f, _seedGua + i * 7));
+                        bm.AddComponent<MeshFilter>().sharedMesh = bMesh;
+                        bm.AddComponent<MeshRenderer>().sharedMaterial = _matDinding;
+                    }
+                }
             }
             foreach (var l in _lorong)
             {
@@ -153,10 +167,22 @@ namespace AlasKeramat.EditorTools
         static void Segmen(GameObject induk, Vector3 p, Vector3 q, float lebar, float tinggi)
         {
             Vector3 d = q - p;
-            float panjang = d.magnitude + 0.8f;
+            float panjang = d.magnitude + 3.4f;
             if (panjang < 0.9f) return;
             var rot = Quaternion.LookRotation(d.normalized, Vector3.up);
             Vector3 c = (p + q) * 0.5f;
+            bool guaAlam = _kompleks != null && WorldCaveAndSaveManager.KompleksDi(_kompleks.transform.position) != UndergroundId.UG2_Bunker;
+            if (guaAlam)
+            {
+                var go = Anak(induk, "LorongBatuan_" + _seedGua++);
+                go.transform.localPosition = c; go.transform.localRotation = rot;
+                var mesh = SimpanMeshGua(ProcGua.LorongGua(go.name, panjang, lebar, tinggi, _seedGua * 17));
+                go.AddComponent<MeshFilter>().sharedMesh = mesh;
+                go.AddComponent<MeshRenderer>().sharedMaterial = _matDinding;
+                go.AddComponent<MeshCollider>().sharedMesh = mesh;
+                go.layer = GameLayers.Ground;
+                return;
+            }
             Balok(induk, "Lantai", c + rot * new Vector3(0f, -0.25f, 0f), rot, new Vector3(lebar + 0.8f, 0.5f, panjang), _matLantai, false);
             Balok(induk, "Atap", c + rot * new Vector3(0f, tinggi + 0.25f, 0f), rot, new Vector3(lebar + 0.8f, 0.5f, panjang), _matDinding, false);
             Balok(induk, "DindingKiri", c + rot * new Vector3(-lebar * 0.5f - 0.2f, tinggi * 0.5f, 0f), rot, new Vector3(0.4f, tinggi + 0.2f, panjang), _matDinding, false);
@@ -244,7 +270,7 @@ namespace AlasKeramat.EditorTools
             go.transform.localPosition = posLokal;
             var l = go.AddComponent<Light>();
             bool gua = _kompleks != null;
-            l.type = LightType.Point; l.color = warna; l.range = jangkau * (gua ? 1.4f : 1f); l.intensity = kuat * (gua ? 2f : 1f); l.shadows = LightShadows.None;
+            l.type = LightType.Point; l.color = warna; l.range = jangkau * (gua ? 1.4f : 1f); l.intensity = kuat * 2f; l.shadows = LightShadows.None;
             return l;
         }
 
@@ -292,14 +318,33 @@ namespace AlasKeramat.EditorTools
             return AssetDatabase.LoadAssetAtPath<Material>(p);
         }
 
+        static bool AreaAmanLantai(RuangGua r, Vector3 lokal)
+        {
+            for (int i = 0; i < r.bukaan.Count; i++)
+            {
+                Vector3 pb = ProcGua.Tepi(r.ukuran, r.kubah, r.bukaan[i].sudut, 0.92f);
+                if (new Vector2(lokal.x - pb.x, lokal.z - pb.z).sqrMagnitude < 7.5f) return false;
+            }
+            if (r.berlubang)
+            {
+                float hx = r.lubangUkuran.x * 0.55f, hz = r.lubangUkuran.y * 0.55f;
+                if (Mathf.Abs(lokal.x - r.lubangPusat.x) < hx && Mathf.Abs(lokal.z - r.lubangPusat.y) < hz) return false;
+            }
+            return true;
+        }
+
         // ---------- UG1 Gua Sungai Bioluminesensi ----------
         static GameObject BangunUG1(GameObject induk)
         {
-            _matLumut = MatEmisi("M_LumutGua", "#1E5A50", new Color(0.24f, 0.95f, 0.78f) * 1.6f, false);
+            var matBatuGua = SimpanMat(SafeMaterialFactory.CreatePBR("M_BatuGua", ProcTex.Hex("#8A99A4"), 0f, 0.46f, Tex("batu"), Tex("batu_n")));
+            MaskPBR(matBatuGua, "batu"); SafeMaterialFactory.SetF(matBatuGua, "_Smoothness", 0.46f);
+            _matLumut = MatEmisi("M_LumutGua", "#2EE8C4", new Color(0.18f, 1.35f, 1.15f) * 3.6f, false);
+            SafeMaterialFactory.SetF(_matLumut, "_Smoothness", 0.32f);
+            var matBatangJamur = MatPolos("M_BatangJamur", "#595449");
             _matAir = MatEmisi("M_AirGua", "#0A1418B0", Color.black, true);
-            var k = MulaiKompleks(induk, UndergroundId.UG1_GuaSungai, AmbilMat("M_Batu"), AmbilMat("M_Batu"));
+            var k = MulaiKompleks(induk, UndergroundId.UG1_GuaSungai, matBatuGua, matBatuGua);
             var r0 = R("R0_MulutDalam", new Vector3(-60f, 0f, 0f), new Vector3(10f, 6f, 8f), true);
-            var r1 = R("R1_RuangLumut", new Vector3(-15f, 0f, 0f), new Vector3(20f, 10f, 18f), true);
+            var r1 = R("R1_RuangLumut", new Vector3(-15f, 0f, 0f), new Vector3(25f, 11.5f, 22f), true);
             var r2 = R("R2_KampEkspedisi", new Vector3(10f, 0f, 15f), new Vector3(12f, 5f, 10f), true);
             var r3 = R("R3_KolamHitam", new Vector3(15f, 0f, -10f), new Vector3(18f, 7f, 14f), true);
             r3.berlubang = true; r3.lubangPusat = new Vector2(0f, 0f); r3.lubangUkuran = new Vector2(12f, 7f);
@@ -319,28 +364,102 @@ namespace AlasKeramat.EditorTools
             Kolam("Kolam_R3", 9f, 21f, -13.5f, -6.5f, 19.2f, new Vector3(9.5f, 0f, -10f), new Vector3(17f, -5f, -10f));
             Kolam("Kolam_R4", 55f, 59f, -20f, -12f, 56.8f, new Vector3(57f, 0f, -12.5f), new Vector3(57f, -5f, -19.8f));
 
-            // Lumut bercahaya, stalaktit, lampu cyan (6, maks 4 aktif).
+            // Genangan basah reflektif di dasar R1, stalaktit & stalagmit bertingkat, batu lumut scan, jamur halus, kabut & 4 lampu aktif optimal.
             var hias = Anak(k, "Hiasan");
+            var mRefl = SimpanMat(SafeMaterialFactory.CreatePBR("M_AirGuaReflektif", ProcTex.Hex("#071316E0"), 0.08f, 0.94f, null, Tex("batu_n"), null, SurfaceMode.Transparent));
+            SafeMaterialFactory.SetF(mRefl, "_BumpScale", 0.25f);
+            var poolR1 = Hias(hias, PrimitiveType.Quad, "GenanganR1", r1.pos + new Vector3(0.5f, 0.04f, -0.5f), new Vector3(26f, 23f, 1f), mRefl, false);
+            poolR1.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+
             var rng = new System.Random(41);
-            for (int i = 0; i < 40; i++)
+            var meshStalaktit = SimpanMeshGua(ProcGua.Stalaktit("StalaktitAlam", 77));
+            for (int i = 0; i < 42; i++)
             {
-                float a = (float)rng.NextDouble() * Mathf.PI * 2f, rr = (float)rng.NextDouble() * 7f;
-                Hias(hias, PrimitiveType.Capsule, "Stalaktit_" + i, r1.pos + new Vector3(Mathf.Cos(a) * rr, 7.5f + (float)rng.NextDouble() * 1.5f, Mathf.Sin(a) * rr * 0.8f), new Vector3(0.25f, 0.6f + (float)rng.NextDouble() * 0.9f, 0.25f), _matDinding, false);
+                float a = (float)rng.NextDouble() * Mathf.PI * 2f, rr = (float)rng.NextDouble() * 8.5f;
+                var st = Anak(hias, "Stalaktit_" + i);
+                st.transform.localPosition = r1.pos + new Vector3(Mathf.Cos(a) * rr, 10.2f, Mathf.Sin(a) * rr * 0.85f);
+                st.transform.localScale = new Vector3(0.45f + (float)rng.NextDouble() * 0.4f, 1.6f + (float)rng.NextDouble() * 2.2f, 0.45f + (float)rng.NextDouble() * 0.4f);
+                st.AddComponent<MeshFilter>().sharedMesh = meshStalaktit;
+                st.AddComponent<MeshRenderer>().sharedMaterial = _matDinding;
             }
-            for (int i = 0; i < 30; i++)
+            var meshStalagmit = new[] { SimpanMeshGua(ProcGua.Stalagmit("Stalagmit_0", 31)), SimpanMeshGua(ProcGua.Stalagmit("Stalagmit_1", 57)) };
+            for (int i = 0; i < 20; i++)
             {
-                var r = i < 14 ? r1 : i < 20 ? r0 : i < 25 ? r4 : r2;
-                float a = (float)rng.NextDouble() * Mathf.PI * 2f;
-                Vector3 tepi = ProcGua.Tepi(r.ukuran, true, a * Mathf.Rad2Deg, 0.9f);
-                Hias(hias, PrimitiveType.Cube, "Lumut_" + i, r.pos + tepi + Vector3.up * (0.1f + (float)rng.NextDouble() * 2f), new Vector3(0.9f, 0.08f + (float)rng.NextDouble() * 0.5f, 0.9f), _matLumut, false);
+                var r = i < 14 ? r1 : r4;
+                Vector3 tepi = Vector3.zero;
+                for (int coba = 0; coba < 8; coba++)
+                {
+                    float a = (float)rng.NextDouble() * Mathf.PI * 2f;
+                    tepi = ProcGua.Tepi(r.ukuran, true, a * Mathf.Rad2Deg, 0.80f + (float)rng.NextDouble() * 0.12f);
+                    if (AreaAmanLantai(r, tepi)) break;
+                }
+                var sg = Anak(hias, "Stalagmit_" + i);
+                sg.transform.localPosition = r.pos + tepi;
+                sg.transform.localRotation = Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f);
+                float xz = 0.6f + (float)rng.NextDouble() * 0.55f, y = 1.1f + (float)rng.NextDouble() * 1.8f;
+                sg.transform.localScale = new Vector3(xz, y, xz);
+                sg.AddComponent<MeshFilter>().sharedMesh = meshStalagmit[i % 2];
+                sg.AddComponent<MeshRenderer>().sharedMaterial = matBatuGua;
             }
-            Color cyan = ProcTex.Hex("#3CF2C8");
-            Lampu(hias, "Lampu_R0", r0.pos + Vector3.up * 3f, cyan, 10f, 1.2f);
-            Lampu(hias, "Lampu_R1a", r1.pos + new Vector3(-5f, 4f, 3f), cyan, 14f, 1.6f);
-            Lampu(hias, "Lampu_R1b", r1.pos + new Vector3(5f, 4f, -3f), cyan, 14f, 1.6f);
-            Lampu(hias, "Lampu_R2", r2.pos + Vector3.up * 3f, cyan, 10f, 1.2f);
-            Lampu(hias, "Lampu_R3", r3.pos + Vector3.up * 4f, cyan, 12f, 1.2f);
-            Lampu(hias, "Lampu_R4", r4.pos + Vector3.up * 5f, cyan, 14f, 1.6f);
+            var meshBatuGua = new[] { MuatPropScan("BatuLumutA"), MuatPropScan("BatuBesarScan") };
+            var matBatuGuaScan = MaterialSolidScan("BatuLumutAsli", "M_BatuGuaScan", ProcTex.Hex("#8E9DA4"), 0.42f) ?? matBatuGua;
+            if (meshBatuGua[0] != null || meshBatuGua[1] != null)
+            {
+                for (int i = 0; i < 18; i++)
+                {
+                    float a = i * (Mathf.PI * 2f / 18f) + 0.15f;
+                    Vector3 tepi = ProcGua.Tepi(r1.ukuran, true, a * Mathf.Rad2Deg, i % 4 == 0 ? 0.65f : 0.85f);
+                    var bg = Anak(hias, "BatuScanGua_" + i);
+                    bg.transform.localPosition = r1.pos + tepi - Vector3.up * 0.08f;
+                    bg.transform.localRotation = Quaternion.Euler(0f, i * 67f, 0f);
+                    bg.transform.localScale = Vector3.one * (0.75f + (i % 3) * 0.42f);
+                    var bm = meshBatuGua[i % 2] ?? meshBatuGua[0] ?? meshBatuGua[1];
+                    bg.AddComponent<MeshFilter>().sharedMesh = bm;
+                    bg.AddComponent<MeshRenderer>().sharedMaterial = matBatuGuaScan;
+                }
+            }
+            var meshJamur = new[] { SimpanMeshGua(ProcGua.JamurGua("JamurGua_0", 11)), SimpanMeshGua(ProcGua.JamurGua("JamurGua_1", 23)), SimpanMeshGua(ProcGua.JamurGua("JamurGua_2", 37)) };
+            var matJamurPair = new[] { matBatangJamur, _matLumut };
+            for (int i = 0; i < 52; i++)
+            {
+                var r = i < 30 ? r1 : i < 38 ? r0 : i < 45 ? r4 : r2;
+                Vector3 tepi = Vector3.zero;
+                for (int coba = 0; coba < 10; coba++)
+                {
+                    float a = (float)rng.NextDouble() * Mathf.PI * 2f;
+                    tepi = ProcGua.Tepi(r.ukuran, true, a * Mathf.Rad2Deg, 0.58f + (float)rng.NextDouble() * 0.28f);
+                    if (AreaAmanLantai(r, tepi)) break;
+                }
+                var jm = Anak(hias, "Lumut_" + i);
+                jm.transform.localPosition = r.pos + tepi;
+                jm.transform.localRotation = Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f);
+                jm.transform.localScale = Vector3.one * (0.45f + (float)rng.NextDouble() * 0.42f);
+                jm.AddComponent<MeshFilter>().sharedMesh = meshJamur[i % 3];
+                jm.AddComponent<MeshRenderer>().sharedMaterials = matJamurPair;
+            }
+            var shKabut = Shader.Find("AlasKeramat/KabutLokal");
+            if (shKabut != null)
+            {
+                var mKabutGua = new Material(shKabut) { name = "M_KabutGua" };
+                mKabutGua.SetTexture("_BaseMap", Tex("batu"));
+                mKabutGua.SetColor("_BaseColor", new Color(0.14f, 0.38f, 0.38f, 0.14f));
+                AssetDatabase.CreateAsset(mKabutGua, FolderMat + "/M_KabutGua.mat");
+                mKabutGua = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_KabutGua.mat");
+                for (int i = 0; i < 6; i++)
+                {
+                    float a = i * Mathf.PI / 3f;
+                    var kg = Hias(hias, PrimitiveType.Quad, "KabutGua_" + i, r1.pos + new Vector3(Mathf.Cos(a) * 5.5f, 1.8f, Mathf.Sin(a) * 4.5f), new Vector3(11f, 4.2f, 1f), mKabutGua, false);
+                    kg.transform.localRotation = Quaternion.Euler(0f, i * 32f, 0f);
+                }
+            }
+            Color cyan = ProcTex.Hex("#6CEAD8");
+            Lampu(hias, "Lampu_R0", r0.pos + Vector3.up * 3f, ProcTex.Hex("#98DDD0"), 18f, 28.0f);
+            Lampu(hias, "Lampu_R1a", r1.pos + new Vector3(-5f, 5.2f, 3f), cyan, 34f, 55.0f);
+            Lampu(hias, "Lampu_R1b", r1.pos + new Vector3(4.5f, 5.4f, -3f), cyan, 34f, 55.0f);
+            Lampu(hias, "Lampu_R1c", r1.pos + new Vector3(-2f, 1.4f, -4.5f), ProcTex.Hex("#48DFC4"), 26f, 36.0f);
+            Lampu(hias, "Lampu_R2", r2.pos + Vector3.up * 3f, new Color(0.95f, 0.72f, 0.42f), 20f, 24.0f);
+            Lampu(hias, "Lampu_R3", r3.pos + Vector3.up * 4f, cyan, 24f, 32.0f);
+            Lampu(hias, "Lampu_R4", r4.pos + Vector3.up * 5f, cyan, 24f, 32.0f);
 
             // Isi ruang.
             var batu = AmbilMat("M_Batu"); var kayu = AmbilMat("M_Kayu"); var kain = AmbilMat("M_CatOranye");

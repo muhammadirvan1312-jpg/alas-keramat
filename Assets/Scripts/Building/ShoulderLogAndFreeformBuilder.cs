@@ -110,7 +110,7 @@ namespace AlasKeramat.Building
         void Update()
         {
             if (_ctrl != null && _ctrl.Berenang && Jumlah > 0) { while (Jumlah > 0) Lempar(); GameEvents.RaiseToast("Kayu terlepas di air"); }
-#if ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
             if (Input.GetKeyDown(KeyCode.G)) Lempar();
             if (Input.GetKeyDown(KeyCode.R)) GantiMode();
 #endif

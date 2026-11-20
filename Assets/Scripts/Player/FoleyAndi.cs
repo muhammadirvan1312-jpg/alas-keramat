@@ -6,14 +6,14 @@ namespace AlasKeramat.Player
     // Foley Andi (21 §10 T3): langkah per permukaan sesuai jarak tempuh, mendarat, napas saat lelah, detak jantung saat takut/sekarat.
     public class FoleyAndi : MonoBehaviour
     {
-        public const float LangkahJalan = 0.75f, LangkahLari = 1.1f, LangkahJongkok = 0.6f;
+        public const float LangkahJalan = 1.45f, LangkahLari = 1.75f, LangkahJongkok = 0.85f;
         public const float VolJalan = 0.45f, VolLari = 0.8f, VolJongkok = 0.18f, AmbangNapas = 30f, AmbangTakut = 25f;
         const float JedaNapas = 2.2f, BpmMin = 70f, BpmMaks = 135f;
 
         AndiFPSController _ctrl;
         AndiVitalsAndSanity _v;
         ProceduralAudioSynth _synth;
-        float _jarak, _tNapas, _tJantung;
+        float _jarak, _tNapas, _tJantung, _sejakLangkah;
         int _var;
         bool _diTanahLalu = true;
         Vector3 _posLalu;
@@ -38,18 +38,23 @@ namespace AlasKeramat.Player
             if (_synth == null) return;
             Vector3 p = transform.position;
             Vector3 d = p - _posLalu; d.y = 0f; _posLalu = p;
+            if (Time.deltaTime <= 0f) return;
+            if (d.sqrMagnitude > 9f) { _jarak = 0f; _diTanahLalu = _ctrl.DiTanah; return; }
+            _sejakLangkah += Time.deltaTime;
             if (_ctrl.DiTanah && !_ctrl.Berenang)
             {
                 _jarak += d.magnitude;
                 float jarakLangkah = _ctrl.Jongkok ? LangkahJongkok : _ctrl.SedangLari ? LangkahLari : LangkahJalan;
-                if (_jarak >= jarakLangkah) { _jarak = 0f; Langkah(_ctrl.Jongkok ? VolJongkok : _ctrl.SedangLari ? VolLari : VolJalan); }
-                if (!_diTanahLalu && _ctrl.TinggiJatuhTerakhir > 0.8f) Langkah(Mathf.Clamp01(0.5f + _ctrl.TinggiJatuhTerakhir * 0.12f));
+                if (!_diTanahLalu && _ctrl.TinggiJatuhTerakhir > 0.8f) { _jarak = 0f; _sejakLangkah = 0f; Langkah(Mathf.Clamp01(0.5f + _ctrl.TinggiJatuhTerakhir * 0.12f)); }
+                else if (_jarak >= jarakLangkah && _sejakLangkah >= 0.24f)
+                { _jarak %= jarakLangkah; _sejakLangkah = 0f; Langkah(_ctrl.Jongkok ? VolJongkok : _ctrl.SedangLari ? VolLari : VolJalan); }
             }
             else if (_ctrl.Berenang)
             {
                 _jarak += d.magnitude;
                 if (_jarak >= 1.4f) { _jarak = 0f; Mainkan(ProceduralAudioSynth.NamaLangkah(SurfaceType.Air, _var++), p, 0.5f); }
             }
+            if (d.sqrMagnitude < 0.0001f) _jarak = 0f;
             _diTanahLalu = _ctrl.DiTanah;
             if (_v == null) return;
             _tNapas -= Time.deltaTime;
@@ -71,6 +76,6 @@ namespace AlasKeramat.Player
             Mainkan(ProceduralAudioSynth.NamaLangkah(s, _var++), p, vol);
         }
 
-        void Mainkan(string nama, Vector3 p, float vol) { _synth.Play(nama, p, AudioCategory.Efek, vol, Random.Range(0.9f, 1.1f), 2); }
+        void Mainkan(string nama, Vector3 p, float vol) { _synth.Play(nama, null, AudioCategory.Efek, vol, Random.Range(0.96f, 1.04f), 2); }
     }
 }

@@ -15,7 +15,10 @@ for coba in 1 2 3; do
     git worktree add -q --detach "$WT" && (cd "$WT" && git checkout -q --orphan ci-hasil-lokal && git rm -rqf . >/dev/null 2>&1; true)
   fi
   mkdir -p "$WT/$CAB"
-  for f in "$@"; do [ -e "$f" ] && cp -r "$f" "$WT/$CAB/" ; done
+  for f in "$@"; do
+    if [ -d "$f" ] && [ "$(basename "$f")" = "foto_kualitas" ]; then rm -rf "$WT/$CAB/foto_kualitas"; fi
+    [ -e "$f" ] && cp -r "$f" "$WT/$CAB/"
+  done
   ( cd "$WT" && git -c user.name=ak-ci-bot -c user.email=ak-ci-bot@users.noreply.github.com add -A \
     && { git diff --cached --quiet && echo "Tidak ada hasil baru."; true; } \
     && { git diff --cached --quiet || git -c user.name=ak-ci-bot -c user.email=ak-ci-bot@users.noreply.github.com commit -q -m "hasil CI $CAB"; } \

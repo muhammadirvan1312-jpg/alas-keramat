@@ -30,6 +30,8 @@ namespace AlasKeramat.Core
             ProceduralAudioSynth.OsRantai, ProceduralAudioSynth.OsRadio,
             ProceduralAudioSynth.OsGamelan
         };
+        [SerializeField] string[] namaKlip = new string[0];
+        public void SetNamaKlip(string[] nama) { namaKlip=(string[])nama.Clone(); }
         private readonly Dictionary<string, AudioClip> bank = new Dictionary<string, AudioClip>();
         private AudioSource[] beds, shots;
         private AudioLowPassFilter[] filters;
@@ -51,7 +53,7 @@ namespace AlasKeramat.Core
                     if (daftar[i] != null) copy.Add(daftar[i]);
             klip = copy;
             bank.Clear();
-            for (int i = 0; i < klip.Count; i++) bank[klip[i].name] = klip[i];
+            for (int i = 0; i < klip.Count; i++) bank[i<namaKlip.Length?namaKlip[i]:klip[i].name] = klip[i];
             BedAktif = "";
             if (beds != null)
                 for (int i = 0; i < beds.Length; i++) beds[i].Stop();
@@ -163,7 +165,7 @@ namespace AlasKeramat.Core
                 Snapshot == AmbienSnapshot.Gua ? 2000f : ClearHz;
             gain = Mathf.MoveTowards(gain, target, Time.deltaTime / Transition);
             cutoff = Mathf.MoveTowards(cutoff, hz, ClearHz * Time.deltaTime / Transition);
-            float volume = gain * rain * ProceduralAudioSynth.VolMaster;
+            float volume = gain * rain * ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien);
             beds[active].volume = BedVolume * blend * volume;
             beds[1 - active].volume = BedVolume * (1f - blend) * volume;
             if (blend >= 1f) beds[1 - active].Stop();
@@ -208,7 +210,7 @@ namespace AlasKeramat.Core
                 if (shots[i].isPlaying) continue;
                 shots[i].transform.position = pos; shots[i].clip = clip;
                 shots[i].pitch = UnityEngine.Random.Range(0.94f, 1.06f);
-                shots[i].volume = ShotVolume * gain * rain * ProceduralAudioSynth.VolMaster;
+                shots[i].volume = ShotVolume * gain * rain * ProceduralAudioSynth.VolumeKategori(AudioCategory.Ambien);
                 owners[i] = owner; shots[i].Play(); return;
             }
         }

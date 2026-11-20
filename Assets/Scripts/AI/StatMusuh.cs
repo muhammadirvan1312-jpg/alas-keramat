@@ -38,6 +38,13 @@ namespace AlasKeramat.AI
             D(EnemyArchetype.Genderuwo, 1500f, 2.0f, 9.0f, 0f, 0f, 0f, 35f, 40f, true),
             D(EnemyArchetype.Jenglot, 15f, 5.5f, 5.5f, 15f, 15f, 10f, 4f, 4f, true),
             D(EnemyArchetype.ManusiaAkar, 400f, 1.5f, 3.0f, 25f, 25f, 15f, 12f, 24f, false, new[] { ItemID.Tulang }, new[] { 1f }, new[] { 4 }),
+            D(EnemyArchetype.Kuyang, 90f, 5.0f, 7.5f, 35f, 35f, 20f, 14f, 14f, true, new[] { ItemID.PotonganTubuh, ItemID.Kemenyan }, new[] { 0.6f, 0.35f }, new[] { 1, 1 }),
+            D(EnemyArchetype.Tuyul, 999f, 4.2f, 6.5f, 24f, 24f, 18f, 0f, 0f, true),
+            D(EnemyArchetype.GenderuwoHutan, 280f, 2.4f, 6.8f, 35f, 30f, 25f, 24f, 30f, true, new[] { ItemID.Tulang, ItemID.DagingBusuk }, new[] { 0.7f, 0.5f }, new[] { 2, 1 }),
+            D(EnemyArchetype.MutanGembung, 180f, 1.6f, 3.8f, 25f, 20f, 15f, 18f, 24f, false),
+            D(EnemyArchetype.MutanJemari, 150f, 2.2f, 5.4f, 28f, 22f, 20f, 16f, 20f, false),
+            D(EnemyArchetype.Penyerupa, 60f, 1.8f, 4.5f, 30f, 30f, 15f, 10f, 10f, true),
+            D(EnemyArchetype.HantuAir, 110f, 2.4f, 4.8f, 28f, 28f, 18f, 16f, 16f, true, new[] { ItemID.DaunSirih, ItemID.Tulang }, new[] { 0.5f, 0.4f }, new[] { 2, 1 }),
         };
 
         public static DataMusuh Ambil(EnemyArchetype j)

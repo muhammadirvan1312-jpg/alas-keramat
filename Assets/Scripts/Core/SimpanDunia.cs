@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using AlasKeramat.Building;
+using AlasKeramat.AI;
 using UnityEngine;
 namespace AlasKeramat.Core
 {
@@ -20,8 +21,10 @@ namespace AlasKeramat.Core
         }
         [Serializable] public class CetakanT6 { public float bentang; public BlueprintID jenis; public Vector3 posisi; public Quaternion rotasi; public int[] isi; }
         [Serializable] public class KayuSimpanT6 { public string id; public bool papan; public Vector3 posisi, sumbu; public Color warna; }
+        [Serializable] public class TumpukanSimpanT6 { public Vector3 posisi; public string isi; }
         [Serializable] public class DuniaT6
         {
+            public List<TumpukanSimpanT6> tumpukan = new List<TumpukanSimpanT6>();
             public List<KayuSimpanT6> kayu = new List<KayuSimpanT6>();
             public List<PotonganT6> struktur = new List<PotonganT6>();
             public List<BangunanT6> bangunan = new List<BangunanT6>();
@@ -32,6 +35,9 @@ namespace AlasKeramat.Core
         public string CaptureJson()
         {
             var d = new DuniaT6();
+            foreach(var t in FindObjectsByType<TumpukanKemah>(FindObjectsSortMode.None))
+                d.tumpukan.Add(new TumpukanSimpanT6 { posisi=t.transform.position,isi=t.CaptureJson() });
+            d.tumpukan.Sort((a,b)=>string.CompareOrdinal(a.posisi.ToString("R"),b.posisi.ToString("R")));
             foreach (var s in BagianStruktur.Semua)
             {
                 if (s == null || !s.BisaDisimpan) continue;
@@ -66,13 +72,19 @@ namespace AlasKeramat.Core
         public void RestoreJson(string json)
         {
             var d = JsonUtility.FromJson<DuniaT6>(json);
-            if (d == null || d.struktur == null || d.bangunan == null || d.cetakan == null) return;
+            if (d == null || d.struktur == null || d.bangunan == null || d.cetakan == null) throw new ArgumentException("Snapshot dunia tidak valid");
+            var identitas=new HashSet<string>();
+            foreach(var n in d.struktur)
+                if(n==null || string.IsNullOrEmpty(n.id) || !identitas.Add(n.id) || n.sambungan==null)throw new ArgumentException("Struktur simpan tidak valid");
+            foreach(var n in d.bangunan)
+                if(n==null || string.IsNullOrEmpty(n.id) || !identitas.Add(n.id) || n.fungsi==null || n.api==null || n.panci==null)throw new ArgumentException("Bangunan simpan tidak valid");
             var rakit = GameServices.Get<AlasKeramat.Player.AndiFPSController>(); if (rakit != null) rakit.TurunRakit();
             foreach (var b in FindObjectsByType<IdentitasBangunan>(FindObjectsSortMode.None)) Hapus(b.gameObject);
             foreach (var s in new List<BagianStruktur>(BagianStruktur.Semua)) if (s != null) Hapus(s.gameObject);
             foreach (var c in FindObjectsByType<CetakBiru>(FindObjectsSortMode.None)) Hapus(c.gameObject);
             foreach (var k in FindObjectsByType<KayuFisik>(FindObjectsSortMode.None)) Hapus(k.gameObject);
             foreach (var p in FindObjectsByType<PohonRebah>(FindObjectsSortMode.None)) Hapus(p.gameObject);
+            foreach (var t in FindObjectsByType<TumpukanKemah>(FindObjectsSortMode.None)) Hapus(t.gameObject);
             var peta = new Dictionary<string, BagianStruktur>();
             foreach (var n in d.struktur)
             {
@@ -95,6 +107,8 @@ namespace AlasKeramat.Core
             {
                 var k=KayuFisik.Buat(n.posisi,n.sumbu,SafeMaterialFactory.GetCached("KayuSimpan_"+ColorUtility.ToHtmlStringRGBA(n.warna),n.warna),n.papan); k.Kunci=n.id;
             }
+            if(d.tumpukan!=null)foreach(var n in d.tumpukan)
+                TumpukanKemah.BuatDi(n.posisi,SafeMaterialFactory.GetCached("TumpukanMuat",new Color(0.32f,0.19f,0.09f))).RestoreJson(n.isi);
             Physics.SyncTransforms();
         }
         static ShoulderLogAndFreeformBuilder.ModeBangun Mode(BagianStruktur.Tipe t)

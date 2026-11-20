@@ -69,15 +69,16 @@ namespace AlasKeramat.Building
         void UpdateV3(float dt)
         {
             var jam=GameServices.Get<TimeOfDayClock>();
-            if(Jenis==BlueprintID.BubuIkan || Jenis==BlueprintID.JeratHewan)
+            if(Jenis==BlueprintID.BubuIkan || Jenis==BlueprintID.JeratHewan || Jenis==BlueprintID.KebunTanam)
             {
                 double kini=jam!=null ? (jam.Hari-1)*24d+jam.Jam : 0d;
                 if(_jamProduksi<0 || kini<_jamProduksi)_jamProduksi=kini;
-                double interval=Jenis==BlueprintID.BubuIkan?1d:IntervalJerat;
+                double interval=Jenis==BlueprintID.BubuIkan?1d:Jenis==BlueprintID.KebunTanam?2d:IntervalJerat;
                 while(kini-_jamProduksi>=interval)
                 {
                     _jamProduksi+=interval;
                     if(Jenis==BlueprintID.BubuIkan) Stok=Mathf.Min(KapBubu,Stok+1);
+                    else if(Jenis==BlueprintID.KebunTanam) Stok=Mathf.Min(4,Stok+1);
                     else if(Stok==0 && Random.value<PeluangJerat)Stok=1;
                 }
             }
@@ -106,6 +107,15 @@ namespace AlasKeramat.Building
                 case BlueprintID.JeratHewan:return Stok>0?"AMBIL HASIL JERAT":"";
                 case BlueprintID.GerbangPagar:return Terbuka?"TUTUP GERBANG":"BUKA GERBANG";
                 case BlueprintID.KursiMeja:return "DUDUK";
+                case BlueprintID.PondokKayu:return "TIDUR DI PONDOK";
+                case BlueprintID.PagarKayu:return "";
+                case BlueprintID.KebunTanam:return Stok>0?"PANEN KEBUN ("+Stok+"/4)":"KEBUN (MENUNGGU PANEN)";
+                case BlueprintID.MejaKerja:return "ASAH & PULIHKAN DI MEJA";
+                case BlueprintID.KomporBatu:
+                    var invK=GameServices.Get<TikarPandan3DInventory>();
+                    if(invK!=null && invK.Punya(ItemID.BotolKosong))return "REBUS AIR BERSIH";
+                    if(invK!=null && (invK.Punya(ItemID.DagingMentah) || invK.Punya(ItemID.IkanMentah)))return "MASAK DAGING / IKAN";
+                    return "NYALAKAN TUNGKU BATU";
                 default:return "";
             }
         }
@@ -134,6 +144,23 @@ namespace AlasKeramat.Building
                 case BlueprintID.GerbangPagar:Terbuka=!Terbuka;break;
                 case BlueprintID.KursiMeja:
                     if(ctrl!=null){ _duduk=ctrl; ctrl.DudukDi(transform.position+Vector3.up*0.1f); }break;
+                case BlueprintID.PondokKayu:
+                    Tidur(true); break;
+                case BlueprintID.KebunTanam:
+                    if(Stok<=0){ GameEvents.RaiseToast("Tanaman belum siap dipanen"); break; }
+                    if(inv!=null){ inv.Tambah(ItemID.Pisang,2); inv.Tambah(ItemID.DaunSirih,1); inv.Tambah(ItemID.KunyitObat,1); Stok--; GameEvents.RaiseToast("Panen kebun: +2 Pisang, Sirih & Kunyit"); }
+                    break;
+                case BlueprintID.MejaKerja:
+                    var cm=GameServices.Get<CombatAndLeftHandController>(); if(cm!=null)cm.Asah();
+                    var vk=GameServices.Get<AndiVitalsAndSanity>(); if(vk!=null)vk.UbahSanity(10f);
+                    break;
+                case BlueprintID.KomporBatu:
+                    NyalaSisa=LamaMinyak;
+                    if(inv!=null && inv.Kurangi(ItemID.BotolKosong,1)) { inv.Tambah(ItemID.BotolAirBersih,1); GameEvents.RaiseToast("Air direbus: +1 Botol Air Bersih"); }
+                    else if(inv!=null && inv.Kurangi(ItemID.DagingMentah,1)) { inv.Tambah(ItemID.DagingMatang,1); GameEvents.RaiseToast("Daging matang!"); }
+                    else if(inv!=null && inv.Kurangi(ItemID.IkanMentah,1)) { inv.Tambah(ItemID.IkanMatang,1); GameEvents.RaiseToast("Ikan matang!"); }
+                    else GameEvents.RaiseToast("Tungku batu menyala hangat");
+                    break;
             }
         }
     }

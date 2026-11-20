@@ -16,7 +16,7 @@ namespace AlasKeramat.EditorTools
         public const string PathUrpAsset = FolderRender + "/AK_URP.asset";
         public const string PathUrpRenderer = FolderRender + "/AK_URP_Renderer.asset";
         const string PathPostProcessData = "Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset";
-        const float JarakBayangan = 60f;
+        const float JarakBayangan = 90f;
 
         public static readonly string[] NamaLayer =
         {
@@ -33,7 +33,7 @@ namespace AlasKeramat.EditorTools
 
         // Shader URP TIDAK boleh masuk Always Included (varian > 1 juta, build Android gagal);
         // URP ikut ter-build lewat material .mat di Assets/Generated.
-        public static readonly string[] ShaderWajib = { "Skybox/Procedural" };
+        public static readonly string[] ShaderWajib = { "Skybox/Procedural", "AlasKeramat/Langit" };
         const string AwalanUrp = "Universal Render Pipeline/";
 
         static void LangkahProyek()
@@ -87,11 +87,26 @@ namespace AlasKeramat.EditorTools
             var ppd = AssetDatabase.LoadAssetAtPath<PostProcessData>(PathPostProcessData);
             if (ppd != null) data.postProcessData = ppd;
             AssetDatabase.CreateAsset(data, PathUrpRenderer);
+            EditorUtility.SetDirty(data);
+            AssetDatabase.SaveAssets();
+
             var urp = UniversalRenderPipelineAsset.Create(data);
             urp.shadowDistance = JarakBayangan;
-            urp.msaaSampleCount = 1;
+            urp.msaaSampleCount = 2;
+            urp.shadowCascadeCount = 4;
+            urp.mainLightShadowmapResolution = 2048;
             urp.supportsHDR = true;
-            urp.supportsCameraDepthTexture = true; // shader air AK butuh kedalaman (buih tepi, warna dalam)
+            var urpSo = new SerializedObject(urp);
+            var softProp = urpSo.FindProperty("m_SoftShadowsSupported");
+            if (softProp != null) softProp.boolValue = true;
+            var split4 = urpSo.FindProperty("m_Cascade4Split");
+            if (split4 != null) split4.vector3Value = new Vector3(0.06f, 0.18f, 0.45f);
+            var biasD = urpSo.FindProperty("m_ShadowDepthBias");
+            if (biasD != null) biasD.floatValue = 1.0f;
+            var biasN = urpSo.FindProperty("m_ShadowNormalBias");
+            if (biasN != null) biasN.floatValue = 0.6f;
+            urpSo.ApplyModifiedPropertiesWithoutUndo();
+            urp.supportsCameraDepthTexture = true; // shader air AK & SSAO butuh kedalaman
             AssetDatabase.CreateAsset(urp, PathUrpAsset);
             AssetDatabase.SaveAssets();
 

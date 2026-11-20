@@ -21,6 +21,8 @@ permissions:
 jobs:
   unity:
     name: Unity — bangun, uji, APK
+    outputs:
+      snapshot: ${{ steps.scenefoto.outcome }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -35,6 +37,11 @@ jobs:
           ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 1
 
+      - name: Bersihkan laporan CI lama
+        shell: bash
+        run: |
+          rm -f Logs/ci/ringkasan.md Logs/ci/LAPORAN_CI.md Logs/nusantara_selftest.txt Logs/nusantara_build_report.txt
+
       - name: Lewati bila proyek Unity belum ada
         id: cekproyek
         shell: bash
@@ -47,12 +54,29 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Pemeriksa statis
+        if: steps.cekproyek.outputs.ada == '1'
+        run: python3 Tools/cek_statis.py
+
       - name: Cache aset CC0 & mocap
+        id: cacheaset
         if: steps.cekproyek.outputs.ada == '1'
         uses: actions/cache@v4
         with:
           path: Assets/ThirdParty
-          key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json') }}
+          key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}
+          restore-keys: |
+            thirdparty-
+
+      - name: Pulihkan aset impor beserta GUID
+        if: steps.cekproyek.outputs.ada == '1'
+        uses: actions/cache/restore@v4
+        with:
+          path: Assets/ThirdParty
+          key: imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-${{ github.run_id }}
+          restore-keys: |
+            imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-
+            imported-aset-
 
       - name: Unduh aset CC0 & mocap sesuai lock
         if: steps.cekproyek.outputs.ada == '1' && hashFiles('Tools/ambil_aset.py') != ''
@@ -60,6 +84,40 @@ jobs:
         run: |
           python -m pip install --quiet requests
           python Tools/ambil_aset.py --semua --keluar Assets/ThirdParty
+
+      - name: Cache Blender resmi 4.3.2
+        id: cacheblender
+        uses: actions/cache@v4
+        with:
+          path: .tools/blender43/archive.tar.xz
+          key: ak-blender-4.3.2-linux-x64
+
+      - name: Panggang visual G3 (MakeHuman CC0 dan LOD pohon)
+        id: visual
+        if: steps.cekproyek.outputs.ada == '1'
+        shell: bash
+        run: |
+          if ! python Tools/visual/siapkan.py --cek; then
+            sudo apt-get update -qq
+            sudo apt-get install --no-install-recommends -y libxi6 libxrender1 libxfixes3 libxxf86vm1 libgl1 libsm6 libice6 libxkbcommon0 > /tmp/ak-blender-install.log
+            python Tools/visual/pasang_blender.py
+          fi
+          mkdir -p Logs/ci
+          python Tools/visual/siapkan.py 2>&1 | tee Logs/ci/visual.log
+
+      - name: Simpan arsip Blender sebelum uji Unity
+        if: steps.visual.outcome == 'success' && steps.cacheblender.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .tools/blender43/archive.tar.xz
+          key: ak-blender-4.3.2-linux-x64
+
+      - name: Simpan cache hasil panggang visual
+        if: steps.visual.outcome == 'success' && steps.cacheaset.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: Assets/ThirdParty
+          key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}
 
       # Cache Library dipulihkan dari run terbaru & DISIMPAN ULANG setiap run (termasuk saat gagal),
       # supaya shader & impor aset tidak dikompilasi ulang dari nol (build APK pertama ±16 menit untuk shader).
@@ -81,6 +139,7 @@ jobs:
         timeout-minutes: 75
         uses: game-ci/unity-builder@v4
         env:
+          AK_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
@@ -88,7 +147,7 @@ jobs:
           targetPlatform: Android
           buildMethod: AlasKeramat.EditorTools.NusantaraCI.BuildAndTest
           allowDirtyBuild: true
-          customParameters: -akLaporan Logs/ci
+          customParameters: -akLaporan Logs/ci -akSource ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Ambil alih kepemilikan file dari container Unity
         if: always() && steps.cekproyek.outputs.ada == '1'
@@ -102,6 +161,24 @@ jobs:
           path: Library
           key: Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-${{ github.run_id }}
 
+      - name: Simpan aset impor beserta GUID
+        if: always() && steps.build.outcome != 'skipped' && steps.build.outcome != 'cancelled'
+        uses: actions/cache/save@v4
+        with:
+          path: Assets/ThirdParty
+          key: imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-${{ github.run_id }}
+
+      - name: Simpan scene untuk audit foto
+        id: scenefoto
+        if: always() && steps.build.outcome != 'cancelled' && hashFiles('Assets/Generated/foto_commit.txt') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-foto-${{ github.run_id }}
+          path: |
+            Assets
+            ProjectSettings
+          retention-days: 2
+
       - name: Susun laporan CI (selalu)
         if: always() && steps.cekproyek.outputs.ada == '1'
         shell: bash
@@ -112,13 +189,15 @@ jobs:
           LAP=Logs/ci/LAPORAN_CI.md
           {
             echo "# LAPORAN CI"
-            echo "- Commit: ${GITHUB_SHA}"
+            echo "- Commit: $(git rev-parse HEAD)"
+            echo "- Hasil aset visual: ${{ steps.visual.outcome }}"
             echo "- Hasil langkah Unity: ${{ steps.build.outcome }}"
             echo "- Waktu: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             echo
             if [ -f Logs/ci/ringkasan.md ]; then cat Logs/ci/ringkasan.md; else echo "Ringkasan dari NusantaraCI tidak ada (kemungkinan error kompilasi sebelum kode berjalan)."; fi
             echo
             echo "## Baris error yang ditemukan"
+            if [ "${{ steps.visual.outcome }}" != "success" ] && [ -f Logs/ci/visual.log ]; then tail -n 35 Logs/ci/visual.log; fi
             grep -h -E "error CS[0-9]+|Exception|\[AK\]\[GAGAL\]|Scripts have compiler errors" Logs/ci/*.log 2>/dev/null | head -n 80 || true
           } > "$LAP"
           cat "$LAP"
@@ -128,7 +207,7 @@ jobs:
         shell: bash
         run: |
           sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true
-          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/ci/LAPORAN_CI.md Logs/ci/ringkasan.md Logs/nusantara_selftest.txt Logs/nusantara_build_report.txt
+          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/ci/LAPORAN_CI.md Logs/ci/ringkasan.md Logs/nusantara_selftest.txt Logs/nusantara_build_report.txt Logs/ci/visual.log
 
       - name: Unggah artefak (APK, log, foto)
         if: always() && steps.cekproyek.outputs.ada == '1'
@@ -151,7 +230,7 @@ jobs:
   foto:
     name: Foto kualitas (tidak memblokir)
     needs: unity
-    if: always() && needs.unity.result == 'success' && github.event_name == 'pull_request'
+    if: always() && needs.unity.outputs.snapshot == 'success' && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     continue-on-error: true
@@ -167,6 +246,29 @@ jobs:
           ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 1
 
+      - name: Pulihkan aset visual G3
+        uses: actions/cache/restore@v4
+        with:
+          path: Assets/ThirdParty
+          key: thirdparty-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}
+
+      - name: Pulihkan arsip Blender resmi
+        uses: actions/cache/restore@v4
+        with:
+          path: .tools/blender43/archive.tar.xz
+          key: ak-blender-4.3.2-linux-x64
+
+      - name: Pastikan aset foto siap
+        shell: bash
+        run: |
+          python3 Tools/ambil_aset.py --semua --wajib
+          if ! python3 Tools/visual/siapkan.py --cek; then
+            sudo apt-get update -qq
+            sudo apt-get install --no-install-recommends -y libxi6 libxrender1 libxfixes3 libxxf86vm1 libgl1 libsm6 libice6 libxkbcommon0 > /tmp/ak-blender-foto.log
+            python3 Tools/visual/pasang_blender.py
+          fi
+          python3 Tools/visual/siapkan.py
+
       - name: Pulihkan cache Library Unity
         uses: actions/cache/restore@v4
         with:
@@ -176,20 +278,43 @@ jobs:
             Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-
             Library-Android-
 
+      - name: Ambil scene hasil build yang sama
+        uses: actions/download-artifact@v4
+        with:
+          name: scene-foto-${{ github.run_id }}
+          path: .
+
+      - name: Bersihkan foto warisan
+        run: |
+          rm -rf Logs/foto_kualitas
+          rm -f Logs/ci/foto.log Logs/ci/uji_main.log Logs/ci/uji_main.json
+
       - name: Unity — Builder + Foto
         id: foto
         continue-on-error: true
         timeout-minutes: 35
         uses: game-ci/unity-builder@v4
         env:
+          AK_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: Android
           buildMethod: AlasKeramat.EditorTools.NusantaraCI.FotoSaja
+          manualExit: true
           allowDirtyBuild: true
-          customParameters: -akLaporan Logs/ci
+          customParameters: -akLaporan Logs/ci -akSource ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Periksa bukti foto revisi ini
+        id: auditfoto
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 Tools/cek_foto.py --commit "${{ github.event.pull_request.head.sha || github.sha }}"
+          python3 Tools/cek_uji_main.py --commit "${{ github.event.pull_request.head.sha || github.sha }}"
 
       - name: Simpan foto ke cabang ci-hasil
         if: always()
@@ -197,7 +322,7 @@ jobs:
         run: |
           sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true
           ls -la Logs/foto_kualitas 2>/dev/null || echo "Tidak ada foto."
-          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/foto_kualitas Logs/ci/foto.log
+          bash Tools/simpan_hasil_ci.sh "${{ github.head_ref || github.ref_name }}" Logs/foto_kualitas Logs/ci/foto.log Logs/ci/audit_foto.json Logs/ci/uji_main.log Logs/ci/uji_main.json
 
       - name: Unggah foto
         if: always()
@@ -207,6 +332,13 @@ jobs:
           path: |
             Logs/foto_kualitas
             Logs/ci/foto.log
+            Logs/ci/audit_foto.json
+            Logs/ci/uji_main.log
+            Logs/ci/uji_main.json
           if-no-files-found: ignore
           retention-days: 14
 
+
+      - name: Laporkan kegagalan foto
+        if: always() && (steps.foto.outcome != 'success' || steps.auditfoto.outcome != 'success')
+        run: exit 1

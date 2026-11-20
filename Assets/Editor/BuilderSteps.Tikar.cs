@@ -70,6 +70,58 @@ namespace AlasKeramat.EditorTools
             UnityEventTools.AddPersistentListener(bPakai.onClick, ui.TekanPakai);
             UnityEventTools.AddPersistentListener(bBatal.onClick, ui.TekanBatal);
             UnityEventTools.AddPersistentListener(bTutup.onClick, ui.Tutup);
+            var sebelum=TombolPanel(panel,"Sebelum","SEBELUM",font,new Vector2(-720f,200f),new Vector2(280f,70f),ProcTex.Hex("#3A3A3A"),out tx);
+            var berikut=TombolPanel(panel,"Berikut","BERIKUT",font,new Vector2(720f,200f),new Vector2(280f,70f),ProcTex.Hex("#3A3A3A"),out tx);
+            var senjata=TombolPanel(panel,"PakaiSenjata","PAKAI SENJATA",font,new Vector2(0f,200f),new Vector2(380f,70f),ProcTex.Hex("#4A6F8A"),out tx);
+            var halaman=BuatTeks(panel,"Halaman","",font,24,new Vector2(0.5f,1f),new Vector2(0,-100f),new Vector2(500f,40f)); halaman.raycastTarget=false;
+            var bDaftar = TombolPanel(panel, "TombolDaftarResep", "DAFTAR RESEP", font, new Vector2(660f, -95f), new Vector2(280f, 64f), ProcTex.Hex("#3E6A4E"), out tx);
+            var rtDaftar = (RectTransform)bDaftar.transform; rtDaftar.anchorMin = rtDaftar.anchorMax = new Vector2(0.5f, 1f);
+            tx.fontSize = 22;
+
+            // Panel gulir 1-ketuk daftar resep senjata, alat, obat & zirah
+            var panelResep = UIStretch(panel, "PanelResep", new Vector2(0.14f, 0.14f), new Vector2(0.86f, 0.88f));
+            var bgResep = panelResep.AddComponent<Image>(); bgResep.color = ProcTex.Hex("#1E1812F2");
+            var jdlR = BuatTeks(panelResep, "JudulResep", "DAFTAR RESEP SURVIVAL (KETUK UNTUK RAKIT)", font, 30, new Vector2(0.5f, 1f), new Vector2(0f, -38f), new Vector2(1100f, 52f));
+            jdlR.color = ProcTex.Hex("#F2C14E");
+            var vpR = UIStretch(panelResep, "GulirResep", new Vector2(0.03f, 0.14f), new Vector2(0.97f, 0.88f));
+            vpR.AddComponent<RectMask2D>();
+            var srR = vpR.AddComponent<ScrollRect>(); srR.horizontal = false;
+            var isiR = UIStretch(vpR, "IsiResep", new Vector2(0f, 1f), new Vector2(1f, 1f));
+            var allRecipes = RecipeDatabase.All;
+            var rtIsiR = (RectTransform)isiR.transform; rtIsiR.pivot = new Vector2(0.5f, 1f);
+            int rowsR = (allRecipes.Count + 1) / 2;
+            rtIsiR.sizeDelta = new Vector2(0f, 40f + rowsR * 105f);
+            srR.viewport = (RectTransform)vpR.transform; srR.content = rtIsiR;
+            var tombolResep = new Button[allRecipes.Count];
+            var idResep = new int[allRecipes.Count];
+            for (int rIdx = 0; rIdx < allRecipes.Count; rIdx++)
+            {
+                var rec = allRecipes[rIdx];
+                idResep[rIdx] = rec.recipeId;
+                int col = rIdx % 2, row = rIdx / 2;
+                var sbBahan = new System.Text.StringBuilder();
+                foreach (var inp in rec.inputs) { if (sbBahan.Length > 0) sbBahan.Append(" + "); sbBahan.Append(inp.count).Append(" ").Append(ItemDatabase.Get(inp.id).displayName); }
+                if (rec.requiredTool != ItemID.None) sbBahan.Append(" [").Append(ItemDatabase.Get(rec.requiredTool).displayName).Append("]");
+                string labelR = ItemDatabase.Get(rec.output.id).displayName + (rec.output.count > 1 ? " x" + rec.output.count : "");
+                var br = TombolPanel(isiR, "Resep_" + rec.recipeId, labelR, font, Vector2.zero, new Vector2(580f, 92f), ProcTex.Hex("#383430"), out tx);
+                var rtr = (RectTransform)br.transform; rtr.anchorMin = rtr.anchorMax = new Vector2(0f, 1f);
+                rtr.anchoredPosition = new Vector2(310f + col * 620f, -60f - row * 105f);
+                tx.fontSize = 22; tx.alignment = TextAnchor.UpperCenter;
+                var sub = BuatTeks(br.gameObject, "Bahan", sbBahan.ToString(), font, 16, new Vector2(0.5f, 0f), new Vector2(0f, 22f), new Vector2(560f, 36f));
+                sub.color = ProcTex.Hex("#DFD4B8"); sub.horizontalOverflow = HorizontalWrapMode.Wrap; sub.raycastTarget = false;
+                UnityEventTools.AddIntPersistentListener(br.onClick, ui.RakitResep, rec.recipeId);
+                tombolResep[rIdx] = br;
+            }
+            var bTutupR = TombolPanel(panelResep, "TutupResep", "TUTUP RESEP", font, new Vector2(0f, 44f), new Vector2(260f, 64f), ProcTex.Hex("#4A3A2E"), out tx);
+            UnityEventTools.AddPersistentListener(bTutupR.onClick, ui.TogglePanelResep);
+            UnityEventTools.AddPersistentListener(bDaftar.onClick, ui.TogglePanelResep);
+            panelResep.SetActive(false);
+
+            UnityEventTools.AddPersistentListener(sebelum.onClick,ui.HalamanSebelum);
+            UnityEventTools.AddPersistentListener(berikut.onClick,ui.HalamanBerikut);
+            UnityEventTools.AddPersistentListener(senjata.onClick,ui.TekanSenjata);
+            ui.PasangHalaman(halaman,senjata);
+            ui.PasangResep(panelResep, tombolResep, idResep);
             ui.Pasang(panel, judul, label, bRakit, bMakan, bPakai, teksRakit);
             EditorUtility.SetDirty(ui);
 

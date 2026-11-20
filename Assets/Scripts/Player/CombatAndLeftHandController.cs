@@ -14,7 +14,7 @@ namespace AlasKeramat.Player
             public ItemID id; public float ringan, berat, tebang, jangkau, durR, durB, aktifR, aktifB, stamR, stamB; public DamageType tipe;
         }
 
-        public const float PengaliTebangBerat = 1.5f, RadiusSapuan = 0.25f;
+        public const float PengaliTebangBerat = 1.5f, RadiusSapuan = 0.58f;
         public static readonly Senjata TanganKosong = new Senjata { id = ItemID.None, ringan = 6f, berat = 12f, tebang = 2f, jangkau = 1.2f, durR = 0.4f, durB = 0.9f, aktifR = 0.12f, aktifB = 0.45f, stamR = 3f, stamB = 8f, tipe = DamageType.Tumpul };
         public static readonly Senjata[] Tabel =
         {
@@ -82,20 +82,31 @@ namespace AlasKeramat.Player
 
         public void Tebas(bool berat)
         {
-            if (SedangMenyerang || _tersimpan || _blok || (_ctrl != null && _ctrl.Berenang)) return;
+            if (AlasKeramat.UI.PengunciInput.Terblokir || SedangMenyerang || _tersimpan || _blok || (_ctrl != null && _ctrl.Berenang)) return;
             if (_v == null) _v = GameServices.Get<AndiVitalsAndSanity>();
             if (_v != null && !_v.Pakai(berat ? _aktif.stamB : _aktif.stamR)) { GameEvents.RaiseToast("Terlalu lelah untuk mengayun"); return; }
             _berat = berat; _t = 0f; _sudahKena = false;
         }
 
+        public void HentikanAksiPanel()
+        {
+            BatalkanTebas(); TangkisLepas(); _tParry=-1f; _tElak=0f; _t=-1f;
+            if (_ctrl != null) _ctrl.GuncangKamera(0f);
+            if(_adaKembalikan) { _aktif=_kembalikan; _adaKembalikan=false; }
+        }
+
         void Update()
         {
             _tajam=Mathf.Max(0f,_tajam-Time.deltaTime);
+            if (AlasKeramat.UI.PengunciInput.Terblokir)
+            {
+                HentikanAksiPanel(); TickTangkis(Time.deltaTime); TickJarak(Time.deltaTime); return;
+            }
             TickTangkis(Time.deltaTime);
             TickJarak(Time.deltaTime);
             _tCekSenjata -= Time.deltaTime;
             if (_tCekSenjata <= 0f) { PilihSenjata(); _tCekSenjata = 0.5f; }
-#if ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
             if (Input.GetMouseButtonDown(0)) TekanTebas();
             if (Input.GetMouseButtonUp(0)) LepasTebas();
             if (Input.GetKeyDown(KeyCode.G)) Ganti();
@@ -122,7 +133,7 @@ namespace AlasKeramat.Player
             var cam = _ctrl != null ? _ctrl.Kamera : null;
             if (cam == null) return;
             RaycastHit hit;
-            if (!Physics.SphereCast(cam.position, RadiusSapuan, cam.forward, out hit, _aktif.jangkau + 0.3f, _mask, QueryTriggerInteraction.Ignore)) return;
+            if (!Physics.SphereCast(cam.position, RadiusSapuan, cam.forward, out hit, _aktif.jangkau + 0.95f, _mask, QueryTriggerInteraction.Ignore)) return;
             var kayu = hit.collider.GetComponent<KayuFisik>();
             if (kayu != null && _aktif.id != ItemID.None) { kayu.Pukul(); return; }
             var bagian = hit.collider.GetComponentInParent<BagianStruktur>();

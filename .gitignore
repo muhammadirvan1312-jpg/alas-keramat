@@ -17,3 +17,8 @@
 *.apk
 .vs/
 .idea/
+
+__pycache__/
+*.pyc
+
+/.tools/

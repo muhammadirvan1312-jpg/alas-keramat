@@ -35,6 +35,7 @@ Shader "AlasKeramat/Air"
             float _Smoothness, _LebarBuih, _KuatBuih;
             float _GunakanDepth, _TulisDepth, _Bayangan;
         CBUFFER_END
+        float _AK_MatikanDepth;
         float3 _LightDirection, _LightPosition;
         struct Attributes
         {
@@ -109,7 +110,8 @@ Shader "AlasKeramat/Air"
         }
         float Thickness(Varyings i, float2 uv)
         {
-            if (_GunakanDepth < 0.5) return _JarakDalam;
+            half depthOn = _GunakanDepth * (1.0h - saturate(_AK_MatikanDepth));
+            if (depthOn < 0.5h) return _JarakDalam;
             float raw = SampleSceneDepth(uv);
             float sceneEye;
             if (unity_OrthoParams.w > 0.5)
@@ -137,7 +139,7 @@ Shader "AlasKeramat/Air"
             half4 water = lerp(_WarnaDangkal, _WarnaDalam, absorption);
             half edge = 1 - saturate(depth / max(_LebarBuih, 0.001));
             half foam = smoothstep(0.25, 0.7, noise + edge * 0.45) * edge * _KuatBuih;
-            foam *= _GunakanDepth;
+            foam *= _GunakanDepth * (1.0h - saturate(_AK_MatikanDepth));
             half3 albedo = lerp(water.rgb, _WarnaBuih.rgb, foam);
             half opacity = saturate(lerp(water.a, _WarnaBuih.a, foam));
             // Fresnel air (IOR 1.333), refleksi dipertahankan pada sudut mendatar.

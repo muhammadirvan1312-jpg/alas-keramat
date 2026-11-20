@@ -56,11 +56,12 @@ namespace AlasKeramat.EditorTools
 
             // Kontrol sentuh: area geser (belakang) -> zona joystick -> tombol (depan).
             var kontrol = UIStretch(kanvas.gameObject, "Kontrol", Vector2.zero, Vector2.one);
-            var geser = UIStretch(kontrol, "ZonaGeser", new Vector2(0.45f, 0f), Vector2.one);
+            kontrol.AddComponent<RuangAmanKontrol>();
+            var geser = UIStretch(kontrol, "ZonaGeser", Vector2.zero, Vector2.one);
             Transparan(geser);
             var zg = geser.AddComponent<ZonaGeser>();
 
-            var zonaJoy = UIStretch(kontrol, "ZonaJoystick", Vector2.zero, new Vector2(0.45f, 0.7f));
+            var zonaJoy = UIStretch(kontrol, "ZonaJoystick", Vector2.zero, new Vector2(0.42f, 0.65f));
             ((RectTransform)zonaJoy.transform).pivot = Vector2.zero;
             Transparan(zonaJoy);
             var basis = UIGambar(zonaJoy, "Basis", cincin, new Vector2(300f, 300f), Vector2.zero, new Vector2(260f, 260f));

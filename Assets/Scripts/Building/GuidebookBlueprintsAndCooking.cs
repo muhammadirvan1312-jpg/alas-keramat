@@ -9,7 +9,7 @@ namespace AlasKeramat.Building
     {
         public const string Kemah = "Kemah", Makanan = "Makanan & Air", Pertahanan = "Pertahanan", Utilitas = "Utilitas";
         public static readonly string[] Kategori = { Kemah, Makanan, Pertahanan, Utilitas };
-        public const float Jangkau = 7f, LerengMaks = 20f, LangkahPutar = 15f;
+        public const float Jangkau = 8.5f, LerengMaks = 30f, LangkahPutar = 15f;
 
         static ItemStack S(ItemID id, int n) { return new ItemStack { id = id, count = n }; }
         static BlueprintDefinition B(BlueprintID id, string nama, string kat, Vector2 jejak, params ItemStack[] biaya)
@@ -47,7 +47,29 @@ namespace AlasKeramat.Building
             B(BlueprintID.KursiMeja, "Kursi & Meja", Kemah, new Vector2(2f, 2f), S(ItemID.KayuGelondong, 2), S(ItemID.PapanKayu, 2))
         };
 
-        public static BlueprintDefinition Ambil(BlueprintID id) { foreach (var b in Tabel) if (b.id == id) return b; return Tabel[0]; }
+        public static readonly BlueprintDefinition[] TabelEkstra =
+        {
+            B(BlueprintID.PondokKayu, "Pondok Kayu", Kemah, new Vector2(4.0f, 4.0f), S(ItemID.KayuGelondong, 8), S(ItemID.Ranting, 6), S(ItemID.DaunPisang, 10)),
+            B(BlueprintID.PagarKayu, "Dinding Pagar Kayu", Pertahanan, new Vector2(3.2f, 0.6f), S(ItemID.KayuGelondong, 4), S(ItemID.TaliIjuk, 2)),
+            B(BlueprintID.KebunTanam, "Kebun Pisang & Obat", Makanan, new Vector2(2.2f, 1.4f), S(ItemID.Ranting, 4), S(ItemID.DaunSirih, 2), S(ItemID.Batu, 2)),
+            B(BlueprintID.MejaKerja, "Meja Bengkel", Utilitas, new Vector2(1.8f, 1.0f), S(ItemID.KayuGelondong, 4), S(ItemID.Ranting, 4), S(ItemID.Batu, 2)),
+            B(BlueprintID.KomporBatu, "Tungku Masak & Air", Makanan, new Vector2(1.4f, 1.4f), S(ItemID.Batu, 6), S(ItemID.Ranting, 4))
+        };
+
+        public static BlueprintDefinition[] AmbilSemua()
+        {
+            var hasil = new BlueprintDefinition[Tabel.Length + TabelEkstra.Length];
+            System.Array.Copy(Tabel, 0, hasil, 0, Tabel.Length);
+            System.Array.Copy(TabelEkstra, 0, hasil, Tabel.Length, TabelEkstra.Length);
+            return hasil;
+        }
+
+        public static BlueprintDefinition Ambil(BlueprintID id)
+        {
+            foreach (var b in Tabel) if (b.id == id) return b;
+            foreach (var b in TabelEkstra) if (b.id == id) return b;
+            return Tabel[0];
+        }
 
         [SerializeField] Material hantuBiru, hantuSalah;
         AndiFPSController _ctrl;

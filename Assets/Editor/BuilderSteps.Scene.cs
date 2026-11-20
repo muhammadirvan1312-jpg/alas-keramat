@@ -1,10 +1,12 @@
 using System;
+using System.IO;
 using AlasKeramat.Core;
 using AlasKeramat.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -59,9 +61,21 @@ namespace AlasKeramat.EditorTools
                 _matHujan = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_Hujan.mat");
             }
 
-            var sky = Shader.Find("Skybox/Procedural");
-            if (sky == null) throw new Exception("shader Skybox/Procedural tidak ditemukan");
+            var texSiang = ImporLangitHDR("Assets/ThirdParty/CC0/Langit/LangitSiang.hdr", 2048);
+            var texMalam = ImporLangitHDR("Assets/ThirdParty/CC0/Langit/LangitMalam.hdr", 2048);
+            var envCube = ImporKubusHDR("Assets/ThirdParty/CC0/Langit/RefleksiHutan.hdr", 512);
+            if (envCube != null)
+            {
+                RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom;
+                RenderSettings.customReflectionTexture = envCube;
+                RenderSettings.reflectionIntensity = 0.40f;
+            }
+            var sky = Shader.Find("AlasKeramat/Langit");
+            if (sky == null) sky = Shader.Find("Skybox/Procedural");
+            if (sky == null) throw new Exception("shader Skybox tidak ditemukan");
             _langit = new Material(sky) { name = "M_Langit" };
+            if (_langit.HasProperty("_DayTex") && texSiang != null) _langit.SetTexture("_DayTex", texSiang);
+            if (_langit.HasProperty("_NightTex") && texMalam != null) _langit.SetTexture("_NightTex", texMalam);
             AssetDatabase.CreateAsset(_langit, PathSkybox);
             _langit = AssetDatabase.LoadAssetAtPath<Material>(PathSkybox);
             RenderSettings.skybox = _langit;
@@ -90,6 +104,7 @@ namespace AlasKeramat.EditorTools
             var angin = _sistem.AddComponent<AKAngin>();
             angin.Pasang(atmos, WeatherState.Cerah);
             EditorUtility.SetDirty(angin);
+            _sistem.AddComponent<PengawasPerforma>();
             var audioGo = Anak(_sistem, "ProceduralAudioSynth");
             var synth = audioGo.AddComponent<ProceduralAudioSynth>();
             var daftarKlip = new System.Collections.Generic.List<string>(ProceduralAudioSynth.KlipWajib);
@@ -130,7 +145,8 @@ namespace AlasKeramat.EditorTools
             EditorUtility.SetDirty(tur);
 
             var es = Anak(_ui, "EventSystem");
-            es.AddComponent<EventSystem>();
+            var esComp = es.AddComponent<EventSystem>();
+            esComp.pixelDragThreshold = 4;
             GameBootstrap.AddCorrectInputModule(es);
             Catat("UI: judul, label zona & jam tur pratinjau, EventSystem");
         }
@@ -144,6 +160,7 @@ namespace AlasKeramat.EditorTools
             rt.anchoredPosition = posisi;
             rt.sizeDelta = besar;
             var t = go.AddComponent<Text>();
+            t.raycastTarget = false; // Label, subtitle dan teks sinema tidak boleh menelan sentuhan dunia.
             t.text = isi; t.font = font; t.fontSize = ukuran;
             t.alignment = TextAnchor.MiddleCenter;
             t.horizontalOverflow = HorizontalWrapMode.Overflow;
@@ -161,6 +178,56 @@ namespace AlasKeramat.EditorTools
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(PathScene, true) };
             AssetDatabase.SaveAssets();
             Catat("Scene: " + PathScene + ", objek di root: " + HitungObjek());
+        }
+
+        static Texture2D ImporLangitHDR(string path, int maks)
+        {
+            if (!File.Exists(path)) return null;
+            AssetDatabase.ImportAsset(path);
+            var imp = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (imp != null)
+            {
+                imp.textureShape = TextureImporterShape.Texture2D;
+                imp.mipmapEnabled = false;
+                imp.sRGBTexture = false;
+                imp.wrapModeU = TextureWrapMode.Repeat;
+                imp.wrapModeV = TextureWrapMode.Clamp;
+                imp.filterMode = FilterMode.Bilinear;
+                imp.maxTextureSize = maks;
+                var andr = imp.GetPlatformTextureSettings("Android");
+                andr.overridden = true;
+                andr.maxTextureSize = Mathf.Min(maks, 1024);
+                andr.format = TextureImporterFormat.RGB9E5;
+                imp.SetPlatformTextureSettings(andr);
+                imp.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
+        static Cubemap ImporKubusHDR(string path, int maks)
+        {
+            if (!File.Exists(path)) return null;
+            AssetDatabase.ImportAsset(path);
+            var imp = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (imp != null)
+            {
+                imp.textureShape = TextureImporterShape.TextureCube;
+                imp.generateCubemap = TextureImporterGenerateCubemap.AutoCubemap;
+                imp.mipmapEnabled = true;
+                imp.sRGBTexture = false;
+                imp.maxTextureSize = maks;
+                var ts = new TextureImporterSettings();
+                imp.ReadTextureSettings(ts);
+                ts.cubemapConvolution = TextureImporterCubemapConvolution.Specular;
+                imp.SetTextureSettings(ts);
+                var andr = imp.GetPlatformTextureSettings("Android");
+                andr.overridden = true;
+                andr.maxTextureSize = Mathf.Min(maks, 512);
+                andr.format = TextureImporterFormat.RGB9E5;
+                imp.SetPlatformTextureSettings(andr);
+                imp.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<Cubemap>(path);
         }
 
         public static int HitungObjek()

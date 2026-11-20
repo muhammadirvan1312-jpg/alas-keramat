@@ -62,6 +62,7 @@ namespace AlasKeramat.EditorTools
                 if (!_klip.TryGetValue(nama, out a)) a = AssetDatabase.LoadAssetAtPath<AudioClip>(FolderAudio + "/" + nama + ".wav");
                 if (a != null) klip.Add(a); else Debug.LogError("[AK][Builder] klip ambien hilang: " + nama);
             }
+            dir.SetNamaKlip(ProceduralAudioSynth.KlipAmbien);
             dir.SetKlip(klip);
             dir.SetEmitter(pos.ToArray(), jenis.ToArray());
             EditorUtility.SetDirty(dir);

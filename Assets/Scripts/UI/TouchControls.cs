@@ -5,6 +5,7 @@ using UnityEngine;
 namespace AlasKeramat.UI
 {
     // Penghubung kontrol sentuh -> AndiFPSController. Tombol memanggil method publik di sini (listener persisten dari Builder).
+    [DefaultExecutionOrder(100)]
     public class TouchControls : MonoBehaviour
     {
         [SerializeField] ZonaJoystick joystick;
@@ -13,6 +14,12 @@ namespace AlasKeramat.UI
         [SerializeField] UnityEngine.UI.Text labelTangan;
         [SerializeField] GameObject tombolObor;
         [SerializeField] GameObject tombolLempar, tombolMode;
+        [SerializeField] UnityEngine.UI.Image progresTangan;
+        [SerializeField] UnityEngine.UI.Image crosshairDot;
+        [SerializeField] GameObject promptBanner;
+        [SerializeField] UnityEngine.UI.Text promptBannerTeks;
+        public void PasangProgres(UnityEngine.UI.Image cincin) { progresTangan = cincin; }
+        public void PasangCrosshair(UnityEngine.UI.Image dot, GameObject banner, UnityEngine.UI.Text teksBanner) { crosshairDot = dot; promptBanner = banner; promptBannerTeks = teksBanner; }
         AlasKeramat.Building.ShoulderLogAndFreeformBuilder _pembangun;
         public const float AlphaTanganRedup = 0.35f, AlphaTanganAktif = 0.95f, DenyutTangan = 3f;
 
@@ -23,6 +30,7 @@ namespace AlasKeramat.UI
 
         AndiFPSController _andi;
         bool _adaJoy;
+        TombolTahan _tombolSerang;
 
         public void Pasang(ZonaJoystick j, ZonaGeser g) { joystick = j; geser = g; }
         public void PasangPanggul(GameObject lempar, GameObject mode) { tombolLempar = lempar; tombolMode = mode; }
@@ -39,16 +47,31 @@ namespace AlasKeramat.UI
         void Update()
         {
             if (_andi == null) { _andi = GameServices.Get<AndiFPSController>(); if (_andi == null) return; }
+            if (PengunciInput.Terblokir) { HentikanInput(); return; }
             if (joystick != null)
             {
                 bool aktif = joystick.Nilai.sqrMagnitude > 0.0001f;
                 if (aktif || _adaJoy) { _andi.InputGerak = joystick.Nilai; _andi.MintaLari = joystick.Lari; }
                 _adaJoy = aktif;
             }
-            if (geser != null) _andi.InputLihatPx += geser.AmbilDelta() * SkalaLayar();
+            if (geser != null) _andi.LihatManual(geser.AmbilDelta() * SkalaLayar());
             PerbaruiTangan();
             PerbaruiLabelTempur();
         }
+
+        public void HentikanInput()
+        {
+            if (joystick != null) joystick.ResetSentuh();
+            if (geser != null) geser.ResetSentuh();
+            if(_tombolSerang==null)_tombolSerang=GetComponentInChildren<TombolTahan>(true);
+            if(_tombolSerang!=null)_tombolSerang.ResetSentuh();
+            if (_andi != null) _andi.HentikanInputGerak();
+            var tempur=GameServices.Get<CombatAndLeftHandController>();
+            if(tempur!=null)tempur.HentikanAksiPanel();
+            _adaJoy = false;
+        }
+        void OnDisable() { HentikanInput(); }
+        void OnApplicationFocus(bool fokus) { if (!fokus) HentikanInput(); }
 
         void PerbaruiTangan()
         {
@@ -58,18 +81,31 @@ namespace AlasKeramat.UI
             {
                 _promptTampil = _interaksi.Prompt;
                 labelTangan.text = _promptTampil;
+                if (promptBannerTeks != null) promptBannerTeks.text = _promptTampil;
+            }
+            bool ada = _interaksi != null && _interaksi.AdaTarget;
+            if (promptBanner != null && promptBanner.activeSelf != ada) promptBanner.SetActive(ada);
+            if (crosshairDot != null)
+            {
+                crosshairDot.color = ada ? new Color(0.95f, 0.76f, 0.31f, 0.98f) : new Color(0.96f, 0.95f, 0.92f, 0.78f);
+                crosshairDot.rectTransform.localScale = ada ? Vector3.one * 1.45f : Vector3.one;
             }
             if (tombolTangan != null)
             {
-                bool ada = _interaksi != null && _interaksi.AdaTarget;
+                if (tombolTangan.gameObject.activeSelf != ada) tombolTangan.gameObject.SetActive(ada);
                 var c = tombolTangan.color;
                 c.a = ada ? AlphaTanganAktif - 0.15f * (0.5f + 0.5f * Mathf.Sin(Time.time * DenyutTangan * Mathf.PI * 2f)) : AlphaTanganRedup;
                 tombolTangan.color = c;
             }
+            if (progresTangan != null)
+            {
+                float p = _interaksi != null ? _interaksi.ProgresTahan : 0f;
+                progresTangan.enabled = p > 0f; progresTangan.fillAmount = p;
+            }
             if (_pembangun == null) _pembangun = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>();
             bool bawa = _pembangun != null && _pembangun.Jumlah > 0;
             if (tombolLempar != null && tombolLempar.activeSelf != bawa) tombolLempar.SetActive(bawa);
-            bool gel = _pembangun != null;
+            bool gel = _pembangun != null && (bawa || _pembangun.ModeCelah || (_interaksi != null && _interaksi.MelihatStruktur));
             if (tombolMode != null && tombolMode.activeSelf != gel) tombolMode.SetActive(gel);
             _tObor += Time.deltaTime;
             if (tombolObor != null && _kiri != null && _tObor > 0.5f)
@@ -83,13 +119,14 @@ namespace AlasKeramat.UI
         // Sensitivitas 09 §3 dinyatakan per piksel referensi 1080p.
         static float SkalaLayar() { return Screen.height > 0 ? 1080f / Screen.height : 1f; }
 
+        public void GeserDariTombol(Vector2 delta) { if(_andi!=null && !PengunciInput.Terblokir)_andi.LihatManual(delta*SkalaLayar()); }
         public void TekanLompat()
-        {
+        { if(PengunciInput.Terblokir)return;
             var c = GameServices.Get<CombatAndLeftHandController>();
             if (c != null && c.BisaElak()) { c.Elak(joystick != null ? joystick.Nilai : Vector2.zero); return; } // 17 §2.2: LOMPAT jadi ELAK
             if (_andi != null) _andi.Lompat();
         }
-        public void TekanGanti() { var c = GameServices.Get<CombatAndLeftHandController>(); if (c != null) c.Ganti(); }
+        public void TekanGanti() { if(PengunciInput.Terblokir)return; var c = GameServices.Get<CombatAndLeftHandController>(); if (c != null) c.Ganti(); }
 
         UnityEngine.UI.Text _labelLompat, _labelGanti;
         float _tLabelTempur;
@@ -114,10 +151,10 @@ namespace AlasKeramat.UI
             string g = c.NamaAktif() + (am >= 0 ? " (" + am + ")" : "");
             if (_labelGanti != null && g != _isiGanti) { _isiGanti = g; _labelGanti.text = g; }
         }
-        public void TekanJongkok() { if (_andi != null) _andi.ToggleJongkok(); }
-        public void TekanTangan() { if (_interaksi == null) _interaksi = GameServices.Get<InteraksiAndi>(); if (_interaksi != null) _interaksi.Tekan(); }
-        public void TekanLempar() { var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.Lempar(); }
-        public void TekanModeBangun() { var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.GantiMode(); }
-        public void TekanObor() { if (_kiri == null) _kiri = GameServices.Get<TanganKiri>(); if (_kiri != null) _kiri.ToggleObor(); }
+        public void TekanJongkok() { if(PengunciInput.Terblokir)return; if (_andi != null) _andi.ToggleJongkok(); }
+        public void TekanTangan() { if(PengunciInput.Terblokir)return; if (_interaksi == null) _interaksi = GameServices.Get<InteraksiAndi>(); if (_interaksi != null) _interaksi.Tekan(); }
+        public void TekanLempar() { if(PengunciInput.Terblokir)return; var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.Lempar(); }
+        public void TekanModeBangun() { if(PengunciInput.Terblokir)return; var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.GantiMode(); }
+        public void TekanObor() { if(PengunciInput.Terblokir)return; if (_kiri == null) _kiri = GameServices.Get<TanganKiri>(); if (_kiri != null) _kiri.ToggleObor(); }
     }
 }

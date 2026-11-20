@@ -13,7 +13,7 @@ namespace AlasKeramat.UI
         KangDedenKelvinAI _deden;
 
         public void Pasang(GameObject p, Button[] t) { panel = p; tombol = t; }
-        void Awake() { GameServices.Register(this); if (panel != null) panel.SetActive(false); }
+        void Awake() { PengunciInput.Pasang(panel);  GameServices.Register(this); if (panel != null) panel.SetActive(false); }
 
         public bool Terbuka { get { return panel != null && panel.activeSelf; } }
 

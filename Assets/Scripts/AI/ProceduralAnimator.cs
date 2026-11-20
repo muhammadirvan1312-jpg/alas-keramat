@@ -75,9 +75,9 @@ namespace AlasKeramat.AI
             pel.localPosition = _restPelvis;
             float skala = tinggi / 1.75f;
 
-            // Pose dasar: lengan sedikit abduksi, siku ditekuk.
-            R(Kerangka.LUpper, 0f, 0f, -8f); R(Kerangka.RUpper, 0f, 0f, 8f);
-            R(Kerangka.LFore, -10f, 0f, 0f); R(Kerangka.RFore, -10f, 0f, 0f);
+            // Pose dasar: lengan sedikit abduksi menjauh dari pinggul (X kiri model negatif: rotasi Z negatif membuka lengan kiri), siku menekuk alami.
+            R(Kerangka.LUpper, 3f, 0f, -11f); R(Kerangka.RUpper, 3f, 0f, 11f);
+            R(Kerangka.LFore, -16f, 0f, 0f); R(Kerangka.RFore, -16f, 0f, 0f);
 
             if (mode == Mode.Galeri) TickGaleri(dt);
             if (mode == Mode.DudukTerhuyung) Duduk(skala);
@@ -113,30 +113,35 @@ namespace AlasKeramat.AI
         {
             var p = tulang[Kerangka.Pelvis];
             p.localPosition = new Vector3(_restPelvis.x, 0.2f * skala, _restPelvis.z);
-            R(Kerangka.LThigh, -85f, -40f, -30f); R(Kerangka.RThigh, -85f, 40f, 30f);
-            R(Kerangka.LCalf, 120f, 0f, 0f); R(Kerangka.RCalf, 120f, 0f, 0f);
+            R(Kerangka.LThigh, -78f, -14f, -8f); R(Kerangka.RThigh, -72f, 18f, 10f);
+            R(Kerangka.LCalf, 108f, 0f, 0f); R(Kerangka.RCalf, 96f, 0f, 0f);
             float goyang = Mathf.Sin(_t * 0.6f) * 6f + Mathf.Sin(_t * 1.7f) * 2f; // terhuyung pusing
-            R(Kerangka.Spine, 12f, 0f, goyang); R(Kerangka.Head, 18f + Mathf.Sin(_t * 0.9f) * 5f, 0f, -goyang * 0.8f);
-            R(Kerangka.LUpper, -35f, 0f, -10f); R(Kerangka.RUpper, -35f, 0f, 10f);
-            R(Kerangka.LFore, -55f, 0f, 0f); R(Kerangka.RFore, -55f, 0f, 0f);
+            R(Kerangka.Spine, 8f, 0f, goyang); R(Kerangka.Head, 4f + Mathf.Sin(_t * 0.9f) * 3f, -8f, -goyang * 0.8f);
+            R(Kerangka.LUpper, -26f, 0f, -6f); R(Kerangka.RUpper, -30f, 0f, 6f);
+            R(Kerangka.LFore, -24f, 0f, 6f); R(Kerangka.RFore, -28f, 0f, -6f);
         }
 
         void Pocong(float skala)
         {
-            // Lompatan kaku 0,6 s; tinggi lebih besar saat bergerak.
+            // Lompatan kaku 0,6 s; tinggi lebih besar saat bergerak + kedutan leher patah.
             float siklus = Mathf.Repeat(_t / 0.6f, 1f);
-            float tinggiLompat = (_kec > 0.3f ? 0.35f : 0.12f) * skala;
+            float tinggiLompat = (_kec > 0.3f ? 0.38f : 0.12f) * skala;
             tulang[Kerangka.Pelvis].localPosition += Vector3.up * tinggiLompat * Mathf.Sin(siklus * Mathf.PI);
-            R(Kerangka.Head, Mathf.Sin(_t * 0.7f) * 4f, 0f, 8f);
+            float kejut = Mathf.Sin(_t * 17f) * Mathf.Pow(Mathf.Max(0f, Mathf.Sin(_t * 1.9f)), 6f) * 22f;
+            R(Kerangka.Spine, _kec > 0.3f ? 10f : 3f, 0f, Mathf.Sin(_t * 1.4f) * 5f);
+            R(Kerangka.Head, Mathf.Sin(_t * 0.9f) * 6f - 8f, kejut * 0.5f, 14f + kejut);
+            R(Kerangka.Jaw, 12f + Mathf.Abs(kejut) * 0.6f, 0f, 0f);
         }
 
         void Melayang(float skala)
         {
-            tulang[Kerangka.Pelvis].localPosition += Vector3.up * (0.45f + 0.08f * Mathf.Sin(_t * 1.3f)) * skala;
-            R(Kerangka.Spine, 6f, 0f, Mathf.Sin(_t * 0.5f) * 4f);
-            R(Kerangka.Head, 22f, 0f, 14f);
-            R(Kerangka.LUpper, -12f, 0f, 4f); R(Kerangka.RUpper, -12f, 0f, -4f);
-            R(Kerangka.LFore, -25f, 0f, 0f); R(Kerangka.RFore, -25f, 0f, 0f);
+            tulang[Kerangka.Pelvis].localPosition += Vector3.up * (0.45f + 0.11f * Mathf.Sin(_t * 1.5f)) * skala;
+            float patah = Mathf.Pow(Mathf.Max(0f, Mathf.Sin(_t * 1.7f)), 8f) * 28f;
+            R(Kerangka.Spine, 10f, 0f, Mathf.Sin(_t * 0.7f) * 6f);
+            R(Kerangka.Head, 24f - patah * 0.4f, Mathf.Sin(_t * 11f) * patah * 0.35f, 18f + patah);
+            R(Kerangka.LUpper, -28f + Mathf.Sin(_t * 1.9f) * 6f, 0f, 8f); R(Kerangka.RUpper, -28f + Mathf.Cos(_t * 1.9f) * 6f, 0f, -8f);
+            R(Kerangka.LFore, -38f, 0f, 0f); R(Kerangka.RFore, -38f, 0f, 0f);
+            R(Kerangka.LHand, 25f, 0f, 0f); R(Kerangka.RHand, 25f, 0f, 0f);
         }
 
         void TickGaleri(float dt)
@@ -183,6 +188,30 @@ namespace AlasKeramat.AI
             if (_kedip > 0f) { _kedip -= dt; sy = 0.1f; }
             for (int i = Kerangka.LEye; i <= Kerangka.REye; i++)
                 if (tulang[i] != null) tulang[i].localScale = new Vector3(_restEyeScale.x, _restEyeScale.y * sy, _restEyeScale.z);
+        }
+
+        // Dipanggil NusantaraFoto di Edit Mode agar pose duduk/melayang/menyeramkan terekam alami tanpa menunggu LateUpdate Play Mode.
+        public void TerapkanPoseFoto(float waktu = 0.45f)
+        {
+            if (tulang == null || tulang.Length < Kerangka.Jumlah || tulang[Kerangka.Pelvis] == null) return;
+            _rest = new Quaternion[tulang.Length];
+            for (int i = 0; i < tulang.Length; i++) _rest[i] = tulang[i] != null ? tulang[i].localRotation : Quaternion.identity;
+            _restPelvis = tulang[Kerangka.Pelvis].localPosition;
+            _t = waktu; _kec = 0f;
+            float skala = tinggi / 1.75f;
+            R(Kerangka.LUpper, 3f, 0f, -11f); R(Kerangka.RUpper, 3f, 0f, 11f);
+            R(Kerangka.LFore, -16f, 0f, 0f); R(Kerangka.RFore, -16f, 0f, 0f);
+            if (mode == Mode.DudukTerhuyung) Duduk(skala);
+            else if (mode == Mode.Pocong) Pocong(skala);
+            else if (mode == Mode.Melayang) Melayang(skala);
+            else
+            {
+                if (name.Contains("Tuyul")) { R(Kerangka.Spine, 24f, 0f, 0f); R(Kerangka.Head, -14f, 8f, 0f); R(Kerangka.LThigh, -35f, -12f, 0f); R(Kerangka.RThigh, -35f, 12f, 0f); R(Kerangka.LCalf, 55f, 0f, 0f); R(Kerangka.RCalf, 55f, 0f, 0f); R(Kerangka.LUpper, -45f, 0f, 18f); R(Kerangka.RUpper, -45f, 0f, -18f); }
+                else if (name.Contains("Genderuwo")) { R(Kerangka.Spine, 14f, 0f, 0f); R(Kerangka.LUpper, -24f, 0f, 16f); R(Kerangka.RUpper, -24f, 0f, -16f); R(Kerangka.Jaw, 18f, 0f, 0f); }
+                else if (name.Contains("Ningsih")) { R(Kerangka.Pelvis, 0f, 8f, -2f); R(Kerangka.Spine, -2f, -5f, 2f); R(Kerangka.LUpper, 3f, 0f, 2f); R(Kerangka.RUpper, 4f, 0f, -2f); R(Kerangka.LFore, -18f, 0f, 0f); R(Kerangka.RFore, -24f, 0f, 0f); R(Kerangka.Head, -2f, -8f, 3f); }
+                else { R(Kerangka.Pelvis, 0f, 6f, 0f); R(Kerangka.Spine, 2f, -4f, 0f); R(Kerangka.LFore, -22f, 0f, 0f); R(Kerangka.RFore, -28f, 0f, 0f); R(Kerangka.Head, 1f, -6f, 2f); }
+            }
+            Tatap();
         }
     }
 }

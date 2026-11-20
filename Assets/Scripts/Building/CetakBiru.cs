@@ -54,28 +54,48 @@ namespace AlasKeramat.Building
         public string GetPromptText(GameObject actor)
         {
             int punya; int i = BahanBisa(out punya);
-            if (i < 0) return "";
             var d = GuidebookBlueprintsAndCooking.Ambil(Id);
-            return "TAMBAH " + ItemDatabase.Get(d.cost[i].id).displayName.ToUpperInvariant() + " (" + Terisi[i] + "/" + d.cost[i].count + ")";
+            if (i >= 0) return "ISI " + ItemDatabase.Get(d.cost[i].id).displayName.ToUpperInvariant() + " (" + Terisi[i] + "/" + d.cost[i].count + ")";
+            int diisi = 0, perlu = 0;
+            for (int k = 0; k < d.cost.Length; k++) { perlu += d.cost[k].count; if (k < Terisi.Length) diisi += Terisi[k]; }
+            return "CETAK BIRU " + d.displayName.ToUpperInvariant() + " (" + diisi + "/" + perlu + ")";
         }
 
-        public bool CanInteract(GameObject actor) { int p; return BahanBisa(out p) >= 0; }
+        public bool CanInteract(GameObject actor) { return Id != 0; }
 
         public void Interact(GameObject actor)
         {
-            int punya; int i = BahanBisa(out punya);
-            if (i < 0) return;
             var d = GuidebookBlueprintsAndCooking.Ambil(Id);
-            var id = d.cost[i].id;
             var inv = GameServices.Get<TikarPandan3DInventory>();
             var bahu = GameServices.Get<ShoulderLogAndFreeformBuilder>();
-            int perlu = Kurang(i), masuk = 0;
-            var muatan = id == ItemID.PapanKayu ? ShoulderLogAndFreeformBuilder.Muatan.Papan : ShoulderLogAndFreeformBuilder.Muatan.Gelondong;
-            if ((id == ItemID.KayuGelondong || id == ItemID.PapanKayu) && bahu != null) while (masuk < perlu && bahu.Bawa == muatan && bahu.Jumlah > 0) { bahu.Lepaskan(); masuk++; }
-            while (masuk < perlu && inv != null && inv.Kurangi(id, 1)) masuk++;
-            if (id == ItemID.KainBatik) while (masuk < perlu && inv != null && inv.Kurangi(ItemID.KainKafan, 1)) masuk++;
-            Terisi[i] += masuk;
-            CekSelesai();
+            int totalMasuk = 0;
+            for (int i = 0; i < d.cost.Length; i++)
+            {
+                int perlu = Kurang(i);
+                if (perlu <= 0) continue;
+                var id = d.cost[i].id;
+                int masuk = 0;
+                var muatan = id == ItemID.PapanKayu ? ShoulderLogAndFreeformBuilder.Muatan.Papan : ShoulderLogAndFreeformBuilder.Muatan.Gelondong;
+                if ((id == ItemID.KayuGelondong || id == ItemID.PapanKayu) && bahu != null)
+                    while (masuk < perlu && bahu.Bawa == muatan && bahu.Jumlah > 0) { bahu.Lepaskan(); masuk++; }
+                while (masuk < perlu && inv != null && inv.Kurangi(id, 1)) masuk++;
+                if (id == ItemID.KainBatik)
+                    while (masuk < perlu && inv != null && inv.Kurangi(ItemID.KainKafan, 1)) masuk++;
+                if (masuk > 0) { Terisi[i] += masuk; totalMasuk += masuk; }
+            }
+            if (totalMasuk > 0) CekSelesai();
+            if (this != null && gameObject != null)
+            {
+                var kurang = new System.Text.StringBuilder();
+                for (int k = 0; k < d.cost.Length; k++)
+                {
+                    int rem = Kurang(k);
+                    if (rem <= 0) continue;
+                    if (kurang.Length > 0) kurang.Append(", ");
+                    kurang.Append(rem).Append(" ").Append(ItemDatabase.Get(d.cost[k].id).displayName);
+                }
+                if (kurang.Length > 0) GameEvents.RaiseToast((totalMasuk > 0 ? "+" + totalMasuk + " bahan masuk. Kurang: " : "Kurang bahan: ") + kurang);
+            }
         }
 
         // T8: dipakai Kang Deden (Selesaikan Bangunan / setor bahan). Mengembalikan jumlah yang terpakai.

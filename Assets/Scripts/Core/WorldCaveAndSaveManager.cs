@@ -11,12 +11,12 @@ namespace AlasKeramat.Core
     // napas 60 s dengan Rebreather, bendera gerbang tersimpan, kejadian terskrip (Pocong jatuh, penjaga, alarm bunker).
     public partial class WorldCaveAndSaveManager : MonoBehaviour, ISaveable
     {
-        public const float LamaFade = 1.2f, JarakPandangGua = 80f, KabutGua = 0.035f, TickDetik = 0.5f, NapasRebreather = 60f;
+        public const float LamaFade = 1.2f, JarakPandangGua = 80f, KabutGua = 0.013f, TickDetik = 0.5f, NapasRebreather = 60f;
         public const int MaksLampu = 4, GaliPerlu = 4;
         public const int B_Palka = 1, B_PintuKartu = 2, B_Rintangan = 4, B_Tali = 8, B_AkarK4 = 16, B_Alarm = 32, B_PocongJatuh = 64,
             B_PenjagaR4 = 128, B_Penyergap = 256, B_MalamDarah1 = 512, B_MalamDarah2 = 1024;
         public static readonly Vector3[] Pusat = { Vector3.zero, new Vector3(-600f, -80f, -600f), new Vector3(0f, -80f, -600f), new Vector3(600f, -80f, -600f) };
-        public static readonly Color AmbienGua = new Color(0.12f, 0.14f, 0.16f); // 03 §10 #0A0E12 terlalu gelap di HP (foto CI T10); dinaikkan
+        public static readonly Color AmbienGua = new Color(0.36f, 0.42f, 0.48f); // kedalaman kontras gua & kubah tetap terbaca terang di ruang Linear (g > 0.1)
 
         [SerializeField] Transform[] kompleks = new Transform[4];
         [SerializeField] Image layarHitam;
@@ -125,15 +125,45 @@ namespace AlasKeramat.Core
             if (Kini != UndergroundId.None) { AturLampu(); Skrip(); }
         }
 
-        // Hanya 4 lampu titik terdekat aktif (03 §10).
+        static bool LampuUtamaGua(Light l) { return l != null && l.range >= 35f; }
+
+        static int BandingLampu(Vector3 pos, Light x, Light y)
+        {
+            int px = LampuUtamaGua(x) ? 0 : 1, py = LampuUtamaGua(y) ? 0 : 1;
+            if (px != py) return px.CompareTo(py);
+            return (x.transform.position - pos).sqrMagnitude.CompareTo((y.transform.position - pos).sqrMagnitude);
+        }
+
+        // Hanya 4 lampu titik terdekat aktif (03 §10), mendahulukan lampu arsitektural gua/altar.
         void AturLampu()
         {
             var daftar = _lampu[(int)Kini];
             if (daftar.Count == 0) return;
             Vector3 a = _andi.transform.position;
             _urut.Clear(); _urut.AddRange(daftar);
-            _urut.Sort((x, y) => (x.transform.position - a).sqrMagnitude.CompareTo((y.transform.position - a).sqrMagnitude));
-            for (int i = 0; i < _urut.Count; i++) if (_urut[i] != null) _urut[i].enabled = i < MaksLampu;
+            _urut.Sort((x, y) => BandingLampu(a, x, y));
+            int aktif = 0;
+            for (int i = 0; i < _urut.Count; i++)
+            {
+                var l = _urut[i]; if (l == null) continue;
+                var tg = l.GetComponentInParent<AlasKeramat.AI.TungkuObor>();
+                bool boleh = (tg == null || tg.Menyala) && aktif < MaksLampu;
+                l.enabled = boleh;
+                if (boleh) aktif++;
+            }
+        }
+
+        // Khusus inspeksi foto Editor, juga bekerja sebelum Awake.
+        public void TerapkanLampuFoto(Vector3 posisi)
+        {
+            var u=KompleksDi(posisi);
+            for(int i=1;i<4;i++)
+            {
+                if(kompleks==null || i>=kompleks.Length || kompleks[i]==null)continue;
+                var daftar=kompleks[i].GetComponentsInChildren<Light>(true);
+                System.Array.Sort(daftar,(a,b)=>BandingLampu(posisi,a,b));
+                for(int k=0;k<daftar.Length;k++)daftar[k].enabled=i==(int)u && k<MaksLampu;
+            }
         }
 
         bool Punya(ItemID id) { var inv = GameServices.Get<TikarPandan3DInventory>(); return inv != null && inv.Punya(id); }

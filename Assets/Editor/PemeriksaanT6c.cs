@@ -43,12 +43,15 @@ namespace AlasKeramat.EditorTools
                 var inv=go.AddComponent<TikarPandan3DInventory>(); inv.Tambah(ItemID.Batu,10);
                 var peti=BangunanBlueprint.Bangun(BlueprintID.PetiPenyimpanan,new Vector3(5f,100f,0f),Quaternion.identity).GetComponentInChildren<FungsiBangunan>();
                 cek("Peti memindahkan item tanpa menggandakan",peti.SimpanItem(inv,ItemID.Batu,7)==7 && inv.Jumlah(ItemID.Batu)==3 && peti.JumlahPeti==7);
+                var tumpuk=AlasKeramat.AI.TumpukanKemah.BuatDi(new Vector3(12f,100f,0f),null); tumpuk.Tambah(ItemID.KayuGelondong,3);
                 string tersimpan=dunia.CaptureJson();
                 b.HP=1f; peti.AmbilItem(inv,ItemID.Batu,2);
                 dunia.RestoreJson(tersimpan);
                 cek("Simpan -> muat struktur, graf, HP dan isi blueprint identik",dunia.CaptureJson()==tersimpan);
                 dunia.RestoreJson(tersimpan);
                 cek("Muat dua kali tidak menggandakan bangunan",dunia.CaptureJson()==tersimpan);
+                var tumpukan=Object.FindObjectsByType<AlasKeramat.AI.TumpukanKemah>(FindObjectsSortMode.None);
+                cek("Simpan dunia: hasil kerja Deden dibuat kembali beserta isinya",Array.Exists(tumpukan,t=>t.Kayu==3 && t.transform.position==new Vector3(12f,100f,0f)));
                 var bongkar=ShoulderLogAndFreeformBuilder.Buat(new ShoulderLogAndFreeformBuilder.Rencana { mode=ShoulderLogAndFreeformBuilder.ModeBangun.Papan,pos=new Vector3(0f,100f,5f),rot=Quaternion.identity,panjang=2f,tertanam=true },null);
                 int jumlah=Object.FindObjectsByType<KayuFisik>(FindObjectsSortMode.None).Length;
                 cek("Bongkar wajib tahan satu detik",bongkar.HoldDuration==1f);
