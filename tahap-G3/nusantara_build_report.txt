@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-20 06:39:23
+Laporan Builder Alas Keramat - 2026-11-20 07:42:14
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -27,7 +27,8 @@ Laporan Builder Alas Keramat - 2026-11-20 06:39:23
   - G3b: 9 varian scan pohon/pakis tersambung ke instancing dan tebang, dengan LOD
   - Vegetasi: 25594 pohon, 89421 semak/pakis, 3857 sel instancing
 [LULUS] 3c. Vegetasi
-[GAGAL] 3d. Landmark: Texture 'logam_karat' is not readable, the texture memory can not be accessed from scripts. You can make the texture readable in the Texture Import Settings.
+  - Landmark: 38 objek (Beringin Agung, heli, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula, 2 mulut gua, altar)
+[LULUS] 3d. Landmark
   - Ambien: 23 klip, 1112 emitter titik
 [LULUS] 3e. Ambien hidup
   - Pasca-proses: ACES, color grading, bloom, vignette, split-tone + dinamis jam/cuaca
@@ -87,7 +88,7 @@ Laporan Builder Alas Keramat - 2026-11-20 06:39:23
   - Peta Survei: kontur, sungai, legenda lokasi, posisi GPS & tujuan ketuk
 [LULUS] 7y. Peta survei & navigasi
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 3114
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 3161
 [LULUS] 9. Simpan scene
-Durasi: 927.1 detik
-HASIL: GAGAL di 3d. Landmark
+Durasi: 743.0 detik
+HASIL: SEMUA LANGKAH LULUS
