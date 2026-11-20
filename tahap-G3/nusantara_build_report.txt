@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-20 10:30:31
+Laporan Builder Alas Keramat - 2026-11-20 12:32:30
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -25,7 +25,7 @@ Laporan Builder Alas Keramat - 2026-11-20 10:30:31
   - Terrain 16 tile @1025, laut, 2 sungai
 [LULUS] 3b. Dunia 2x2 km
   - G3b: 9 varian scan pohon/pakis tersambung ke instancing dan tebang, dengan LOD
-  - Vegetasi: 25585 pohon, 89420 semak/pakis, 3856 sel instancing
+  - Vegetasi: 25584 pohon, 89420 semak/pakis, 3856 sel instancing
 [LULUS] 3c. Vegetasi
   - Landmark: 38 objek (Beringin Agung, heli, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula, 2 mulut gua, altar)
 [LULUS] 3d. Landmark
@@ -90,5 +90,5 @@ Laporan Builder Alas Keramat - 2026-11-20 10:30:31
 [LULUS] 7d. Pasca-proses kamera
   - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4821
 [LULUS] 9. Simpan scene
-Durasi: 978.2 detik
+Durasi: 715.1 detik
 HASIL: SEMUA LANGKAH LULUS

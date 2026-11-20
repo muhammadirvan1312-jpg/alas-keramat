@@ -36,7 +36,7 @@
 [LULUS] Gunung Kapur menjulang > 120 m
 [LULUS] Jam dunia maju
 [LULUS] Atmosfer & langit terpasang
-[LULUS] Pohon 8.000-45.000 (25585)
+[LULUS] Pohon 8.000-45.000 (25584)
 [LULUS] Semak/pakis >= 10.000 (89420)
 [LULUS] VegetationManager & data terpasang
 [LULUS] Semua 7 cuaca bisa diset
@@ -120,7 +120,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 261 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 233 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -230,7 +230,7 @@
 [LULUS] Analog: basis tidak keluar zona di tepi layar
 [LULUS] Langkah: jalan dan sprint tidak menjadi rentetan 5-7 bunyi per detik
 [LULUS] Culling: bounds instance mencakup mesh yang diputar dan diskalakan
-[LULUS] Pose nyata: kedua lengan bawah Ningsih berada di luar bahu, bukan terlipat masuk torso [MakeHuman_Ningsih | vertex 1482/1482 | X -0.253/0.256 | bahu -0.152/0.149]
+[LULUS] Pose nyata: kedua lengan bawah Ningsih berada di luar bahu, bukan terlipat masuk torso [MakeHuman_Ningsih | vertex 1482/1482 | X -0.203/0.202 | bahu -0.153/0.148]
 [LULUS] Tas: perban dapat dipakai saat berdarah meskipun kategorinya alat
 [LULUS] Simpan: struktur dan peristiwa memakai kunci berbeda dan keduanya pulih
 [LULUS] Muat: event stok ditandai sebagai restore dan penanda dilepas setelah selesai
