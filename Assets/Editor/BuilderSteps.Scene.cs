@@ -195,7 +195,7 @@ namespace AlasKeramat.EditorTools
                 var andr = imp.GetPlatformTextureSettings("Android");
                 andr.overridden = true;
                 andr.maxTextureSize = Mathf.Min(maks, 1024);
-                andr.format = TextureImporterFormat.RGB9e5Float;
+                andr.format = TextureImporterFormat.RGB9E5;
                 imp.SetPlatformTextureSettings(andr);
                 imp.SaveAndReimport();
             }
@@ -217,7 +217,7 @@ namespace AlasKeramat.EditorTools
                 var andr = imp.GetPlatformTextureSettings("Android");
                 andr.overridden = true;
                 andr.maxTextureSize = Mathf.Min(maks, 512);
-                andr.format = TextureImporterFormat.RGB9e5Float;
+                andr.format = TextureImporterFormat.RGB9E5;
                 imp.SetPlatformTextureSettings(andr);
                 imp.SaveAndReimport();
             }
