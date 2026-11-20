@@ -214,9 +214,12 @@ namespace AlasKeramat.EditorTools
                 imp.textureShape = TextureImporterShape.TextureCube;
                 imp.generateCubemap = TextureImporterGenerateCubemap.AutoCubemap;
                 imp.mipmapEnabled = true;
-                imp.cubemapConvolution = TextureImporterCubemapConvolution.Specular;
                 imp.sRGBTexture = false;
                 imp.maxTextureSize = maks;
+                var ts = new TextureImporterSettings();
+                imp.ReadTextureSettings(ts);
+                ts.cubemapConvolution = TextureImporterCubemapConvolution.Specular;
+                imp.SetTextureSettings(ts);
                 var andr = imp.GetPlatformTextureSettings("Android");
                 andr.overridden = true;
                 andr.maxTextureSize = Mathf.Min(maks, 512);
