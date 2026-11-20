@@ -19,7 +19,7 @@ namespace AlasKeramat.EditorTools
             var arena = Anak(k, "Arena");
             arena.transform.localPosition = k3.pos;
             var batu = AmbilMat("M_Batu");
-            var apiMat = MatEmisi("M_ApiTungku", "#FF6B1A", new Color(3.8f, 1.25f, 0.22f), false);
+            var apiMat = MatEmisi("M_ApiTungku", "#FF6B1A", new Color(5.2f, 1.95f, 0.35f), false);
             var meshPilar = new[] { SimpanMeshGua(ProcGua.PilarAkar("PilarAkar_0", 22f, 1.45f, 101)), SimpanMeshGua(ProcGua.PilarAkar("PilarAkar_1", 22f, 1.45f, 202)) };
             var meshTungku = SimpanMeshGua(ProcGua.TungkuBatu("TungkuBatu", 11));
             var meshApi = SimpanMeshGua(ProcGua.ApiTungku("ApiTungku", 21));
@@ -57,7 +57,7 @@ namespace AlasKeramat.EditorTools
                 api.transform.localScale = Vector3.one * 0.95f;
                 api.AddComponent<MeshFilter>().sharedMesh = meshApi;
                 api.AddComponent<MeshRenderer>().sharedMaterial = apiMat;
-                Lampu(dasar, "Cahaya", new Vector3(0f, 2.0f, 0f), new Color(1f, 0.48f, 0.18f), 24f, 3.6f);
+                Lampu(dasar, "Cahaya", new Vector3(0f, 2.0f, 0f), new Color(1f, 0.49f, 0.18f), 26f, 4.6f);
                 tungku[i] = dasar.AddComponent<TungkuObor>();
                 if (i % 2 == 1) panggil[i / 2] = dasar.transform;
             }
@@ -76,7 +76,8 @@ namespace AlasKeramat.EditorTools
                 var lilit = Hias(tutup, PrimitiveType.Cylinder, "LilitUrat_" + r, new Vector3(Mathf.Sin(rad) * 0.62f, 1.0f, Mathf.Cos(rad) * 0.62f), new Vector3(0.11f, 0.65f, 0.11f), _matUrat, false);
                 lilit.transform.localRotation = Quaternion.Euler(24f, r * 60f, 16f);
             }
-            Lampu(arena, "CahayaAltarBoss", new Vector3(0f, 6.5f, 6f), new Color(1f, 0.44f, 0.18f), 26f, 3.2f);
+            Lampu(arena, "CahayaAltarBoss", new Vector3(0f, 6.5f, 4f), new Color(1f, 0.50f, 0.22f), 34f, 5.5f);
+            Lampu(arena, "CahayaArenaDepan", new Vector3(-4f, 6.0f, -6f), new Color(1f, 0.46f, 0.20f), 32f, 4.6f);
             var isi = Wadah(arena, "Paku_3", "Paku Keramat", new Vector3(0f, 1f, 0f), new Vector3(0.12f, 0.5f, 0.12f), AmbilMatGen("M_PakuKeramat"), new[] { ItemID.PakuKeramat3 }, new[] { 1 }, 0, true);
             var dinding = Anak(arena, "DindingAkar");
             dinding.transform.localPosition = new Vector3(0f, 0f, 14.5f);

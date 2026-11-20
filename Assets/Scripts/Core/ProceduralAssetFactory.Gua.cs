@@ -280,8 +280,8 @@ namespace AlasKeramat.Core
                 {
                     float phi = k * Mathf.PI * 2f / segProf;
                     float jagged = 0.72f + 0.55f * Mathf.PerlinNoise(seed * 0.31f + i * 0.85f, k * 0.9f);
-                    float rSide = Mathf.Cos(phi) < 0f ? 0.52f * jagged : 1.15f;
-                    float rDepth = 1.05f * (0.85f + 0.3f * Mathf.PerlinNoise(seed + k, i * 0.5f));
+                    float rSide = Mathf.Cos(phi) < 0f ? 0.58f * jagged : 1.75f;
+                    float rDepth = 1.85f * (0.85f + 0.3f * Mathf.PerlinNoise(seed + k, i * 0.5f));
                     Vector3 off = (-nIn) * (Mathf.Cos(phi) * rSide) + Vector3.forward * (Mathf.Sin(phi) * rDepth);
                     v.Add(spine[i] + off);
                     uv.Add(new Vector2(u * 4f, (float)k / segProf * 2f));

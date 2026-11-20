@@ -173,7 +173,8 @@ namespace AlasKeramat.EditorTools
             imp.maxTextureSize = maks;
             var android = imp.GetPlatformTextureSettings("Android");
             android.overridden = true;
-            android.maxTextureSize = Mathf.Min(maks, 1024);
+            bool albedoDunia = !normal && !sprite && !path.EndsWith("_mask.png") && path.StartsWith(FolderTex + "/");
+            android.maxTextureSize = albedoDunia ? maks : Mathf.Min(maks, 1024);
             android.format = (sprite || path.Contains("/Characters/")) ? TextureImporterFormat.ASTC_4x4 : TextureImporterFormat.ASTC_6x6;
             imp.SetPlatformTextureSettings(android);
             imp.SaveAndReimport();

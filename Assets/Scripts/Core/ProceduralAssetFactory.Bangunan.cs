@@ -115,8 +115,9 @@ namespace AlasKeramat.Core
             b.Kotak(0, new Vector3(0f, 0.42f, -3.08f), new Vector3(0.14f, 0.78f, 1.48f), Quaternion.Euler(26f, 0f, 0f));
             b.Kotak(2, new Vector3(-1.12f, 0.28f, -1.2f), new Vector3(0.14f, 1.2f, 1.25f), Quaternion.identity);
             b.Kotak(0, new Vector3(1.38f, 0.18f, -0.4f), new Vector3(0.10f, 1.25f, 1.35f), Quaternion.Euler(8f, 18f, -14f)); // pintu samping copot miring
-            // Strip oranye SAR sepanjang lambung + kerah ekor.
+            // Strip oranye SAR sepanjang lambung + strip sabuk atas & kerah ekor.
             b.Kotak(1, new Vector3(0f, -0.15f, 0.05f), new Vector3(2.44f, 0.34f, 4.35f), Quaternion.identity);
+            b.Kotak(1, new Vector3(0f, 0.25f, 0.25f), new Vector3(2.42f, 0.22f, 3.9f), Quaternion.identity);
             b.Kotak(1, new Vector3(0f, -0.18f, -2.95f), new Vector3(1.94f, 0.28f, 2.15f), Quaternion.Euler(12f, 0f, 0f));
             // Ekor meruncing (tailboom) + sirip tegak & datar + rotor ekor bengkok.
             b.Silinder(1, new Vector3(0f, 0.55f, 2.2f), 0.58f, 0.24f, 5.2f, 10, Quaternion.Euler(86f, 0f, 0f));

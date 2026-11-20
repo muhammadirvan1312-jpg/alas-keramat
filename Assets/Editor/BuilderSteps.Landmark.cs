@@ -21,7 +21,7 @@ namespace AlasKeramat.EditorTools
             Material kayu = AmbilMat("M_Kayu"), seng = AmbilMat("M_LogamKarat"), batu = AmbilMat("M_Batu");
             var bata = SimpanMat(SafeMaterialFactory.CreatePBR("M_Bata", ProcTex.Hex("#B0583E"), 0f, 0.15f, Tex("beton"), Tex("beton_n")));
             var putih = SimpanMat(SafeMaterialFactory.CreatePBR("M_CatPutih", ProcTex.Hex("#D4D1C8"), 0.22f, 0.26f, Tex("beton"), Tex("beton_n")));
-            var oranye = SimpanMat(SafeMaterialFactory.CreatePBR("M_CatOranye", ProcTex.Hex("#CC5618"), 0.18f, 0.28f, Tex("beton"), Tex("beton_n")));
+            var oranye = SimpanMat(SafeMaterialFactory.CreatePBR("M_CatOranye", ProcTex.Hex("#E2661A"), 0.18f, 0.28f, Tex("beton"), Tex("beton_n")));
             var merah = SimpanMat(SafeMaterialFactory.CreatePBR("M_CatMerahPudar", ProcTex.Hex("#8E3A30"), 0f, 0.3f, Tex("beton")));
             var gelap = SimpanMat(SafeMaterialFactory.CreatePBR("M_LogamGelap", ProcTex.Hex("#3A3B3D"), 0.7f, 0.35f));
             var hitam = SimpanMat(SafeMaterialFactory.CreatePBR("M_GelapGua", Color.black, 0f, 0f));

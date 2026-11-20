@@ -105,9 +105,9 @@ namespace AlasKeramat.EditorTools
                     {
                         var b = r.bukaan[i];
                         var bm = Anak(r.go, "BingkaiMulut_" + i);
-                        bm.transform.localPosition = ProcGua.Tepi(r.ukuran, r.kubah, b.sudut, 0.96f);
+                        bm.transform.localPosition = ProcGua.Tepi(r.ukuran, r.kubah, b.sudut, 0.92f);
                         bm.transform.localRotation = Quaternion.Euler(0f, b.sudut, 0f);
-                        var bMesh = SimpanMeshGua(ProcGua.BingkaiMulut("Bingkai_" + _kompleks.name + "_" + r.nama + "_" + i, b.lebar * 0.96f, b.tinggi * 0.98f, _seedGua + i * 7));
+                        var bMesh = SimpanMeshGua(ProcGua.BingkaiMulut("Bingkai_" + _kompleks.name + "_" + r.nama + "_" + i, b.lebar * 0.90f, b.tinggi * 0.94f, _seedGua + i * 7));
                         bm.AddComponent<MeshFilter>().sharedMesh = bMesh;
                         bm.AddComponent<MeshRenderer>().sharedMaterial = _matDinding;
                     }
@@ -337,7 +337,7 @@ namespace AlasKeramat.EditorTools
         static GameObject BangunUG1(GameObject induk)
         {
             var matBatuGua = SimpanMat(SafeMaterialFactory.CreatePBR("M_BatuGua", ProcTex.Hex("#646D74"), 0f, 0.38f, Tex("batu"), Tex("batu_n")));
-            _matLumut = MatEmisi("M_LumutGua", "#246E64", new Color(0.18f, 0.85f, 0.72f) * 1.65f, false);
+            _matLumut = MatEmisi("M_LumutGua", "#2EE8C4", new Color(0.26f, 1.15f, 0.95f) * 2.4f, false);
             SafeMaterialFactory.SetF(_matLumut, "_Smoothness", 0.25f);
             var matBatangJamur = MatPolos("M_BatangJamur", "#595449");
             _matAir = MatEmisi("M_AirGua", "#0A1418B0", Color.black, true);

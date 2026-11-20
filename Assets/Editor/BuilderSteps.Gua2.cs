@@ -81,7 +81,7 @@ namespace AlasKeramat.EditorTools
         // ---------- UG3 Kuil Akar Beringin Hitam ----------
         static GameObject BangunUG3(GameObject induk)
         {
-            var akarMat = SimpanMat(SafeMaterialFactory.CreatePBR("M_AkarHitam", ProcTex.Hex("#3A2922"), 0f, 0.22f, Tex("kulit_kayu"), Tex("kulit_kayu_n")));
+            var akarMat = SimpanMat(SafeMaterialFactory.CreatePBR("M_AkarHitam", ProcTex.Hex("#563E31"), 0f, 0.24f, Tex("kulit_kayu"), Tex("kulit_kayu_n")));
             _matUrat = MatEmisi("M_UratMerah", "#4A0A06", new Color(1.2f, 0.14f, 0.04f) * 2.0f, false);
             var k = MulaiKompleks(induk, UndergroundId.UG3_KuilAkar, akarMat, AmbilMat("M_Batu"));
             var k0 = R("K0_CelahAkar", new Vector3(0f, 0f, -70f), new Vector3(6f, 5f, 6f), true);

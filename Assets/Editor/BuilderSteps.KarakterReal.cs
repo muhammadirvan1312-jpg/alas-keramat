@@ -337,7 +337,12 @@ namespace AlasKeramat.EditorTools
                     for(int y=0;y<h;y++)for(int x=0;x<w;x++)
                     {
                         float u=(float)x/w,v=(float)y/h;
-                        if(u>=0.88f) px[y*w+x]=new Color(0.95f,0.93f,0.85f,1f);
+                        if(u>=0.88f && v>=0.50f) px[y*w+x]=new Color(0.96f,0.94f,0.86f,1f);
+                        else if(u>=0.88f)
+                        {
+                            float g=0.85f+0.30f*Mathf.PerlinNoise(u*120f,v*40f);
+                            px[y*w+x]=new Color(0.09f*g,0.07f*g,0.06f*g,1f);
+                        }
                         else { Color c=hsrc.GetPixelBilinear(Mathf.Clamp01(u/0.88f),v); px[y*w+x]=new Color(c.r*0.72f,c.g*0.72f,c.b*0.72f,c.a); }
                     }
                     var t=new Texture2D(w,h,TextureFormat.RGBA32,true);t.SetPixels(px);t.Apply();
