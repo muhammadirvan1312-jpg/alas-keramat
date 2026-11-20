@@ -1,5 +1,5 @@
 {
-  "commit": "df393aa505c6383b3bf72ebad1af9c1d8a9e5f40",
+  "commit": "76ffcae971af8a5945db35b24d9be65bcd338db2",
   "passed": true,
   "photos": [
     {
@@ -7,54 +7,54 @@
       "width": 960,
       "height": 540,
       "p95": 0.7943,
-      "variation": 0.1801,
+      "variation": 0.1807,
       "pink": 0.0,
-      "sha256": "1c5d3a680d730768eb205882220a077386ca26ddff649c72809464ed56b0b84c"
+      "sha256": "013246cf9c0668ba406ffa6b78371f2fa34e2310831c4186e367fe1ed04999a2"
     },
     {
       "shot": "g3_02_ningsih_wajah",
       "width": 960,
       "height": 540,
-      "p95": 0.532,
-      "variation": 0.163,
+      "p95": 0.5345,
+      "variation": 0.1631,
       "pink": 0.0,
-      "sha256": "bbbdd12e957a1dd30ae1d575efe9bd1b1da22e5656591ed9c9e1a86ca0d853dd"
+      "sha256": "4ee35213d72108a3a0879bc99afd5bbebfe8c129ec009425ec3c611939c05055"
     },
     {
       "shot": "g3_03_hutan_malam",
       "width": 960,
       "height": 540,
-      "p95": 0.1576,
-      "variation": 0.049,
+      "p95": 0.1396,
+      "variation": 0.0409,
       "pink": 0.0,
-      "sha256": "8a0470000beaae0132096f19fb6e8f0dafd1b902020454d4fb8ecdc321265977"
+      "sha256": "c5114297951c5c195b46a332bcad3166b9242e33efd43946c297778f4b707f96"
     },
     {
       "shot": "g3_04_lantai_hutan",
       "width": 960,
       "height": 540,
-      "p95": 0.3794,
+      "p95": 0.3798,
       "variation": 0.1126,
       "pink": 0.0,
-      "sha256": "42c07f4fb0d14bef7bd014fc4e8031c7e4528e7898563052773b64eb00a43fc6"
+      "sha256": "c864a4959f8e90606dc78bc4847f309b4200a607d4c0523d451149c24eb3b060"
     },
     {
       "shot": "t10_01_gua_lumut",
       "width": 960,
       "height": 540,
-      "p95": 0.2893,
-      "variation": 0.0806,
+      "p95": 0.3123,
+      "variation": 0.0882,
       "pink": 0.0,
-      "sha256": "28a15e578bac18217fe31672eeffb28ed5cc9b78ee5e35491fa82427899aa103"
+      "sha256": "dfea07a1fe80b2b31d43ab7dc1c40e548ffa3edc268e5b6b88ad0b0949f30e01"
     },
     {
       "shot": "t10_02_kubah_akar_boss",
       "width": 960,
       "height": 540,
-      "p95": 0.0889,
-      "variation": 0.0257,
+      "p95": 0.0908,
+      "variation": 0.0282,
       "pink": 0.0,
-      "sha256": "f63298bd21336defe03e4ce1ad1d4a5d514bf8a295cb0eb2b22812e08fc52a4c"
+      "sha256": "c3d746580c9ab9865a8390671b9610dac119f68eef5a30e3785b202ab4c27d6e"
     }
   ],
   "errors": [],
