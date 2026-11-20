@@ -13,8 +13,8 @@ namespace AlasKeramat.EditorTools
     {
         public const string FolderVeg = FolderGen + "/Vegetasi";
         public const string PathVegData = FolderVeg + "/VegetationData.asset";
-        const int Varian = 3, CalonPohonPerHa = 80, CalonSemakPerHa = 360, UkuranSel = 125;
-        const float FaktorSemak = 0.72f, LerengMaksVeg = 35f, JarakGridSawit = 8f;
+        const int Varian = 3, CalonPohonPerHa = 140, CalonSemakPerHa = 560, UkuranSel = 125;
+        const float FaktorSemak = 0.85f, LerengMaksVeg = 42f, JarakGridSawit = 8f;
 
         struct Kepadatan { public J jenis; public float perHa; public Kepadatan(J j, float d) { jenis = j; perHa = d; } }
 
@@ -22,19 +22,19 @@ namespace AlasKeramat.EditorTools
         {
             switch (biome)
             {
-                case (int)Biome.HutanJatiSelatan: return new[] { new Kepadatan(J.Jati, 55), new Kepadatan(J.Mahoni, 10), new Kepadatan(J.Pisang, 6), new Kepadatan(J.Aren, 4) };
-                case (int)Biome.HutanCampuran: return new[] { new Kepadatan(J.Mahoni, 35), new Kepadatan(J.Jati, 20), new Kepadatan(J.Aren, 8), new Kepadatan(J.Pisang, 5), new Kepadatan(J.BeringinKecil, 1) };
-                case (int)Biome.HutanBambu: return new[] { new Kepadatan(J.BambuRumpun, 45), new Kepadatan(J.Pisang, 8) };
-                case (int)Biome.TepiSungai: return new[] { new Kepadatan(J.Kelapa, 6), new Kepadatan(J.BambuRumpun, 10) };
-                case (int)Biome.Pantai: return new[] { new Kepadatan(J.Kelapa, 22) };
+                case (int)Biome.HutanJatiSelatan: return new[] { new Kepadatan(J.Jati, 68), new Kepadatan(J.Mahoni, 32), new Kepadatan(J.Aren, 10), new Kepadatan(J.Pisang, 8), new Kepadatan(J.BeringinKecil, 4) };
+                case (int)Biome.HutanCampuran: return new[] { new Kepadatan(J.Mahoni, 55), new Kepadatan(J.Jati, 40), new Kepadatan(J.Aren, 12), new Kepadatan(J.Pisang, 8), new Kepadatan(J.BeringinKecil, 4) };
+                case (int)Biome.HutanBambu: return new[] { new Kepadatan(J.BambuRumpun, 48), new Kepadatan(J.Mahoni, 14), new Kepadatan(J.Pisang, 10) };
+                case (int)Biome.TepiSungai: return new[] { new Kepadatan(J.Mahoni, 42), new Kepadatan(J.Jati, 34), new Kepadatan(J.BambuRumpun, 18), new Kepadatan(J.Aren, 10), new Kepadatan(J.Pisang, 10), new Kepadatan(J.Kelapa, 6) };
+                case (int)Biome.Pantai: return new[] { new Kepadatan(J.Kelapa, 24) };
                 case (int)Biome.Desa: return new[] { new Kepadatan(J.Kelapa, 8), new Kepadatan(J.Pisang, 10) };
-                case (int)Biome.KawahBeringin: return new[] { new Kepadatan(J.Mahoni, 15) };
-                case (int)Biome.TebingKapur: return new[] { new Kepadatan(J.Jati, 10) };
-                case 11: return new[] { new Kepadatan(J.BeringinKecil, 12), new Kepadatan(J.Aren, 6), new Kepadatan(J.Pisang, 2) };
+                case (int)Biome.KawahBeringin: return new[] { new Kepadatan(J.Mahoni, 28), new Kepadatan(J.Jati, 16) };
+                case (int)Biome.TebingKapur: return new[] { new Kepadatan(J.Jati, 24), new Kepadatan(J.Mahoni, 18) };
+                case 11: return new[] { new Kepadatan(J.BeringinKecil, 14), new Kepadatan(J.Aren, 8), new Kepadatan(J.Pisang, 4) };
                 case 12: return new[] { new Kepadatan(J.Kelapa, 3) };
-                case 13: return new[] { new Kepadatan(J.Jati, 18), new Kepadatan(J.Mahoni, 8) };
+                case 13: return new[] { new Kepadatan(J.Jati, 24), new Kepadatan(J.Mahoni, 14) };
                 case 14: return new[] { new Kepadatan(J.Tebu, 70), new Kepadatan(J.Kelapa, 3) };
-                case 15: return new[] { new Kepadatan(J.Mahoni, 50), new Kepadatan(J.BeringinKecil, 8), new Kepadatan(J.Aren, 10), new Kepadatan(J.Jati, 10) };
+                case 15: return new[] { new Kepadatan(J.Mahoni, 60), new Kepadatan(J.BeringinKecil, 10), new Kepadatan(J.Aren, 12), new Kepadatan(J.Jati, 18) };
                 default: return new Kepadatan[0];
             }
         }
@@ -43,17 +43,17 @@ namespace AlasKeramat.EditorTools
         {
             switch (biome)
             {
-                case (int)Biome.HutanJatiSelatan: return new[] { new Kepadatan(J.Semak, 120), new Kepadatan(J.Pakis, 200) };
-                case (int)Biome.HutanCampuran: return new[] { new Kepadatan(J.Semak, 140), new Kepadatan(J.Pakis, 250) };
-                case (int)Biome.HutanBambu: return new[] { new Kepadatan(J.Semak, 60) };
-                case (int)Biome.TepiSungai: return new[] { new Kepadatan(J.Semak, 80), new Kepadatan(J.Pakis, 40) };
-                case (int)Biome.Pantai: case (int)Biome.Desa: return new[] { new Kepadatan(J.Semak, 30) };
-                case (int)Biome.KawahBeringin: return new[] { new Kepadatan(J.Semak, 50) };
-                case (int)Biome.TebingKapur: return new[] { new Kepadatan(J.Semak, 60) };
-                case 11: return new[] { new Kepadatan(J.Semak, 40), new Kepadatan(J.Pakis, 60) };
-                case 13: return new[] { new Kepadatan(J.Semak, 80), new Kepadatan(J.Pakis, 40) };
-                case 14: return new[] { new Kepadatan(J.Semak, 10) };
-                case 15: return new[] { new Kepadatan(J.Semak, 160), new Kepadatan(J.Pakis, 300) };
+                case (int)Biome.HutanJatiSelatan: return new[] { new Kepadatan(J.Pakis, 340), new Kepadatan(J.Semak, 200) };
+                case (int)Biome.HutanCampuran: return new[] { new Kepadatan(J.Pakis, 360), new Kepadatan(J.Semak, 220) };
+                case (int)Biome.HutanBambu: return new[] { new Kepadatan(J.Semak, 90), new Kepadatan(J.Pakis, 70) };
+                case (int)Biome.TepiSungai: return new[] { new Kepadatan(J.Pakis, 320), new Kepadatan(J.Semak, 200) };
+                case (int)Biome.Pantai: case (int)Biome.Desa: return new[] { new Kepadatan(J.Semak, 40) };
+                case (int)Biome.KawahBeringin: return new[] { new Kepadatan(J.Pakis, 120), new Kepadatan(J.Semak, 80) };
+                case (int)Biome.TebingKapur: return new[] { new Kepadatan(J.Pakis, 90), new Kepadatan(J.Semak, 80) };
+                case 11: return new[] { new Kepadatan(J.Semak, 60), new Kepadatan(J.Pakis, 80) };
+                case 13: return new[] { new Kepadatan(J.Semak, 90), new Kepadatan(J.Pakis, 70) };
+                case 14: return new[] { new Kepadatan(J.Semak, 14) };
+                case 15: return new[] { new Kepadatan(J.Pakis, 360), new Kepadatan(J.Semak, 200) };
                 default: return new Kepadatan[0];
             }
         }
@@ -61,7 +61,7 @@ namespace AlasKeramat.EditorTools
         // Area bebas vegetasi (pad POI v5): x, z, radius.
         static readonly Vector3[] AreaBebas =
         {
-            new Vector3(8f, -448f, 15f), new Vector3(56f, -376f, 24f), new Vector3(0f, -840f, 50f),
+            new Vector3(8f, -448f, 10.5f), new Vector3(56f, -376f, 24f), new Vector3(0f, -840f, 50f),
             new Vector3(0f, 0f, 22f), new Vector3(660f, -500f, 110f), new Vector3(0f, 690f, 14f),
         };
 
@@ -138,13 +138,13 @@ namespace AlasKeramat.EditorTools
             for (int i = 0; i < AreaBebas.Length; i++)
             {
                 float dx = x - AreaBebas[i].x, dz = z - AreaBebas[i].y;
-                float r = semak && i == 0 ? 6.5f : semak && i == 1 ? 9.5f : AreaBebas[i].z;
+                float r = semak && i == 0 ? 5.8f : semak && i == 1 ? 9.5f : AreaBebas[i].z;
                 if (dx * dx + dz * dz < r * r) return false;
             }
             if (semak)
             {
                 float dhx = x - 8f, dhz = z + 448f;
-                if (dhx * dhx + dhz * dhz < 7.5f * 7.5f) return false; // badan rongsokan heli saja
+                if (dhx * dhx + dhz * dhz < 5.8f * 5.8f) return false; // badan rongsokan heli saja
             }
             else
             {

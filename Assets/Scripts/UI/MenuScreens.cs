@@ -296,6 +296,7 @@ namespace AlasKeramat.UI
                     bool depthOn = dp.bayangan >= 35f;
                     _klonUrp.supportsCameraDepthTexture = depthOn;
                     Shader.SetGlobalFloat("_AK_MatikanDepth", depthOn ? 0f : 1f);
+                    AturSSAO(Preset > PresetGrafis.Rendah);
                 }
                 QualitySettings.skinWeights = Preset <= PresetGrafis.Sedang ? SkinWeights.TwoBones : SkinWeights.FourBones;
             }
@@ -792,6 +793,22 @@ namespace AlasKeramat.UI
             teksDebug.text = s;
             var diagnostik=GameServices.Get<DiagnostikMain>();
             if(diagnostik!=null)teksDebug.text+="\n"+diagnostik.Ringkas;
+        }
+
+        static void AturSSAO(bool aktif)
+        {
+            var urp = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+            if (urp == null) return;
+            var f = typeof(UniversalRenderPipelineAsset).GetField("m_RendererDataList", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            var list = f != null ? f.GetValue(urp) as ScriptableRendererData[] : null;
+            if (list == null) return;
+            for (int i = 0; i < list.Length; i++)
+            {
+                if (list[i] == null || list[i].rendererFeatures == null) continue;
+                foreach (var feat in list[i].rendererFeatures)
+                    if (feat != null && feat.GetType().Name.Contains("ScreenSpaceAmbientOcclusion"))
+                        feat.SetActive(aktif);
+            }
         }
 
         static void BunyiKlik()

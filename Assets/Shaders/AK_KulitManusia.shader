@@ -145,12 +145,14 @@ Shader "AlasKeramat/KulitManusia"
             half4 lit = UniversalFragmentPBR(d, s);
 
             Light skinLight=GetMainLight(d.shadowCoord,d.positionWS,half4(1,1,1,1));
-            half wrap=saturate((dot(d.normalWS,skinLight.direction)+0.45h)/1.45h);
-            half sssBack=saturate(0.35h+0.65h*(1.0h-abs(dot(d.normalWS,skinLight.direction))));
-            half rim=pow(1.0h-saturate(dot(d.normalWS,d.viewDirectionWS)),2.4h);
-            half3 warmSss=half3(0.32h,0.105h,0.06h);
-            lit.rgb+=c.rgb*warmSss*(wrap*0.45h+rim*0.35h*sssBack)*skinLight.color*(0.28h+0.72h*skinLight.shadowAttenuation)*skinLight.distanceAttenuation;
-            lit.rgb+=c.rgb*half3(0.08h,0.025h,0.015h)*(_BaseColor.r>0.75h?1.0h:0.25h);
+            half ndv=saturate(dot(d.normalWS,d.viewDirectionWS));
+            half ndl=dot(d.normalWS,skinLight.direction);
+            half wrap=saturate((ndl+0.48h)/1.48h);
+            half fresnelSheen=pow(1.0h-ndv,3.6h)*0.09h;
+            half3 warmSss=half3(0.28h,0.095h,0.055h);
+            half shadowMix=0.24h+0.76h*skinLight.shadowAttenuation;
+            lit.rgb+=c.rgb*warmSss*wrap*0.42h*skinLight.color*shadowMix*skinLight.distanceAttenuation;
+            lit.rgb+=fresnelSheen*(c.rgb*0.5h+half3(0.18h,0.15h,0.13h))*(0.35h+0.65h*shadowMix);
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;
         }
@@ -189,6 +191,7 @@ Shader "AlasKeramat/KulitManusia"
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
             #pragma multi_compile _ _FORWARD_PLUS
+            #pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
             #pragma multi_compile_fog
             ENDHLSL
         }

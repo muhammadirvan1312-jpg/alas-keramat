@@ -6,8 +6,8 @@ namespace AlasKeramat.Core
     public partial class URPAtmosphereAndWeather : MonoBehaviour
     {
         public const float SudutUtara = -35f;
-        const float IntensitasMatahari = 1.58f, IntensitasBulan = 0.82f;
-        const float KabutSiang = 0.00175f, KabutMalam = 0.00285f, KabutMaghrib = 0.0022f; // kabut jarak lembut memadukan bukit ke langit
+        const float IntensitasMatahari = 2.05f, IntensitasBulan = 1.15f;
+        const float KabutSiang = 0.0044f, KabutMalam = 0.0068f, KabutMaghrib = 0.0055f; // kabut jarak lembut memadukan bukit ke langit
 
         [SerializeField] Light sun;
         [SerializeField] Light moon;
@@ -50,6 +50,7 @@ namespace AlasKeramat.Core
             RenderSettings.fogColor = new Color(0.025f, 0.03f, 0.04f);
             RenderSettings.fogDensity = WorldCaveAndSaveManager.KabutGua;
             RenderSettings.skybox = null;
+            RenderSettings.reflectionIntensity = 0.28f;
             if (_hujan != null && _hujan.isPlaying) _hujan.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
@@ -80,12 +81,12 @@ namespace AlasKeramat.Core
         {
             if (_warnaMatahari != null) return;
             // Maks 8 kunci per Gradient (batas Unity).
-            _warnaMatahari = G("#2A3550@0", "#FF8A4C@5.8", "#FFD9A8@7.5", "#FFF4E0@12", "#FF5A2A@18", "#B31E12@18.6", "#2A3550@19.5", "#2A3550@24");
-            _warnaLangit = G("#05070D@0", "#F09A62@6", "#8FB4D8@8", "#7FA8D6@13", "#D2502A@18", "#7A1410@18.6", "#0A0C16@19.6", "#05070D@24");
-            _warnaKabut = G("#101A28@0", "#5A5868@5.5", "#C9B9A6@7", "#B9CFCB@12", "#B0402A@18", "#5A1210@18.7", "#141D2A@19.6", "#101A28@24");
-            _ambienAtas = G("#344B68@0", "#54526E@5.6", "#9FC0DE@8", "#BBD3E8@12", "#B5523A@18", "#3A1412@18.8", "#344B68@19.6", "#344B68@24");
-            _ambienTengah = G("#22364A@0", "#3E3C42@5.6", "#586E52@8", "#657C5D@12", "#7A3424@18", "#24100E@18.8", "#22364A@19.6", "#22364A@24");
-            _ambienBawah = G("#14202C@0", "#262022@5.6", "#332E24@8", "#3C3629@12", "#3A1A12@18", "#140A08@18.8", "#101822@19.6", "#14202C@24");
+            _warnaMatahari = G("#283652@0", "#FF8848@5.8", "#FFD59E@7.5", "#FFF0D8@12", "#FF5428@18", "#B31E12@18.6", "#283652@19.5", "#283652@24");
+            _warnaLangit = G("#060912@0", "#EC945D@6", "#8AB2D8@8", "#7BA4D4@13", "#C84B28@18", "#741410@18.6", "#0A0E18@19.6", "#060912@24");
+            _warnaKabut = G("#0C1520@0", "#545264@5.5", "#BFC8BE@7", "#A8C0BE@12", "#A4422C@18", "#501412@18.7", "#0F1926@19.6", "#0C1520@24");
+            _ambienAtas = G("#20344C@0", "#4A4A64@5.6", "#9EC2E0@8", "#B4CFE4@12", "#AD4E38@18", "#341412@18.8", "#20344C@19.6", "#20344C@24");
+            _ambienTengah = G("#121E2A@0", "#343238@5.6", "#52644E@8", "#5E7257@12", "#6E3022@18", "#20100E@18.8", "#121E2A@19.6", "#121E2A@24");
+            _ambienBawah = G("#060A0F@0", "#1E191B@5.6", "#28261E@8", "#2E3A28@12", "#321610@18", "#100806@18.8", "#060A0F@19.6", "#060A0F@24");
         }
 
         public void Terapkan(float jam)
@@ -121,16 +122,32 @@ namespace AlasKeramat.Core
             RenderSettings.fogColor = _warnaKabut.Evaluate(u);
             bool maghrib = jam >= 17.6f && jam < 19.2f;
             RenderSettings.fogDensity = maghrib ? KabutMaghrib : Mathf.Lerp(KabutSiang, KabutMalam, Malam01(jam));
+            RenderSettings.reflectionIntensity = Mathf.Lerp(0.92f, 0.38f, Malam01(jam));
             if (skybox != null)
             {
                 RenderSettings.skybox = skybox;
-                // _SkyTint bawaan 0,5 abu; warna penuh membuat langit kuning-hijau. Hanya digeser sebagian ke warna jam.
+                float m01 = Malam01(jam);
                 Color langit = Color.Lerp(new Color(0.5f, 0.5f, 0.5f), _warnaLangit.Evaluate(u), maghrib ? 0.75f : 0.25f);
                 SafeMaterialFactory.SetC(skybox, "_SkyTint", langit);
                 SafeMaterialFactory.SetC(skybox, "_GroundColor", Color.Lerp(langit, Color.black, 0.6f));
-                SafeMaterialFactory.SetF(skybox, "_Exposure", Mathf.Lerp(1.22f, 0.16f, Malam01(jam)));
                 SafeMaterialFactory.SetF(skybox, "_AtmosphereThickness", maghrib ? 2.0f : 1.25f);
                 SafeMaterialFactory.SetF(skybox, "_SunSize", 0.035f);
+
+                // Shader HDRI AlasKeramat/Langit
+                bool hdriLangit = skybox.HasProperty("_NightBlend");
+                SafeMaterialFactory.SetF(skybox, "_NightBlend", m01);
+                Color tint = maghrib ? new Color(1.18f, 0.62f, 0.42f) : Color.Lerp(new Color(0.95f, 0.98f, 1.0f), new Color(0.46f, 0.60f, 0.90f), m01);
+                SafeMaterialFactory.SetC(skybox, "_Tint", tint);
+                SafeMaterialFactory.SetF(skybox, "_Exposure", hdriLangit ? (maghrib ? 0.82f : Mathf.Lerp(0.85f, 0.36f, m01)) : Mathf.Lerp(1.22f, 0.16f, m01));
+                SafeMaterialFactory.SetC(skybox, "_HorizonColor", RenderSettings.fogColor);
+                SafeMaterialFactory.SetF(skybox, "_HorizonHeight", maghrib ? 0.22f : Mathf.Lerp(0.14f, 0.24f, m01));
+                Light aktif = (sun != null && sun.enabled) ? sun : moon;
+                if (aktif != null)
+                {
+                    Vector3 arah = -aktif.transform.forward;
+                    skybox.SetVector("_SunDir", new Vector4(arah.x, arah.y, arah.z, 0f));
+                    SafeMaterialFactory.SetC(skybox, "_SunColor", aktif == sun ? aktif.color * 1.15f : aktif.color * 0.55f);
+                }
             }
             TerapkanCuaca();
             if (sun != null) RenderSettings.sun = sun.enabled ? sun : moon;

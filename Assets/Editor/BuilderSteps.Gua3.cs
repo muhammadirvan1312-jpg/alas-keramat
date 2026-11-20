@@ -14,12 +14,42 @@ namespace AlasKeramat.EditorTools
     {
         public const string NamaGenderuwo = "Genderuwo", NamaKiRogo = "KiRogo";
 
+        static void PasangBaraTungku(GameObject api, Material matBara)
+        {
+            if (api == null || matBara == null) return;
+            var ember = Anak(api, "Bara");
+            ember.transform.localPosition = new Vector3(0f, 0.22f, 0f);
+            var ps = ember.AddComponent<ParticleSystem>();
+            var main = ps.main;
+            main.duration = 2.0f;
+            main.loop = true;
+            main.prewarm = true;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.8f, 1.5f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.45f, 1.15f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.14f);
+            main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.55f, 0.14f, 0.95f), new Color(1f, 0.22f, 0.04f, 0.75f));
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.maxParticles = 24;
+            var em = ps.emission; em.rateOverTime = 11f;
+            var sh = ps.shape; sh.shapeType = ParticleSystemShapeType.Cone; sh.angle = 20f; sh.radius = 0.22f;
+            var col = ps.colorOverLifetime; col.enabled = true;
+            var grad = new Gradient();
+            grad.SetKeys(
+                new[] { new GradientColorKey(new Color(1f, 0.72f, 0.22f), 0f), new GradientColorKey(new Color(0.95f, 0.28f, 0.04f), 1f) },
+                new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(0.95f, 0.15f), new GradientAlphaKey(0f, 1f) });
+            col.color = grad;
+            var pr = ember.GetComponent<ParticleSystemRenderer>();
+            pr.sharedMaterial = matBara;
+            pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
+
         static void BangunArena(GameObject k, RuangGua k3, Material akarMat)
         {
             var arena = Anak(k, "Arena");
             arena.transform.localPosition = k3.pos;
-            var batu = AmbilMat("M_Batu");
-            var apiMat = MatEmisi("M_ApiTungku", "#FF6B1A", new Color(5.2f, 1.95f, 0.35f), false);
+            var batu = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_BatuArena.mat") ?? AmbilMat("M_Batu");
+            var apiMat = MatEmisi("M_ApiTungku", "#FF6B1A", new Color(6.0f, 2.2f, 0.35f), false);
+            var baraMat = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_Banaspati.mat") ?? apiMat;
             var meshPilar = new[] { SimpanMeshGua(ProcGua.PilarAkar("PilarAkar_0", 22f, 1.45f, 101)), SimpanMeshGua(ProcGua.PilarAkar("PilarAkar_1", 22f, 1.45f, 202)) };
             var meshTungku = SimpanMeshGua(ProcGua.TungkuBatu("TungkuBatu", 11));
             var meshApi = SimpanMeshGua(ProcGua.ApiTungku("ApiTungku", 21));
@@ -45,8 +75,9 @@ namespace AlasKeramat.EditorTools
                     uratPilar.transform.localRotation = Quaternion.Euler(16f * (u == 0 ? 1f : -1f), ua * Mathf.Rad2Deg, 18f);
                 }
                 float b = i * 45f * Mathf.Deg2Rad;
+                float radT = (i % 2 == 0) ? 10.5f : 15.5f;
                 var dasar = Anak(arena, "Tungku_" + i);
-                dasar.transform.localPosition = new Vector3(Mathf.Sin(b) * 17f, 0f, Mathf.Cos(b) * 17f);
+                dasar.transform.localPosition = new Vector3(Mathf.Sin(b) * radT, 0f, Mathf.Cos(b) * radT);
                 dasar.layer = GameLayers.Interactable; dasar.tag = GameTags.Interactable;
                 dasar.AddComponent<MeshFilter>().sharedMesh = meshTungku;
                 dasar.AddComponent<MeshRenderer>().sharedMaterial = batu;
@@ -54,10 +85,11 @@ namespace AlasKeramat.EditorTools
                 var api = Anak(dasar, "Api");
                 api.transform.localPosition = new Vector3(0f, 1.05f, 0f);
                 api.transform.localRotation = Quaternion.Euler(0f, b * 45f, 0f);
-                api.transform.localScale = Vector3.one * 0.95f;
+                api.transform.localScale = Vector3.one * 1.10f;
                 api.AddComponent<MeshFilter>().sharedMesh = meshApi;
                 api.AddComponent<MeshRenderer>().sharedMaterial = apiMat;
-                Lampu(dasar, "Cahaya", new Vector3(0f, 2.0f, 0f), new Color(1f, 0.49f, 0.18f), 26f, 4.6f);
+                PasangBaraTungku(api, baraMat);
+                var lTungku = Lampu(dasar, "Cahaya", new Vector3(0f, 2.0f, 0f), new Color(1f, 0.50f, 0.18f), 28f, 5.2f);
                 tungku[i] = dasar.AddComponent<TungkuObor>();
                 if (i % 2 == 1) panggil[i / 2] = dasar.transform;
             }
@@ -76,8 +108,40 @@ namespace AlasKeramat.EditorTools
                 var lilit = Hias(tutup, PrimitiveType.Cylinder, "LilitUrat_" + r, new Vector3(Mathf.Sin(rad) * 0.62f, 1.0f, Mathf.Cos(rad) * 0.62f), new Vector3(0.11f, 0.65f, 0.11f), _matUrat, false);
                 lilit.transform.localRotation = Quaternion.Euler(24f, r * 60f, 16f);
             }
-            Lampu(arena, "CahayaAltarBoss", new Vector3(0f, 6.5f, 4f), new Color(1f, 0.50f, 0.22f), 34f, 5.5f);
-            Lampu(arena, "CahayaArenaDepan", new Vector3(-4f, 6.0f, -6f), new Color(1f, 0.46f, 0.20f), 32f, 4.6f);
+            Lampu(arena, "CahayaAltarBoss", new Vector3(-1.5f, 5.5f, -1f), new Color(1f, 0.55f, 0.25f), 40f, 7.5f);
+            Lampu(arena, "CahayaArenaDepan", new Vector3(-4.5f, 5.5f, -5.5f), new Color(1f, 0.48f, 0.20f), 38f, 6.0f);
+            Lampu(arena, "CahayaKubahAtas", new Vector3(-3f, 10.5f, 0f), ProcTex.Hex("#5278AD"), 52f, 3.8f);
+            var meshAkarBoss = MuatPropScan("AkarScan");
+            var matAkarScan = MaterialSolidScan("AkarAsli", "M_AkarScan", new Color(0.78f, 0.74f, 0.68f, 1f), 0.24f) ?? akarMat;
+            var meshBatuBoss = MuatPropScan("BatuBesarScan") ?? MuatPropScan("BatuLumutA");
+            var matBatuBoss = MaterialSolidScan("BatuBesarAsli", "M_BatuArenaScan", ProcTex.Hex("#524846"), 0.44f) ?? batu;
+            for (int i = 0; i < 8 && (meshAkarBoss != null || meshBatuBoss != null); i++)
+            {
+                float a = (i + 0.25f) * 45f * Mathf.Deg2Rad;
+                float rProp = (i % 2 == 0) ? 6.2f : 11.8f;
+                var prp = Anak(arena, "PropArena_" + i);
+                prp.transform.localPosition = new Vector3(Mathf.Sin(a) * rProp, -0.05f, Mathf.Cos(a) * rProp);
+                prp.transform.localRotation = Quaternion.Euler(0f, i * 63f, 0f);
+                prp.transform.localScale = Vector3.one * (0.85f + (i % 2) * 0.35f);
+                bool ak = i % 2 == 1 && meshAkarBoss != null;
+                prp.AddComponent<MeshFilter>().sharedMesh = ak ? meshAkarBoss : (meshBatuBoss ?? meshAkarBoss);
+                prp.AddComponent<MeshRenderer>().sharedMaterial = ak ? matAkarScan : matBatuBoss;
+            }
+            var shKabut = Shader.Find("AlasKeramat/KabutLokal");
+            if (shKabut != null)
+            {
+                var mKabut = new Material(shKabut) { name = "M_KabutArena" };
+                mKabut.SetTexture("_BaseMap", Tex("batu"));
+                mKabut.SetColor("_BaseColor", new Color(0.28f, 0.18f, 0.16f, 0.15f));
+                AssetDatabase.CreateAsset(mKabut, FolderMat + "/M_KabutArena.mat");
+                mKabut = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_KabutArena.mat");
+                for (int i = 0; i < 6; i++)
+                {
+                    float a = i * 60f * Mathf.Deg2Rad;
+                    var ka = Hias(arena, PrimitiveType.Quad, "KabutArena_" + i, new Vector3(Mathf.Sin(a) * 9f, 2.4f, Mathf.Cos(a) * 9f), new Vector3(14f, 5f, 1f), mKabut, false);
+                    ka.transform.localRotation = Quaternion.Euler(0f, i * 35f, 0f);
+                }
+            }
             var isi = Wadah(arena, "Paku_3", "Paku Keramat", new Vector3(0f, 1f, 0f), new Vector3(0.12f, 0.5f, 0.12f), AmbilMatGen("M_PakuKeramat"), new[] { ItemID.PakuKeramat3 }, new[] { 1 }, 0, true);
             var dinding = Anak(arena, "DindingAkar");
             dinding.transform.localPosition = new Vector3(0f, 0f, 14.5f);

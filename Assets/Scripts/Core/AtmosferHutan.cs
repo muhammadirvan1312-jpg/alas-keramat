@@ -4,7 +4,7 @@ namespace AlasKeramat.Core
     // Lapisan kabut lokal mengikuti kamera dengan pembaruan jarang; jumlah kartu tetap dan tanpa alokasi frame.
     public class AtmosferHutan : MonoBehaviour
     {
-        public const int JumlahKartu=12;
+        public const int JumlahKartu=18;
         public const float Jeda=0.35f;
         [SerializeField] Transform[] kartu=new Transform[0];
         [SerializeField] Renderer[] gambar=new Renderer[0];
@@ -23,18 +23,19 @@ namespace AlasKeramat.Core
             Vector3 p=cam.transform.position;
             bool aktif=!WorldTerrainGenerator.DiBawahTanah(p.y) && p.y<WorldTerrainGenerator.SampleHeight(p.x,p.z)+18f;
             float malam=URPAtmosphereAndWeather.Malam01(jam);
+            Shader.SetGlobalFloat("_AK_Basah",Mathf.Max(BasahTarget(w),malam*0.38f));
             bool maghrib=jam>=17.4f && jam<19.2f;
-            float tebal=w==WeatherState.KabutPagi?0.16f:w==WeatherState.HujanBadai?0.11f:maghrib?0.10f:malam>0.5f?0.095f:0.075f;
-            Color warna=maghrib?new Color(0.68f,0.34f,0.22f):Color.Lerp(new Color(0.54f,0.62f,0.58f),new Color(0.14f,0.22f,0.29f),malam);warna.a=tebal;
+            float tebal=w==WeatherState.KabutPagi?0.20f:w==WeatherState.HujanBadai?0.15f:maghrib?0.14f:malam>0.5f?0.16f:0.10f;
+            Color warna=maghrib?new Color(0.68f,0.34f,0.22f):Color.Lerp(new Color(0.58f,0.66f,0.62f),new Color(0.16f,0.25f,0.34f),malam);warna.a=tebal;
             _blok.SetColor("_BaseColor",warna);
             float gridX=Mathf.Floor(p.x/16f)*16f,gridZ=Mathf.Floor(p.z/16f)*16f;
             for(int i=0;i<kartu.Length;i++)
             {
                 if(kartu[i]==null)continue;
                 kartu[i].gameObject.SetActive(aktif);if(!aktif)continue;
-                float a=(i*137.5f)*Mathf.Deg2Rad,r=20f+i*4.5f;
+                float a=(i*137.5f)*Mathf.Deg2Rad,r=10f+i*3.4f;
                 Vector3 q=new Vector3(gridX+Mathf.Cos(a)*r,0f,gridZ+Mathf.Sin(a)*r);
-                q.y=WorldTerrainGenerator.SampleHeight(q.x,q.z)+2.2f;
+                q.y=WorldTerrainGenerator.SampleHeight(q.x,q.z)+2.4f;
                 kartu[i].position=q;
                 Vector3 lihat=cam.transform.position-q;lihat.y=0f;
                 if(lihat.sqrMagnitude>0.01f)kartu[i].rotation=Quaternion.LookRotation(lihat);
@@ -44,11 +45,13 @@ namespace AlasKeramat.Core
         void Update()
         {
             if(_cuaca==null)_cuaca=GameServices.Get<URPAtmosphereAndWeather>();
+            var jam=GameServices.Get<TimeOfDayClock>();
+            float malamF=URPAtmosphereAndWeather.Malam01(jam!=null?jam.Jam:9f);
             float basah=Shader.GetGlobalFloat("_AK_Basah");
-            Shader.SetGlobalFloat("_AK_Basah",Mathf.MoveTowards(basah,BasahTarget(_cuaca!=null?_cuaca.Cuaca:WeatherState.Cerah),Time.deltaTime/40f));
+            float basahTarget=Mathf.Max(BasahTarget(_cuaca!=null?_cuaca.Cuaca:WeatherState.Cerah),malamF*0.35f);
+            Shader.SetGlobalFloat("_AK_Basah",Mathf.MoveTowards(basah,basahTarget,Time.deltaTime/20f));
             _sisa-=Time.deltaTime;if(_sisa>0f)return;_sisa=Jeda;
             if(_kamera==null)_kamera=Camera.main;
-            var jam=GameServices.Get<TimeOfDayClock>();
             Terapkan(_kamera,jam!=null?jam.Jam:9f,_cuaca!=null?_cuaca.Cuaca:WeatherState.Cerah);
         }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

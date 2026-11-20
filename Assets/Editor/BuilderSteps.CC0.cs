@@ -42,9 +42,9 @@ namespace AlasKeramat.EditorTools
                     for(int p=0;p<apx.Length;p++)
                     {
                         Color c=apx[p];
-                        if(nama=="rumput") c=new Color(c.r*0.64f,Mathf.Clamp01(c.g*1.06f+0.03f),c.b*0.52f,1f);
-                        else if(nama=="daun") c=new Color(c.r*0.62f,c.g*0.72f,c.b*0.46f,1f);
-                        else c=new Color(c.r*0.76f,c.g*0.72f,c.b*0.64f,1f);
+                        if(nama=="rumput") c=new Color(c.r*0.74f,c.g*0.78f,c.b*0.60f,1f);
+                        else if(nama=="daun") c=new Color(c.r*0.72f,c.g*0.66f,c.b*0.54f,1f);
+                        else c=new Color(c.r*0.68f,c.g*0.61f,c.b*0.51f,1f);
                         apx[p]=c;
                     }
                     var graded=new Texture2D(a.width,a.height,TextureFormat.RGBA32,true);

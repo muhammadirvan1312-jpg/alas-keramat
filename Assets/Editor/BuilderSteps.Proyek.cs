@@ -33,7 +33,7 @@ namespace AlasKeramat.EditorTools
 
         // Shader URP TIDAK boleh masuk Always Included (varian > 1 juta, build Android gagal);
         // URP ikut ter-build lewat material .mat di Assets/Generated.
-        public static readonly string[] ShaderWajib = { "Skybox/Procedural" };
+        public static readonly string[] ShaderWajib = { "Skybox/Procedural", "AlasKeramat/Langit" };
         const string AwalanUrp = "Universal Render Pipeline/";
 
         static void LangkahProyek()
@@ -87,16 +87,27 @@ namespace AlasKeramat.EditorTools
             var ppd = AssetDatabase.LoadAssetAtPath<PostProcessData>(PathPostProcessData);
             if (ppd != null) data.postProcessData = ppd;
             AssetDatabase.CreateAsset(data, PathUrpRenderer);
+            PasangSSAO(data);
+            EditorUtility.SetDirty(data);
+            AssetDatabase.SaveAssets();
+
             var urp = UniversalRenderPipelineAsset.Create(data);
             urp.shadowDistance = JarakBayangan;
             urp.msaaSampleCount = 2;
-            urp.shadowCascadeCount = 2;
+            urp.shadowCascadeCount = 4;
             urp.mainLightShadowmapResolution = 2048;
             urp.supportsHDR = true;
             var urpSo = new SerializedObject(urp);
             var softProp = urpSo.FindProperty("m_SoftShadowsSupported");
-            if (softProp != null) { softProp.boolValue = true; urpSo.ApplyModifiedPropertiesWithoutUndo(); }
-            urp.supportsCameraDepthTexture = true; // shader air AK butuh kedalaman (buih tepi, warna dalam)
+            if (softProp != null) softProp.boolValue = true;
+            var split4 = urpSo.FindProperty("m_Cascade4Split");
+            if (split4 != null) split4.vector3Value = new Vector3(0.06f, 0.18f, 0.45f);
+            var biasD = urpSo.FindProperty("m_ShadowDepthBias");
+            if (biasD != null) biasD.floatValue = 1.0f;
+            var biasN = urpSo.FindProperty("m_ShadowNormalBias");
+            if (biasN != null) biasN.floatValue = 0.6f;
+            urpSo.ApplyModifiedPropertiesWithoutUndo();
+            urp.supportsCameraDepthTexture = true; // shader air AK & SSAO butuh kedalaman
             AssetDatabase.CreateAsset(urp, PathUrpAsset);
             AssetDatabase.SaveAssets();
 
@@ -134,6 +145,52 @@ namespace AlasKeramat.EditorTools
                 arr.GetArrayElementAtIndex(arr.arraySize - 1).objectReferenceValue = sh;
             }
             so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        static void SetSerFloat(SerializedProperty r, string n, float v) { var p = r.FindPropertyRelative(n); if (p != null) p.floatValue = v; }
+        static void SetSerBool(SerializedProperty r, string n, bool v) { var p = r.FindPropertyRelative(n); if (p != null) p.boolValue = v; }
+        static void SetSerInt(SerializedProperty r, string n, int v) { var p = r.FindPropertyRelative(n); if (p != null) p.intValue = v; }
+
+        static void PasangSSAO(UniversalRendererData data)
+        {
+            var ssaoType = typeof(UniversalRendererData).Assembly.GetType("UnityEngine.Rendering.Universal.ScreenSpaceAmbientOcclusion");
+            if (ssaoType == null) { Debug.LogWarning("[AK][Builder] Tipe SSAO URP tidak ditemukan; dilewati"); return; }
+            var ssao = ScriptableObject.CreateInstance(ssaoType) as ScriptableRendererFeature;
+            if (ssao == null) return;
+            ssao.name = "AK_SSAO";
+            ssao.SetActive(true);
+            AssetDatabase.AddObjectToAsset(ssao, data);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(ssao, out _, out long localId);
+            var rdSo = new SerializedObject(data);
+            var featProp = rdSo.FindProperty("m_RendererFeatures");
+            var mapProp = rdSo.FindProperty("m_RendererFeatureMap");
+            if (featProp != null)
+            {
+                int idx = featProp.arraySize;
+                featProp.InsertArrayElementAtIndex(idx);
+                featProp.GetArrayElementAtIndex(idx).objectReferenceValue = ssao;
+            }
+            if (mapProp != null)
+            {
+                int idx = mapProp.arraySize;
+                mapProp.InsertArrayElementAtIndex(idx);
+                mapProp.GetArrayElementAtIndex(idx).longValue = localId;
+            }
+            rdSo.ApplyModifiedPropertiesWithoutUndo();
+            var ssaoSo = new SerializedObject(ssao);
+            var pSet = ssaoSo.FindProperty("m_Settings");
+            if (pSet != null)
+            {
+                SetSerFloat(pSet, "Intensity", 0.72f);
+                SetSerFloat(pSet, "Radius", 0.50f);
+                SetSerFloat(pSet, "DirectLightingStrength", 0.25f);
+                SetSerBool(pSet, "Downsample", true);
+                SetSerBool(pSet, "AfterOpaque", false);
+                SetSerInt(pSet, "Source", 1); // DepthNormals
+                ssaoSo.ApplyModifiedPropertiesWithoutUndo();
+            }
+            EditorUtility.SetDirty(ssao);
         }
 
         public static void EnsureFolder(string path)

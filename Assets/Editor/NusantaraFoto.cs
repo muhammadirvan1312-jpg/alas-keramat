@@ -99,7 +99,7 @@ namespace AlasKeramat.EditorTools
                 var kabutLokal=UnityEngine.Object.FindFirstObjectByType<AtmosferHutan>();
                 var serasah=UnityEngine.Object.FindFirstObjectByType<SerasahHutan>();
                 var veg = UnityEngine.Object.FindFirstObjectByType<AlasKeramat.Building.VegetationManager>();
-                if (veg != null) veg.PengaliJarak = 0.72f; // ringankan render perangkat lunak
+                if (veg != null) veg.PengaliJarak = 1.0f;
                 // Ringankan terrain untuk render perangkat lunak (tidak disimpan ke scene).
                 foreach (var t in UnityEngine.Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None))
                 {
@@ -134,7 +134,7 @@ namespace AlasKeramat.EditorTools
                         URPAtmosphereAndWeather.DalamRuangan=bawah;
                         if(bawah && atmos!=null)atmos.TerapkanRuangan();
                         if(guaFoto!=null)guaFoto.TerapkanLampuFoto(pos);
-                        cam.farClipPlane=bawah?80f:s.nama.Contains("wajah")?120f:Application.isBatchMode?400f:2600f;cam.clearFlags=bawah?CameraClearFlags.SolidColor:CameraClearFlags.Skybox;cam.backgroundColor=Color.black;
+                        cam.farClipPlane=bawah?95f:Application.isBatchMode?420f:2600f;cam.clearFlags=bawah?CameraClearFlags.SolidColor:CameraClearFlags.Skybox;cam.backgroundColor=Color.black;
                         if(volumeFoto!=null)AKPascaProses.TerapkanFoto(volumeFoto.profile,s.jam,(WeatherState)s.cuaca,bawah);
                         if(kabutLokal!=null)kabutLokal.Terapkan(cam,s.jam,(WeatherState)s.cuaca);
                         Log("Render " + s.nama);

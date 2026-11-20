@@ -87,6 +87,7 @@ namespace AlasKeramat.EditorTools
             if(jenis==J.Pocong || jenis==J.Kuntilanak || jenis==J.Kuyang)face.SetEkspresi(AlasKeramat.AI.EkspresiWajahG3.Ngeri,0.9f);
             else if(jenis==J.Genderuwo)face.SetEkspresi(AlasKeramat.AI.EkspresiWajahG3.Teriak,0.9f);
             else if(jenis==J.Penyerupa || jenis==J.Tuyul)face.SetEkspresi(AlasKeramat.AI.EkspresiWajahG3.Curiga,0.9f);
+            else if(jenis==J.Ningsih)face.SetEkspresi(AlasKeramat.AI.EkspresiWajahG3.Senyum,0.25f);
             EditorUtility.SetDirty(face);
             AksesoriReal(jenis,bones,andi);
             JumlahKarakterReal++;return true;
@@ -149,9 +150,10 @@ namespace AlasKeramat.EditorTools
             string p=FolderKarakter+"/kulit_pori_n.png";
             if(!File.Exists(p))
             {
-                float[] h=ProcTex.HeightMap(256,(u,v)=>ProcTex.Fbm(u,v,28,3,907)*0.6f+ProcTex.Fbm(u,v,64,2,911)*0.4f);
-                SimpanPng(ProcTex.NormalFromHeight("kulit_pori_n",256,h,1.8f),p);
-                AssetDatabase.ImportAsset(p);AturImpor(p,true,false,256);
+                const int sz=512;
+                float[] h=ProcTex.HeightMap(sz,(u,v)=>ProcTex.Fbm(u,v,110,3,907)*0.6f+ProcTex.Fbm(u,v,240,2,911)*0.4f);
+                SimpanPng(ProcTex.NormalFromHeight("kulit_pori_n",sz,h,0.22f),p);
+                AssetDatabase.ImportAsset(p);AturImpor(p,true,false,sz);
             }
             _normKulitWajah=AssetDatabase.LoadAssetAtPath<Texture2D>(p);return _normKulitWajah;
         }
@@ -259,16 +261,19 @@ namespace AlasKeramat.EditorTools
 
             Color skinTint=j==J.Deden?new Color(0.94f,0.82f,0.72f):j==J.Ningsih?new Color(0.99f,0.93f,0.88f):j==J.KiRogo?new Color(0.89f,0.80f,0.72f):
                 j==J.AbdiLumpur?new Color(0.58f,0.50f,0.42f):(j>=J.Pocong || j==J.Penyerupa)?Color.white:new Color(0.95f,0.86f,0.78f);
-            float skinSmooth=j==J.Genderuwo?0.2f:(j==J.Pocong || j==J.Kuntilanak || j==J.Kuyang)?0.28f:0.35f;
+            float skinSmooth=j==J.Genderuwo?0.2f:(j==J.Pocong || j==J.Kuntilanak || j==J.Kuyang)?0.28f:j==J.Ningsih?0.32f:0.30f;
             var skinMat=SafeMaterialFactory.CreatePBR("M_Skin_"+j,skinTint,0f,skinSmooth,KulitHororTex(j,skin),NormalKulitWajah());
+            SafeMaterialFactory.SetF(skinMat,"_BumpScale",j>=J.Pocong?0.75f:0.35f);
             var sh=AmbilShaderAK("AlasKeramat/KulitManusia");if(sh!=null)skinMat.shader=sh;
 
             Texture2D clothNorm=null;
             Texture2D clothTex=PakaianBerwarna(j,suit,out clothNorm);
             if(clothNorm==null)clothNorm=TeksturKarakter("clothes/"+suit+"/"+suit+"_normal.png",true);
-            float clothSmooth=j==J.Kuyang?0.86f:0.22f;
+            float clothSmooth=j==J.Kuyang?0.86f:j==J.Ningsih?0.24f:0.22f;
             Color? clothEm=j==J.Kuyang?new Color(0.24f,0.03f,0.02f):(Color?)null;
-            var cloth=SafeMaterialFactory.CreatePBR("M_Pakaian_"+j,Color.white,0f,clothSmooth,clothTex,clothNorm,clothEm);
+            SurfaceMode clothMode=j==J.Kuntilanak?SurfaceMode.Cutout:SurfaceMode.Opaque;
+            var cloth=SafeMaterialFactory.CreatePBR("M_Pakaian_"+j,Color.white,0f,clothSmooth,clothTex,clothNorm,clothEm,clothMode,0.42f);
+            if(j==J.Pocong)SafeMaterialFactory.SetF(cloth,"_BumpScale",1.35f);
             if(j==J.Kuntilanak || j==J.Kuyang)SafeMaterialFactory.SetF(cloth,"_Cull",0f);
 
             var boots=BuatMaterialSub2(j);
@@ -328,8 +333,18 @@ namespace AlasKeramat.EditorTools
             if(j==J.Pocong || j==J.Tuyul)
                 return SafeMaterialFactory.CreatePBR("M_Rambut_"+j,j==J.Tuyul?ProcTex.Hex("#364032"):ProcTex.Hex("#8D8472"),0f,0.15f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kain.png"),null,null,SurfaceMode.Opaque);
             Texture2D htex=TeksturKarakter("hair/"+hair+"/"+hair+"_diffuse.png");
+            Texture2D hairNorm=null;
             if(j==J.Ningsih)
             {
+                string pHn=FolderKarakter+"/Rambut_Ningsih_n.png";
+                if(!File.Exists(pHn))
+                {
+                    const int nh=512;
+                    float[] hh=ProcTex.HeightMap(nh,(u,v)=>Mathf.PerlinNoise(u*160f,v*18f)*0.65f+Mathf.PerlinNoise(u*320f,v*34f)*0.35f);
+                    SimpanPng(ProcTex.NormalFromHeight("Rambut_Ningsih_n",nh,hh,1.2f),pHn);
+                    AssetDatabase.ImportAsset(pHn);AturImpor(pHn,true,false,nh);
+                }
+                hairNorm=AssetDatabase.LoadAssetAtPath<Texture2D>(pHn);
                 var hsrc=BacaReadableKarakter("Assets/ThirdParty/Characters/System/hair/"+hair+"/"+hair+"_diffuse.png");
                 if(hsrc!=null)
                 {
@@ -340,10 +355,10 @@ namespace AlasKeramat.EditorTools
                         if(u>=0.88f && v>=0.50f) px[y*w+x]=new Color(0.96f,0.94f,0.86f,1f);
                         else if(u>=0.88f)
                         {
-                            float g=0.85f+0.30f*Mathf.PerlinNoise(u*120f,v*40f);
-                            px[y*w+x]=new Color(0.09f*g,0.07f*g,0.06f*g,1f);
+                            float g=0.84f+0.32f*Mathf.PerlinNoise(u*140f,v*36f);
+                            px[y*w+x]=new Color(0.08f*g,0.065f*g,0.055f*g,1f);
                         }
-                        else { Color c=hsrc.GetPixelBilinear(Mathf.Clamp01(u/0.88f),v); px[y*w+x]=new Color(c.r*0.72f,c.g*0.72f,c.b*0.72f,c.a); }
+                        else { Color c=hsrc.GetPixelBilinear(Mathf.Clamp01(u/0.88f),v); px[y*w+x]=new Color(c.r*0.70f,c.g*0.70f,c.b*0.70f,c.a); }
                     }
                     var t=new Texture2D(w,h,TextureFormat.RGBA32,true);t.SetPixels(px);t.Apply();
                     string pn=FolderKarakter+"/Rambut_Ningsih.png";SimpanPng(t,pn);AssetDatabase.ImportAsset(pn);AturImpor(pn,false,false,1024);
@@ -353,7 +368,7 @@ namespace AlasKeramat.EditorTools
             }
             Color tint=j==J.KiRogo?new Color(0.95f,0.94f,0.92f):j==J.Ningsih?Color.white:new Color(0.86f,0.82f,0.79f);
             float cutoff=j==J.Ningsih?0.18f:0.35f;
-            var mr=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,tint,0f,0.34f,htex,null,null,SurfaceMode.Cutout,cutoff);
+            var mr=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,tint,0f,j==J.Ningsih?0.50f:0.34f,htex,hairNorm,null,SurfaceMode.Cutout,cutoff);
             SafeMaterialFactory.SetF(mr,"_Cull",0f);return mr;
         }
 
@@ -403,34 +418,36 @@ namespace AlasKeramat.EditorTools
             if(j==J.Ningsih || j==J.Penyerupa)
             {
                 var kain=KainBase();
+                var nGirl=BacaReadableKarakter("Assets/ThirdParty/Characters/System/clothes/"+suit+"/"+suit+"_normal.png");
                 var npix=new Color[w*h];
                 for(int y=0;y<h;y++)for(int x=0;x<w;x++)
                 {
                     float u=(float)x/w,v=(float)y/h;
                     bool skirt=u>=0.50f;
                     float ou=skirt?Mathf.Clamp01((u-0.52f)/0.47f):Mathf.Clamp01((u-0.01f)/0.47f);
-                    float lum=kain!=null?kain.GetPixelBilinear(Mathf.Repeat(ou*5f,1f),Mathf.Repeat(v*5f,1f)).grayscale:0.7f;
-                    float ao=aoSrc!=null?(0.42f+0.58f*aoSrc.GetPixelBilinear(ou,v).grayscale):1f;
-                    float grain=0.93f+0.07f*Mathf.PerlinNoise(u*300f,v*300f);
+                    float lum=kain!=null?kain.GetPixelBilinear(Mathf.Repeat(ou*6f,1f),Mathf.Repeat(v*6f,1f)).grayscale:0.7f;
+                    float ao=aoSrc!=null?(0.36f+0.64f*aoSrc.GetPixelBilinear(ou,v).grayscale):1f;
+                    float grain=0.92f+0.08f*Mathf.PerlinNoise(u*340f,v*340f);
                     if(!skirt)
                     {
-                        float brokat=Mathf.PerlinNoise(ou*95f,v*95f)*0.06f;
-                        Color kebaya=j==J.Penyerupa?new Color(0.68f,0.68f,0.64f):new Color(0.95f,0.92f,0.85f)*(1f-brokat);
-                        Color col=kebaya*Mathf.Lerp(0.94f,1.04f,lum)*Mathf.Lerp(0.8f,1f,ao)*grain;
+                        float lace=(Mathf.Sin(ou*160f)*Mathf.Sin(v*160f))*0.04f;
+                        float brokat=Mathf.PerlinNoise(ou*110f,v*110f)*0.08f;
+                        Color kebaya=j==J.Penyerupa?new Color(0.66f,0.66f,0.62f):new Color(0.93f,0.90f,0.84f)*(1f-brokat+lace);
+                        Color col=kebaya*Mathf.Lerp(0.93f,1.04f,lum)*Mathf.Lerp(0.76f,1f,ao)*grain;
                         col.a=1f;px[y*w+x]=col;
                     }
                     else
                     {
-                        // Batik Parang Rusak + Kawung Sogan Jawa klasik berdetail tinggi.
-                        float wave=Mathf.Sin((ou*18f+v*14f)*Mathf.PI*2f+Mathf.Sin(ou*36f)*0.8f)*0.5f+0.5f;
-                        float dot=Mathf.Clamp01(1f-Mathf.Abs(Mathf.Repeat(ou*22f-v*18f,1f)-0.5f)*4f);
-                        float pat=Mathf.Clamp01(wave*0.65f+dot*0.35f);
-                        Color motif=Color.Lerp(new Color(0.18f,0.09f,0.045f),new Color(0.74f,0.52f,0.22f),pat);
+                        // Batik Parang Rusak + Kawung Sogan halus frekuensi tinggi.
+                        float wave=Mathf.Sin((ou*28f+v*22f)*Mathf.PI*2f+Mathf.Sin(ou*52f)*0.9f)*0.5f+0.5f;
+                        float isen=Mathf.Clamp01(1f-Mathf.Abs(Mathf.Repeat(ou*42f-v*36f,1f)-0.5f)*4.2f);
+                        float pat=Mathf.Clamp01(wave*0.62f+isen*0.38f);
+                        Color motif=Color.Lerp(new Color(0.14f,0.075f,0.035f),new Color(0.72f,0.51f,0.23f),pat);
                         Color col=motif*Mathf.Lerp(0.92f,1.04f,lum)*ao*grain;
                         if(j==J.Penyerupa)col=Color.Lerp(col,new Color(0.2f,0.22f,0.24f),0.4f);
                         col.a=1f;px[y*w+x]=col;
                     }
-                    npix[y*w+x]=new Color(0.5f,0.5f,1f,1f);
+                    npix[y*w+x]=nGirl!=null?nGirl.GetPixelBilinear(ou,v):new Color(0.5f,0.5f,1f,1f);
                 }
                 var ntex=new Texture2D(w,h,TextureFormat.RGBA32,true);ntex.SetPixels(npix);ntex.Apply();
                 string np=FolderKarakter+"/Pakaian_"+j+"_n.png";SimpanPng(ntex,np);AssetDatabase.ImportAsset(np);AturImpor(np,true,false,2048);
@@ -446,14 +463,15 @@ namespace AlasKeramat.EditorTools
                 for(int y=0;y<h;y++)for(int x=0;x<w;x++)
                 {
                     float u=(float)x/w,v=(float)y/h;
-                    Color k=kain!=null?kain.GetPixelBilinear(u*4f,v*6f):new Color(0.72f,0.7f,0.62f);
-                    Color baseShroud=new Color(0.74f,0.71f,0.63f)*Mathf.Lerp(0.55f,1.15f,k.grayscale);
+                    Color k=kain!=null?kain.GetPixelBilinear(u*5f,v*7f):new Color(0.65f,0.64f,0.58f);
+                    float foldShade=0.72f+0.28f*Mathf.Sin(u*26f+Mathf.PerlinNoise(u*8f,v*8f)*2.5f);
+                    Color baseShroud=new Color(0.58f,0.57f,0.52f)*Mathf.Lerp(0.48f,1.08f,k.grayscale)*foldShade;
                     float mold=Mathf.PerlinNoise(u*14f+3.1f,v*18f+7.4f);
-                    float mud=Mathf.Clamp01((0.36f-v)*2.5f+mold*0.35f-0.18f);
-                    baseShroud=Color.Lerp(baseShroud,new Color(0.24f,0.19f,0.13f),mud*0.72f);
+                    float mud=Mathf.Clamp01((0.42f-v)*2.6f+mold*0.42f-0.16f);
+                    baseShroud=Color.Lerp(baseShroud,new Color(0.16f,0.13f,0.10f),mud*0.80f);
                     float bloodNoise=Mathf.PerlinNoise(u*22f+8f,v*12f+1.5f);
-                    float bloodBand=v>0.55f && v<0.85f?Mathf.Clamp01((bloodNoise-0.54f)*3.8f):0f;
-                    baseShroud=Color.Lerp(baseShroud,new Color(0.26f,0.03f,0.025f),bloodBand*0.85f);
+                    float bloodBand=v>0.54f && v<0.86f?Mathf.Clamp01((bloodNoise-0.50f)*3.6f):0f;
+                    baseShroud=Color.Lerp(baseShroud,new Color(0.22f,0.025f,0.02f),bloodBand*0.85f);
                     baseShroud.a=1f;px[y*w+x]=baseShroud;
                 }
                 normalOut=AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kain_n.png");
@@ -468,17 +486,20 @@ namespace AlasKeramat.EditorTools
                 {
                     float u=(float)x/w,v=(float)y/h;
                     float lum=source.GetPixelBilinear(u,v).grayscale;
-                    Color col=new Color(0.78f,0.77f,0.71f)*Mathf.Lerp(0.42f,1.16f,lum);
+                    Color col=new Color(0.72f,0.72f,0.68f)*Mathf.Lerp(0.38f,1.12f,lum);
                     float dirt=Mathf.PerlinNoise(u*18f+2f,v*14f+5f);
-                    col=Color.Lerp(col,new Color(0.32f,0.28f,0.22f),Mathf.Clamp01(dirt-0.42f)*0.8f);
+                    col=Color.Lerp(col,new Color(0.24f,0.22f,0.18f),Mathf.Clamp01(dirt-0.38f)*0.85f);
                     float darah=Mathf.PerlinNoise(u*24f+11f,v*10f+4f);
                     float darahArea=(v<0.28f || v>0.52f)?1f:0.35f;
-                    col=Color.Lerp(col,new Color(0.25f,0.025f,0.02f),Mathf.Clamp01((darah-0.52f)*3.2f)*darahArea);
-                    col.a=1f;px[y*w+x]=col;
+                    col=Color.Lerp(col,new Color(0.24f,0.02f,0.02f),Mathf.Clamp01((darah-0.50f)*3.4f)*darahArea);
+                    float fray=Mathf.PerlinNoise(u*28f+4f,v*8f)*0.18f+Mathf.PerlinNoise(u*64f,v*16f)*0.08f;
+                    col.a=u>=0.48f?Mathf.Clamp01((v-0.06f+fray-0.14f)*7f):1f;
+                    px[y*w+x]=col;
                 }
                 normalOut=AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kain_n.png");
                 var texK=new Texture2D(w,h,TextureFormat.RGBA32,true);texK.SetPixels(px);texK.Apply();
                 string pK=FolderKarakter+"/Pakaian_"+j+".png";SimpanPng(texK,pK);AssetDatabase.ImportAsset(pK);AturImpor(pK,false,false,1024);
+                var impK=(TextureImporter)AssetImporter.GetAtPath(pK);impK.alphaIsTransparency=true;impK.mipMapsPreserveCoverage=true;impK.SaveAndReimport();
                 return AssetDatabase.LoadAssetAtPath<Texture2D>(pK);
             }
 

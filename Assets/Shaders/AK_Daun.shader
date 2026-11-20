@@ -32,7 +32,7 @@ Shader "AlasKeramat/Daun"
         CBUFFER_END
         // Global, sengaja bukan Properties/UnityPerMaterial.
         float4 _AK_AnginArah;
-        float _AK_AnginKuat, _AK_AnginWaktu;
+        float _AK_AnginKuat, _AK_AnginWaktu, _AK_Basah;
         float3 _LightDirection, _LightPosition;
         struct Attributes
         {
@@ -138,11 +138,12 @@ Shader "AlasKeramat/Daun"
             d.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(i.positionCS);
             d.shadowMask = half4(1,1,1,1);
             SurfaceData s = (SurfaceData)0;
-            half ao = saturate(0.68h + 0.32h * i.color.g) * saturate(0.78h + 0.22h * d.normalWS.y);
-            s.albedo = c.rgb * (0.86h + 0.14h * ao);
+            half ao = saturate(0.55h + 0.45h * i.color.g) * saturate(0.75h + 0.25h * d.normalWS.y);
+            half wet = _AK_Basah * saturate(d.normalWS.y * 0.7h + 0.4h);
+            s.albedo = c.rgb * (0.86h + 0.14h * ao) * (1.0h - wet * 0.14h);
             s.alpha = 1;
             s.metallic = 0;
-            s.smoothness = _Smoothness * 0.35h;
+            s.smoothness = saturate(_Smoothness * 0.42h + wet * 0.38h);
             s.occlusion = ao;
             s.normalTS = half3(0,0,1);
             half4 lit = UniversalFragmentPBR(d, s);
@@ -191,6 +192,7 @@ Shader "AlasKeramat/Daun"
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
             #pragma multi_compile _ _FORWARD_PLUS
+            #pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
             #pragma multi_compile_fog
             ENDHLSL
         }

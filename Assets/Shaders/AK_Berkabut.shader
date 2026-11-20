@@ -39,8 +39,8 @@ Shader "AlasKeramat/KabutLokal"
                 half edge=saturate(uv.x*(1-uv.x)*6)*saturate(uv.y*(1-uv.y)*6);
                 float scene=LinearEyeDepth(SampleSceneDepth(i.screen.xy/i.screen.w),_ZBufferParams);
                 float own=-TransformWorldToView(i.world).z;
-                half soft=saturate((scene-own)*0.4);
-                half dist=saturate((distance(_WorldSpaceCameraPos,i.world)-5)/15);
+                half soft=saturate((scene-own)*0.45);
+                half dist=saturate((distance(_WorldSpaceCameraPos,i.world)-2.5)/10.0);
                 return half4(_BaseColor.rgb,_BaseColor.a*noise*edge*soft*dist);
             }
             ENDHLSL

@@ -10,7 +10,7 @@ namespace AlasKeramat.Core
             public Mesh mesh;public Material material;public Bounds bounds;public Matrix4x4[] matriks;
             [System.NonSerialized] public Bounds[] batasInstance;
         }
-        public const float JarakGambar=48f;
+        public const float JarakGambar=56f;
         public KelompokSerasah[] kelompok=new KelompokSerasah[0];
         public float Kepadatan = 1f;
         readonly Matrix4x4[] _tampak = new Matrix4x4[1023];
@@ -25,7 +25,8 @@ namespace AlasKeramat.Core
             {
                 var k=kelompok[i];
                 if(k.material==null)continue;
-                _rp[i]=new RenderParams(k.material) { layer=GameLayers.Foliage,worldBounds=k.bounds,shadowCastingMode=ShadowCastingMode.Off,receiveShadows=true,lightProbeUsage=LightProbeUsage.Off };
+                bool padat=k.material.shader!=null && k.material.shader.name!="AlasKeramat/Daun";
+                _rp[i]=new RenderParams(k.material) { layer=GameLayers.Foliage,worldBounds=k.bounds,shadowCastingMode=padat?ShadowCastingMode.On:ShadowCastingMode.Off,receiveShadows=true,lightProbeUsage=LightProbeUsage.Off };
             }
         }
         void LateUpdate() { if(_cam==null || !_cam.isActiveAndEnabled)_cam=Camera.main; if(_cam!=null)Gambar(_cam); }
@@ -52,8 +53,9 @@ namespace AlasKeramat.Core
                         GeometryUtility.TestPlanesAABB(_bidang,k.batasInstance[i]))_tampak[jumlah++]=k.matriks[i];
                 if(jumlah==0)continue;
                 var rp=_rp[idx]; rp.camera=cam;
+                int sub=k.mesh.GetIndexCount(0)>0?0:(k.mesh.subMeshCount>1?1:0);
                 for(int awal=0;awal<jumlah;awal+=AlasKeramat.Building.VegetationManager.MaksRender)
-                    Graphics.RenderMeshInstanced(rp,k.mesh,0,_tampak,Mathf.Min(AlasKeramat.Building.VegetationManager.MaksRender,jumlah-awal),awal);
+                    Graphics.RenderMeshInstanced(rp,k.mesh,sub,_tampak,Mathf.Min(AlasKeramat.Building.VegetationManager.MaksRender,jumlah-awal),awal);
             }
         }
     }

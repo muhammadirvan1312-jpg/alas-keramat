@@ -21,7 +21,7 @@ namespace AlasKeramat.EditorTools
             var t=new Transform[AtmosferHutan.JumlahKartu];var r=new Renderer[t.Length];
             for(int i=0;i<t.Length;i++)
             {
-                var card=GameObject.CreatePrimitive(PrimitiveType.Quad);card.name="KabutLapis_"+i;card.transform.SetParent(go.transform,false);card.transform.localScale=new Vector3(24f,6f,1f);
+                var card=GameObject.CreatePrimitive(PrimitiveType.Quad);card.name="KabutLapis_"+i;card.transform.SetParent(go.transform,false);card.transform.localScale=new Vector3(26f,7.5f,1f);
                 Object.DestroyImmediate(card.GetComponent<Collider>());t[i]=card.transform;r[i]=card.GetComponent<Renderer>();r[i].sharedMaterial=mat;r[i].shadowCastingMode=ShadowCastingMode.Off;r[i].receiveShadows=false;
             }
             var atmos=go.AddComponent<AtmosferHutan>();atmos.Pasang(t,r);EditorUtility.SetDirty(atmos);

@@ -14,7 +14,9 @@ def unduh(entry,output):
     root=Path(output).resolve();target=(root/entry['path']).resolve()
     if not target.is_relative_to(root):raise ValueError('Path aset keluar folder')
     expected=entry.get('sha256')
+    expected_md5=entry.get('md5')
     if target.exists() and expected and hashlib.sha256(target.read_bytes()).hexdigest()==expected:return 'ada'
+    if target.exists() and not expected and expected_md5 and hashlib.md5(target.read_bytes()).hexdigest()==expected_md5:return 'ada'
     headers={'User-Agent':UA}
     if 'range_offset' in entry:
         a=entry['range_offset'];headers['Range']=f"bytes={a}-{a+entry['range_size']-1}"
@@ -32,6 +34,7 @@ def unduh(entry,output):
         if hashlib.sha256(data).hexdigest()!=entry['archive_sha256']:raise ValueError('SHA256 arsip tidak cocok')
         with zipfile.ZipFile(io.BytesIO(data)) as archive:data=archive.read(entry['zip_entry'])
     if expected and hashlib.sha256(data).hexdigest()!=expected:raise ValueError('SHA256 tidak cocok')
+    elif not expected and expected_md5 and hashlib.md5(data).hexdigest()!=expected_md5:raise ValueError('MD5 tidak cocok')
     target.parent.mkdir(parents=True,exist_ok=True);temp=target.with_suffix(target.suffix+'.part');temp.write_bytes(data);temp.replace(target)
     return 'unduh'
 

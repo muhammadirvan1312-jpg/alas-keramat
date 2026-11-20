@@ -102,45 +102,80 @@ namespace AlasKeramat.Core
             return b.Jadi("Rumah_" + seed);
         }
 
-        // Heli SAR rusak detail: 0 badan putih/abu, 1 strip & ekor oranye SAR, 2 logam gelap (kokpit kaca, mesin, rotor bengkok, skid).
+        // Heli SAR rusak detail (lofted rounded hull): 0 badan putih/abu, 1 strip & ekor oranye SAR, 2 kaca kokpit/logam gelap/rotor/skid.
         public static Mesh HeliRusak()
         {
             var b = new B(3);
-            // Kabin utama & moncong meruncing.
-            b.Kotak(0, new Vector3(0f, 0.25f, 0.05f), new Vector3(2.35f, 1.55f, 4.3f), Quaternion.identity);
-            b.Kotak(0, new Vector3(0f, 0.1f, -3.1f), new Vector3(1.85f, 1.15f, 2.2f), Quaternion.Euler(14f, 0f, 0f));
-            b.Kotak(0, new Vector3(0f, -0.35f, -3.6f), new Vector3(1.45f, 0.5f, 1.6f), Quaternion.Euler(4f, 0f, 0f));
-            // Kaca kokpit retak gelap + rangka pilar kabin & kursi pilot.
-            b.Kotak(2, new Vector3(0f, 0.42f, -3.05f), new Vector3(1.62f, 0.72f, 1.45f), Quaternion.Euler(26f, 0f, 0f));
-            b.Kotak(0, new Vector3(0f, 0.42f, -3.08f), new Vector3(0.14f, 0.78f, 1.48f), Quaternion.Euler(26f, 0f, 0f));
-            b.Kotak(2, new Vector3(-1.12f, 0.28f, -1.2f), new Vector3(0.14f, 1.2f, 1.25f), Quaternion.identity);
-            b.Kotak(0, new Vector3(1.38f, 0.18f, -0.4f), new Vector3(0.10f, 1.25f, 1.35f), Quaternion.Euler(8f, 18f, -14f)); // pintu samping copot miring
-            // Strip oranye SAR sepanjang lambung + strip sabuk atas & kerah ekor.
-            b.Kotak(1, new Vector3(0f, -0.15f, 0.05f), new Vector3(2.44f, 0.34f, 4.35f), Quaternion.identity);
-            b.Kotak(1, new Vector3(0f, 0.25f, 0.25f), new Vector3(2.42f, 0.22f, 3.9f), Quaternion.identity);
-            b.Kotak(1, new Vector3(0f, -0.18f, -2.95f), new Vector3(1.94f, 0.28f, 2.15f), Quaternion.Euler(12f, 0f, 0f));
-            // Ekor meruncing (tailboom) + sirip tegak & datar + rotor ekor bengkok.
-            b.Silinder(1, new Vector3(0f, 0.55f, 2.2f), 0.58f, 0.24f, 5.2f, 10, Quaternion.Euler(86f, 0f, 0f));
-            b.Kotak(1, new Vector3(0f, 1.15f, 7.1f), new Vector3(0.16f, 1.55f, 0.95f), Quaternion.Euler(-22f, 0f, 0f));
-            b.Kotak(1, new Vector3(0f, 0.48f, 5.6f), new Vector3(2.15f, 0.10f, 0.55f), Quaternion.Euler(0f, 0f, 6f));
-            b.Kotak(2, new Vector3(0.22f, 1.48f, 7.35f), new Vector3(0.12f, 0.95f, 0.16f), Quaternion.Euler(35f, 0f, 12f));
-            // Turbin mesin atas + 2 knalpot + mast & 4 baling-baling utama patah/melengkung.
-            b.Kotak(0, new Vector3(0f, 1.26f, 0.15f), new Vector3(1.25f, 0.65f, 2.55f), Quaternion.identity);
-            b.Silinder(2, new Vector3(-0.34f, 1.22f, 1.4f), 0.18f, 0.15f, 0.85f, 8, Quaternion.Euler(82f, -10f, 0f));
-            b.Silinder(2, new Vector3(0.34f, 1.22f, 1.4f), 0.18f, 0.15f, 0.85f, 8, Quaternion.Euler(82f, 10f, 0f));
-            b.Silinder(2, new Vector3(0f, 1.55f, -0.1f), 0.24f, 0.20f, 0.55f, 10, Quaternion.identity);
+            const int ringSeg = 16;
+            // Stasiun lambung dari moncong ke pangkal ekor: z, rx, ry, yMid
+            float[][] st =
+            {
+                new[] { -4.35f, 0.34f, 0.24f, -0.44f },
+                new[] { -3.98f, 0.72f, 0.44f, -0.34f },
+                new[] { -3.30f, 0.96f, 0.66f, -0.06f },
+                new[] { -2.35f, 1.16f, 0.84f,  0.22f },
+                new[] { -0.95f, 1.22f, 0.88f,  0.25f },
+                new[] {  0.75f, 1.20f, 0.88f,  0.25f },
+                new[] {  1.95f, 0.88f, 0.68f,  0.34f },
+                new[] {  2.55f, 0.48f, 0.44f,  0.50f },
+            };
+            Vector3 PSt(int ri, int si)
+            {
+                float a = si * Mathf.PI * 2f / ringSeg;
+                float c = Mathf.Cos(a), s = Mathf.Sin(a);
+                float sy = s < 0f ? s * 0.72f : s * (Mathf.Abs(c) < 0.7f ? 1.04f : 0.96f);
+                return new Vector3(c * st[ri][1], st[ri][3] + sy * st[ri][2], st[ri][0]);
+            }
+            for (int r = 0; r < st.Length - 1; r++)
+                for (int s = 0; s < ringSeg; s++)
+                {
+                    float aMid = (s + 0.5f) * Mathf.PI * 2f / ringSeg;
+                    bool kacaDepan = (r == 1 || r == 2) && Mathf.Sin(aMid) > 0.15f && Mathf.Abs(Mathf.Cos(aMid)) < 0.86f;
+                    bool stripOranye = !kacaDepan && Mathf.Sin(aMid) > -0.42f && Mathf.Sin(aMid) < -0.04f;
+                    int sub = kacaDepan ? 2 : stripOranye ? 1 : 0;
+                    b.Quad(sub, PSt(r, s + 1), PSt(r, s), PSt(r + 1, s), PSt(r + 1, s + 1), 2f);
+                }
+            // Tutup moncong depan & pilar kaca kokpit.
+            Vector3 noseTip = new Vector3(0f, -0.46f, -4.48f);
+            for (int s = 0; s < ringSeg; s++) b.Quad(1, PSt(0, s + 1), PSt(0, s), noseTip, noseTip, 1.5f);
+            b.Kotak(2, new Vector3(0f, 0.42f, -3.10f), new Vector3(0.10f, 0.72f, 1.50f), Quaternion.Euler(26f, 0f, 0f)); // pilar tengah kaca
+            b.Kotak(2, new Vector3(-0.96f, 0.28f, -1.35f), new Vector3(0.24f, 0.62f, 1.35f), Quaternion.identity);   // jendela samping kiri
+            b.Kotak(2, new Vector3( 0.96f, 0.28f, -1.35f), new Vector3(0.24f, 0.62f, 1.35f), Quaternion.identity);   // jendela samping kanan
+            b.Kotak(2, new Vector3(-1.02f, 0.18f,  0.15f), new Vector3(0.20f, 0.95f, 1.10f), Quaternion.identity);   // bukaan kabin gelap kiri
+            // Pintu samping kanan penyok terlepas sebagian.
+            b.Kotak(0, new Vector3(1.36f, 0.12f, 0.05f), new Vector3(0.10f, 1.15f, 1.28f), Quaternion.Euler(10f, 24f, -16f));
+            b.Kotak(1, new Vector3(1.38f, -0.10f, 0.06f), new Vector3(0.12f, 0.24f, 1.28f), Quaternion.Euler(10f, 24f, -16f));
+            // Strip oranye sabuk atas & cowling mesin ganda + 2 intake + 2 knalpot turbin.
+            b.Kotak(0, new Vector3(0f, 1.18f, 0.05f), new Vector3(1.18f, 0.52f, 2.75f), Quaternion.identity);
+            b.Kotak(1, new Vector3(0f, 1.20f, -0.25f), new Vector3(1.24f, 0.16f, 2.25f), Quaternion.identity);
+            b.Silinder(2, new Vector3(-0.34f, 1.18f, -1.35f), 0.22f, 0.18f, 0.45f, 10, Quaternion.Euler(-90f, 0f, 0f));
+            b.Silinder(2, new Vector3( 0.34f, 1.18f, -1.35f), 0.22f, 0.18f, 0.45f, 10, Quaternion.Euler(-90f, 0f, 0f));
+            b.Silinder(2, new Vector3(-0.34f, 1.22f,  1.38f), 0.18f, 0.15f, 0.85f, 10, Quaternion.Euler(82f, -10f, 0f));
+            b.Silinder(2, new Vector3( 0.34f, 1.22f,  1.38f), 0.18f, 0.15f, 0.85f, 10, Quaternion.Euler(82f,  10f, 0f));
+            // Mast & swashplate + 4 bilah baling-baling patah terkulai.
+            b.Silinder(2, new Vector3(0f, 1.44f, -0.12f), 0.24f, 0.20f, 0.56f, 12, Quaternion.identity);
+            b.Silinder(2, new Vector3(0f, 1.88f, -0.12f), 0.36f, 0.32f, 0.12f, 12, Quaternion.identity);
             for (int k = 0; k < 4; k++)
             {
-                float yaw = k * 90f + (k % 2 == 0 ? 12f : -18f);
-                Quaternion qr = Quaternion.Euler(7f + k * 5f, yaw, k % 2 == 0 ? 8f : -10f);
-                b.Kotak(2, new Vector3(0f, 2.02f, -0.1f) + qr * new Vector3(0f, -0.18f * (k % 3), 2.95f), new Vector3(0.28f, 0.05f, 5.8f), qr);
+                float yaw = k * 90f + (k % 2 == 0 ? 14f : -16f);
+                Quaternion qr = Quaternion.Euler(6f + k * 4.5f, yaw, k % 2 == 0 ? 9f : -11f);
+                float blen = k == 2 ? 3.2f : 5.6f; // satu bilah patah pendek
+                b.Kotak(2, new Vector3(0f, 1.98f, -0.12f) + qr * new Vector3(0f, -0.14f * (k % 3), blen * 0.52f), new Vector3(0.28f, 0.045f, blen), qr);
             }
-            // Skid pendaratan tubular kiri & kanan yang penyok.
+            // Ekor tirus (tailboom) + sirip tegak SAR + stabilizer + rotor ekor bengkok.
+            b.Silinder(1, new Vector3(0f, 0.54f, 2.35f), 0.48f, 0.20f, 5.15f, 12, Quaternion.Euler(86f, 0f, 0f));
+            b.Kotak(1, new Vector3(0f, 1.20f, 7.18f), new Vector3(0.16f, 1.62f, 0.96f), Quaternion.Euler(-24f, 0f, 0f));
+            b.Kotak(0, new Vector3(0f, 1.56f, 7.36f), new Vector3(0.18f, 0.32f, 0.68f), Quaternion.Euler(-24f, 0f, 0f));
+            b.Kotak(1, new Vector3(0f, 0.48f, 5.65f), new Vector3(2.25f, 0.09f, 0.56f), Quaternion.Euler(0f, 0f, 5f));
+            b.Silinder(2, new Vector3(0.18f, 1.54f, 7.35f), 0.12f, 0.10f, 0.22f, 8, Quaternion.Euler(0f, 0f, -90f));
+            b.Kotak(2, new Vector3(0.24f, 1.54f, 7.35f), new Vector3(0.05f, 1.05f, 0.15f), Quaternion.Euler(32f, 0f, 8f));
+            // Skid pendaratan tubular melengkung + 4 penyangga miring.
             for (int side = -1; side <= 1; side += 2)
             {
-                b.Silinder(2, new Vector3(side * 1.15f, -1.12f, -2.5f), 0.08f, 0.08f, 5.1f, 8, Quaternion.Euler(90f, 0f, side * 5f));
-                b.Silinder(2, new Vector3(side * 1.12f, -1.12f, -1.15f), 0.06f, 0.06f, 0.9f, 6, Quaternion.Euler(0f, 0f, -side * 22f));
-                b.Silinder(2, new Vector3(side * 1.12f, -1.12f, 1.15f), 0.06f, 0.06f, 0.9f, 6, Quaternion.Euler(0f, 0f, -side * 22f));
+                b.Silinder(2, new Vector3(side * 1.15f, -1.04f, -2.55f), 0.075f, 0.075f, 5.15f, 8, Quaternion.Euler(90f, 0f, side * 4f));
+                b.Silinder(2, new Vector3(side * 1.15f, -1.04f, -2.55f), 0.075f, 0.06f, 0.55f, 8, Quaternion.Euler(-58f, 0f, 0f));
+                b.Silinder(2, new Vector3(side * 1.10f, -1.04f, -1.15f), 0.06f, 0.06f, 0.85f, 6, Quaternion.Euler(0f, 0f, -side * 22f));
+                b.Silinder(2, new Vector3(side * 1.10f, -1.04f,  1.15f), 0.06f, 0.06f, 0.85f, 6, Quaternion.Euler(0f, 0f, -side * 22f));
             }
             return b.Jadi("HeliRusak");
         }

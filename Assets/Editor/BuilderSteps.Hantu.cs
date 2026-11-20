@@ -81,6 +81,36 @@ namespace AlasKeramat.EditorTools
                 g.transform.rotation = Quaternion.Euler(0f, formasi[i].w, 0f);
                 var ai = g.GetComponent<HantuAI>(); if (ai != null) ai.enabled = false;
             }
+            var meshBatuDio = MuatPropScan("BatuLumutA") ?? MuatPropScan("BatuBesarScan");
+            var matBatuDio = MaterialSolidScan("BatuLumutAsli", "M_BatuLumutScan", new Color(0.84f, 0.86f, 0.82f, 1f), 0.26f) ?? batu;
+            if (meshBatuDio != null)
+            {
+                Vector3[] posBD = { new Vector3(-3.3f, 0f, -2.0f), new Vector3(2.9f, 0f, -1.8f), new Vector3(-2.6f, 0f, 2.8f), new Vector3(3.1f, 0f, 2.5f) };
+                for (int i = 0; i < posBD.Length; i++)
+                {
+                    var gb = Anak(dio, "BatuMalam_" + i);
+                    float x = PosDioramaHantu.x + posBD[i].x, z = PosDioramaHantu.z + posBD[i].z;
+                    gb.transform.position = new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z) - 0.06f, z);
+                    gb.transform.rotation = Quaternion.Euler(0f, i * 79f, 0f);
+                    gb.transform.localScale = Vector3.one * (0.85f + (i % 2) * 0.45f);
+                    gb.AddComponent<MeshFilter>().sharedMesh = meshBatuDio; gb.AddComponent<MeshRenderer>().sharedMaterial = matBatuDio;
+                }
+            }
+            var meshKayuDio = MuatPropScan("KayuTumbangScan");
+            var matKayuDio = MaterialSolidScan("KayuTumbangAsli", "M_KayuTumbangScan", new Color(0.80f, 0.77f, 0.72f, 1f), 0.22f) ?? kayu;
+            if (meshKayuDio != null)
+            {
+                Vector3[] posKD = { new Vector3(-0.2f, 0f, -2.9f), new Vector3(2.4f, 0f, 0.6f) };
+                for (int i = 0; i < posKD.Length; i++)
+                {
+                    var gk = Anak(dio, "KayuMalam_" + i);
+                    float x = PosDioramaHantu.x + posKD[i].x, z = PosDioramaHantu.z + posKD[i].z;
+                    gk.transform.position = new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z) - 0.05f, z);
+                    gk.transform.rotation = Quaternion.Euler(0f, 68f + i * 75f, 0f);
+                    gk.transform.localScale = Vector3.one * 0.75f;
+                    gk.AddComponent<MeshFilter>().sharedMesh = meshKayuDio; gk.AddComponent<MeshRenderer>().sharedMaterial = matKayuDio;
+                }
+            }
             dio.SetActive(false);
             Catat("Hantu: Pocong, Kuntilanak, Banaspati, Kuyang, Tuyul, Genderuwo Hutan, Hantu Air, Penyerupa + 6 Totem Topeng");
         }
@@ -106,8 +136,8 @@ namespace AlasKeramat.EditorTools
             pendar.transform.SetParent(go.transform, false);
             pendar.transform.localPosition = new Vector3(0f, d.tinggi * 0.88f, -0.5f);
             pendar.type = LightType.Point; pendar.range = 6.5f;
-            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 0.65f : a == EnemyArchetype.Kuyang ? 0.70f : a == EnemyArchetype.GenderuwoHutan ? 0.85f : a == EnemyArchetype.Tuyul ? 0.25f : 0.28f;
-            pendar.color = a == EnemyArchetype.Kuntilanak ? new Color(0.55f, 0.68f, 0.92f) : a == EnemyArchetype.Kuyang ? new Color(0.85f, 0.25f, 0.18f) : a == EnemyArchetype.HantuAir ? new Color(0.32f, 0.80f, 0.72f) : a == EnemyArchetype.GenderuwoHutan ? new Color(0.95f, 0.42f, 0.18f) : new Color(0.56f, 0.74f, 0.80f);
+            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 0.65f : a == EnemyArchetype.Kuyang ? 0.70f : a == EnemyArchetype.GenderuwoHutan ? 0.85f : a == EnemyArchetype.Tuyul ? 0.25f : 0.32f;
+            pendar.color = a == EnemyArchetype.Kuntilanak ? new Color(0.55f, 0.68f, 0.92f) : a == EnemyArchetype.Kuyang ? new Color(0.85f, 0.25f, 0.18f) : a == EnemyArchetype.HantuAir ? new Color(0.32f, 0.80f, 0.72f) : a == EnemyArchetype.GenderuwoHutan ? new Color(0.95f, 0.42f, 0.18f) : new Color(0.55f, 0.70f, 0.85f);
             pendar.shadows = LightShadows.None;
             var h = go.AddComponent<HantuAI>(); h.Pasang(a, pendar);
             var tali = new GameObject("TitikInteraksi");
@@ -210,7 +240,7 @@ namespace AlasKeramat.EditorTools
             }
             var bara = Anak(go, "BaraApi");
             var psys = bara.AddComponent<ParticleSystem>();
-            var main = psys.main; main.startLifetime = 0.8f; main.startSpeed = 0.9f; main.startSize = 0.18f; main.startColor = new Color(1f, 0.55f, 0.15f, 0.85f); main.maxParticles = 24;
+            var main = psys.main; main.startLifetime = 0.8f; main.startSpeed = 0.9f; main.startSize = 0.18f; main.startColor = new Color(1f, 0.55f, 0.15f, 0.85f); main.maxParticles = 24; main.prewarm = true;
             var em = psys.emission; em.rateOverTime = 14f;
             var shp = psys.shape; shp.shapeType = ParticleSystemShapeType.Sphere; shp.radius = 0.22f;
             var pr = psys.GetComponent<ParticleSystemRenderer>(); pr.sharedMaterial = m; pr.shadowCastingMode = ShadowCastingMode.Off;

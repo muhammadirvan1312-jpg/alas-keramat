@@ -353,13 +353,13 @@ def build_pocong(base,bottom,height):
         v_uv=(ri)/(len(prof)-1)
         for s in range(radial+1):
             a=s*2.0*math.pi/radial
-            fold=1.0+0.045*math.sin(a*9.0+ri*0.7)+0.025*math.cos(a*15.0)
-            flare=1.22 if y>8.75 else 1.0
+            fold=1.0+0.085*math.sin(a*7.0+ri*0.9)+0.045*math.cos(a*13.0-ri*0.5)
+            flare=1.28 if y>8.75 else 1.0
             px=math.sin(a)*rx*fold*flare;pz=cz+math.cos(a)*rz*fold*flare
             py=y
             # Buka jendela wajah dengan lipatan kain mundur di sisi pipi/dahi/dagu.
-            if 6.20<y<7.90 and math.cos(a)>0.38:
-                px*=1.06;pz=min(pz,0.92)
+            if 6.20<y<7.90 and math.cos(a)>0.35:
+                px*=1.08;pz=min(pz,0.88)
             row.append(shroud.add_v((px,py,pz),s/radial,v_uv,w))
         grid.append(row)
     for ri in range(len(prof)-1):
@@ -387,37 +387,39 @@ def build_pocong(base,bottom,height):
         wisps.ribbon_double(sp,lambda t:0.06*(1.0-0.5*t),lambda p,t:{4:1.0},(0.1,0.1,0.8,0.8))
     return shroud.build(),ropes.build(),wisps.build()
 
-def add_kuntilanak_hair(hair):
+def add_kuntilanak_hair(hair,base):
     pb=PartBuilder()
+    hv=[base[i] for i in GROUP['body'] if base[i].y>5.8 and abs(base[i].x)<1.1]
+    top_y=max(v.y for v in hv) if hv else 7.05
+    cz=(min(v.z for v in hv)+max(v.z for v in hv))*0.42 if hv else 0.42
     def bw(p,t):
-        if p.y>6.8:return {4:1.0}
-        if p.y>5.2:return {3:0.5,4:0.5}
-        if p.y>2.2:return {2:0.65,3:0.35}
+        if p.y>top_y-1.2:return {4:1.0}
+        if p.y>top_y-2.6:return {3:0.5,4:0.5}
+        if p.y>top_y-5.2:return {2:0.65,3:0.35}
         return {1:0.55,2:0.45}
-    # 24 helai rambut belakang & bahu menjuntai sampai pinggang/lutut + 10 helai liar menutupi sebagian wajah!
-    for i in range(24):
-        f=(i/23.0)*2.0-1.0 # kiri ke kanan melengkung di ubun-ubun belakang/samping
-        ang=math.pi+f*1.85 # -Z adalah punggung; sisi +/-X adalah bahu
-        sx=math.sin(ang)*0.76;sz=0.34+math.cos(ang)*0.94
-        length=5.6+1.3*math.sin(i*2.1)
+    # 32 helai rambut belakang & bahu menempel erat di ubun-ubun kepala + 14 helai liar menutupi sebagian wajah!
+    for i in range(32):
+        f=(i/31.0)*2.0-1.0
+        ang=math.pi+f*1.88
+        sx=math.sin(ang)*0.72;sz=cz+math.cos(ang)*0.86
+        length=5.4+1.3*math.sin(i*2.1)
         out=Vector((math.sin(ang),0.0,math.cos(ang))).normalized()
         pts=[]
         for seg in range(8):
             t=seg/7.0
-            rad_push=0.14+0.68*math.sin(t*math.pi*0.75)
-            wave=0.16*math.sin(t*7.5+i*1.3)
-            p=Vector((sx+out.x*rad_push+wave,8.32-t*length,sz+out.z*rad_push-0.18*t))
+            rad_push=0.06+0.54*math.sin(t*math.pi*0.75)
+            wave=0.14*math.sin(t*7.5+i*1.3)
+            p=Vector((sx+out.x*rad_push+wave,top_y-0.08-t*length,sz+out.z*rad_push-0.16*t))
             pts.append(p)
-        pb.ribbon_double(pts,lambda t:0.24*(1.0-0.35*t),bw,(0.05,0.05,0.9,0.9))
-    # Tirai rambut depan menjuntai liar melewati pelipis & setengah wajah (mata mengintip di sela helai!).
-    for i in range(10):
-        side=-1.0 if i<6 else 1.0 # lebih rapat di sisi kiri wajah seperti ciri khas kuntilanak
-        fx=side*(0.10+(i%5)*0.15)
+        pb.ribbon_double(pts,lambda t:0.22*(1.0-0.35*t),bw,(0.05,0.05,0.9,0.9))
+    for i in range(14):
+        side=-1.0 if i<8 else 1.0
+        fx=side*(0.08+(i%6)*0.12)
         pts=[]
         for seg in range(7):
             t=seg/6.0
-            pts.append(Vector((fx+0.06*math.sin(t*5.0+i),8.22-t*(2.8+(i%3)*0.65),1.16+0.34*math.sin(t*math.pi*0.6)+0.06*math.cos(t*4.0+i))))
-        pb.ribbon_double(pts,lambda t:0.13*(1.0-0.45*t),lambda p,t:{4:0.85,3:0.15} if p.y>6.0 else {3:0.5,2:0.5},(0.05,0.05,0.9,0.9))
+            pts.append(Vector((fx+0.05*math.sin(t*5.0+i),top_y-0.14-t*(2.7+(i%3)*0.65),cz+0.78+0.30*math.sin(t*math.pi*0.6)+0.05*math.cos(t*4.0+i))))
+        pb.ribbon_double(pts,lambda t:0.12*(1.0-0.45*t),lambda p,t:{4:0.85,3:0.15} if p.y>top_y-1.6 else {3:0.5,2:0.5},(0.05,0.05,0.9,0.9))
     return append_part(hair,pb.build())
 
 def add_genderuwo_features(shoes,hair):
@@ -453,7 +455,10 @@ def add_genderuwo_features(shoes,hair):
     hair=append_part(hair,fur.build())
     return shoes,hair
 
-def build_kuyang():
+def build_kuyang(base):
+    hv=[base[i] for i in GROUP['body'] if base[i].y>5.8 and abs(base[i].x)<1.1]
+    top_y=max(v.y for v in hv) if hv else 7.2
+    cz=(min(v.z for v in hv)+max(v.z for v in hv))*0.42 if hv else 0.42
     # Organ dalam menggantung basah (trakea, dua paru-paru, jantung, usus melilit berayun di bawah leher terputus!)
     org=PartBuilder();hair=PartBuilder();fangs=PartBuilder()
     def obw(y):return {4:1.0} if y>5.5 else {3:0.6,2:0.4} if y>4.2 else {2:0.7,1:0.3} if y>2.2 else {1:0.6,0:0.4}
@@ -482,9 +487,9 @@ def build_kuyang():
     # Rambut panjang kuyang berkibar liar ke belakang & samping kepala terpenggal!
     for i in range(18):
         f=(i/17.0)*2.0-1.0;ang=math.pi+f*1.65
-        sx=math.sin(ang)*0.72;sz=0.34+math.cos(ang)*0.88
+        sx=math.sin(ang)*0.68;sz=cz+math.cos(ang)*0.82
         out=Vector((math.sin(ang),0.0,math.cos(ang))).normalized()
-        pts=[Vector((sx+out.x*(0.2+t*1.4),8.25-t*3.8+0.35*math.sin(t*5.0+i),sz+out.z*(0.2+t*2.1))) for t in [s/6.0 for s in range(7)]]
+        pts=[Vector((sx+out.x*(0.12+t*1.3),top_y-0.08-t*3.6+0.32*math.sin(t*5.0+i),sz+out.z*(0.12+t*1.9))) for t in [s/6.0 for s in range(7)]]
         hair.ribbon_double(pts,lambda t:0.20*(1.0-0.4*t),lambda p,t:{4:0.85,3:0.15},(0.05,0.05,0.9,0.9))
     # Taring tajam mencuat dari rahang bawah/atas.
     for side in (-1.0,1.0):
@@ -620,7 +625,7 @@ def make(name,recipe):
         clothes=(garment,guv,gfaces,gweights,clothes[-1])
         # Kaki telanjang: kurangi sepatu ke 2 segitiga jari di dalam daster, gunakan mesh tubuh kaki telanjang.
         shoes=([Vector((0,0.02,0)),Vector((0.01,0.02,0)),Vector((0,0.03,0))],[(0.5,0.5)]*3,[('',[(0,0),(1,1),(2,2)])],[{18:1.0},{18:1.0},{18:1.0}],set())
-        hair=add_kuntilanak_hair(hair)
+        hair=add_kuntilanak_hair(hair,base)
     elif role=='genderuwo':
         # Hanya cawat robek di pinggang & paha; dada kekar berbulu + taring + tanduk + kaki cakar!
         garment,guv,gfaces,gweights,_=clothes
@@ -638,7 +643,7 @@ def make(name,recipe):
     elif role=='kuyang':
         # Kepala terpenggal di pangkal leher + taring + rambut melambai + isi perut menggantung basah!
         body_faces=[(g,f) for g,f in FACES if (g=='body' and all(base[vi].y>5.82 for vi,_ in f)) or g in ('helper-upper-teeth','helper-lower-teeth')]
-        clothes,shoes,hair=build_kuyang()
+        clothes,shoes,hair=build_kuyang(base)
     elif role=='tuyul':
         # Tubuh kecil bungkuk gundul, cawat pinggul robek, tanpa rambut & mata raksasa hitam mengilap!
         garment,guv,gfaces,gweights,_=clothes

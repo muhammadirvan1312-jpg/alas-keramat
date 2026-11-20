@@ -55,36 +55,49 @@ namespace AlasKeramat.EditorTools
                 string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,1024);
                 norm=AssetDatabase.LoadAssetAtPath<Texture2D>(pn);
             }
-            return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_"+slot,Color.white,0f,0.14f,tex,norm,null,SurfaceMode.Cutout,0.38f),ShaderDaun,0.025f,0.45f));
+            return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_"+slot,new Color(0.84f,0.88f,0.78f,1f),0f,0.18f,tex,norm,null,SurfaceMode.Cutout,0.38f),ShaderDaun,0.025f,0.48f));
         }
         static Mesh ScanMesh(string nama)
         {
             var m=ImporMeshVisual.Baca("Assets/ThirdParty/Prepared/"+nama+".bytes");if(m==null)return null;
             string path=FolderVeg+"/"+nama+".asset";AssetDatabase.CreateAsset(m,path);return m;
         }
+        static Material MaterialKulitScan(string slot,string namaMat)
+        {
+            var alb=BacaFoto(slot,"Albedo");var norm=BacaFoto(slot,"Normal");
+            if(alb==null)return null;
+            string pa=FolderVeg+"/"+slot+"_a.png";File.WriteAllBytes(pa,alb.EncodeToPNG());AssetDatabase.ImportAsset(pa);AturImpor(pa,false,false,1024);
+            alb=AssetDatabase.LoadAssetAtPath<Texture2D>(pa);
+            if(norm!=null)
+            {
+                string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,1024);
+                norm=AssetDatabase.LoadAssetAtPath<Texture2D>(pn);
+            }
+            else norm=AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kulit_kayu_n.png");
+            return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR(namaMat,new Color(0.80f,0.78f,0.74f,1f),0f,0.26f,alb,norm),ShaderKulit,0.02f,0f));
+        }
         static void PasangMeshScan(AlasKeramat.Building.VegetationData data)
         {
             JumlahMeshScan=0;
             var tree0=ScanMesh("PohonScan_LOD0");var tree1=ScanMesh("PohonScan_LOD1");
             var treeB0=ScanMesh("PohonScanB_LOD0");var treeB1=ScanMesh("PohonScanB_LOD1");
+            var treeC0=ScanMesh("PohonScanC_LOD0");var treeC1=ScanMesh("PohonScanC_LOD1");
             if(treeB0==null)treeB0=tree0;if(treeB1==null)treeB1=tree1;
             var fern0=ScanMesh("PakisScan_LOD0");var fern1=ScanMesh("PakisScan_LOD1");
-            var leaf=MaterialDaunFoto("DaunAsli");var fern=MaterialDaunFoto("PakisAsli");
-            var barkN=BacaFoto("KulitPohonAsli","Normal");
-            if(barkN!=null)
-            {
-                string pbn=FolderVeg+"/KulitPohonAsli_n.png";File.WriteAllBytes(pbn,barkN.EncodeToPNG());AssetDatabase.ImportAsset(pbn);AturImpor(pbn,true,false,2048);
-                barkN=AssetDatabase.LoadAssetAtPath<Texture2D>(pbn);
-            }
-            if(barkN==null)barkN=AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kulit_kayu_n.png");
-            var bark=SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_KulitScan",Color.white,0f,0.22f,BacaFoto("KulitPohonAsli","Albedo"),barkN),ShaderKulit,0.02f,0f));
+            var leaf=MaterialDaunFoto("DaunAsli");var leafB=MaterialDaunFoto("DaunAsliB");var fern=MaterialDaunFoto("PakisAsli");
+            var bark=MaterialKulitScan("KulitPohonAsli","M_KulitScan");
+            var barkB=MaterialKulitScan("KulitPohonB","M_KulitScanB");
+            if(barkB==null)barkB=bark;
+            if(leafB==null)leafB=leaf;
             for(int i=0;i<data.jenis.Length;i++)
             {
                 var j=data.jenis[i];
                 if((j.nama=="Mahoni_1" || j.nama=="Mahoni_2" || j.nama=="Jati_2") && tree0!=null && tree1!=null && leaf!=null)
-                { j.lod0=tree0;j.lod1=tree1;j.kayu=bark;j.daun=leaf;j.jarakLod1=26f;j.jarakMaks=420f;JumlahMeshScan++; }
-                else if((j.nama=="Mahoni_0" || j.nama=="Jati_0" || j.nama=="Jati_1") && treeB0!=null && treeB1!=null && leaf!=null)
-                { j.lod0=treeB0;j.lod1=treeB1;j.kayu=bark;j.daun=leaf;j.jarakLod1=26f;j.jarakMaks=420f;JumlahMeshScan++; }
+                { j.lod0=tree0;j.lod1=tree1;j.kayu=bark;j.daun=leaf;j.jarakLod1=28f;j.jarakMaks=450f;JumlahMeshScan++; }
+                else if((j.nama=="Jati_0" || j.nama=="Jati_1" || j.nama=="Mahoni_0") && treeC0!=null && treeC1!=null && leafB!=null)
+                { j.lod0=treeC0;j.lod1=treeC1;j.kayu=barkB;j.daun=leafB;j.jarakLod1=28f;j.jarakMaks=450f;JumlahMeshScan++; }
+                else if(j.nama=="Mahoni_0" && treeB0!=null && treeB1!=null && leaf!=null)
+                { j.lod0=treeB0;j.lod1=treeB1;j.kayu=bark;j.daun=leaf;j.jarakLod1=28f;j.jarakMaks=450f;JumlahMeshScan++; }
                 if(j.nama.StartsWith("Pakis_") && fern0!=null && fern1!=null && fern!=null)
                 { j.lod0=fern0;j.lod1=fern1;j.daun=fern;j.jarakLod1=18f;j.jarakMaks=65f;JumlahMeshScan++; }
             }
