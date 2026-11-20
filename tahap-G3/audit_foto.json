@@ -1,60 +1,60 @@
 {
-  "commit": "95abf54334995c4b37a1327b8e442319e6743366",
+  "commit": "f40c14ac61ccd9a478c721209c79cebfca70abab",
   "passed": true,
   "photos": [
     {
       "shot": "g3_01_deden_wajah",
       "width": 960,
       "height": 540,
-      "p95": 0.529,
-      "variation": 0.1735,
+      "p95": 0.443,
+      "variation": 0.1473,
       "pink": 0.0,
-      "sha256": "fa0c59ce1a525296c3fd3439ff11ce2165510b0fa3c685402f27e309ff917e05"
+      "sha256": "effe8485db11a78b0ddc1c92e620aa090cb3086f6aa447279d8d418ed452f7c3"
     },
     {
       "shot": "g3_02_ningsih_wajah",
       "width": 960,
       "height": 540,
-      "p95": 0.5889,
-      "variation": 0.1943,
+      "p95": 0.5073,
+      "variation": 0.1754,
       "pink": 0.0,
-      "sha256": "5dc89d8681b823e9e32eb8a75ffd8bca1982e33bdbc7ac08eb597358bf99a1f9"
+      "sha256": "811e6bcef08f7ef7844dec60d914e08514c8d8518afa3b17d6e758346ee95dd2"
     },
     {
       "shot": "g3_03_hutan_malam",
       "width": 960,
       "height": 540,
-      "p95": 0.2557,
-      "variation": 0.088,
+      "p95": 0.1752,
+      "variation": 0.0666,
       "pink": 0.0,
-      "sha256": "2b6de741ad86f57082b6d225e20cc19d14128a7a2223ac339b5e9c10763012e7"
+      "sha256": "9fc90a97161540623a55ee91c7502c6657f4d884721c93b1dc44c3b6c204afa0"
     },
     {
       "shot": "g3_04_lantai_hutan",
       "width": 960,
       "height": 540,
-      "p95": 0.1962,
-      "variation": 0.0638,
+      "p95": 0.2526,
+      "variation": 0.0777,
       "pink": 0.0,
-      "sha256": "7d5a41b7b806a7a9ee5a8e8d52de6c8c8279e49e988c4e0264032471015c3c30"
+      "sha256": "78ebb4490531bde7ceaaa3956fa4d39daadfc08a6f3d52d31f0c7490f995a43f"
     },
     {
       "shot": "t10_01_gua_lumut",
       "width": 960,
       "height": 540,
-      "p95": 0.0828,
-      "variation": 0.0663,
+      "p95": 0.2814,
+      "variation": 0.0986,
       "pink": 0.0,
-      "sha256": "a9048230002f68cba5a20d00cd366cc0ac69c2295436881857a10aafa59dc785"
+      "sha256": "a794c1cf0441aa591497e3501febf1170be7dc375ad97be52beb0cf02f9bdf2e"
     },
     {
       "shot": "t10_02_kubah_akar_boss",
       "width": 960,
       "height": 540,
-      "p95": 0.067,
-      "variation": 0.0411,
+      "p95": 0.3074,
+      "variation": 0.1043,
       "pink": 0.0,
-      "sha256": "2f9688c321d933319511f15a2f3dda510f03f2e12161ed809fa5ac7b204a6fec"
+      "sha256": "7fbc4d2ded130f70e0b11d249940896a0f052ac2017ad8b175151d5cd04d4431"
     }
   ],
   "errors": [],

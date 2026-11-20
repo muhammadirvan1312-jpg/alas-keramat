@@ -3,7 +3,7 @@ PlayMode CI; bukan benchmark HP
 [LULUS] Menu awal dapat ditutup tanpa jeda tertinggal
 [LULUS] Zona kedua jari tersambung
 [LULUS] Raycast UI benar-benar mencapai analog dan area POV
-[LULUS] Analog setengah rentang memindahkan kapsul nyata (2.11 m)
+[LULUS] Analog setengah rentang memindahkan kapsul nyata (2.08 m)
 [LULUS] Jari kanan memutar POV sambil jari kiri berjalan
 [LULUS] Tas menjeda dunia dan membuang input yang masih ditahan
 [LULUS] Menutup tas tidak membatalkan menu Jeda
