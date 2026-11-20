@@ -11,18 +11,30 @@ namespace AlasKeramat.EditorTools
         {
             var v=new List<Vector3>();var n=new List<Vector3>();var uv=new List<Vector2>();var c=new List<Color>();var t=new List<int>();
             var r=new System.Random(2026);
-            for(int i=0;i<14;i++)
+            for(int i=0;i<5;i++)
             {
-                float a=i*(Mathf.PI*2f/14f)+(float)r.NextDouble()*0.3f;
-                float ox=Mathf.Cos(a)*(0.05f+(float)r.NextDouble()*0.25f),oz=Mathf.Sin(a)*(0.05f+(float)r.NextDouble()*0.25f);
-                float rot=a+(float)r.NextDouble()*0.6f,h=0.16f+(float)r.NextDouble()*0.24f,w=0.08f+(float)r.NextDouble()*0.09f;
+                float a=i*(Mathf.PI*2f/5f)+(float)r.NextDouble()*0.35f;
+                float ox=Mathf.Cos(a)*0.12f,oz=Mathf.Sin(a)*0.12f;
+                float rot=a+0.4f+(float)r.NextDouble()*0.5f,h=0.34f+(float)r.NextDouble()*0.28f,w=0.18f+(float)r.NextDouble()*0.08f;
                 Vector3 side=new Vector3(Mathf.Cos(rot)*w,0f,Mathf.Sin(rot)*w);
-                Vector3 lean=new Vector3(-Mathf.Sin(rot),0f,Mathf.Cos(rot))*(0.04f+(float)r.NextDouble()*0.08f);
-                Vector3 p=new Vector3(ox,-0.04f,oz);int bi=v.Count;
-                v.Add(p-side);v.Add(p+side);v.Add(p+Vector3.up*h+lean+side*0.35f);v.Add(p+Vector3.up*h+lean-side*0.35f);
-                for(int k=0;k<4;k++) { n.Add(Vector3.up);c.Add(k<2?new Color(0.55f,0.62f,0.52f,1f):Color.white); }
-                uv.Add(new Vector2(0f,0f));uv.Add(new Vector2(1f,0f));uv.Add(new Vector2(1f,1f));uv.Add(new Vector2(0f,1f));
-                t.Add(bi);t.Add(bi+2);t.Add(bi+1);t.Add(bi);t.Add(bi+3);t.Add(bi+2);
+                Vector3 lean=new Vector3(-Mathf.Sin(rot),0f,Mathf.Cos(rot))*(0.14f+(float)r.NextDouble()*0.14f);
+                Vector3 p0=new Vector3(ox,-0.03f,oz);
+                Vector3 p1=p0+Vector3.up*(h*0.52f)+lean*0.35f;
+                Vector3 p2=p0+Vector3.up*h+lean;
+                int bi=v.Count;
+                v.Add(p0-side); v.Add(p0+side);
+                v.Add(p1-side*0.85f); v.Add(p1+side*0.85f);
+                v.Add(p2-side*0.45f); v.Add(p2+side*0.45f);
+                for(int k=0;k<6;k++)
+                {
+                    n.Add(Vector3.up);
+                    c.Add(k<2?new Color(0.76f,0.84f,0.68f,1f):k<4?new Color(0.90f,0.94f,0.84f,1f):Color.white);
+                }
+                uv.Add(new Vector2(0f,0f));uv.Add(new Vector2(1f,0f));
+                uv.Add(new Vector2(0f,0.52f));uv.Add(new Vector2(1f,0.52f));
+                uv.Add(new Vector2(0f,1f));uv.Add(new Vector2(1f,1f));
+                t.Add(bi);t.Add(bi+2);t.Add(bi+1);t.Add(bi+1);t.Add(bi+2);t.Add(bi+3);
+                t.Add(bi+2);t.Add(bi+4);t.Add(bi+3);t.Add(bi+3);t.Add(bi+4);t.Add(bi+5);
             }
             var m=new Mesh { name="RumputHutan" };
             m.SetVertices(v);m.SetNormals(n);m.SetUVs(0,uv);m.SetColors(c);m.SetTriangles(t,0);
@@ -33,15 +45,17 @@ namespace AlasKeramat.EditorTools
         static Mesh MeshBatuAlam()
         {
             var go=GameObject.CreatePrimitive(PrimitiveType.Sphere);var src=go.GetComponent<MeshFilter>().sharedMesh;
-            var sv=src.vertices;var sn=src.normals;
+            var sv=src.vertices;var cols=new Color[sv.Length];
             for(int i=0;i<sv.Length;i++)
             {
                 Vector3 p=sv[i];
                 float d=0.75f+0.42f*Mathf.PerlinNoise(p.x*2.4f+3.1f,p.z*2.4f+1.7f)+0.18f*Mathf.PerlinNoise(p.y*3.2f,p.x*1.9f);
                 sv[i]=new Vector3(p.x*d,p.y*d*0.62f,p.z*d);
+                float lumut=Mathf.Clamp01(p.y*1.4f+0.25f);
+                cols[i]=Color.Lerp(Color.white,new Color(0.72f,0.84f,0.62f,1f),lumut*0.65f);
             }
             var m=new Mesh { name="BatuHutan" };
-            m.vertices=sv;m.uv=src.uv;m.triangles=src.triangles;
+            m.vertices=sv;m.uv=src.uv;m.colors=cols;m.triangles=src.triangles;
             Object.DestroyImmediate(go);
             m.RecalculateNormals();m.RecalculateTangents();m.RecalculateBounds();
             AssetDatabase.CreateAsset(m,FolderMesh+"/BatuHutan.asset");return m;
@@ -71,22 +85,22 @@ namespace AlasKeramat.EditorTools
             {
                 float u=(float)x/sz,v=(float)y/sz;
                 float helai=0f;
-                for(int k=0;k<7;k++)
+                for(int k=0;k<11;k++)
                 {
-                    float cx=0.14f+k*0.12f+0.04f*Mathf.Sin(v*3.2f+k);
-                    float w=Mathf.Lerp(0.055f,0.004f,v);
+                    float cx=0.09f+k*0.082f+0.045f*Mathf.Sin(v*3.4f+k*1.3f);
+                    float w=Mathf.Lerp(0.068f,0.006f,Mathf.Pow(v,0.85f));
                     float d=Mathf.Clamp01(1f-Mathf.Abs(u-cx)/Mathf.Max(0.002f,w));
-                    if(v<0.96f-k%3*0.08f)helai=Mathf.Max(helai,d*2.2f);
+                    if(v<0.96f-(k%3)*0.09f)helai=Mathf.Max(helai,d*2.4f);
                 }
-                float g=0.65f+0.35f*Mathf.PerlinNoise(u*16f,v*16f);
-                Color col=Color.Lerp(new Color(0.14f,0.24f,0.09f),new Color(0.32f,0.47f,0.16f),v)*g;
+                float g=0.75f+0.25f*Mathf.PerlinNoise(u*16f,v*16f);
+                Color col=Color.Lerp(new Color(0.18f,0.34f,0.11f),new Color(0.44f,0.62f,0.22f),v)*g;
                 col.a=Mathf.Clamp01(helai);px[y*sz+x]=col;
             }
             t.SetPixels(px);t.Apply();
             string pt=FolderVeg+"/rumput_helai.png";SimpanPng(t,pt);AssetDatabase.ImportAsset(pt);AturImpor(pt,false,false,sz);
             var imp=(TextureImporter)AssetImporter.GetAtPath(pt);imp.alphaIsTransparency=true;imp.mipMapsPreserveCoverage=true;imp.SaveAndReimport();
             var tex=AssetDatabase.LoadAssetAtPath<Texture2D>(pt);
-            return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_RumputHutan",Color.white,0f,0.18f,tex,null,null,SurfaceMode.Cutout,0.38f),ShaderDaun,0.03f,0.5f));
+            return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_RumputHutan",Color.white,0f,0.22f,tex,null,null,SurfaceMode.Cutout,0.32f),ShaderDaun,0.04f,0.65f));
         }
 
         public static bool DekorasiMenutupAwal(float x,float z)
@@ -99,7 +113,7 @@ namespace AlasKeramat.EditorTools
 
         static void BuatSerasahHutan()
         {
-            const int sisiSel=32,calon=240;
+            const int sisiSel=32,calon=180;
             var batu=MeshBatuAlam();var kayu=MeshKayuTumbang();var rumput=MeshRumputHutan();
             var mBatu=AssetDatabase.LoadAssetAtPath<Material>(FolderMat+"/M_Batu.mat");
             var mKayu=AssetDatabase.LoadAssetAtPath<Material>(FolderMat+"/M_KulitPohon.mat");

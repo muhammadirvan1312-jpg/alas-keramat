@@ -11,7 +11,7 @@ namespace AlasKeramat.EditorTools
     {
         public const string FolderTerrain = FolderGen + "/Terrain";
         public const int ResolusiHeight = 1025, ResolusiSplat = 512;
-        const float UkuranUbin = 6f, LerengTanah = 28f, LerengBatu = 40f;
+        const float UkuranUbin = 6f, LerengTanah = 35f, LerengBatu = 46f;
         const float UkuranLaut = 6000f, LebarSungaiTambah = 1f, LangkahSungai = 4f;
 
         // Urutan lapisan terrain.
@@ -104,8 +104,9 @@ namespace AlasKeramat.EditorTools
             var t = go.GetComponent<Terrain>();
             t.materialTemplate = mat;
             t.drawInstanced = true;
-            t.heightmapPixelError = 5f;
-            t.basemapDistance = 160f;
+            t.heightmapPixelError = 10f;
+            t.basemapDistance = 120f;
+            t.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             return t;
         }
 
@@ -162,15 +163,15 @@ namespace AlasKeramat.EditorTools
                 case (int)Biome.TebingKapur: w[L_Batu] = 0.6f; w[L_Rumput] = 0.4f; break;
                 case (int)Biome.SawitTerbakar: w[L_Lumpur] = 0.5f; w[L_Tanah] = 0.5f; break;
                 case (int)Biome.Desa: w[L_Tanah] = 0.4f; w[L_Rumput] = 0.6f; break;
-                case (int)Biome.HutanBambu: w[L_Daun] = 0.5f; w[L_Rumput] = 0.5f; break;
-                case (int)Biome.TepiSungai: w[L_Lumpur] = 0.35f; w[L_Rumput] = 0.65f; break;
-                case (int)Biome.HutanJatiSelatan: w[L_Daun] = 0.44f; w[L_Rumput] = 0.44f; w[L_Tanah] = 0.12f; break;
+                case (int)Biome.HutanBambu: w[L_Daun] = 0.42f; w[L_Rumput] = 0.58f; break;
+                case (int)Biome.TepiSungai: w[L_Lumpur] = 0.26f; w[L_Rumput] = 0.74f; break;
+                case (int)Biome.HutanJatiSelatan: w[L_Daun] = 0.34f; w[L_Rumput] = 0.56f; w[L_Tanah] = 0.10f; break;
                 case 11: w[L_Lumpur] = 0.8f; w[L_Daun] = 0.2f; break;      // Rawa Bakau
                 case 12: w[L_Tanah] = 0.7f; w[L_Batu] = 0.3f; break;       // Pabrik Gula
                 case 13: w[L_Batu] = 0.5f; w[L_Rumput] = 0.5f; break;      // Gunung Kapur
                 case 14: w[L_Rumput] = 0.6f; w[L_Tanah] = 0.4f; break;     // Ladang Tebu
                 case 15: w[L_Daun] = 0.7f; w[L_Lumpur] = 0.3f; break;      // Alas Wingit
-                default: w[L_Rumput] = 0.55f; w[L_Daun] = 0.45f; break;    // Hutan Campuran
+                default: w[L_Rumput] = 0.62f; w[L_Daun] = 0.38f; break;    // Hutan Campuran
             }
         }
 

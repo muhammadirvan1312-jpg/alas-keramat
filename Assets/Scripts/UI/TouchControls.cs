@@ -15,7 +15,11 @@ namespace AlasKeramat.UI
         [SerializeField] GameObject tombolObor;
         [SerializeField] GameObject tombolLempar, tombolMode;
         [SerializeField] UnityEngine.UI.Image progresTangan;
+        [SerializeField] UnityEngine.UI.Image crosshairDot;
+        [SerializeField] GameObject promptBanner;
+        [SerializeField] UnityEngine.UI.Text promptBannerTeks;
         public void PasangProgres(UnityEngine.UI.Image cincin) { progresTangan = cincin; }
+        public void PasangCrosshair(UnityEngine.UI.Image dot, GameObject banner, UnityEngine.UI.Text teksBanner) { crosshairDot = dot; promptBanner = banner; promptBannerTeks = teksBanner; }
         AlasKeramat.Building.ShoulderLogAndFreeformBuilder _pembangun;
         public const float AlphaTanganRedup = 0.35f, AlphaTanganAktif = 0.95f, DenyutTangan = 3f;
 
@@ -77,10 +81,17 @@ namespace AlasKeramat.UI
             {
                 _promptTampil = _interaksi.Prompt;
                 labelTangan.text = _promptTampil;
+                if (promptBannerTeks != null) promptBannerTeks.text = _promptTampil;
+            }
+            bool ada = _interaksi != null && _interaksi.AdaTarget;
+            if (promptBanner != null && promptBanner.activeSelf != ada) promptBanner.SetActive(ada);
+            if (crosshairDot != null)
+            {
+                crosshairDot.color = ada ? new Color(0.95f, 0.76f, 0.31f, 0.98f) : new Color(0.96f, 0.95f, 0.92f, 0.78f);
+                crosshairDot.rectTransform.localScale = ada ? Vector3.one * 1.45f : Vector3.one;
             }
             if (tombolTangan != null)
             {
-                bool ada = _interaksi != null && _interaksi.AdaTarget;
                 if (tombolTangan.gameObject.activeSelf != ada) tombolTangan.gameObject.SetActive(ada);
                 var c = tombolTangan.color;
                 c.a = ada ? AlphaTanganAktif - 0.15f * (0.5f + 0.5f * Mathf.Sin(Time.time * DenyutTangan * Mathf.PI * 2f)) : AlphaTanganRedup;
@@ -94,7 +105,7 @@ namespace AlasKeramat.UI
             if (_pembangun == null) _pembangun = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>();
             bool bawa = _pembangun != null && _pembangun.Jumlah > 0;
             if (tombolLempar != null && tombolLempar.activeSelf != bawa) tombolLempar.SetActive(bawa);
-            bool gel = _pembangun != null && (bawa || (_interaksi != null && _interaksi.MelihatStruktur));
+            bool gel = _pembangun != null && (bawa || _pembangun.ModeCelah || (_interaksi != null && _interaksi.MelihatStruktur));
             if (tombolMode != null && tombolMode.activeSelf != gel) tombolMode.SetActive(gel);
             _tObor += Time.deltaTime;
             if (tombolObor != null && _kiri != null && _tObor > 0.5f)

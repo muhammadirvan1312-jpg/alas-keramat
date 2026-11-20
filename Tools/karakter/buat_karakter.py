@@ -247,23 +247,15 @@ def add_deden_accessories(clothes,base):
     pb=PartBuilder()
     head_w={4:1.0}
     rings=[]
-    for ri,y,rad_s in [(0,7.42,1.04),(1,7.58,1.07),(2,7.76,1.06),(3,7.92,1.01)]:
+    for ri,y,rad_s in [(0,7.46,1.02),(1,7.58,1.04),(2,7.71,1.03),(3,7.82,1.00)]:
         pts=[]
         for s in range(29):
             a=s*2.0*math.pi/28
-            dy=-0.06*math.cos(a) if ri<2 else 0.0
-            rx=0.80*rad_s;rz=0.98*rad_s
+            dy=-0.04*math.cos(a) if ri<2 else 0.0
+            rx=0.77*rad_s;rz=0.95*rad_s
             pts.append(Vector((math.sin(a)*rx,y+dy,0.34+math.cos(a)*rz)))
         rings.append((pts,head_w))
-    pb.tube(rings,28,(0.91,0.04,0.07,0.42),closed=False)
-    ear_rings=[]
-    for ri,dy,r_s in [(0,-0.28,0.72),(1,-0.10,1.0),(2,0.10,1.0),(3,0.28,0.72)]:
-        pts=[]
-        for s in range(15):
-            a=s*2.0*math.pi/14
-            pts.append(Vector((-0.82-math.cos(a)*0.15*r_s,7.24+dy,0.38+math.sin(a)*0.24*r_s)))
-        ear_rings.append((pts,head_w))
-    pb.tube(ear_rings,14,(0.91,0.54,0.07,0.42),closed=True)
+    pb.tube(rings,28,(0.91,0.54,0.07,0.42),closed=False)
     return append_part(clothes,pb.build())
 
 def add_kirogo_blangkon(clothes,base):
@@ -282,13 +274,25 @@ def add_kirogo_blangkon(clothes,base):
     return append_part(clothes,pb.build())
 
 def add_kantil(hair):
+    hair=remap_u(hair,0.88,0.0)
     pb=PartBuilder();hw={4:1.0}
+    uv_rambut=(0.40,0.80,0.12,0.14)
+    # Volume rambut mahkota & pelipis membingkai wajah agar tidak tampak botak dari depan.
+    for cx,cy,cz,rx,ry,rz in [(0.0,7.94,0.22,0.84,0.56,0.92),(-0.66,7.48,0.34,0.24,0.56,0.46),(0.66,7.48,0.34,0.24,0.56,0.46)]:
+        crown=[(ring_ellipse(cx,cy+dy*ry,cz,rx*rs,rz*rs,20),hw) for dy,rs in [(-0.6,0.68),(0.0,1.0),(0.55,0.84),(0.92,0.42)]]
+        pb.tube(crown,20,uv_rambut,closed=True)
+    for side in (-1.0,1.0):
+        part=[(ring_ellipse(side*(0.24+t*0.42),8.12-t*0.72,0.98-t*0.26,0.22*(1.0-0.3*t),0.14*(1.0-0.2*t),12),hw) for t in (0.0,0.4,0.8,1.0)]
+        pb.tube(part,12,uv_rambut,closed=True)
+    # Sanggul konde Jawa padat di belakang kepala + 3 kuncup melati kantil putih.
+    bun=[(ring_ellipse(0.0,7.20+math.sin(t*math.pi)*0.04,-0.78-t*0.58,0.52*math.sin(t*math.pi*0.85+0.25),0.46*math.sin(t*math.pi*0.85+0.25),20),hw) for t in (0.0,0.28,0.62,0.90,1.0)]
+    pb.tube(bun,20,uv_rambut,closed=True)
     for k in range(3):
-        by=7.18-k*0.14;bz=-0.52-k*0.03;bx=-0.58
+        by=7.22-k*0.14;bz=-0.76-k*0.04;bx=-0.56
         pts=[]
-        for ri,dy,r in [(0,0.0,0.02),(1,-0.08,0.07),(2,-0.17,0.04),(3,-0.22,0.01)]:
+        for ri,dy,r in [(0,0.0,0.025),(1,-0.08,0.078),(2,-0.17,0.045),(3,-0.23,0.012)]:
             pts.append((ring_ellipse(bx,by+dy,bz,r,r,8),hw))
-        pb.tube(pts,8,(0.4,0.4,0.2,0.2),closed=True)
+        pb.tube(pts,8,(0.90,0.12,0.07,0.75),closed=True)
     return append_part(hair,pb.build())
 
 def add_topeng(shoes,base,male=True):

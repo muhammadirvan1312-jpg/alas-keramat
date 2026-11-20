@@ -223,8 +223,8 @@ namespace AlasKeramat.EditorTools
                 }
                 else if(j==J.Tuyul)
                 {
-                    Color imp=new Color(0.42f,0.52f,0.38f)*Mathf.Lerp(0.4f,1.25f,lum);
-                    px[i]=Color.Lerp(imp,new Color(0.20f,0.26f,0.19f),veins*0.5f+Mathf.Max(0f,n-0.5f)*0.5f);
+                    Color imp=new Color(0.26f,0.28f,0.22f)*Mathf.Lerp(0.4f,1.15f,lum);
+                    px[i]=Color.Lerp(imp,new Color(0.11f,0.13f,0.10f),veins*0.55f+Mathf.Max(0f,n-0.45f)*0.55f);
                 }
                 else if(j==J.HantuAir)
                 {
@@ -285,7 +285,7 @@ namespace AlasKeramat.EditorTools
             if(j==J.Genderuwo || j==J.Kuyang)
                 return SafeMaterialFactory.CreatePBR("M_Tanduk_"+j,ProcTex.Hex("#82705A"),0.05f,0.38f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/tanah.png"),AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/tanah_n.png"));
             if(j==J.Kuntilanak || j==J.Tuyul || j==J.HantuAir)
-                return SafeMaterialFactory.CreatePBR("M_Kaki_"+j,j==J.Tuyul?ProcTex.Hex("#50604A"):ProcTex.Hex("#6C706E"),0f,0.25f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/tanah.png"));
+                return SafeMaterialFactory.CreatePBR("M_Kaki_"+j,j==J.Tuyul?ProcTex.Hex("#30382C"):ProcTex.Hex("#6C706E"),0f,0.25f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/tanah.png"));
             if(j>=J.AbdiSekte && j<=J.PemimpinPatroli)
             {
                 var shoeSrc=BacaReadableKarakter("Assets/ThirdParty/Characters/System/clothes/shoes01/shoes01_diffuse.png");
@@ -326,9 +326,29 @@ namespace AlasKeramat.EditorTools
                 SafeMaterialFactory.SetF(m,"_Cull",0f);return m;
             }
             if(j==J.Pocong || j==J.Tuyul)
-                return SafeMaterialFactory.CreatePBR("M_Rambut_"+j,j==J.Tuyul?ProcTex.Hex("#5E6E58"):ProcTex.Hex("#8D8472"),0f,0.15f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kain.png"),null,null,SurfaceMode.Opaque);
-            Color tint=j==J.KiRogo?new Color(0.95f,0.94f,0.92f):new Color(0.86f,0.82f,0.79f);
-            var mr=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,tint,0f,0.34f,TeksturKarakter("hair/"+hair+"/"+hair+"_diffuse.png"),null,null,SurfaceMode.Cutout,0.35f);
+                return SafeMaterialFactory.CreatePBR("M_Rambut_"+j,j==J.Tuyul?ProcTex.Hex("#364032"):ProcTex.Hex("#8D8472"),0f,0.15f,AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kain.png"),null,null,SurfaceMode.Opaque);
+            Texture2D htex=TeksturKarakter("hair/"+hair+"/"+hair+"_diffuse.png");
+            if(j==J.Ningsih)
+            {
+                var hsrc=BacaReadableKarakter("Assets/ThirdParty/Characters/System/hair/"+hair+"/"+hair+"_diffuse.png");
+                if(hsrc!=null)
+                {
+                    int w=hsrc.width,h=hsrc.height;var px=new Color[w*h];
+                    for(int y=0;y<h;y++)for(int x=0;x<w;x++)
+                    {
+                        float u=(float)x/w,v=(float)y/h;
+                        if(u>=0.88f) px[y*w+x]=new Color(0.95f,0.93f,0.85f,1f);
+                        else { Color c=hsrc.GetPixelBilinear(Mathf.Clamp01(u/0.88f),v); px[y*w+x]=new Color(c.r*0.72f,c.g*0.72f,c.b*0.72f,c.a); }
+                    }
+                    var t=new Texture2D(w,h,TextureFormat.RGBA32,true);t.SetPixels(px);t.Apply();
+                    string pn=FolderKarakter+"/Rambut_Ningsih.png";SimpanPng(t,pn);AssetDatabase.ImportAsset(pn);AturImpor(pn,false,false,1024);
+                    var imp=(TextureImporter)AssetImporter.GetAtPath(pn);imp.alphaIsTransparency=true;imp.mipMapsPreserveCoverage=true;imp.SaveAndReimport();
+                    htex=AssetDatabase.LoadAssetAtPath<Texture2D>(pn);
+                }
+            }
+            Color tint=j==J.KiRogo?new Color(0.95f,0.94f,0.92f):j==J.Ningsih?Color.white:new Color(0.86f,0.82f,0.79f);
+            float cutoff=j==J.Ningsih?0.18f:0.35f;
+            var mr=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,tint,0f,0.34f,htex,null,null,SurfaceMode.Cutout,cutoff);
             SafeMaterialFactory.SetF(mr,"_Cull",0f);return mr;
         }
 
@@ -389,7 +409,8 @@ namespace AlasKeramat.EditorTools
                     float grain=0.93f+0.07f*Mathf.PerlinNoise(u*300f,v*300f);
                     if(!skirt)
                     {
-                        Color kebaya=j==J.Penyerupa?new Color(0.68f,0.68f,0.64f):new Color(0.95f,0.92f,0.85f);
+                        float brokat=Mathf.PerlinNoise(ou*95f,v*95f)*0.06f;
+                        Color kebaya=j==J.Penyerupa?new Color(0.68f,0.68f,0.64f):new Color(0.95f,0.92f,0.85f)*(1f-brokat);
                         Color col=kebaya*Mathf.Lerp(0.94f,1.04f,lum)*Mathf.Lerp(0.8f,1f,ao)*grain;
                         col.a=1f;px[y*w+x]=col;
                     }
@@ -456,9 +477,9 @@ namespace AlasKeramat.EditorTools
                 return AssetDatabase.LoadAssetAtPath<Texture2D>(pK);
             }
 
-            Color tone=j==J.Deden?new Color(0.84f,0.38f,0.10f):j==J.KiRogo?new Color(0.14f,0.12f,0.11f):
+            Color tone=j==J.Deden?new Color(0.82f,0.36f,0.11f):j==J.KiRogo?new Color(0.14f,0.12f,0.11f):
                 j==J.PemimpinPatroli?new Color(0.48f,0.12f,0.09f):j==J.AbdiLumpur?new Color(0.24f,0.20f,0.15f):
-                j>=J.AbdiSekte?new Color(0.30f,0.26f,0.21f):new Color(0.46f,0.44f,0.28f);
+                j>=J.AbdiSekte?new Color(0.30f,0.26f,0.21f):new Color(0.38f,0.39f,0.26f);
             bool remapped=j==J.Deden || j==J.KiRogo;
             var nBase=(j==J.Deden || j==J.KiRogo)?BacaReadableKarakter("Assets/ThirdParty/Characters/System/clothes/"+suit+"/"+suit+"_normal.png"):null;
             var npix2=remapped?new Color[w*h]:null;

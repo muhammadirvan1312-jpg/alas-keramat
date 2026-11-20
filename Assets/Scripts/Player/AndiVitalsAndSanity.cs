@@ -95,6 +95,10 @@ namespace AlasKeramat.Player
             return true;
         }
 
+        Biome _cacheBiome;
+        bool _cacheApi, _cacheAtap, _cacheApiTerang;
+        float _tCacheLingk = -1f;
+
         void Update()
         {
             try
@@ -102,6 +106,15 @@ namespace AlasKeramat.Player
                 if (_jam == null) _jam = GameServices.Get<TimeOfDayClock>();
                 if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
                 if (!IsAlive) { TungguBangkit(Time.deltaTime); return; }
+                _tCacheLingk -= Time.deltaTime;
+                if (_tCacheLingk <= 0f)
+                {
+                    _tCacheLingk = 0.25f;
+                    _cacheApi = Building.ApiUnggun.AdaApiDekat(transform.position, Building.ApiUnggun.JarakHangat);
+                    _cacheAtap = CekAtap();
+                    _cacheApiTerang = Building.ApiUnggun.AdaApiDekat(transform.position, 6f);
+                    _cacheBiome = WorldTerrainGenerator.GetBiome(transform.position.x, transform.position.z);
+                }
                 var k = new Keadaan
                 {
                     jam = _jam != null ? _jam.Jam : TimeOfDayClock.JamMulai,
@@ -111,10 +124,10 @@ namespace AlasKeramat.Player
                     renang = _ctrl != null && _ctrl.Berenang,
                     renangCepat = _ctrl != null && _ctrl.Berenang && _ctrl.SedangLari,
                     napasHabis = _ctrl != null && _ctrl.Berenang && _ctrl.Napas <= 0f,
-                    dekatApi = _dekatApi || Building.ApiUnggun.AdaApiDekat(transform.position, Building.ApiUnggun.JarakHangat),
-                    berteduh = _berteduh || CekAtap(),
-                    cahaya = _dekatApi || Building.ApiUnggun.AdaApiDekat(transform.position, 6f) || (_kiri != null && _kiri.OborMenyala),
-                    biome = WorldTerrainGenerator.GetBiome(transform.position.x, transform.position.z)
+                    dekatApi = _dekatApi || _cacheApi,
+                    berteduh = _berteduh || _cacheAtap,
+                    cahaya = _dekatApi || _cacheApiTerang || (_kiri != null && _kiri.OborMenyala),
+                    biome = _cacheBiome
                 };
                 Tick(k, Time.deltaTime);
                 if (_ctrl != null) _ctrl.LariDiblokir = StaminaHabis || Stamina < 1f;

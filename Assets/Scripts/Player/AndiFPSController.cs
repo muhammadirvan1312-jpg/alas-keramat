@@ -14,7 +14,7 @@ namespace AlasKeramat.Player
         public const float VLompat = 4.8f, Gravitasi = 18f, Coyote = 0.12f;
         public const float TinggiKapsul = 1.8f, TinggiJongkok = 1.1f, Radius = 0.32f, BatasLereng = 42f, LangkahTangga = 0.35f;
         public const float MataBerdiri = 1.65f, MataJongkok = 0.95f, PitchMaks = 80f;
-        public const float SensH = 0.12f, SensV = 0.10f, SensMouse = 2.2f;
+        public const float SensH = 0.22f, SensV = 0.17f, SensMouse = 2.2f;
         public const float BobV = 0.035f, BobL = 0.02f, FrekBob = 1.9f;
         public const float AirMinRenang = 1.3f, MataDiBawahAir = 0.25f, NapasNormal = 25f, PitchSelam = -25f, Apung = 2.5f;
         public const float JatuhAman = 6f, JatuhMati = 18f, DamagePerMeter = 7f;
@@ -123,8 +123,10 @@ namespace AlasKeramat.Player
         void LateUpdate()
         {
             if (kamera == null || AlasKeramat.UI.PengunciInput.Terblokir) { InputLihatPx = Vector2.zero; _akhirGuncang = 0f; return; }
-            _yaw += InputLihatPx.x * SensH * PengaliSensitivitas;
-            _pitch = Mathf.Clamp(_pitch - InputLihatPx.y * SensV * PengaliSensitivitas * (BalikY ? -1f : 1f), -PitchMaks, PitchMaks);
+            float kecGeser = InputLihatPx.magnitude;
+            float kurva = kecGeser > 12f ? 1f + Mathf.Clamp01((kecGeser - 12f) / 55f) * 0.7f : 1f;
+            _yaw += InputLihatPx.x * kurva * SensH * PengaliSensitivitas;
+            _pitch = Mathf.Clamp(_pitch - InputLihatPx.y * kurva * SensV * PengaliSensitivitas * (BalikY ? -1f : 1f), -PitchMaks, PitchMaks);
             InputLihatPx = Vector2.zero;
             transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
             float targetMata = Jongkok ? MataJongkok : MataBerdiri;

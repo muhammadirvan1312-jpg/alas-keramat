@@ -126,10 +126,10 @@ for name in ['island_tree_01','fern_02']:
     bpy.ops.import_scene.fbx(filepath=str(path))
     objects=[o for o in bpy.data.objects if o.type=='MESH']
     if name=='island_tree_01':
-        write_mesh(OUT/'PohonScan_LOD0.bytes',objects,14000,True,0.0)
-        write_mesh(OUT/'PohonScan_LOD1.bytes',objects,2200,True,0.0)
-        write_mesh(OUT/'PohonScanB_LOD0.bytes',objects,12500,True,0.65)
-        write_mesh(OUT/'PohonScanB_LOD1.bytes',objects,2000,True,0.65)
+        write_mesh(OUT/'PohonScan_LOD0.bytes',objects,5200,True,0.0)
+        write_mesh(OUT/'PohonScan_LOD1.bytes',objects,950,True,0.0)
+        write_mesh(OUT/'PohonScanB_LOD0.bytes',objects,4800,True,0.65)
+        write_mesh(OUT/'PohonScanB_LOD1.bytes',objects,900,True,0.65)
     else:
-        write_mesh(OUT/'PakisScan_LOD0.bytes',objects[1:2],2200)
-        write_mesh(OUT/'PakisScan_LOD1.bytes',objects[1:2],400)
+        write_mesh(OUT/'PakisScan_LOD0.bytes',objects[1:2],680)
+        write_mesh(OUT/'PakisScan_LOD1.bytes',objects[1:2],180)

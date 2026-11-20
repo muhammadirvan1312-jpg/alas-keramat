@@ -30,7 +30,9 @@ namespace AlasKeramat.Player
             if (lampu == null) return;
             var inv = GameServices.Get<TikarPandan3DInventory>();
             bool punya = inv != null && inv.Punya(ItemID.SenterTaktis);
-            bool nyala = punya && WorldTerrainGenerator.DiBawahTanah(transform.position.y);
+            var jam = GameServices.Get<TimeOfDayClock>();
+            bool gelap = WorldTerrainGenerator.DiBawahTanah(transform.position.y) || (jam != null && (jam.Jam >= 18.5f || jam.Jam < 5.5f));
+            bool nyala = punya && gelap;
             if (lampu.enabled != nyala) lampu.enabled = nyala;
         }
     }

@@ -27,6 +27,7 @@ namespace AlasKeramat.EditorTools
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android, PackageId);
             PlayerSettings.colorSpace = ColorSpace.Linear;
             PlayerSettings.gpuSkinning = true;
+            PlayerSettings.bakeCollisionMeshes = true;
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.AutoRotation;
             PlayerSettings.allowedAutorotateToPortrait = false;
             PlayerSettings.allowedAutorotateToPortraitUpsideDown = false;
@@ -40,6 +41,7 @@ namespace AlasKeramat.EditorTools
             if (il2cpp)
             {
                 PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android, ScriptingImplementation.IL2CPP);
+                PlayerSettings.SetIl2CppCompilerConfiguration(NamedBuildTarget.Android, Il2CppCompilerConfiguration.Release);
                 PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
             }
             PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.Android, true);

@@ -61,7 +61,7 @@ namespace AlasKeramat.EditorTools
         // Area bebas vegetasi (pad POI v5): x, z, radius.
         static readonly Vector3[] AreaBebas =
         {
-            new Vector3(0f, -440f, 36f), new Vector3(56f, -376f, 24f), new Vector3(0f, -840f, 50f),
+            new Vector3(8f, -448f, 15f), new Vector3(56f, -376f, 24f), new Vector3(0f, -840f, 50f),
             new Vector3(0f, 0f, 22f), new Vector3(660f, -500f, 110f), new Vector3(0f, 690f, 14f),
         };
 
@@ -85,8 +85,8 @@ namespace AlasKeramat.EditorTools
             var palem = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/palem.png");
             var palemN = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/palem_n.png");
             var matKulit = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_KulitPohon", Color.white, 0f, 0.18f, kulit, kulitN), ShaderKulit, 0.02f, 0f));
-            var matPalem = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangPalem", Color.white, 0f, 0.2f, palem != null ? palem : kulit, palemN != null ? palemN : kulitN), ShaderKulit, 0.035f, 0f));
-            var matBambu = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_Bambu", ProcTex.Hex("#4B6E2A"), 0f, 0.35f, AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu.png"), AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu_n.png")), ShaderKulit, 0.05f, 0f));
+            var matPalem = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangPalem", ProcTex.Hex("#7A7466"), 0f, 0.2f, palem != null ? palem : kulit, palemN != null ? palemN : kulitN), ShaderKulit, 0.035f, 0f));
+            var matBambu = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_Bambu", ProcTex.Hex("#3B5822"), 0f, 0.3f, AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu.png"), AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu_n.png")), ShaderKulit, 0.05f, 0f));
             var matHangus = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangHangus", ProcTex.Hex("#2A2420"), 0f, 0.1f, kulit, kulitN), ShaderKulit, 0.01f, 0f));
 
             var data = ScriptableObject.CreateInstance<VegetationData>();
@@ -103,7 +103,7 @@ namespace AlasKeramat.EditorTools
                     jenisList.Add(new VegetationData.JenisVeg
                     {
                         nama = jj + "_" + v, lod0 = m0, lod1 = m1, kayu = kayu, daun = jj == J.SawitHangus ? matDaunHangus : matDaun,
-                        jarakLod1 = semak ? 30f : 90f, jarakMaks = semak ? 110f : jj == J.Tebu ? 300f : 900f, bayangan = !semak
+                        jarakLod1 = semak ? 20f : 45f, jarakMaks = semak ? 70f : jj == J.Tebu ? 220f : 450f, bayangan = !semak
                     });
                 }
             data.jenis = jenisList.ToArray();
@@ -138,13 +138,23 @@ namespace AlasKeramat.EditorTools
             for (int i = 0; i < AreaBebas.Length; i++)
             {
                 float dx = x - AreaBebas[i].x, dz = z - AreaBebas[i].y;
-                float r = semak && i < 2 ? 9.5f : AreaBebas[i].z;
+                float r = semak && i == 0 ? 6.5f : semak && i == 1 ? 9.5f : AreaBebas[i].z;
                 if (dx * dx + dz * dz < r * r) return false;
             }
             if (semak)
             {
                 float dhx = x - 8f, dhz = z + 448f;
-                if (dhx * dhx + dhz * dhz < 8.5f * 8.5f) return false; // badan rongsokan heli saja
+                if (dhx * dhx + dhz * dhz < 7.5f * 7.5f) return false; // badan rongsokan heli saja
+            }
+            else
+            {
+                if ((x + 4f) * (x + 4f) + (z + 424f) * (z + 424f) < 16f) return false; // SpawnAndi
+                if ((x - 24f) * (x - 24f) + (z + 440f) * (z + 440f) < 12f) return false; // KangDeden
+                for (int k = 0; k < PosisiKoper.Length; k++)
+                {
+                    float kx = x - PosisiKoper[k].x, kz = z - PosisiKoper[k].z;
+                    if (kx * kx + kz * kz < 9f) return false;
+                }
             }
             return WorldTerrainGenerator.SampleSlopeDeg(x, z) <= LerengMaksVeg;
         }

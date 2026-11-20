@@ -36,7 +36,23 @@ namespace AlasKeramat.EditorTools
                 string nama=PasanganFoto[i,0],slot=PasanganFoto[i,1];
                 var a=BacaFoto(slot,"Albedo");var n=BacaFoto(slot,"Normal");var arm=BacaFoto(slot,"ARM");
                 if(a==null || n==null || arm==null) { Debug.LogWarning("[AK][CC0] Peta PBR belum lengkap: "+slot);continue; }
-                File.WriteAllBytes(FolderTex+"/"+nama+".png",a.EncodeToPNG());
+                if(nama=="rumput" || nama=="daun" || nama=="tanah")
+                {
+                    var apx=a.GetPixels();
+                    for(int p=0;p<apx.Length;p++)
+                    {
+                        Color c=apx[p];
+                        if(nama=="rumput") c=new Color(c.r*0.64f,Mathf.Clamp01(c.g*1.06f+0.03f),c.b*0.52f,1f);
+                        else if(nama=="daun") c=new Color(c.r*0.62f,c.g*0.72f,c.b*0.46f,1f);
+                        else c=new Color(c.r*0.76f,c.g*0.72f,c.b*0.64f,1f);
+                        apx[p]=c;
+                    }
+                    var graded=new Texture2D(a.width,a.height,TextureFormat.RGBA32,true);
+                    graded.SetPixels(apx);graded.Apply();
+                    File.WriteAllBytes(FolderTex+"/"+nama+".png",graded.EncodeToPNG());
+                    UnityEngine.Object.DestroyImmediate(graded);
+                }
+                else File.WriteAllBytes(FolderTex+"/"+nama+".png",a.EncodeToPNG());
                 File.WriteAllBytes(FolderTex+"/"+nama+"_n.png",n.EncodeToPNG());
                 var px=arm.GetPixels();
                 for(int p=0;p<px.Length;p++) { Color c=px[p];px[p]=new Color(c.b,c.r,0.5f,1f-c.g); }

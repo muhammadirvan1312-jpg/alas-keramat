@@ -20,8 +20,8 @@ namespace AlasKeramat.EditorTools
             JumlahLandmark = 0;
             Material kayu = AmbilMat("M_Kayu"), seng = AmbilMat("M_LogamKarat"), batu = AmbilMat("M_Batu");
             var bata = SimpanMat(SafeMaterialFactory.CreatePBR("M_Bata", ProcTex.Hex("#B0583E"), 0f, 0.15f, Tex("beton"), Tex("beton_n")));
-            var putih = SimpanMat(SafeMaterialFactory.CreatePBR("M_CatPutih", ProcTex.Hex("#E2DFD6"), 0.1f, 0.45f, Tex("beton")));
-            var oranye = SimpanMat(SafeMaterialFactory.CreatePBR("M_CatOranye", ProcTex.Hex("#D9661C"), 0.1f, 0.45f));
+            var putih = SimpanMat(SafeMaterialFactory.CreatePBR("M_CatPutih", ProcTex.Hex("#D4D1C8"), 0.22f, 0.26f, Tex("beton"), Tex("beton_n")));
+            var oranye = SimpanMat(SafeMaterialFactory.CreatePBR("M_CatOranye", ProcTex.Hex("#CC5618"), 0.18f, 0.28f, Tex("beton"), Tex("beton_n")));
             var merah = SimpanMat(SafeMaterialFactory.CreatePBR("M_CatMerahPudar", ProcTex.Hex("#8E3A30"), 0f, 0.3f, Tex("beton")));
             var gelap = SimpanMat(SafeMaterialFactory.CreatePBR("M_LogamGelap", ProcTex.Hex("#3A3B3D"), 0.7f, 0.35f));
             var hitam = SimpanMat(SafeMaterialFactory.CreatePBR("M_GelapGua", Color.black, 0f, 0f));
@@ -32,10 +32,58 @@ namespace AlasKeramat.EditorTools
             Taruh("BeringinAgung", Simpan(beringin), new[] { AmbilMat("M_KulitPohon"), AmbilMat("M_DaunPohon") }, 0f, 0f, 0f, new Vector3(2.6f, 2.2f, 2.6f), false);
             Taruh("Altar", Simpan(ProcBangunan.Altar()), new[] { batu }, 0f, -18f, 180f, Vector3.one, true);
 
-            // Zona 1: heli rusak (yaw 35, roll 18).
+            // Zona 1: heli rusak (yaw 35, roll 18) + bara turbin & asap kecelakaan.
             var heli = Taruh("HeliRusak", Simpan(ProcBangunan.HeliRusak()), new[] { putih, oranye, gelap }, 8f, -448f, 35f, Vector3.one, true);
             heli.transform.position += Vector3.up * 1.0f;
             heli.transform.rotation = Quaternion.Euler(0f, 35f, 18f);
+            var bara = Anak(heli, "BaraTurbin");
+            bara.transform.localPosition = new Vector3(0f, 1.45f, 1.3f);
+            var lBara = bara.AddComponent<Light>();
+            lBara.type = LightType.Point; lBara.range = 6f; lBara.intensity = 1.5f; lBara.color = ProcTex.Hex("#FF6418"); lBara.shadows = LightShadows.None;
+            const int ssz = 64;
+            var sTex = new Texture2D(ssz, ssz, TextureFormat.RGBA32, true);
+            var spx = new Color[ssz * ssz];
+            for (int sy = 0; sy < ssz; sy++) for (int sx = 0; sx < ssz; sx++)
+            {
+                float u = (float)sx / ssz - 0.5f, v = (float)sy / ssz - 0.5f;
+                float r = Mathf.Sqrt(u * u + v * v) * 2f;
+                float n = Mathf.PerlinNoise(sx * 0.14f + 2.3f, sy * 0.14f + 5.7f);
+                float a = Mathf.Clamp01(1f - r + (n - 0.45f) * 0.35f) * Mathf.SmoothStep(1f, 0.25f, r);
+                spx[sy * ssz + sx] = new Color(0.85f, 0.84f, 0.82f, a * a);
+            }
+            sTex.SetPixels(spx); sTex.Apply();
+            string pAsapTex = FolderLandmark + "/Tex_AsapHeli.png";
+            SimpanPng(sTex, pAsapTex); AssetDatabase.ImportAsset(pAsapTex); AturImpor(pAsapTex, false, false, ssz);
+            var simp = (TextureImporter)AssetImporter.GetAtPath(pAsapTex); simp.alphaIsTransparency = true; simp.wrapMode = TextureWrapMode.Clamp; simp.SaveAndReimport();
+            sTex = AssetDatabase.LoadAssetAtPath<Texture2D>(pAsapTex);
+            string pAsapMat = FolderMat + "/M_AsapHeli.mat";
+            AssetDatabase.DeleteAsset(pAsapMat);
+            var pSh = Shader.Find("Universal Render Pipeline/Particles/Unlit");
+            Material mAsap = pSh != null ? new Material(pSh) { name = "M_AsapHeli" }
+                : SafeMaterialFactory.CreatePBR("M_AsapHeli", new Color(0.22f, 0.21f, 0.20f, 0.45f), 0f, 0.05f, sTex, null, null, SurfaceMode.Transparent);
+            if (pSh != null)
+            {
+                SafeMaterialFactory.SetF(mAsap, "_Surface", 1f);
+                SafeMaterialFactory.SetF(mAsap, "_Blend", 0f);
+                SafeMaterialFactory.SetF(mAsap, "_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                SafeMaterialFactory.SetF(mAsap, "_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                SafeMaterialFactory.SetF(mAsap, "_ZWrite", 0f);
+                mAsap.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); mAsap.renderQueue = 3000;
+                SafeMaterialFactory.SetT(mAsap, "_BaseMap", sTex);
+                SafeMaterialFactory.SetC(mAsap, "_BaseColor", Color.white);
+            }
+            AssetDatabase.CreateAsset(mAsap, pAsapMat);
+            mAsap = AssetDatabase.LoadAssetAtPath<Material>(pAsapMat);
+            var pAsap = bara.AddComponent<ParticleSystem>();
+            var main = pAsap.main; main.startLifetime = 4.2f; main.startSpeed = 1.1f; main.startSize = 1.8f; main.startColor = new Color(0.16f, 0.15f, 0.14f, 0.42f); main.gravityModifier = -0.06f; main.maxParticles = 40;
+            var em = pAsap.emission; em.rateOverTime = 8f;
+            var shp = pAsap.shape; shp.shapeType = ParticleSystemShapeType.Sphere; shp.radius = 0.45f;
+            var col = pAsap.colorOverLifetime; col.enabled = true;
+            var grad = new Gradient();
+            grad.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(new Color(0.8f, 0.8f, 0.82f), 1f) },
+                new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(0.9f, 0.18f), new GradientAlphaKey(0f, 1f) });
+            col.color = grad;
+            var pr = pAsap.GetComponent<ParticleSystemRenderer>(); pr.sharedMaterial = mAsap; pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 
             // Zona 3: Desa Mati (6 rumah, dikali 2 dari 03).
             float[,] desa = { { 564, 224, 200, 0.3f }, { 524, 236, 180, 0.4f }, { 592, 176, 260, 0.3f }, { 544, 140, 330, 0.4f }, { 504, 200, 120, 0.85f }, { 580, 260, 210, 0.9f } };

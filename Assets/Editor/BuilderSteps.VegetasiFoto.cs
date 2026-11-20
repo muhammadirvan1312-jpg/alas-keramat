@@ -82,11 +82,11 @@ namespace AlasKeramat.EditorTools
             {
                 var j=data.jenis[i];
                 if((j.nama=="Mahoni_1" || j.nama=="Mahoni_2" || j.nama=="Jati_2") && tree0!=null && tree1!=null && leaf!=null)
-                { j.lod0=tree0;j.lod1=tree1;j.kayu=bark;j.daun=leaf;j.jarakLod1=42f;JumlahMeshScan++; }
+                { j.lod0=tree0;j.lod1=tree1;j.kayu=bark;j.daun=leaf;j.jarakLod1=26f;j.jarakMaks=420f;JumlahMeshScan++; }
                 else if((j.nama=="Mahoni_0" || j.nama=="Jati_0" || j.nama=="Jati_1") && treeB0!=null && treeB1!=null && leaf!=null)
-                { j.lod0=treeB0;j.lod1=treeB1;j.kayu=bark;j.daun=leaf;j.jarakLod1=42f;JumlahMeshScan++; }
+                { j.lod0=treeB0;j.lod1=treeB1;j.kayu=bark;j.daun=leaf;j.jarakLod1=26f;j.jarakMaks=420f;JumlahMeshScan++; }
                 if(j.nama.StartsWith("Pakis_") && fern0!=null && fern1!=null && fern!=null)
-                { j.lod0=fern0;j.lod1=fern1;j.daun=fern;j.jarakLod1=28f;j.jarakMaks=95f;JumlahMeshScan++; }
+                { j.lod0=fern0;j.lod1=fern1;j.daun=fern;j.jarakLod1=18f;j.jarakMaks=65f;JumlahMeshScan++; }
             }
             Catat("G3b: "+JumlahMeshScan+" varian scan pohon/pakis tersambung ke instancing dan tebang, dengan LOD");
         }

@@ -63,12 +63,12 @@ namespace AlasKeramat.EditorTools
             // Panggung horor malam: Pocong, Kuntilanak, Kuyang, Tuyul, Genderuwo Hutan, dan Banaspati dalam bulan purnama.
             var formasi = new[]
             {
-                new Vector4(-2.2f, 0f, 0.6f, 168f),
-                new Vector4(0.1f, 0.45f, 0f, 180f),
-                new Vector4(2.1f, 0.65f, 0.4f, 194f),
-                new Vector4(-0.95f, 0f, -1.2f, 172f),
-                new Vector4(1.3f, 0f, 2.4f, 186f),
-                new Vector4(-1.8f, 1.55f, -0.5f, 175f),
+                new Vector4(-2.3f, 0f, 0.2f, 168f),
+                new Vector4(0.1f, 0.45f, 0.4f, 180f),
+                new Vector4(2.1f, 0.65f, 0.2f, 194f),
+                new Vector4(-1.05f, 0f, -1.5f, 172f),
+                new Vector4(1.35f, 0f, 2.2f, 186f),
+                new Vector4(-1.55f, 1.55f, -0.4f, 175f),
             };
             var dioramaPrefabs = new[] { hantu[0], hantu[1], hantuTambahan[0], hantuTambahan[1], hantuTambahan[2], hantu[2] };
             for (int i = 0; i < dioramaPrefabs.Length; i++)
@@ -104,9 +104,9 @@ namespace AlasKeramat.EditorTools
             cap.height = d.tinggi; cap.radius = 0.32f; cap.center = new Vector3(0f, d.tinggi * 0.5f + (mode == ProceduralAnimator.Mode.Melayang ? 0.45f : 0f), 0f);
             var pendar = new GameObject("PendarHantu").AddComponent<Light>();
             pendar.transform.SetParent(go.transform, false);
-            pendar.transform.localPosition = new Vector3(0f, d.tinggi * 0.80f, 0.35f);
+            pendar.transform.localPosition = new Vector3(0f, d.tinggi * 0.88f, -0.5f);
             pendar.type = LightType.Point; pendar.range = 6.5f;
-            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 1.15f : a == EnemyArchetype.Kuyang ? 1.0f : a == EnemyArchetype.GenderuwoHutan ? 1.3f : 0.9f;
+            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 0.65f : a == EnemyArchetype.Kuyang ? 0.70f : a == EnemyArchetype.GenderuwoHutan ? 0.85f : a == EnemyArchetype.Tuyul ? 0.25f : 0.45f;
             pendar.color = a == EnemyArchetype.Kuntilanak ? new Color(0.55f, 0.68f, 0.92f) : a == EnemyArchetype.Kuyang ? new Color(0.85f, 0.25f, 0.18f) : a == EnemyArchetype.HantuAir ? new Color(0.32f, 0.80f, 0.72f) : a == EnemyArchetype.GenderuwoHutan ? new Color(0.95f, 0.42f, 0.18f) : new Color(0.68f, 0.78f, 0.72f);
             pendar.shadows = LightShadows.None;
             var h = go.AddComponent<HantuAI>(); h.Pasang(a, pendar);
@@ -130,10 +130,10 @@ namespace AlasKeramat.EditorTools
                 float u = (float)x / sz, v = (float)y / sz;
                 float cx = Mathf.Abs(u - 0.5f) * 2f;
                 float n = Mathf.PerlinNoise(u * 6f + 1.3f, v * 5f - 0.8f);
-                float w = (1f - v * 0.88f) * (0.65f + 0.55f * n);
-                float a = Mathf.Clamp01((w - cx) * 3.5f) * Mathf.Clamp01(v * 6f);
-                Color col = Color.Lerp(new Color(0.95f, 0.22f, 0.04f), new Color(1f, 0.78f, 0.22f), Mathf.Clamp01(1f - v * 0.7f));
-                col.a = a; fpx[y * sz + x] = col;
+                float softR = Mathf.Sqrt(cx * cx * 1.4f + Mathf.Pow((v - 0.35f) * 1.45f, 2f));
+                float a = Mathf.Clamp01(1f - softR + (n - 0.45f) * 0.45f) * Mathf.SmoothStep(0f, 0.28f, v) * Mathf.SmoothStep(1f, 0.35f, v);
+                Color col = Color.Lerp(new Color(0.95f, 0.22f, 0.04f), new Color(1f, 0.92f, 0.45f), Mathf.Clamp01(1f - softR * 0.9f));
+                col.a = a * a; fpx[y * sz + x] = col;
             }
             ftex.SetPixels(fpx); ftex.Apply(); SimpanPng(ftex, ptex); AssetDatabase.ImportAsset(ptex); AturImpor(ptex, false, false, sz);
             var fimp = (TextureImporter)AssetImporter.GetAtPath(ptex); fimp.alphaIsTransparency = true; fimp.SaveAndReimport();
@@ -141,12 +141,26 @@ namespace AlasKeramat.EditorTools
 
             string pm = FolderMat + "/M_Banaspati.mat";
             AssetDatabase.DeleteAsset(pm);
-            var m = SafeMaterialFactory.CreatePBR("M_Banaspati", Color.white, 0f, 0.1f, ftex, null, new Color(4.8f, 1.65f, 0.28f), SurfaceMode.Cutout, 0.3f);
+            var pShader = Shader.Find("Universal Render Pipeline/Particles/Unlit");
+            var m = pShader != null ? new Material(pShader) { name = "M_Banaspati" }
+                : SafeMaterialFactory.CreatePBR("M_Banaspati", Color.white, 0f, 0.1f, ftex, null, new Color(4.8f, 1.65f, 0.28f), SurfaceMode.Transparent, 0.3f);
+            if (pShader != null)
+            {
+                SafeMaterialFactory.SetF(m, "_Surface", 1f);
+                SafeMaterialFactory.SetF(m, "_Blend", 2f);
+                SafeMaterialFactory.SetF(m, "_SrcBlend", (float)BlendMode.SrcAlpha);
+                SafeMaterialFactory.SetF(m, "_DstBlend", (float)BlendMode.One);
+                SafeMaterialFactory.SetF(m, "_ZWrite", 0f);
+                SafeMaterialFactory.SetF(m, "_Cull", 0f);
+                m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); m.renderQueue = 3000;
+                SafeMaterialFactory.SetT(m, "_BaseMap", ftex);
+                SafeMaterialFactory.SetC(m, "_BaseColor", new Color(1.45f, 0.68f, 0.22f, 0.85f));
+            }
             AssetDatabase.CreateAsset(m, pm);
             m = AssetDatabase.LoadAssetAtPath<Material>(pm);
             var mSkull = SafeMaterialFactory.CreatePBR("M_BanaspatiTengkorak", new Color(0.18f, 0.12f, 0.1f), 0f, 0.35f,
                 AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/tanah.png"), AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/tanah_n.png"),
-                new Color(0.95f, 0.22f, 0.04f));
+                new Color(1.1f, 0.28f, 0.04f));
             string ps = FolderMat + "/M_BanaspatiTengkorak.mat"; AssetDatabase.DeleteAsset(ps); AssetDatabase.CreateAsset(mSkull, ps);
             mSkull = AssetDatabase.LoadAssetAtPath<Material>(ps);
             var go = new GameObject("Hantu_Banaspati");
@@ -167,7 +181,7 @@ namespace AlasKeramat.EditorTools
             {
                 var inti = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 Object.DestroyImmediate(inti.GetComponent<Collider>());
-                inti.transform.SetParent(go.transform, false); inti.transform.localScale = Vector3.one * 0.55f;
+                inti.transform.SetParent(go.transform, false); inti.transform.localScale = Vector3.one * 0.45f;
                 var mr = inti.GetComponent<MeshRenderer>(); mr.sharedMaterial = m; mr.shadowCastingMode = ShadowCastingMode.Off;
             }
             for (int k = 0; k < 6; k++)
@@ -177,15 +191,21 @@ namespace AlasKeramat.EditorTools
                 lidah.name = "LidahApi_" + k;
                 Object.DestroyImmediate(lidah.GetComponent<Collider>());
                 lidah.transform.SetParent(go.transform, false);
-                lidah.transform.localPosition = new Vector3(Mathf.Sin(a * Mathf.Deg2Rad) * 0.16f, 0.18f + (k % 2) * 0.14f, Mathf.Cos(a * Mathf.Deg2Rad) * 0.16f);
+                lidah.transform.localPosition = new Vector3(Mathf.Sin(a * Mathf.Deg2Rad) * 0.10f, 0.12f + (k % 2) * 0.08f, Mathf.Cos(a * Mathf.Deg2Rad) * 0.10f);
                 lidah.transform.localRotation = Quaternion.Euler(0f, a, (k % 2 == 0 ? 1 : -1) * 14f);
-                lidah.transform.localScale = new Vector3(0.45f, 1.05f, 0.45f);
+                lidah.transform.localScale = new Vector3(0.28f, 0.52f, 0.28f);
                 var fmr = lidah.GetComponent<MeshRenderer>(); fmr.sharedMaterial = m; fmr.shadowCastingMode = ShadowCastingMode.Off;
             }
+            var bara = Anak(go, "BaraApi");
+            var psys = bara.AddComponent<ParticleSystem>();
+            var main = psys.main; main.startLifetime = 0.8f; main.startSpeed = 0.9f; main.startSize = 0.18f; main.startColor = new Color(1f, 0.55f, 0.15f, 0.85f); main.maxParticles = 24;
+            var em = psys.emission; em.rateOverTime = 14f;
+            var shp = psys.shape; shp.shapeType = ParticleSystemShapeType.Sphere; shp.radius = 0.22f;
+            var pr = psys.GetComponent<ParticleSystemRenderer>(); pr.sharedMaterial = m; pr.shadowCastingMode = ShadowCastingMode.Off;
             var sc = go.AddComponent<SphereCollider>(); sc.radius = 0.5f;
             var lampu = new GameObject("Cahaya").AddComponent<Light>();
             lampu.transform.SetParent(go.transform, false);
-            lampu.type = LightType.Point; lampu.range = 9f; lampu.intensity = 2.6f; lampu.color = new Color(1f, 0.45f, 0.12f); lampu.shadows = LightShadows.None;
+            lampu.type = LightType.Point; lampu.range = 8f; lampu.intensity = 1.85f; lampu.color = new Color(1f, 0.45f, 0.12f); lampu.shadows = LightShadows.None;
             SetLayer(go, GameLayers.Enemy);
             go.AddComponent<HantuAI>().Pasang(EnemyArchetype.Banaspati, lampu);
             return SimpanPrefab(go, "Hantu_Banaspati");

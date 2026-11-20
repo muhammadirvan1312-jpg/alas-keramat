@@ -17,7 +17,8 @@ namespace AlasKeramat.Building
         public float PengaliDetail = 1f;
         public int InstanceTerlihat { get; private set; }
         public int SegitigaTerlihat { get; private set; }
-        RenderParams[] _rpKayu, _rpDaun;
+        RenderParams[] _rpKayu, _rpDaun, _rpKayuNoShadow, _rpDaunNoShadow;
+        Camera _cam;
         bool _siap;
         Matrix4x4[][] _mat;                                   // salinan runtime (aset tidak diubah saat pohon ditebang)
         Bounds[][] _batasInstance;
@@ -39,11 +40,14 @@ namespace AlasKeramat.Building
             if (data == null) return;
             int n = data.jenis.Length;
             _rpKayu = new RenderParams[n]; _rpDaun = new RenderParams[n];
+            _rpKayuNoShadow = new RenderParams[n]; _rpDaunNoShadow = new RenderParams[n];
             for (int i = 0; i < n; i++)
             {
                 var j = data.jenis[i];
                 _rpKayu[i] = new RenderParams(j.kayu) { shadowCastingMode = j.bayangan ? ShadowCastingMode.On : ShadowCastingMode.Off, receiveShadows = true, layer = GameLayers.Foliage, lightProbeUsage = LightProbeUsage.Off };
                 _rpDaun[i] = new RenderParams(j.daun) { shadowCastingMode = j.bayangan ? ShadowCastingMode.On : ShadowCastingMode.Off, receiveShadows = true, layer = GameLayers.Foliage, lightProbeUsage = LightProbeUsage.Off };
+                _rpKayuNoShadow[i] = new RenderParams(j.kayu) { shadowCastingMode = ShadowCastingMode.Off, receiveShadows = true, layer = GameLayers.Foliage, lightProbeUsage = LightProbeUsage.Off };
+                _rpDaunNoShadow[i] = new RenderParams(j.daun) { shadowCastingMode = ShadowCastingMode.Off, receiveShadows = true, layer = GameLayers.Foliage, lightProbeUsage = LightProbeUsage.Off };
             }
             _mat = new Matrix4x4[data.sel.Length][];
             _batasInstance = new Bounds[data.sel.Length][];
@@ -127,8 +131,8 @@ namespace AlasKeramat.Building
 
         void Update()
         {
-            var cam = Camera.main;
-            if (cam != null) Gambar(cam);
+            if (_cam == null || !_cam.isActiveAndEnabled) _cam = Camera.main;
+            if (_cam != null) Gambar(_cam);
         }
 
         // Juga dipanggil Foto Kualitas sebelum Camera.Render() di Editor.
@@ -163,8 +167,8 @@ namespace AlasKeramat.Building
                     if (PakaiLodJauh(d, j.jarakLod1 * PengaliDetail) && j.lod1 != null) _jauh[jauh++] = matrix;
                     else _dekat[dekat++] = matrix;
                 }
-                GambarKelompok(cam, j, s, j.lod0, _dekat, dekat);
-                GambarKelompok(cam, j, s, j.lod1, _jauh, jauh);
+                GambarKelompok(cam, j, s, j.lod0, _dekat, dekat, true);
+                GambarKelompok(cam, j, s, j.lod1, _jauh, jauh, false);
             }
         }
 
@@ -177,11 +181,11 @@ namespace AlasKeramat.Building
                 Mathf.Abs(m.m20) * e.x + Mathf.Abs(m.m21) * e.y + Mathf.Abs(m.m22) * e.z);
             return new Bounds(m.MultiplyPoint3x4(lokal.center), ukuran * 2f + Vector3.one * 2f);
         }
-        void GambarKelompok(Camera cam, VegetationData.JenisVeg jenis, VegetationData.Sel sel, Mesh mesh, Matrix4x4[] matriks, int jumlah)
+        void GambarKelompok(Camera cam, VegetationData.JenisVeg jenis, VegetationData.Sel sel, Mesh mesh, Matrix4x4[] matriks, int jumlah, bool pakaiBayangan)
         {
             if (mesh == null || jumlah == 0) return;
-            var rpK = _rpKayu[sel.jenis]; rpK.camera = cam;
-            var rpD = _rpDaun[sel.jenis]; rpD.camera = cam;
+            var rpK = (pakaiBayangan ? _rpKayu : _rpKayuNoShadow)[sel.jenis]; rpK.camera = cam;
+            var rpD = (pakaiBayangan ? _rpDaun : _rpDaunNoShadow)[sel.jenis]; rpD.camera = cam;
             var bounds = new Bounds(sel.pusat, Vector3.one * (sel.radius * 2f + 30f));
             rpK.worldBounds = bounds; rpD.worldBounds = bounds;
             for(int awal=0;awal<jumlah;awal+=MaksRender)

@@ -62,12 +62,7 @@ namespace AlasKeramat.EditorTools
 
         static void AturPemain()
         {
-            PlayerSettings.companyName = "AlasKeramat";
-            PlayerSettings.productName = "Alas Keramat";
-            PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android, "com.alaskeramat.game");
-            PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android, ScriptingImplementation.Mono2x);
-            PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARMv7;
-            PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel26;
+            NusantaraAndroidBuild.TerapkanPengaturanAndroid(true);
         }
 
         static void BangunApk(string path)

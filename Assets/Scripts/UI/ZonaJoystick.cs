@@ -7,7 +7,7 @@ namespace AlasKeramat.UI
     public class ZonaJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IInitializePotentialDragHandler
     {
         public const float RadiusGerak = 110f, AlphaDiam = 0.35f, AlphaAktif = 0.8f;
-        public const float AmbangSprint = 0.95f, SudutSprint = 30f, TahanSprint = 0.25f;
+        public const float AmbangSprint = 0.82f, SudutSprint = 42f, TahanSprint = 0.15f;
 
         [SerializeField] RectTransform basis;
         [SerializeField] RectTransform kenop;
@@ -88,9 +88,9 @@ namespace AlasKeramat.UI
 
         void Update()
         {
-            bool pos = _jari != int.MinValue && PosisiSprint(Nilai);
+            bool pos = _jari != int.MinValue && (Lari ? (Nilai.magnitude >= 0.72f && Vector2.Angle(Vector2.up, Nilai) <= 55f) : PosisiSprint(Nilai));
             _tahan = pos ? _tahan + Time.unscaledDeltaTime : 0f;
-            bool lari = _tahan >= TahanSprint;
+            bool lari = Lari ? pos : _tahan >= TahanSprint;
             if (lari != Lari)
             {
                 Lari = lari;

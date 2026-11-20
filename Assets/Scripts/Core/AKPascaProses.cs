@@ -36,9 +36,9 @@ namespace AlasKeramat.Core
         public static Vector4 TargetGua { get { return new Vector4(1.22f,-6f,-2f,0.2f); } }
         public static Vector4 Target(float jam, WeatherState cuaca)
         {
-            Vector4 siang = new Vector4(0.28f, -2f, 3f, 0.16f);
-            Vector4 maghrib = new Vector4(0.24f, 6f, 20f, 0.22f);
-            Vector4 malam = new Vector4(0.14f, -12f, -14f, 0.24f);
+            Vector4 siang = new Vector4(0.32f, 4f, 4f, 0.15f);
+            Vector4 maghrib = new Vector4(0.26f, 8f, 20f, 0.22f);
+            Vector4 malam = new Vector4(0.22f, -10f, -16f, 0.24f);
             Vector4 fajar = new Vector4(0.18f, 5f, 14f, 0.25f);
             Vector4 v;
             if (jam >= 7f && jam < 16.5f) v = siang;

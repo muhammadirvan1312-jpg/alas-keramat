@@ -6,7 +6,7 @@ namespace AlasKeramat.Player
     // Interaksi dari tengah kamera (09 §3): SphereCast 2,5 m r 0,15 ke Interactable/Tree/LogPhysics/Structure; air dangkal di depan = MINUM AIR.
     public class InteraksiAndi : MonoBehaviour
     {
-        public const float Jarak = 2.5f, Radius = 0.15f, LangkahAir = 0.5f, HidrasiTeguk = 20f;
+        public const float Jarak = 3.2f, Radius = 0.35f, LangkahAir = 0.5f, HidrasiTeguk = 20f;
         const string TeksMinum = "MINUM AIR";
 
         public string Prompt { get; private set; } = "";
@@ -30,6 +30,7 @@ namespace AlasKeramat.Player
 
         int _mask;
         Building.ShoulderLogAndFreeformBuilder _pembangun;
+        readonly Collider[] _overlapBuf = new Collider[16];
 
         void Awake()
         {
@@ -50,6 +51,21 @@ namespace AlasKeramat.Player
             {
                 var t = hit.collider.GetComponentInParent<IInteractable>();
                 if (t != null && t.CanInteract(gameObject)) _target = t;
+            }
+            if (_target == null)
+            {
+                int cnt = Physics.OverlapSphereNonAlloc(cam.position + cam.forward * 1.4f, 1.5f, _overlapBuf, _mask, QueryTriggerInteraction.Collide);
+                float terbaik = 34f;
+                for (int i = 0; i < cnt; i++)
+                {
+                    var t = _overlapBuf[i].GetComponentInParent<IInteractable>();
+                    if (t == null || !t.CanInteract(gameObject)) continue;
+                    Vector3 ke = _overlapBuf[i].bounds.center - cam.position;
+                    float d = ke.magnitude;
+                    if (d > Jarak || d < 0.05f) continue;
+                    float sud = Vector3.Angle(cam.forward, ke / d);
+                    if (sud < terbaik) { terbaik = sud; _target = t; }
+                }
             }
             if (_target == null) _air = CariAir(cam.position, cam.forward);
             string p = _target != null ? _target.GetPromptText(gameObject) : (_air ? TeksMinum : "");

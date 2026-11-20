@@ -12,7 +12,7 @@ namespace AlasKeramat.Player
         public const float ReduksiBlok = 0.6f, StaminaBlokPerDamage = 1.5f, KerucutTangkis = 70f;
         public const float LamaPenghabisan = 2f, PengaliPenghabisan = 2.5f;
         public const float HitStop = 0.05f, SkalaHitStop = 0.05f, GuncangBerat = 0.15f, GuncangRingan = 0.06f, LamaTandaKena = 0.15f;
-        public const float AssistJarak = 3f, AssistKerucut = 25f, AssistLaju = 18f;
+        public const float AssistJarak = 3.6f, AssistKerucut = 38f, AssistLaju = 140f;
 
         public static event System.Action<bool> OnKena; // true = berat/penghabisan
 

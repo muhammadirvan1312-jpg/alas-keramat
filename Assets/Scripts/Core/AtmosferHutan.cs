@@ -24,7 +24,7 @@ namespace AlasKeramat.Core
             bool aktif=!WorldTerrainGenerator.DiBawahTanah(p.y) && p.y<WorldTerrainGenerator.SampleHeight(p.x,p.z)+18f;
             float malam=URPAtmosphereAndWeather.Malam01(jam);
             bool maghrib=jam>=17.4f && jam<19.2f;
-            float tebal=w==WeatherState.KabutPagi?0.13f:w==WeatherState.HujanBadai?0.09f:maghrib?0.065f:0.048f;
+            float tebal=w==WeatherState.KabutPagi?0.16f:w==WeatherState.HujanBadai?0.11f:maghrib?0.10f:malam>0.5f?0.095f:0.075f;
             Color warna=maghrib?new Color(0.68f,0.34f,0.22f):Color.Lerp(new Color(0.54f,0.62f,0.58f),new Color(0.14f,0.22f,0.29f),malam);warna.a=tebal;
             _blok.SetColor("_BaseColor",warna);
             float gridX=Mathf.Floor(p.x/16f)*16f,gridZ=Mathf.Floor(p.z/16f)*16f;

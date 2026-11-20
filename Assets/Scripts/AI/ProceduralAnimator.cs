@@ -117,8 +117,8 @@ namespace AlasKeramat.AI
             R(Kerangka.LCalf, 120f, 0f, 0f); R(Kerangka.RCalf, 120f, 0f, 0f);
             float goyang = Mathf.Sin(_t * 0.6f) * 6f + Mathf.Sin(_t * 1.7f) * 2f; // terhuyung pusing
             R(Kerangka.Spine, 12f, 0f, goyang); R(Kerangka.Head, 18f + Mathf.Sin(_t * 0.9f) * 5f, 0f, -goyang * 0.8f);
-            R(Kerangka.LUpper, -35f, 0f, -10f); R(Kerangka.RUpper, -35f, 0f, 10f);
-            R(Kerangka.LFore, -55f, 0f, 0f); R(Kerangka.RFore, -55f, 0f, 0f);
+            R(Kerangka.LUpper, -20f, 0f, -12f); R(Kerangka.RUpper, -24f, 0f, 12f);
+            R(Kerangka.LFore, -12f, 0f, 0f); R(Kerangka.RFore, -14f, 0f, 0f);
         }
 
         void Pocong(float skala)

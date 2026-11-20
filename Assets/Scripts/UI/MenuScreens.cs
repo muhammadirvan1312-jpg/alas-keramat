@@ -68,7 +68,7 @@ namespace AlasKeramat.UI
         [SerializeField] RectTransform[] tombolSkala = new RectTransform[0];
 
         public PresetGrafis Preset { get; private set; } = PresetGrafis.Sedang;
-        public int TargetFps { get; private set; } = 30;
+        public int TargetFps { get; private set; } = 60;
         public float Sensitivitas { get; private set; } = 1f;
         public bool BalikY { get; private set; }
         public float SkalaTombol { get; private set; } = 1f;
@@ -93,6 +93,7 @@ namespace AlasKeramat.UI
         float _tKetukDebug, _tSegarDebug, _fpsHalus = 30f;
         Vector2[] _ukuranAwalTombol;
         UniversalRenderPipelineAsset _klonUrp;
+        Terrain[] _terrains;
 
         public void Pasang(
             GameObject menuUtama, GameObject jeda, GameObject pengaturan, GameObject cara, GameObject kredit, GameObject slot, GameObject debug,
@@ -117,7 +118,7 @@ namespace AlasKeramat.UI
                 case PresetGrafis.Ultra:
                     return new DataPresetGrafis { renderScale = 1.0f, bayangan = 90f, cascade = 2, msaa = 4, hdr = true, bloom = true, farKamera = 360f, kabutTambah = 0f, pengaliVeg = 1.75f, detailVeg = 1.25f, rumput = 1f, targetFps = 30 };
                 default:
-                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 1, hdr = true, bloom = false, farKamera = 200f, kabutTambah = 0.002f, pengaliVeg = 1.0f, detailVeg = 0.7f, rumput = 0.4f, targetFps = 30 };
+                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 2, hdr = true, bloom = false, farKamera = 200f, kabutTambah = 0.002f, pengaliVeg = 1.0f, detailVeg = 0.7f, rumput = 0.4f, targetFps = 60 };
             }
         }
 
@@ -155,7 +156,7 @@ namespace AlasKeramat.UI
             yield return null; yield return null;
             while(LayarPeringatan.PerluTampil())yield return null;
             if(_mulaiBaruBerikutnya) { _mulaiBaruBerikutnya=false; _sesiDimulai=true; JedaDunia.Atur(GetInstanceID(), false); }
-            else BukaMenuUtama();
+            else if(!_sesiDimulai) BukaMenuUtama();
         }
 
         public static PresetGrafis RekomendasiPreset(int ramMb, int vramMb)
@@ -292,7 +293,11 @@ namespace AlasKeramat.UI
                     _klonUrp.shadowCascadeCount = dp.cascade;
                     _klonUrp.msaaSampleCount = dp.msaa;
                     _klonUrp.supportsHDR = dp.hdr;
+                    bool depthOn = dp.bayangan >= 35f;
+                    _klonUrp.supportsCameraDepthTexture = depthOn;
+                    Shader.SetGlobalFloat("_AK_MatikanDepth", depthOn ? 0f : 1f);
                 }
+                QualitySettings.skinWeights = Preset <= PresetGrafis.Sedang ? SkinWeights.TwoBones : SkinWeights.FourBones;
             }
 
             var cam = Camera.main;
@@ -311,7 +316,10 @@ namespace AlasKeramat.UI
                 var volume=UnityEngine.Object.FindFirstObjectByType<Volume>();
                 Bloom bloom;
                 if(volume!=null && volume.profile!=null && volume.profile.TryGet(out bloom))bloom.active=dp.bloom;
-                foreach(var tanah in Terrain.activeTerrains)tanah.heightmapPixelError=Preset==PresetGrafis.Rendah?18f:Preset==PresetGrafis.Sedang?10f:5f;
+                if(_terrains==null)_terrains=Terrain.activeTerrains;
+                float pxErr=Preset==PresetGrafis.Rendah?18f:Preset==PresetGrafis.Sedang?12f:Preset==PresetGrafis.Tinggi?9f:6f;
+                float bDist=Preset==PresetGrafis.Rendah?60f:Preset==PresetGrafis.Sedang?95f:Preset==PresetGrafis.Tinggi?130f:180f;
+                for(int i=0;i<_terrains.Length;i++) { if(_terrains[i]==null)continue; _terrains[i].heightmapPixelError=pxErr; _terrains[i].basemapDistance=bDist; }
                 if(cam!=null)cam.GetUniversalAdditionalCameraData().antialiasing=AntialiasingMode.FastApproximateAntialiasing;
             }
 

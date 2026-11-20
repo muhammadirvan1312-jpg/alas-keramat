@@ -68,6 +68,11 @@ namespace AlasKeramat.UI
 #if UNITY_EDITOR
         public void MulaiUjiEditor()
         {
+            PlayerPrefs.SetInt(GoreSystem.KunciPeringatan, 1);
+            var peringatan = FindFirstObjectByType<LayarPeringatan>(FindObjectsInactive.Include);
+            if (peringatan != null) peringatan.gameObject.SetActive(false);
+            var boot = GameServices.Get<GameBootstrap>();
+            if (boot != null) JedaDunia.Atur(boot.GetInstanceID(), false);
             var q = GameServices.Get<QuestManager>(); if (q != null) q.Progres.intro = true;
             _sesiDimulai = true; Dijeda = false; SembunyikanSemua(); JedaDunia.Atur(GetInstanceID(), false);
             PengunciInput.AturJedaPanel(true);
