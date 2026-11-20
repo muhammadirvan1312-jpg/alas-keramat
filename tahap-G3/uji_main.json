@@ -1,12 +1,12 @@
 {
-    "commit": "55f4428ebeb9322f4073940a93b849dd8831d697",
+    "commit": "95abf54334995c4b37a1327b8e442319e6743366",
     "passed": true,
     "checks": [
         "[LULUS] Layanan pemain, tas dan kontrol aktif saat Play",
         "[LULUS] Menu awal dapat ditutup tanpa jeda tertinggal",
         "[LULUS] Zona kedua jari tersambung",
         "[LULUS] Raycast UI benar-benar mencapai analog dan area POV",
-        "[LULUS] Analog setengah rentang memindahkan kapsul nyata (1.63 m)",
+        "[LULUS] Analog setengah rentang memindahkan kapsul nyata (2.11 m)",
         "[LULUS] Jari kanan memutar POV sambil jari kiri berjalan",
         "[LULUS] Tas menjeda dunia dan membuang input yang masih ditahan",
         "[LULUS] Menutup tas tidak membatalkan menu Jeda",

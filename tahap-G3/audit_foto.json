@@ -1,65 +1,62 @@
 {
-  "commit": "55f4428ebeb9322f4073940a93b849dd8831d697",
-  "passed": false,
+  "commit": "95abf54334995c4b37a1327b8e442319e6743366",
+  "passed": true,
   "photos": [
     {
       "shot": "g3_01_deden_wajah",
       "width": 960,
       "height": 540,
-      "p95": 0.5823,
-      "variation": 0.1968,
+      "p95": 0.529,
+      "variation": 0.1735,
       "pink": 0.0,
-      "sha256": "4c3c84872aa7f50eb5557085f22693eb9c9ec51dc0a041b4e4a90e1cd7c318b3"
+      "sha256": "fa0c59ce1a525296c3fd3439ff11ce2165510b0fa3c685402f27e309ff917e05"
     },
     {
       "shot": "g3_02_ningsih_wajah",
       "width": 960,
       "height": 540,
-      "p95": 0.6266,
-      "variation": 0.1931,
+      "p95": 0.5889,
+      "variation": 0.1943,
       "pink": 0.0,
-      "sha256": "5de44b2f0669a72912f416ba0cdbcdb9761e86fc0b6250861ed0497c68e1ce84"
+      "sha256": "5dc89d8681b823e9e32eb8a75ffd8bca1982e33bdbc7ac08eb597358bf99a1f9"
     },
     {
       "shot": "g3_03_hutan_malam",
       "width": 960,
       "height": 540,
-      "p95": 0.0071,
-      "variation": 0.0016,
+      "p95": 0.2557,
+      "variation": 0.088,
       "pink": 0.0,
-      "sha256": "f6b7cd98178cec3b5edc74aee22e34cb7dafd82a684346b723786f780761760d"
+      "sha256": "2b6de741ad86f57082b6d225e20cc19d14128a7a2223ac339b5e9c10763012e7"
     },
     {
       "shot": "g3_04_lantai_hutan",
       "width": 960,
       "height": 540,
-      "p95": 0.1792,
-      "variation": 0.0586,
+      "p95": 0.1962,
+      "variation": 0.0638,
       "pink": 0.0,
-      "sha256": "4fb77e0f5e709c42e9c0e30ddf555974fb38f2be32972906cf58dc89933f7234"
+      "sha256": "7d5a41b7b806a7a9ee5a8e8d52de6c8c8279e49e988c4e0264032471015c3c30"
     },
     {
       "shot": "t10_01_gua_lumut",
       "width": 960,
       "height": 540,
-      "p95": 0.0329,
-      "variation": 0.0286,
+      "p95": 0.0828,
+      "variation": 0.0663,
       "pink": 0.0,
-      "sha256": "cdb4632b39f8d838d68fa024b896ff3b82f3bdffa271cbc5c92102dcbbf2efae"
+      "sha256": "a9048230002f68cba5a20d00cd366cc0ac69c2295436881857a10aafa59dc785"
     },
     {
       "shot": "t10_02_kubah_akar_boss",
       "width": 960,
       "height": 540,
-      "p95": 0.0065,
-      "variation": 0.0099,
+      "p95": 0.067,
+      "variation": 0.0411,
       "pink": 0.0,
-      "sha256": "c9e216755d896bb38d95594d5e632060b53283716cb91bd446607f7b787e03ef"
+      "sha256": "2f9688c321d933319511f15a2f3dda510f03f2e12161ed809fa5ac7b204a6fec"
     }
   ],
-  "errors": [
-    "Foto hampir kosong/gelap merata: g3_03_hutan_malam",
-    "Foto hampir kosong/gelap merata: t10_02_kubah_akar_boss"
-  ],
+  "errors": [],
   "note": "Pemeriksaan teknis gambar; kualitas seni dan kesetaraan visual belum dinilai"
 }
