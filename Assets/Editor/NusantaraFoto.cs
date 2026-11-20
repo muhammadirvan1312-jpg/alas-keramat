@@ -30,9 +30,9 @@ namespace AlasKeramat.EditorTools
         public static readonly Shot[] ShotAktif =
         {
             new Shot("g3_01_deden_wajah", new Vector3(25.2f,1.24f,-437.8f),new Vector3(22.4f,0.94f,-441.2f),9.5f,46f),
-            new Shot("g3_02_ningsih_wajah", new Vector3(198.8f,1.38f,-351.7f),new Vector3(200f,1.25f,-350f),10f,36f),
+            new Shot("g3_02_ningsih_wajah", new Vector3(198.7f,1.36f,-351.6f),new Vector3(200f,1.24f,-350f),14.5f,38f),
             new Shot("g3_03_hutan_malam", new Vector3(-59.6f,1.38f,-305.6f),new Vector3(-59.5f,1.25f,-298.8f),21.5f,62f),
-            new Shot("g3_04_lantai_hutan", new Vector3(65f,1.45f,-335f),new Vector3(68f,0.45f,-327f),8.5f,70f),
+            new Shot("g3_04_lantai_hutan", new Vector3(65f,1.45f,-335f),new Vector3(68f,0.45f,-327f),10.2f,70f),
             new Shot("t10_01_gua_lumut", new Vector3(-623f, -78.2f, -595f), new Vector3(-608f, -78.5f, -602f), 0.5f, 70f),
             new Shot("t10_02_kubah_akar_boss", new Vector3(593.5f, -75.6f, -588.5f), new Vector3(600f, -77.3f, -571f), 0.5f, 70f),
             new Shot("t7_02_pocong_kuntilanak_malam", new Vector3(-59.6f, 1.38f, -305.6f), new Vector3(-59.5f, 1.25f, -298.8f), 21.5f, 62f),

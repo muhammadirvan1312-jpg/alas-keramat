@@ -165,7 +165,7 @@ namespace AlasKeramat.EditorTools
                 case (int)Biome.Desa: w[L_Tanah] = 0.48f; w[L_Daun] = 0.20f; w[L_Rumput] = 0.32f; break;
                 case (int)Biome.HutanBambu: w[L_Daun] = 0.62f; w[L_Rumput] = 0.28f; w[L_Tanah] = 0.10f; break;
                 case (int)Biome.TepiSungai: w[L_Daun] = 0.46f; w[L_Lumpur] = 0.22f; w[L_Rumput] = 0.24f; w[L_Tanah] = 0.08f; break;
-                case (int)Biome.HutanJatiSelatan: w[L_Daun] = 0.46f; w[L_Rumput] = 0.42f; w[L_Tanah] = 0.12f; break;
+                case (int)Biome.HutanJatiSelatan: w[L_Daun] = 0.54f; w[L_Rumput] = 0.30f; w[L_Tanah] = 0.16f; break;
                 case 11: w[L_Lumpur] = 0.8f; w[L_Daun] = 0.2f; break;      // Rawa Bakau
                 case 12: w[L_Tanah] = 0.7f; w[L_Batu] = 0.3f; break;       // Pabrik Gula
                 case 13: w[L_Batu] = 0.5f; w[L_Rumput] = 0.5f; break;      // Gunung Kapur

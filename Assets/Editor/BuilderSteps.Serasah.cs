@@ -136,10 +136,10 @@ namespace AlasKeramat.EditorTools
         static bool AreaBebasSerasah(float x,float z)
         {
             var p=new Vector2(x,z);
-            if(Vector2.Distance(p,new Vector2(PosDeden.x,PosDeden.z))<4.5f || Vector2.Distance(p,new Vector2(25.2f,-437.8f))<3.5f)return true;
-            if(Vector2.Distance(p,new Vector2(PosNingsih.x,PosNingsih.z))<3.4f || Vector2.Distance(p,new Vector2(198.8f,-351.7f))<2.5f)return true;
-            if(Vector2.Distance(p,new Vector2(PosDioramaHantu.x,PosDioramaHantu.z))<5.5f || Vector2.Distance(p,new Vector2(-59.6f,-305.6f))<3.5f)return true;
-            if(Vector2.Distance(p,new Vector2(65f,-335f))<2.2f)return true;
+            if(Vector2.Distance(p,new Vector2(PosDeden.x,PosDeden.z))<1.9f || Vector2.Distance(p,new Vector2(25.2f,-437.8f))<1.5f)return true;
+            if(Vector2.Distance(p,new Vector2(PosNingsih.x,PosNingsih.z))<1.8f || Vector2.Distance(p,new Vector2(198.7f,-351.6f))<1.5f)return true;
+            if(Vector2.Distance(p,new Vector2(PosDioramaHantu.x,PosDioramaHantu.z))<3.5f || Vector2.Distance(p,new Vector2(-59.6f,-305.6f))<1.8f)return true;
+            if(Vector2.Distance(p,new Vector2(65f,-335f))<1.5f)return true;
             return false;
         }
 

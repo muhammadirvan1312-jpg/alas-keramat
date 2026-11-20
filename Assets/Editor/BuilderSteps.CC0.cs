@@ -42,7 +42,7 @@ namespace AlasKeramat.EditorTools
                     for(int p=0;p<apx.Length;p++)
                     {
                         Color c=apx[p];
-                        if(nama=="rumput") c=new Color(c.r*0.56f,Mathf.Clamp01(c.g*0.80f+0.015f),c.b*0.44f,1f);
+                        if(nama=="rumput") c=new Color(c.r*0.44f,c.g*0.56f,c.b*0.32f,1f);
                         else if(nama=="daun") c=new Color(c.r*0.56f,c.g*0.54f,c.b*0.40f,1f);
                         else if(nama=="batu") c=new Color(c.r*0.72f,c.g*0.73f,c.b*0.74f,1f);
                         else c=new Color(c.r*0.54f,c.g*0.47f,c.b*0.37f,1f);

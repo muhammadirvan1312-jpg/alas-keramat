@@ -100,7 +100,7 @@ namespace AlasKeramat.EditorTools
             var matKayuDio = MaterialSolidScan("KayuTumbangAsli", "M_KayuTumbangScan", new Color(0.80f, 0.77f, 0.72f, 1f), 0.22f) ?? kayu;
             if (meshKayuDio != null)
             {
-                Vector3[] posKD = { new Vector3(-0.2f, 0f, -2.9f), new Vector3(2.4f, 0f, 0.6f) };
+                Vector3[] posKD = { new Vector3(-2.6f, 0f, -2.2f), new Vector3(2.4f, 0f, 0.6f) };
                 for (int i = 0; i < posKD.Length; i++)
                 {
                     var gk = Anak(dio, "KayuMalam_" + i);
@@ -165,7 +165,7 @@ namespace AlasKeramat.EditorTools
                 float cx = Mathf.Abs(u - 0.5f) * 2f;
                 float n = Mathf.PerlinNoise(u * 6f + 1.3f, v * 5f - 0.8f);
                 float softR = Mathf.Sqrt(cx * cx * 1.4f + Mathf.Pow((v - 0.35f) * 1.45f, 2f));
-                float a = Mathf.Clamp01(1f - softR + (n - 0.45f) * 0.45f) * Mathf.SmoothStep(0f, 0.28f, v) * Mathf.SmoothStep(1f, 0.35f, v);
+                float a = Mathf.Clamp01(1f - softR + (n - 0.45f) * 0.45f) * Ramp(0f, 0.22f, v) * Ramp(1f, 0.30f, v);
                 Color col = Color.Lerp(new Color(0.95f, 0.22f, 0.04f), new Color(1f, 0.92f, 0.45f), Mathf.Clamp01(1f - softR * 0.9f));
                 col.a = a * a; fpx[y * sz + x] = col;
             }
@@ -192,7 +192,7 @@ namespace AlasKeramat.EditorTools
             }
             AssetDatabase.CreateAsset(m, pm);
             m = AssetDatabase.LoadAssetAtPath<Material>(pm);
-            var mApiInti = SafeMaterialFactory.CreatePBR("M_BanaspatiInti", ProcTex.Hex("#FF8822"), 0f, 0.1f, null, null, new Color(4.8f, 1.75f, 0.28f));
+            var mApiInti = SafeMaterialFactory.CreatePBR("M_BanaspatiInti", ProcTex.Hex("#FF8822"), 0f, 0.1f, null, null, new Color(14f, 6.2f, 1.2f));
             string pi = FolderMat + "/M_BanaspatiInti.mat"; AssetDatabase.DeleteAsset(pi); AssetDatabase.CreateAsset(mApiInti, pi);
             mApiInti = AssetDatabase.LoadAssetAtPath<Material>(pi);
             var mSkull = SafeMaterialFactory.CreatePBR("M_BanaspatiTengkorak", new Color(0.18f, 0.12f, 0.1f), 0f, 0.35f,
@@ -207,8 +207,8 @@ namespace AlasKeramat.EditorTools
             AssetDatabase.DeleteAsset(pApi); AssetDatabase.CreateAsset(apiMesh, pApi);
             apiMesh = AssetDatabase.LoadAssetAtPath<Mesh>(pApi);
             var apiObj = Anak(go, "MahkotaApi");
-            apiObj.transform.localPosition = new Vector3(0f, -0.15f, 0f);
-            apiObj.transform.localScale = new Vector3(1.05f, 0.95f, 1.05f);
+            apiObj.transform.localPosition = new Vector3(0f, 0.14f, -0.14f);
+            apiObj.transform.localScale = new Vector3(0.55f, 0.72f, 0.55f);
             apiObj.AddComponent<MeshFilter>().sharedMesh = apiMesh;
             var amr = apiObj.AddComponent<MeshRenderer>(); amr.sharedMaterial = mApiInti; amr.shadowCastingMode = ShadowCastingMode.Off;
             var skullMesh = ImporMeshVisual.Baca("Assets/ThirdParty/Prepared/Banaspati.bytes");
@@ -239,7 +239,7 @@ namespace AlasKeramat.EditorTools
                 lidah.transform.SetParent(go.transform, false);
                 lidah.transform.localPosition = new Vector3(Mathf.Sin(a * Mathf.Deg2Rad) * 0.10f, 0.12f + (k % 2) * 0.08f, Mathf.Cos(a * Mathf.Deg2Rad) * 0.10f);
                 lidah.transform.localRotation = Quaternion.Euler(0f, a, (k % 2 == 0 ? 1 : -1) * 14f);
-                lidah.transform.localScale = new Vector3(0.28f, 0.52f, 0.28f);
+                lidah.transform.localScale = new Vector3(0.36f, 0.68f, 0.36f);
                 var fmr = lidah.GetComponent<MeshRenderer>(); fmr.sharedMaterial = m; fmr.shadowCastingMode = ShadowCastingMode.Off;
             }
             var bara = Anak(go, "BaraApi");

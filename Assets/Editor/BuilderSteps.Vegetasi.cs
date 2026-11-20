@@ -151,8 +151,10 @@ namespace AlasKeramat.EditorTools
                 if ((x + 4f) * (x + 4f) + (z + 424f) * (z + 424f) < 16f) return false; // SpawnAndi
                 if ((x - 24f) * (x - 24f) + (z + 440f) * (z + 440f) < 16f) return false; // KangDeden
                 if ((x - 25.2f) * (x - 25.2f) + (z + 437.8f) * (z + 437.8f) < 12.25f) return false; // Kamera Deden
-                if ((x - 200f) * (x - 200f) + (z + 350f) * (z + 350f) < 17.64f) return false; // Ningsih
-                if ((x - 198.8f) * (x - 198.8f) + (z + 351.7f) * (z + 351.7f) < 7.84f) return false; // Kamera Ningsih
+                if ((x - 200f) * (x - 200f) + (z + 350f) * (z + 350f) < 51.84f) return false; // Ningsih (celah cahaya 7.2 m)
+                if ((x - 198.7f) * (x - 198.7f) + (z + 351.6f) * (z + 351.6f) < 12.25f) return false; // Kamera Ningsih
+                if ((x - 65f) * (x - 65f) + (z + 335f) * (z + 335f) < 36f) return false; // Kamera g3_04_lantai_hutan
+                if ((x - 67.5f) * (x - 67.5f) + (z + 329f) * (z + 329f) < 25f) return false; // Garis pandang g3_04_lantai_hutan
                 if ((x + 60f) * (x + 60f) + (z + 300f) * (z + 300f) < 30.25f) return false; // Diorama Hantu
                 if ((x + 59.6f) * (x + 59.6f) + (z + 305.6f) * (z + 305.6f) < 16f) return false; // Kamera Malam
                 for (int k = 0; k < PosisiKoper.Length; k++)

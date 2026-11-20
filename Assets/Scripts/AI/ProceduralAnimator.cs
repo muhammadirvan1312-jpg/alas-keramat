@@ -113,12 +113,12 @@ namespace AlasKeramat.AI
         {
             var p = tulang[Kerangka.Pelvis];
             p.localPosition = new Vector3(_restPelvis.x, 0.2f * skala, _restPelvis.z);
-            R(Kerangka.LThigh, -85f, -40f, -30f); R(Kerangka.RThigh, -85f, 40f, 30f);
-            R(Kerangka.LCalf, 120f, 0f, 0f); R(Kerangka.RCalf, 120f, 0f, 0f);
+            R(Kerangka.LThigh, -78f, -14f, -8f); R(Kerangka.RThigh, -72f, 18f, 10f);
+            R(Kerangka.LCalf, 108f, 0f, 0f); R(Kerangka.RCalf, 96f, 0f, 0f);
             float goyang = Mathf.Sin(_t * 0.6f) * 6f + Mathf.Sin(_t * 1.7f) * 2f; // terhuyung pusing
-            R(Kerangka.Spine, 6f, 0f, goyang); R(Kerangka.Head, 4f + Mathf.Sin(_t * 0.9f) * 3f, -8f, -goyang * 0.8f);
-            R(Kerangka.LUpper, -20f, 0f, -12f); R(Kerangka.RUpper, -24f, 0f, 12f);
-            R(Kerangka.LFore, -12f, 0f, 0f); R(Kerangka.RFore, -14f, 0f, 0f);
+            R(Kerangka.Spine, 8f, 0f, goyang); R(Kerangka.Head, 4f + Mathf.Sin(_t * 0.9f) * 3f, -8f, -goyang * 0.8f);
+            R(Kerangka.LUpper, -26f, 0f, -6f); R(Kerangka.RUpper, -30f, 0f, 6f);
+            R(Kerangka.LFore, -24f, 0f, 6f); R(Kerangka.RFore, -28f, 0f, -6f);
         }
 
         void Pocong(float skala)
@@ -208,7 +208,7 @@ namespace AlasKeramat.AI
             {
                 if (name.Contains("Tuyul")) { R(Kerangka.Spine, 24f, 0f, 0f); R(Kerangka.Head, -14f, 8f, 0f); R(Kerangka.LThigh, -35f, -12f, 0f); R(Kerangka.RThigh, -35f, 12f, 0f); R(Kerangka.LCalf, 55f, 0f, 0f); R(Kerangka.RCalf, 55f, 0f, 0f); R(Kerangka.LUpper, -45f, 0f, 18f); R(Kerangka.RUpper, -45f, 0f, -18f); }
                 else if (name.Contains("Genderuwo")) { R(Kerangka.Spine, 14f, 0f, 0f); R(Kerangka.LUpper, -24f, 0f, 16f); R(Kerangka.RUpper, -24f, 0f, -16f); R(Kerangka.Jaw, 18f, 0f, 0f); }
-                else if (name.Contains("Ningsih")) { R(Kerangka.Pelvis, 0f, 6f, -2f); R(Kerangka.Spine, -2f, -4f, 2f); R(Kerangka.LUpper, 4f, 0f, -6f); R(Kerangka.RUpper, 5f, 0f, 7f); R(Kerangka.LFore, -14f, 0f, -2f); R(Kerangka.RFore, -20f, 0f, 2f); R(Kerangka.Head, -2f, -8f, 3f); }
+                else if (name.Contains("Ningsih")) { R(Kerangka.Pelvis, 0f, 8f, -2f); R(Kerangka.Spine, -2f, -5f, 2f); R(Kerangka.LUpper, 3f, 0f, 2f); R(Kerangka.RUpper, 4f, 0f, -2f); R(Kerangka.LFore, -18f, 0f, 0f); R(Kerangka.RFore, -24f, 0f, 0f); R(Kerangka.Head, -2f, -8f, 3f); }
                 else { R(Kerangka.Pelvis, 0f, 6f, 0f); R(Kerangka.Spine, 2f, -4f, 0f); R(Kerangka.LFore, -22f, 0f, 0f); R(Kerangka.RFore, -28f, 0f, 0f); R(Kerangka.Head, 1f, -6f, 2f); }
             }
             Tatap();
