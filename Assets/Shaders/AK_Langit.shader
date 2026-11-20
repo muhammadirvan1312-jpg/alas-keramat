@@ -70,8 +70,8 @@ Shader "AlasKeramat/Langit"
                 uv.x = frac(atan2(dir.z, dir.x) * 0.159154943 + 0.5);
                 uv.y = clamp(asin(clamp(dir.y, -1.0, 1.0)) * 0.318309886 + 0.5, 0.001, 0.999);
 
-                half3 dayCol = SAMPLE_TEXTURE2D(_DayTex, sampler_DayTex, uv).rgb;
-                half3 nightCol = SAMPLE_TEXTURE2D(_NightTex, sampler_NightTex, uv).rgb;
+                half3 dayCol = SAMPLE_TEXTURE2D_LOD(_DayTex, sampler_DayTex, uv, 0).rgb;
+                half3 nightCol = SAMPLE_TEXTURE2D_LOD(_NightTex, sampler_NightTex, uv, 0).rgb;
                 half3 sky = lerp(dayCol, nightCol, (half)_NightBlend) * _Tint.rgb * (half)_Exposure;
 
                 float3 sunD = normalize(_SunDir.xyz + float3(0, 0.0001, 0));

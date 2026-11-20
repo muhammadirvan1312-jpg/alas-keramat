@@ -9,7 +9,7 @@ OUT.mkdir(parents=True,exist_ok=True)
 def is_leaf_mat(mat):
     if not mat:return False
     n=mat.name.lower()
-    return 'leaves' in n or 'leaf' in n
+    return 'leaves' in n or 'leaf' in n or 'foliage' in n or 'frond' in n
 
 def is_branch_mat(mat):
     return bool(mat and 'branch' in mat.name.lower())
@@ -181,7 +181,10 @@ def write_prop(path,objects,limit,target_size,cluster=1,pick=0,sink=0.0,size_axi
     if not valid:valid=list(objects)
     if split_rocks and len(valid)==1:
         bpy.ops.object.select_all(action='DESELECT');valid[0].select_set(True);bpy.context.view_layer.objects.active=valid[0]
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.select_all(action='SELECT')
         bpy.ops.mesh.separate(type='LOOSE')
+        bpy.ops.object.mode_set(mode='OBJECT')
         valid=sorted([o for o in bpy.data.objects if o.type=='MESH' and len(o.data.polygons)>=12],key=lambda o:len(o.data.polygons),reverse=True)
     elif len(valid)==1 and (cluster>1 or pick>0):
         valid=split_by_spatial_gaps(valid[0])
@@ -276,8 +279,15 @@ for name in ['island_tree_01','fern_02','island_tree_02','grass_medium_01','gras
     elif name=='boulder_01':
         write_prop(OUT/'BatuBesarScan.bytes',objects,640,1.9,cluster=1,pick=0,sink=0.10,size_axis='w')
     elif name=='rock_moss_set_01':
-        write_prop(OUT/'BatuLumutA.bytes',objects,380,1.05,cluster=1,pick=0,sink=0.06,size_axis='w',split_rocks=True)
-        write_prop(OUT/'BatuLumutB.bytes',objects,380,0.85,cluster=1,pick=1,sink=0.05,size_axis='w',split_rocks=True)
+        if len(objects)==1:
+            bpy.ops.object.select_all(action='DESELECT');objects[0].select_set(True);bpy.context.view_layer.objects.active=objects[0]
+            bpy.ops.object.mode_set(mode='EDIT')
+            bpy.ops.mesh.select_all(action='SELECT')
+            bpy.ops.mesh.separate(type='LOOSE')
+            bpy.ops.object.mode_set(mode='OBJECT')
+            objects=sorted([o for o in bpy.data.objects if o.type=='MESH' and len(o.data.polygons)>=12],key=lambda o:len(o.data.polygons),reverse=True)
+        write_prop(OUT/'BatuLumutA.bytes',objects,380,1.05,cluster=1,pick=0,sink=0.06,size_axis='w')
+        write_prop(OUT/'BatuLumutB.bytes',objects,380,0.85,cluster=1,pick=1,sink=0.05,size_axis='w')
     elif name=='dead_tree_trunk':
         write_prop(OUT/'KayuTumbangScan.bytes',objects,620,3.4,cluster=1,pick=0,sink=0.06,size_axis='w')
     elif name=='root_cluster_01':

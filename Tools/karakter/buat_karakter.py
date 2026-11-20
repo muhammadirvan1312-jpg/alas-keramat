@@ -458,7 +458,7 @@ def add_genderuwo_features(shoes,hair):
 def build_kuyang(base):
     hv=[base[i] for i in GROUP['body'] if base[i].y>5.8 and abs(base[i].x)<1.1]
     top_y=max(v.y for v in hv) if hv else 7.2
-    cz=(min(v.z for v in hv)+max(v.z for v in hv))*0.42 if hv else 0.42
+    head_cz=(min(v.z for v in hv)+max(v.z for v in hv))*0.42 if hv else 0.42
     # Organ dalam menggantung basah (trakea, dua paru-paru, jantung, usus melilit berayun di bawah leher terputus!)
     org=PartBuilder();hair=PartBuilder();fangs=PartBuilder()
     def obw(y):return {4:1.0} if y>5.5 else {3:0.6,2:0.4} if y>4.2 else {2:0.7,1:0.3} if y>2.2 else {1:0.6,0:0.4}
@@ -487,7 +487,7 @@ def build_kuyang(base):
     # Rambut panjang kuyang berkibar liar ke belakang & samping kepala terpenggal!
     for i in range(18):
         f=(i/17.0)*2.0-1.0;ang=math.pi+f*1.65
-        sx=math.sin(ang)*0.68;sz=cz+math.cos(ang)*0.82
+        sx=math.sin(ang)*0.68;sz=head_cz+math.cos(ang)*0.82
         out=Vector((math.sin(ang),0.0,math.cos(ang))).normalized()
         pts=[Vector((sx+out.x*(0.12+t*1.3),top_y-0.08-t*3.6+0.32*math.sin(t*5.0+i),sz+out.z*(0.12+t*1.9))) for t in [s/6.0 for s in range(7)]]
         hair.ribbon_double(pts,lambda t:0.20*(1.0-0.4*t),lambda p,t:{4:0.85,3:0.15},(0.05,0.05,0.9,0.9))
