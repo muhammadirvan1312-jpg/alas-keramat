@@ -272,7 +272,7 @@ namespace AlasKeramat.Player
             if (_tMati > 0f) return;
             _tMati = 0f;
             Health = Maks * 0.5f; Stamina = Maks * 0.5f; Hydration = Mathf.Max(Hydration, 40f); Sanity = Mathf.Max(Sanity, 40f);
-            SetGiziMinimal(40f); SuhuTubuh = SuhuNormal; Wetness = 0f;
+            SetGiziMinimal(40f); BersihkanPenyakit(); SuhuTubuh = SuhuNormal; Wetness = 0f;
             Vector3 awal = new Vector3(-4f, Mathf.Max(0f, WorldTerrainGenerator.SampleHeight(-4f, -424f)) + 0.3f, -424f);
             var gerak = GetComponent<AndiFPSController>();
             if (gerak != null) gerak.Teleport(awal);

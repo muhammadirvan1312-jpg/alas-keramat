@@ -68,7 +68,7 @@ namespace AlasKeramat.EditorTools
             {
                 RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom;
                 RenderSettings.customReflectionTexture = envCube;
-                RenderSettings.reflectionIntensity = 0.90f;
+                RenderSettings.reflectionIntensity = 0.40f;
             }
             var sky = Shader.Find("AlasKeramat/Langit");
             if (sky == null) sky = Shader.Find("Skybox/Procedural");
@@ -104,6 +104,7 @@ namespace AlasKeramat.EditorTools
             var angin = _sistem.AddComponent<AKAngin>();
             angin.Pasang(atmos, WeatherState.Cerah);
             EditorUtility.SetDirty(angin);
+            _sistem.AddComponent<PengawasPerforma>();
             var audioGo = Anak(_sistem, "ProceduralAudioSynth");
             var synth = audioGo.AddComponent<ProceduralAudioSynth>();
             var daftarKlip = new System.Collections.Generic.List<string>(ProceduralAudioSynth.KlipWajib);
@@ -144,7 +145,8 @@ namespace AlasKeramat.EditorTools
             EditorUtility.SetDirty(tur);
 
             var es = Anak(_ui, "EventSystem");
-            es.AddComponent<EventSystem>();
+            var esComp = es.AddComponent<EventSystem>();
+            esComp.pixelDragThreshold = 4;
             GameBootstrap.AddCorrectInputModule(es);
             Catat("UI: judul, label zona & jam tur pratinjau, EventSystem");
         }
@@ -212,6 +214,7 @@ namespace AlasKeramat.EditorTools
                 imp.textureShape = TextureImporterShape.TextureCube;
                 imp.generateCubemap = TextureImporterGenerateCubemap.AutoCubemap;
                 imp.mipmapEnabled = true;
+                imp.cubemapConvolution = TextureImporterCubemapConvolution.Specular;
                 imp.sRGBTexture = false;
                 imp.maxTextureSize = maks;
                 var andr = imp.GetPlatformTextureSettings("Android");

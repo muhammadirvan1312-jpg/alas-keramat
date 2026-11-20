@@ -14,7 +14,7 @@ namespace AlasKeramat.Player
         public const float VLompat = 4.8f, Gravitasi = 18f, Coyote = 0.12f;
         public const float TinggiKapsul = 1.8f, TinggiJongkok = 1.1f, Radius = 0.32f, BatasLereng = 42f, LangkahTangga = 0.35f;
         public const float MataBerdiri = 1.65f, MataJongkok = 0.95f, PitchMaks = 80f;
-        public const float SensH = 0.22f, SensV = 0.17f, SensMouse = 2.2f;
+        public const float SensH = 0.36f, SensV = 0.26f, SensMouse = 2.2f;
         public const float BobV = 0.035f, BobL = 0.02f, FrekBob = 1.9f;
         public const float AirMinRenang = 1.3f, MataDiBawahAir = 0.25f, NapasNormal = 25f, PitchSelam = -25f, Apung = 2.5f;
         public const float JatuhAman = 6f, JatuhMati = 18f, DamagePerMeter = 7f;
@@ -58,6 +58,7 @@ namespace AlasKeramat.Player
 
         CharacterController _cc;
         Vector3 _vDatar;
+        Vector2 _lihatLalu;
         float _vy, _yaw, _pitch, _sejakTanah, _faseBob, _mata = MataBerdiri, _puncakY;
         bool _mintaLompat, _diUdara;
 #if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
@@ -67,7 +68,7 @@ namespace AlasKeramat.Player
         public void Pasang(Transform cam) { kamera = cam; }
         public void HentikanInputGerak()
         {
-            InputGerak = Vector2.zero; InputLihatPx = Vector2.zero; MintaLari = false;
+            InputGerak = Vector2.zero; InputLihatPx = Vector2.zero; _lihatLalu = Vector2.zero; MintaLari = false;
             _mintaLompat = false; _vDatar = Vector3.zero; SedangLari = false;
         }
         public void Lompat() { _mintaLompat = true; }
@@ -122,11 +123,14 @@ namespace AlasKeramat.Player
 
         void LateUpdate()
         {
-            if (kamera == null || AlasKeramat.UI.PengunciInput.Terblokir) { InputLihatPx = Vector2.zero; _akhirGuncang = 0f; return; }
-            float kecGeser = InputLihatPx.magnitude;
-            float kurva = kecGeser > 12f ? 1f + Mathf.Clamp01((kecGeser - 12f) / 55f) * 0.7f : 1f;
-            _yaw += InputLihatPx.x * kurva * SensH * PengaliSensitivitas;
-            _pitch = Mathf.Clamp(_pitch - InputLihatPx.y * kurva * SensV * PengaliSensitivitas * (BalikY ? -1f : 1f), -PitchMaks, PitchMaks);
+            if (kamera == null || AlasKeramat.UI.PengunciInput.Terblokir) { InputLihatPx = Vector2.zero; _lihatLalu = Vector2.zero; _akhirGuncang = 0f; return; }
+            Vector2 mentah = InputLihatPx;
+            Vector2 halus = Vector2.Lerp(mentah, _lihatLalu, 0.22f);
+            _lihatLalu = mentah;
+            float kecGeser = halus.magnitude;
+            float kurva = kecGeser > 6f ? 1f + Mathf.Clamp01((kecGeser - 6f) / 40f) * 0.85f : 1f;
+            _yaw += halus.x * kurva * SensH * PengaliSensitivitas;
+            _pitch = Mathf.Clamp(_pitch - halus.y * kurva * SensV * PengaliSensitivitas * (BalikY ? -1f : 1f), -PitchMaks, PitchMaks);
             InputLihatPx = Vector2.zero;
             transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
             float targetMata = Jongkok ? MataJongkok : MataBerdiri;
@@ -167,7 +171,7 @@ namespace AlasKeramat.Player
             if (Berenang && Jongkok) Jongkok = false;
 
             float mag = Mathf.Clamp01(InputGerak.magnitude);
-            SedangLari = MintaLari && !LariDiblokir && !Jongkok && InputGerak.y > 0.5f && mag >= JoyPenuh;
+            SedangLari = MintaLari && !LariDiblokir && !Jongkok && InputGerak.y > 0.45f && mag >= 0.68f;
             float target = Berenang ? (mag < JoyMati ? 0f : (SedangLari ? RenangCepat : Renang)) : KecepatanTarget(mag, SedangLari, Jongkok);
             Vector2 arah = ArahGerak(InputGerak);
             float faktor = arah.y < 0f ? FaktorMundur : (Mathf.Abs(arah.x) > Mathf.Abs(arah.y) ? FaktorSamping : 1f);

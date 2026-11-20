@@ -12,7 +12,7 @@ namespace AlasKeramat.Player
         public const float ReduksiBlok = 0.6f, StaminaBlokPerDamage = 1.5f, KerucutTangkis = 70f;
         public const float LamaPenghabisan = 2f, PengaliPenghabisan = 2.5f;
         public const float HitStop = 0.05f, SkalaHitStop = 0.05f, GuncangBerat = 0.15f, GuncangRingan = 0.06f, LamaTandaKena = 0.15f;
-        public const float AssistJarak = 3.6f, AssistKerucut = 38f, AssistLaju = 140f;
+        public const float AssistJarak = 4.2f, AssistKerucut = 44f, AssistLaju = 180f;
 
         public static event System.Action<bool> OnKena; // true = berat/penghabisan
 
@@ -113,11 +113,14 @@ namespace AlasKeramat.Player
         void Assist(float dt)
         {
             if (_ctrl == null || !AimAssist || _ctrl.SedangMembidikManual) return;
-            int jumlah=Physics.OverlapSphereNonAlloc(transform.position,AssistJarak,_sasaranAssist,1 << GameLayers.Enemy,QueryTriggerInteraction.Ignore);
+            int maskAssist = (1 << GameLayers.Enemy) | 1;
+            int jumlah=Physics.OverlapSphereNonAlloc(transform.position,AssistJarak,_sasaranAssist,maskAssist,QueryTriggerInteraction.Ignore);
             var cols=_sasaranAssist;
             float terbaik = 999f, yaw = 0f;
             for (int i = 0; i < jumlah; i++)
             {
+                if (cols[i] == null) continue;
+                if (cols[i].gameObject.layer != GameLayers.Enemy && cols[i].GetComponentInParent<AlasKeramat.AI.WildAnimalAI>() == null) continue;
                 Vector3 ke = cols[i].bounds.center - transform.position; ke.y = 0f;
                 if (ke.sqrMagnitude < 0.01f) continue;
                 float s = Vector3.SignedAngle(transform.forward, ke, Vector3.up);

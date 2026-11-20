@@ -334,7 +334,15 @@ namespace AlasKeramat.Inventory
                     R(20, I.BusurTanduk, 1, I.None, S(I.BusurBambu, 1), S(I.Tulang, 3), S(I.TaliIjuk, 1)),
                     R(21, I.PanahTulang, 4, I.GolokPusaka, S(I.Ranting, 2), S(I.Tulang, 1), S(I.Bulu, 2)),
                     R(22, I.PanahRacun, 2, I.None, S(I.AnakPanah, 2), S(I.JamurBeracun, 1)),
-                    R(23, I.PeluruSenapan, 2, I.None, S(I.LogamBekas, 2), S(I.MesiuHitam, 1))
+                    R(23, I.PeluruSenapan, 2, I.None, S(I.LogamBekas, 2), S(I.MesiuHitam, 1)),
+                    R(24, I.BotolKosong, 1, I.None, S(I.Bambu, 2), S(I.Damar, 1)),
+                    R(25, I.KapakBaja, 1, I.None, S(I.KapakBatu, 1), S(I.LogamBekas, 2), S(I.TaliIjuk, 1)),
+                    R(26, I.Mandau, 1, I.None, S(I.GolokPusaka, 1), S(I.LogamBekas, 2), S(I.Tulang, 2)),
+                    R(27, I.JamuHerbal, 1, I.None, S(I.DaunSirih, 2), S(I.JaheHutan, 1)),
+                    R(28, I.PerbanKain, 2, I.None, S(I.DaunPisang, 2), S(I.SeratIjuk, 2)),
+                    R(29, I.SupHutan, 1, I.None, S(I.Jamur, 2), S(I.KelapaMuda, 1), S(I.DagingMatang, 1)),
+                    R(30, I.OborBambu, 1, I.None, S(I.Ranting, 2), S(I.KainBatik, 1), S(I.Damar, 1)),
+                    R(31, I.AnakPanah, 4, I.None, S(I.Bambu, 1), S(I.Ranting, 2), S(I.Batu, 1))
                 };
 
                 for (int index = 0; index < rows.Length; index++)

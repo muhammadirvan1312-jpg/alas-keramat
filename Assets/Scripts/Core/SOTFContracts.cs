@@ -25,7 +25,8 @@ public enum BlueprintID { ApiUnggun = 1, SaungPanggung = 2, RakKayu = 3, KeretaD
     JemuranIkan = 6, PerangkapAyunBambu = 7, OborTengkorak = 8, TendaDarurat = 9, PanciMasak = 10,
     MenaraPengintai = 11, PintuBambu = 12, KentonganKemah = 13, RakitBambu = 14,
     MangkukKepiting = 15, PatungNgeri = 16, BatuAsah = 17, RumahPohon = 18, PerangkapPunji = 19, JeratHewan = 20,
-    BubuIkan = 21, PetiPenyimpanan = 22, LampuMinyak = 23, JembatanGantung = 24, GerbangPagar = 25, KursiMeja = 26 }
+    BubuIkan = 21, PetiPenyimpanan = 22, LampuMinyak = 23, JembatanGantung = 24, GerbangPagar = 25, KursiMeja = 26,
+    PondokKayu = 27, PagarKayu = 28, KebunTanam = 29, MejaKerja = 30, KomporBatu = 31 }
 public enum BuildPieceType { Tiang = 0, BalokDinding = 1, Atap = 2, Tangga = 3, Papan = 4, PagarRuncing = 5, BambuTanam = 6, BlueprintPart = 7, FondasiBatu = 8, DindingBatu = 9, JalanBatu = 10 }
 public enum BuildSocketType { Tanah = 0, TiangAtas = 1, TiangBawah = 2, TiangSisi = 3, UjungBalok = 4, TengahBalok = 5, TepiPapan = 6, AnakTangga = 7 }
 public enum CompanionOrder { Ikuti = 0, Tunggu = 1, Istirahat = 2, AmbilKayu = 3, AmbilRanting = 4, AmbilBatu = 5,

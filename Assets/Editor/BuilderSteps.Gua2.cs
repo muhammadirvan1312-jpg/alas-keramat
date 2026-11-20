@@ -81,10 +81,10 @@ namespace AlasKeramat.EditorTools
         // ---------- UG3 Kuil Akar Beringin Hitam ----------
         static GameObject BangunUG3(GameObject induk)
         {
-            var akarMat = SimpanMat(SafeMaterialFactory.CreatePBR("M_AkarHitam", ProcTex.Hex("#5E4536"), 0f, 0.34f, Tex("kulit_kayu"), Tex("kulit_kayu_n")));
-            MaskPBR(akarMat, "kulit_kayu"); SafeMaterialFactory.SetF(akarMat, "_Smoothness", 0.34f);
-            var batuArena = SimpanMat(SafeMaterialFactory.CreatePBR("M_BatuArena", ProcTex.Hex("#3B3534"), 0f, 0.52f, Tex("batu"), Tex("batu_n")));
-            MaskPBR(batuArena, "batu"); SafeMaterialFactory.SetF(batuArena, "_Smoothness", 0.52f);
+            var akarMat = SimpanMat(SafeMaterialFactory.CreatePBR("M_AkarHitam", ProcTex.Hex("#7E604C"), 0f, 0.28f, Tex("kulit_kayu"), Tex("kulit_kayu_n")));
+            MaskPBR(akarMat, "kulit_kayu"); SafeMaterialFactory.SetF(akarMat, "_Smoothness", 0.28f);
+            var batuArena = SimpanMat(SafeMaterialFactory.CreatePBR("M_BatuArena", ProcTex.Hex("#665A56"), 0f, 0.36f, Tex("batu"), Tex("batu_n")));
+            MaskPBR(batuArena, "batu"); SafeMaterialFactory.SetF(batuArena, "_Smoothness", 0.36f);
             _matUrat = MatEmisi("M_UratMerah", "#4A0A06", new Color(1.4f, 0.16f, 0.05f) * 2.2f, false);
             var k = MulaiKompleks(induk, UndergroundId.UG3_KuilAkar, akarMat, batuArena);
             var k0 = R("K0_CelahAkar", new Vector3(0f, 0f, -70f), new Vector3(6f, 5f, 6f), true);

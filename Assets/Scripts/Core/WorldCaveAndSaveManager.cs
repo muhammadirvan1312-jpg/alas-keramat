@@ -16,7 +16,7 @@ namespace AlasKeramat.Core
         public const int B_Palka = 1, B_PintuKartu = 2, B_Rintangan = 4, B_Tali = 8, B_AkarK4 = 16, B_Alarm = 32, B_PocongJatuh = 64,
             B_PenjagaR4 = 128, B_Penyergap = 256, B_MalamDarah1 = 512, B_MalamDarah2 = 1024;
         public static readonly Vector3[] Pusat = { Vector3.zero, new Vector3(-600f, -80f, -600f), new Vector3(0f, -80f, -600f), new Vector3(600f, -80f, -600f) };
-        public static readonly Color AmbienGua = new Color(0.15f, 0.18f, 0.23f); // kedalaman kontras gua & kubah tetap terbaca terang di HP (g > 0.1)
+        public static readonly Color AmbienGua = new Color(0.20f, 0.24f, 0.29f); // kedalaman kontras gua & kubah tetap terbaca terang di HP (g > 0.1)
 
         [SerializeField] Transform[] kompleks = new Transform[4];
         [SerializeField] Image layarHitam;
@@ -125,15 +125,32 @@ namespace AlasKeramat.Core
             if (Kini != UndergroundId.None) { AturLampu(); Skrip(); }
         }
 
-        // Hanya 4 lampu titik terdekat aktif (03 §10).
+        static bool LampuUtamaGua(Light l) { return l != null && (l.range >= 35f || l.name != "Cahaya"); }
+
+        static int BandingLampu(Vector3 pos, Light x, Light y)
+        {
+            int px = LampuUtamaGua(x) ? 0 : 1, py = LampuUtamaGua(y) ? 0 : 1;
+            if (px != py) return px.CompareTo(py);
+            return (x.transform.position - pos).sqrMagnitude.CompareTo((y.transform.position - pos).sqrMagnitude);
+        }
+
+        // Hanya 4 lampu titik terdekat aktif (03 §10), mendahulukan lampu arsitektural gua/altar.
         void AturLampu()
         {
             var daftar = _lampu[(int)Kini];
             if (daftar.Count == 0) return;
             Vector3 a = _andi.transform.position;
             _urut.Clear(); _urut.AddRange(daftar);
-            _urut.Sort((x, y) => (x.transform.position - a).sqrMagnitude.CompareTo((y.transform.position - a).sqrMagnitude));
-            for (int i = 0; i < _urut.Count; i++) if (_urut[i] != null) _urut[i].enabled = i < MaksLampu;
+            _urut.Sort((x, y) => BandingLampu(a, x, y));
+            int aktif = 0;
+            for (int i = 0; i < _urut.Count; i++)
+            {
+                var l = _urut[i]; if (l == null) continue;
+                var tg = l.GetComponentInParent<AlasKeramat.AI.TungkuObor>();
+                bool boleh = (tg == null || tg.Menyala) && aktif < MaksLampu;
+                l.enabled = boleh;
+                if (boleh) aktif++;
+            }
         }
 
         // Khusus inspeksi foto Editor, juga bekerja sebelum Awake.
@@ -144,7 +161,7 @@ namespace AlasKeramat.Core
             {
                 if(kompleks==null || i>=kompleks.Length || kompleks[i]==null)continue;
                 var daftar=kompleks[i].GetComponentsInChildren<Light>(true);
-                System.Array.Sort(daftar,(a,b)=>(a.transform.position-posisi).sqrMagnitude.CompareTo((b.transform.position-posisi).sqrMagnitude));
+                System.Array.Sort(daftar,(a,b)=>BandingLampu(posisi,a,b));
                 for(int k=0;k<daftar.Length;k++)daftar[k].enabled=i==(int)u && k<MaksLampu;
             }
         }

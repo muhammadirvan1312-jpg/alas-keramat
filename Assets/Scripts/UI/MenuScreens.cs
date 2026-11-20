@@ -112,13 +112,13 @@ namespace AlasKeramat.UI
             switch (p)
             {
                 case PresetGrafis.Rendah:
-                    return new DataPresetGrafis { renderScale = 0.7f, bayangan = 0f, cascade = 1, msaa = 1, hdr = false, bloom = false, farKamera = 140f, kabutTambah = 0.006f, pengaliVeg = 0.65f, detailVeg = 0.55f, rumput = 0.15f, targetFps = 30 };
+                    return new DataPresetGrafis { renderScale = 0.7f, bayangan = 0f, cascade = 1, msaa = 1, hdr = false, bloom = false, farKamera = 135f, kabutTambah = 0.006f, pengaliVeg = 0.55f, detailVeg = 0.45f, rumput = 0.15f, targetFps = 30 };
                 case PresetGrafis.Tinggi:
-                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 60f, cascade = 2, msaa = 2, hdr = true, bloom = true, farKamera = 260f, kabutTambah = 0f, pengaliVeg = 1.35f, detailVeg = 1f, rumput = 0.7f, targetFps = 60 };
+                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 60f, cascade = 2, msaa = 1, hdr = true, bloom = true, farKamera = 250f, kabutTambah = 0f, pengaliVeg = 1.15f, detailVeg = 0.9f, rumput = 0.65f, targetFps = 60 };
                 case PresetGrafis.Ultra:
-                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 90f, cascade = 2, msaa = 4, hdr = true, bloom = true, farKamera = 360f, kabutTambah = 0f, pengaliVeg = 1.75f, detailVeg = 1.25f, rumput = 1f, targetFps = 30 };
+                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 90f, cascade = 4, msaa = 2, hdr = true, bloom = true, farKamera = 360f, kabutTambah = 0f, pengaliVeg = 1.4f, detailVeg = 1.15f, rumput = 1f, targetFps = 30 };
                 default:
-                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 2, hdr = true, bloom = false, farKamera = 200f, kabutTambah = 0.002f, pengaliVeg = 1.0f, detailVeg = 0.7f, rumput = 0.4f, targetFps = 60 };
+                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 1, hdr = true, bloom = false, farKamera = 185f, kabutTambah = 0.002f, pengaliVeg = 0.85f, detailVeg = 0.65f, rumput = 0.35f, targetFps = 60 };
             }
         }
 
@@ -155,7 +155,7 @@ namespace AlasKeramat.UI
             TerapkanPengaturan();
             yield return null; yield return null;
             while(LayarPeringatan.PerluTampil())yield return null;
-            if(_mulaiBaruBerikutnya) { _mulaiBaruBerikutnya=false; _sesiDimulai=true; JedaDunia.Atur(GetInstanceID(), false); }
+            if(_mulaiBaruBerikutnya) { _mulaiBaruBerikutnya=false; _sesiDimulai=true; BeriBekalAwalJikaKosong(); JedaDunia.Atur(GetInstanceID(), false); }
             else if(!_sesiDimulai) BukaMenuUtama();
         }
 
@@ -272,6 +272,9 @@ namespace AlasKeramat.UI
         public void TerapkanPengaturan()
         {
             var dp = AmbilPreset(Preset);
+            QualitySettings.vSyncCount = 0;
+            QualitySettings.asyncUploadTimeSlice = 2;
+            QualitySettings.asyncUploadBufferSize = 16;
             Application.targetFrameRate = TargetFps;
             Time.fixedDeltaTime = 0.025f;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
@@ -296,7 +299,7 @@ namespace AlasKeramat.UI
                     bool depthOn = dp.bayangan >= 35f;
                     _klonUrp.supportsCameraDepthTexture = depthOn;
                     Shader.SetGlobalFloat("_AK_MatikanDepth", depthOn ? 0f : 1f);
-                    AturSSAO(Preset > PresetGrafis.Rendah);
+                    AturSSAO(Preset >= PresetGrafis.Tinggi);
                 }
                 QualitySettings.skinWeights = Preset <= PresetGrafis.Sedang ? SkinWeights.TwoBones : SkinWeights.FourBones;
             }
@@ -305,23 +308,23 @@ namespace AlasKeramat.UI
             if (cam != null)
             {
                 cam.fieldOfView = Fov;
-                if (Application.isPlaying) cam.farClipPlane = Mathf.Max(dp.farKamera, 140f);
+                if (Application.isPlaying) cam.farClipPlane = Mathf.Max(dp.farKamera, 135f);
             }
 
             var veg = GameServices.Get<VegetationManager>();
             if (veg != null) { veg.PengaliJarak = dp.pengaliVeg; veg.PengaliDetail = dp.detailVeg; }
             var serasah=GameServices.Get<SerasahHutan>();
-            if(serasah!=null)serasah.Kepadatan=dp.rumput;
+            if(serasah!=null) { serasah.Kepadatan=dp.rumput; serasah.BayanganPadat=Preset>=PresetGrafis.Tinggi; }
             if(Application.isPlaying)
             {
                 var volume=UnityEngine.Object.FindFirstObjectByType<Volume>();
                 Bloom bloom;
                 if(volume!=null && volume.profile!=null && volume.profile.TryGet(out bloom))bloom.active=dp.bloom;
                 if(_terrains==null)_terrains=Terrain.activeTerrains;
-                float pxErr=Preset==PresetGrafis.Rendah?18f:Preset==PresetGrafis.Sedang?12f:Preset==PresetGrafis.Tinggi?9f:6f;
-                float bDist=Preset==PresetGrafis.Rendah?60f:Preset==PresetGrafis.Sedang?95f:Preset==PresetGrafis.Tinggi?130f:180f;
-                for(int i=0;i<_terrains.Length;i++) { if(_terrains[i]==null)continue; _terrains[i].heightmapPixelError=pxErr; _terrains[i].basemapDistance=bDist; }
-                if(cam!=null)cam.GetUniversalAdditionalCameraData().antialiasing=AntialiasingMode.FastApproximateAntialiasing;
+                float pxErr=Preset==PresetGrafis.Rendah?22f:Preset==PresetGrafis.Sedang?15f:Preset==PresetGrafis.Tinggi?9f:6f;
+                float bDist=Preset==PresetGrafis.Rendah?55f:Preset==PresetGrafis.Sedang?90f:Preset==PresetGrafis.Tinggi?130f:180f;
+                for(int i=0;i<_terrains.Length;i++) { if(_terrains[i]==null)continue; _terrains[i].heightmapPixelError=pxErr; _terrains[i].basemapDistance=bDist; _terrains[i].drawInstanced=true; _terrains[i].shadowCastingMode=ShadowCastingMode.Off; }
+                if(cam!=null)cam.GetUniversalAdditionalCameraData().antialiasing=(Preset>=PresetGrafis.Sedang && dp.msaa<=1)?AntialiasingMode.FastApproximateAntialiasing:AntialiasingMode.None;
             }
 
             var andi = GameServices.Get<AndiFPSController>();
@@ -409,6 +412,7 @@ namespace AlasKeramat.UI
                 var simpan=GameServices.Get<SaveSystem>();
                 if(simpan!=null && simpan.AdaSimpanan && !simpan.Muat())return;
                 _sesiDimulai=true;
+                BeriBekalAwalJikaKosong();
             }
             Dijeda = false;
             SembunyikanSemua();

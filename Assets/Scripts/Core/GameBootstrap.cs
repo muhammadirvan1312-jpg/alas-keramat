@@ -36,6 +36,7 @@ namespace AlasKeramat.Core
                 if (FindFirstObjectByType<EventSystem>() == null)
                 {
                     var es = new GameObject("EventSystem", typeof(EventSystem));
+                    es.GetComponent<EventSystem>().pixelDragThreshold = 4;
                     AddCorrectInputModule(es);
                     Debug.LogWarning("[AK][GameBootstrap] EventSystem tidak ada di scene, dibuat ulang saat runtime.");
                 }

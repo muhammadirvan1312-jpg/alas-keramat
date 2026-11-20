@@ -14,7 +14,7 @@ namespace AlasKeramat.Player
             public ItemID id; public float ringan, berat, tebang, jangkau, durR, durB, aktifR, aktifB, stamR, stamB; public DamageType tipe;
         }
 
-        public const float PengaliTebangBerat = 1.5f, RadiusSapuan = 0.45f;
+        public const float PengaliTebangBerat = 1.5f, RadiusSapuan = 0.58f;
         public static readonly Senjata TanganKosong = new Senjata { id = ItemID.None, ringan = 6f, berat = 12f, tebang = 2f, jangkau = 1.2f, durR = 0.4f, durB = 0.9f, aktifR = 0.12f, aktifB = 0.45f, stamR = 3f, stamB = 8f, tipe = DamageType.Tumpul };
         public static readonly Senjata[] Tabel =
         {
@@ -133,7 +133,7 @@ namespace AlasKeramat.Player
             var cam = _ctrl != null ? _ctrl.Kamera : null;
             if (cam == null) return;
             RaycastHit hit;
-            if (!Physics.SphereCast(cam.position, RadiusSapuan, cam.forward, out hit, _aktif.jangkau + 0.7f, _mask, QueryTriggerInteraction.Ignore)) return;
+            if (!Physics.SphereCast(cam.position, RadiusSapuan, cam.forward, out hit, _aktif.jangkau + 0.95f, _mask, QueryTriggerInteraction.Ignore)) return;
             var kayu = hit.collider.GetComponent<KayuFisik>();
             if (kayu != null && _aktif.id != ItemID.None) { kayu.Pukul(); return; }
             var bagian = hit.collider.GetComponentInParent<BagianStruktur>();

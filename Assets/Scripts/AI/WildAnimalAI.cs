@@ -30,10 +30,16 @@ namespace AlasKeramat.AI
 
         public static float HPAwal(JH j)
         {
-            switch (j) { case JH.Rusa: return 40f; case JH.Kancil: return 15f; case JH.BabiHutan: return 70f; case JH.AyamHutan: return 8f; default: return 25f; }
+            switch (j)
+            {
+                case JH.Rusa: return 40f; case JH.Kancil: return 15f; case JH.BabiHutan: return 70f; case JH.AyamHutan: return 8f;
+                case JH.Harimau: return 110f; case JH.Buaya: return 130f; case JH.Tawon: return 22f; case JH.UlarPiton: return 85f;
+                case JH.UlarKobra: return 45f; case JH.Monyet: return 30f; case JH.Anjing: return 55f; case JH.Kucing: return 22f;
+                default: return 25f;
+            }
         }
 
-        // Hasil buruan 03 §8.
+        // Hasil buruan 03 §8 & hewan buas Nusantara.
         public static void Hasil(JH j, out ItemID[] id, out int[] n)
         {
             switch (j)
@@ -42,6 +48,14 @@ namespace AlasKeramat.AI
                 case JH.Kancil: id = new[] { ItemID.DagingMentah, ItemID.KulitHewan, ItemID.Tulang }; n = new[] { 1, 1, 1 }; return;
                 case JH.BabiHutan: id = new[] { ItemID.DagingMentah, ItemID.KulitHewan, ItemID.Tulang, ItemID.Tengkorak }; n = new[] { 4, 1, 3, 1 }; return;
                 case JH.AyamHutan: id = new[] { ItemID.DagingMentah, ItemID.Bulu }; n = new[] { 1, 3 }; return;
+                case JH.Harimau: id = new[] { ItemID.DagingMentah, ItemID.KulitHewan, ItemID.Tulang, ItemID.Tengkorak }; n = new[] { 4, 2, 3, 1 }; return;
+                case JH.Buaya: id = new[] { ItemID.DagingMentah, ItemID.KulitHewan, ItemID.Tulang }; n = new[] { 4, 2, 3 }; return;
+                case JH.Tawon: id = new[] { ItemID.JamuEnergi, ItemID.Damar }; n = new[] { 1, 1 }; return;
+                case JH.UlarPiton: id = new[] { ItemID.DagingMentah, ItemID.KulitHewan, ItemID.Tulang }; n = new[] { 3, 2, 2 }; return;
+                case JH.UlarKobra: id = new[] { ItemID.DagingMentah, ItemID.KulitHewan, ItemID.JamurBeracun }; n = new[] { 2, 1, 1 }; return;
+                case JH.Monyet: id = new[] { ItemID.DagingMentah, ItemID.KulitHewan, ItemID.Pisang }; n = new[] { 2, 1, 1 }; return;
+                case JH.Anjing: id = new[] { ItemID.DagingMentah, ItemID.KulitHewan, ItemID.Tulang }; n = new[] { 2, 1, 2 }; return;
+                case JH.Kucing: id = new[] { ItemID.DagingMentah, ItemID.KulitHewan }; n = new[] { 1, 1 }; return;
                 default: id = new[] { ItemID.DagingMentah, ItemID.KulitHewan }; n = new[] { 2, 1 }; return;
             }
         }
@@ -66,10 +80,14 @@ namespace AlasKeramat.AI
             float kec = 0f;
             if (_andi != null && State != KeadaanHewan.Menyerang)
             {
-                float det = u.deteksi * (_andi.Jongkok ? 0.5f : 1f) * (_andi.SedangLari ? 2f : 1f);
+                float det = u.deteksi * 0.75f * (_andi.Jongkok ? 0.5f : 1f) * (_andi.SedangLari ? 2f : 1f);
                 float d = Vector3.Distance(_andi.transform.position, p);
-                if (d < det) { State = KeadaanHewan.Kabur; _tState = LamaKabur; }
-                else if (d < det * 1.5f && State == KeadaanHewan.Merumput) { State = KeadaanHewan.Waspada; _tState = 2f; }
+                if (d < det)
+                {
+                    if (u.pemangsa && EnemyDirector.Kesulitan != Difficulty.Damai) { State = KeadaanHewan.Menyerang; _tState = LamaMarah; }
+                    else { State = KeadaanHewan.Kabur; _tState = LamaKabur; }
+                }
+                else if (d < det * 1.45f && State == KeadaanHewan.Merumput) { State = KeadaanHewan.Waspada; _tState = 2f; }
             }
             switch (State)
             {
@@ -92,35 +110,73 @@ namespace AlasKeramat.AI
                         _arah = Mathf.MoveTowardsAngle(_arah, Mathf.Atan2(ke.x, ke.z) * Mathf.Rad2Deg, LajuBelok * dt);
                         kec = u.kecepatan;
                         _tSeruduk -= dt;
-                        if (ke.magnitude < JarakSeruduk && _tSeruduk <= 0f)
+                        float jangkauSerang = u.jangkau > 0f ? u.jangkau : JarakSeruduk;
+                        if (ke.magnitude < jangkauSerang && _tSeruduk <= 0f)
                         {
-                            _tSeruduk = JedaSeruduk;
+                            _tSeruduk = u.jeda > 0f ? u.jeda : JedaSeruduk;
+                            float dmg = u.damage > 0f ? u.damage : DamageSeruduk;
                             var target = _andi.GetComponent<IDamageable>();
-                            if (target != null) target.TakeDamage(new DamageInfo { amount = DamageSeruduk, type = DamageType.Tusuk, point = _andi.transform.position, direction = ke.normalized, source = gameObject });
+                            if (target != null) target.TakeDamage(new DamageInfo { amount = dmg, type = DamageType.Tusuk, point = _andi.transform.position, direction = ke.normalized, source = gameObject });
+                            if (u.beracun)
+                            {
+                                var vAndi = _andi.GetComponent<AndiVitalsAndSanity>();
+                                if (vAndi != null) vAndi.KenaBisaUlar(20f);
+                            }
                         }
                     }
                     if (_tState <= 0f) State = KeadaanHewan.Merumput;
                     break;
             }
             Gerak(kec, dt);
-            Animasi(kec, dt);
+            if (_andi == null || (_andi.transform.position - transform.position).sqrMagnitude <= 3025f || (Time.frameCount & 1) == 0)
+                Animasi(kec, dt);
         }
 
         void Gerak(float kec, float dt)
         {
+            var u = ResepHewan.Ambil(jenis);
             Vector3 maju = Quaternion.Euler(0f, _arah, 0f) * Vector3.forward;
             Vector3 p = transform.position + maju * kec * dt;
             float? wl = WorldTerrainGenerator.GetWaterLevelAt(p.x, p.z);
             float h = WorldTerrainGenerator.SampleHeight(p.x, p.z);
-            if ((wl.HasValue && wl.Value > h + 0.3f) || h < 0.3f) { _arah += 150f; return; } // jangan masuk air dalam / laut
-            transform.SetPositionAndRotation(new Vector3(p.x, h, p.z), Quaternion.Euler(0f, _arah, 0f));
+            if (u.terbang)
+            {
+                float yAir = wl.HasValue ? Mathf.Max(h, wl.Value) : h;
+                float yTerbang = yAir + 1.25f + Mathf.Sin(_t * 6f) * 0.25f;
+                transform.SetPositionAndRotation(new Vector3(p.x, yTerbang, p.z), Quaternion.Euler(0f, _arah, 0f));
+                return;
+            }
+            float toleransiAir = u.amfibi ? 1.25f : 0.3f;
+            if ((wl.HasValue && wl.Value > h + toleransiAir) || h < 0.3f) { _arah += 150f; return; }
+            float y = u.amfibi && wl.HasValue && wl.Value > h ? Mathf.Max(h, wl.Value - 0.14f) : h;
+            transform.SetPositionAndRotation(new Vector3(p.x, y, p.z), Quaternion.Euler(0f, _arah, 0f));
         }
 
         void Animasi(float kec, float dt)
         {
             if (tulang.Length < ResepHewan.Jumlah) return;
             for (int i = 0; i < tulang.Length; i++) if (tulang[i] != null) tulang[i].localRotation = _rest[i];
-            _fase += kec * dt * 6f / Mathf.Max(0.2f, ResepHewan.Ambil(jenis).kaki);
+            var u = ResepHewan.Ambil(jenis);
+            _t += dt;
+            if (u.terbang)
+            {
+                float kepak = Mathf.Sin(_t * 42f) * 35f;
+                R(ResepHewan.LFU, 0f, 0f, kepak); R(ResepHewan.RFU, 0f, 0f, -kepak);
+                return;
+            }
+            if (u.ular)
+            {
+                _fase += (kec * 1.4f + 0.6f) * dt * 6f;
+                float ampUlar = State == KeadaanHewan.Menyerang ? 26f : 18f;
+                R(ResepHewan.Pelvis, 0f, Mathf.Sin(_fase) * ampUlar, 0f);
+                R(ResepHewan.Spine, 0f, Mathf.Sin(_fase + 1.1f) * ampUlar, 0f);
+                float tegak = jenis == JH.UlarKobra && (State == KeadaanHewan.Menyerang || State == KeadaanHewan.Waspada) ? -38f : 0f;
+                R(ResepHewan.Chest, tegak, Mathf.Sin(_fase + 2.2f) * ampUlar * 0.7f, 0f);
+                R(ResepHewan.Neck, tegak * 0.35f, Mathf.Sin(_fase + 3.1f) * ampUlar * 0.5f, 0f);
+                R(ResepHewan.Head, -tegak * 0.6f, 0f, 0f);
+                return;
+            }
+            _fase += kec * dt * 6f / Mathf.Max(0.2f, u.kaki);
             float amp = Mathf.Clamp01(kec / 2f) * 32f;
             for (int k = 0; k < 4; k++)
             {
@@ -129,7 +185,6 @@ namespace AlasKeramat.AI
                 R(ResepHewan.LFU + k * 3, Mathf.Sin(f) * amp, 0f, 0f);
                 R(ResepHewan.LFU + k * 3 + 1, Mathf.Max(0f, -Mathf.Sin(f)) * amp * 0.8f * (k < 2 ? -1f : 1f), 0f, 0f);
             }
-            _t += dt;
             float nunduk = State == KeadaanHewan.Merumput && kec < 0.1f ? 35f + Mathf.Sin(_t * 1.3f) * 8f : State == KeadaanHewan.Waspada ? -15f : 0f;
             R(ResepHewan.Neck, nunduk, 0f, 0f);
         }
@@ -154,7 +209,13 @@ namespace AlasKeramat.AI
 
         public static string NamaTampil(JH j)
         {
-            switch (j) { case JH.Rusa: return "Rusa"; case JH.Kancil: return "Kancil"; case JH.BabiHutan: return "Babi Hutan"; case JH.AyamHutan: return "Ayam Hutan"; default: return "Biawak"; }
+            switch (j)
+            {
+                case JH.Rusa: return "Rusa"; case JH.Kancil: return "Kancil"; case JH.BabiHutan: return "Babi Hutan"; case JH.AyamHutan: return "Ayam Hutan";
+                case JH.Harimau: return "Harimau"; case JH.Buaya: return "Buaya"; case JH.Tawon: return "Kawanan Tawon"; case JH.UlarPiton: return "Ular Piton";
+                case JH.UlarKobra: return "Ular Kobra"; case JH.Monyet: return "Monyet"; case JH.Anjing: return "Anjing Liar"; case JH.Kucing: return "Kucing Hutan";
+                default: return "Biawak";
+            }
         }
 
         public string GetPromptText(GameObject actor) { return "AMBIL HASIL BURUAN"; }

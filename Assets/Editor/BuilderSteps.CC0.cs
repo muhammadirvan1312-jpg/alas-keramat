@@ -36,15 +36,16 @@ namespace AlasKeramat.EditorTools
                 string nama=PasanganFoto[i,0],slot=PasanganFoto[i,1];
                 var a=BacaFoto(slot,"Albedo");var n=BacaFoto(slot,"Normal");var arm=BacaFoto(slot,"ARM");
                 if(a==null || n==null || arm==null) { Debug.LogWarning("[AK][CC0] Peta PBR belum lengkap: "+slot);continue; }
-                if(nama=="rumput" || nama=="daun" || nama=="tanah")
+                if(nama=="rumput" || nama=="daun" || nama=="tanah" || nama=="batu")
                 {
                     var apx=a.GetPixels();
                     for(int p=0;p<apx.Length;p++)
                     {
                         Color c=apx[p];
-                        if(nama=="rumput") c=new Color(c.r*0.74f,c.g*0.78f,c.b*0.60f,1f);
-                        else if(nama=="daun") c=new Color(c.r*0.72f,c.g*0.66f,c.b*0.54f,1f);
-                        else c=new Color(c.r*0.68f,c.g*0.61f,c.b*0.51f,1f);
+                        if(nama=="rumput") c=new Color(c.r*0.56f,Mathf.Clamp01(c.g*0.80f+0.015f),c.b*0.44f,1f);
+                        else if(nama=="daun") c=new Color(c.r*0.56f,c.g*0.54f,c.b*0.40f,1f);
+                        else if(nama=="batu") c=new Color(c.r*0.72f,c.g*0.73f,c.b*0.74f,1f);
+                        else c=new Color(c.r*0.54f,c.g*0.47f,c.b*0.37f,1f);
                         apx[p]=c;
                     }
                     var graded=new Texture2D(a.width,a.height,TextureFormat.RGBA32,true);
@@ -74,7 +75,7 @@ namespace AlasKeramat.EditorTools
         {
             var mask=AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/"+nama+"_mask.png");if(mask==null || m==null)return;
             SafeMaterialFactory.SetT(m,"_MetallicGlossMap",mask);SafeMaterialFactory.SetT(m,"_OcclusionMap",mask);
-            SafeMaterialFactory.SetF(m,"_Smoothness",1f);SafeMaterialFactory.SetF(m,"_OcclusionStrength",0.85f);
+            SafeMaterialFactory.SetF(m,"_Smoothness",1f);SafeMaterialFactory.SetF(m,"_OcclusionStrength",0.55f);
             m.EnableKeyword("_METALLICSPECGLOSSMAP");m.EnableKeyword("_OCCLUSIONMAP");
         }
     }

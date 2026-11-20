@@ -48,7 +48,107 @@ namespace AlasKeramat.EditorTools
             fd.Pasang(pool);
             fd.Bangkitkan();
             EditorUtility.SetDirty(fd);
-            Catat("Hewan: 5 template (rusa, kancil, babi hutan, ayam hutan, biawak); titik pungut pool " + pool.Length);
+            BangunFloraSegar();
+            BangunKehidupanAlam();
+            Catat("Hewan: 13 template (rusa, kancil, babi hutan, ayam hutan, biawak, harimau, buaya, tawon, piton, kobra, monyet, anjing, kucing); titik pungut pool " + pool.Length);
+        }
+
+        static void BangunFloraSegar()
+        {
+            var go = Anak(_sistem, "FloraSegarDirector");
+            var fd = go.AddComponent<FloraSegarDirector>();
+            var mDaun = AmbilMat("M_DaunPohon") ?? MatPolos("M_PisangDaun", "#2F6B24");
+            var mKayu = AmbilMat("M_Kayu") ?? MatPolos("M_RantingCoklat", "#5C4026");
+            var mBambu = MatPolos("M_BambuSegar", "#5A7D32");
+            var mKelapa = MatPolos("M_Kelapa", "#4E6826");
+            var mPisang = MatPolos("M_BuahPisang", "#D4B828");
+            var mIjuk = MatPolos("M_SeratIjuk", "#2E261E");
+            var mDamar = MatPolos("M_Damar", "#C87A18");
+            var mKepiting = MatPolos("M_Kepiting", "#A83B24");
+
+            var pool = new ForagingExtraNode[FloraSegarDirector.MaksPool];
+            for (int k = 0; k < pool.Length; k++)
+            {
+                var g = Anak(go, "Flora_" + k);
+                g.layer = GameLayers.Interactable; g.tag = GameTags.Interactable;
+                var sc = g.AddComponent<SphereCollider>(); sc.isTrigger = true; sc.radius = 0.42f; sc.center = Vector3.up * 0.2f;
+                pool[k] = g.AddComponent<ForagingExtraNode>();
+
+                // 0..7 urutan PERSIS sesuai FloraSegarDirector.JenisFlora
+                var cDaun = Anak(g, "DaunPisang"); cDaun.layer = GameLayers.Interactable;
+                BagianVis(cDaun, PrimitiveType.Cube, new Vector3(0f, 0.28f, 0f), new Vector3(0.45f, 0.03f, 0.9f), mDaun);
+                BagianVis(cDaun, PrimitiveType.Cube, new Vector3(0.18f, 0.34f, 0.1f), new Vector3(0.4f, 0.03f, 0.8f), mDaun);
+
+                var cRanting = Anak(g, "Ranting"); cRanting.layer = GameLayers.Interactable;
+                BagianVis(cRanting, PrimitiveType.Cylinder, new Vector3(0f, 0.06f, 0f), new Vector3(0.05f, 0.35f, 0.05f), mKayu);
+                var rt2 = GameObject.CreatePrimitive(PrimitiveType.Cylinder); Object.DestroyImmediate(rt2.GetComponent<Collider>());
+                rt2.transform.SetParent(cRanting.transform, false); rt2.transform.localPosition = new Vector3(0.08f, 0.07f, 0.04f); rt2.transform.localRotation = Quaternion.Euler(82f, 35f, 0f); rt2.transform.localScale = new Vector3(0.04f, 0.32f, 0.04f);
+                rt2.layer = GameLayers.Interactable; rt2.GetComponent<MeshRenderer>().sharedMaterial = mKayu; rt2.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
+
+                Vis(g, "BambuMuda", PrimitiveType.Cylinder, Vector3.up * 0.35f, new Vector3(0.08f, 0.35f, 0.08f), mBambu, mDaun, new Vector3(0.1f, 0.5f, 0f), new Vector3(0.28f, 0.04f, 0.12f));
+                Vis(g, "Kelapa", PrimitiveType.Sphere, new Vector3(-0.08f, 0.14f, 0f), Vector3.one * 0.26f, mKelapa, mKelapa, new Vector3(0.12f, 0.14f, 0.08f), Vector3.one * 0.24f);
+                Vis(g, "Pisang", PrimitiveType.Capsule, Vector3.up * 0.18f, new Vector3(0.12f, 0.18f, 0.12f), mPisang, mDaun, new Vector3(0f, 0.32f, 0f), new Vector3(0.45f, 0.04f, 0.35f));
+                Vis(g, "SeratIjuk", PrimitiveType.Sphere, Vector3.up * 0.09f, new Vector3(0.32f, 0.14f, 0.26f), mIjuk, mKayu, new Vector3(0f, 0.06f, 0f), new Vector3(0.2f, 0.06f, 0.2f));
+                Vis(g, "Damar", PrimitiveType.Cube, Vector3.up * 0.1f, new Vector3(0.18f, 0.2f, 0.16f), mDamar, mKayu, new Vector3(0f, 0.04f, 0f), new Vector3(0.24f, 0.05f, 0.22f));
+                Vis(g, "Kepiting", PrimitiveType.Sphere, Vector3.up * 0.06f, new Vector3(0.24f, 0.09f, 0.2f), mKepiting, mKepiting, new Vector3(0f, 0.07f, 0.12f), new Vector3(0.28f, 0.05f, 0.08f));
+                g.SetActive(false);
+            }
+            fd.Pasang(pool);
+            fd.Bangkitkan();
+            EditorUtility.SetDirty(fd);
+        }
+
+        static void BangunKehidupanAlam()
+        {
+            var go = Anak(_sistem, "KehidupanAlam");
+            var ka = go.AddComponent<KehidupanAlam>();
+            var wadah = Anak(go, "Wadah");
+            var mBurung = MatPolos("M_BurungHutan", "#26201B");
+            var mSayap = MatPolos("M_SayapBurung", "#3A2F24");
+            var mKupu = MatPolos("M_Kupu", "#E0A838");
+            var mIkan = MatPolos("M_IkanSungai", "#56707C");
+            var mKunang = MatEmisi("M_Kunang", "#C8FF5A", new Color(2.4f, 3.2f, 0.6f, 1f), false);
+
+            var burung = new Transform[KehidupanAlam.JumlahBurung];
+            var sk = new Transform[KehidupanAlam.JumlahBurung];
+            var sn = new Transform[KehidupanAlam.JumlahBurung];
+            for (int i = 0; i < burung.Length; i++)
+            {
+                var b = Anak(wadah, "Burung_" + i);
+                BagianVis(b, PrimitiveType.Capsule, Vector3.zero, new Vector3(0.22f, 0.45f, 0.22f), mBurung);
+                b.transform.GetChild(0).localRotation = Quaternion.Euler(90f, 0f, 0f);
+                var kGo = Anak(b, "SayapKiri"); kGo.transform.localPosition = new Vector3(-0.12f, 0f, 0f);
+                BagianVis(kGo, PrimitiveType.Cube, new Vector3(-0.48f, 0f, 0f), new Vector3(0.95f, 0.04f, 0.34f), mSayap);
+                var nGo = Anak(b, "SayapKanan"); nGo.transform.localPosition = new Vector3(0.12f, 0f, 0f);
+                BagianVis(nGo, PrimitiveType.Cube, new Vector3(0.48f, 0f, 0f), new Vector3(0.95f, 0.04f, 0.34f), mSayap);
+                burung[i] = b.transform; sk[i] = kGo.transform; sn[i] = nGo.transform;
+            }
+            var kupu = new Transform[KehidupanAlam.JumlahKupu];
+            for (int i = 0; i < kupu.Length; i++)
+            {
+                var k = Anak(wadah, "Kupu_" + i);
+                BagianVis(k, PrimitiveType.Cube, Vector3.zero, new Vector3(0.20f, 0.02f, 0.14f), mKupu);
+                kupu[i] = k.transform;
+            }
+            var kunang = new Transform[KehidupanAlam.JumlahKunang];
+            for (int i = 0; i < kunang.Length; i++)
+            {
+                var k = Anak(wadah, "Kunang_" + i);
+                BagianVis(k, PrimitiveType.Sphere, Vector3.zero, Vector3.one * 0.08f, mKunang);
+                k.SetActive(false);
+                kunang[i] = k.transform;
+            }
+            var ikan = new Transform[KehidupanAlam.JumlahIkan];
+            for (int i = 0; i < ikan.Length; i++)
+            {
+                var ik = Anak(wadah, "Ikan_" + i);
+                BagianVis(ik, PrimitiveType.Capsule, Vector3.zero, new Vector3(0.11f, 0.24f, 0.14f), mIkan);
+                ik.transform.GetChild(0).localRotation = Quaternion.Euler(90f, 0f, 0f);
+                ik.SetActive(false);
+                ikan[i] = ik.transform;
+            }
+            ka.Pasang(wadah, burung, sk, sn, kupu, kunang, ikan);
+            EditorUtility.SetDirty(ka);
         }
 
         static GameObject BuatHewan(JH j, Transform induk)
@@ -71,7 +171,8 @@ namespace AlasKeramat.EditorTools
             smr.localBounds = new Bounds(Vector3.zero, Vector3.one * 3f);
             var u = ResepHewan.Ambil(j);
             var bc = root.AddComponent<BoxCollider>();
-            bc.size = new Vector3(u.lebar * 1.2f, u.kaki + u.lebar, u.panjang + u.kepala); bc.center = new Vector3(0f, (u.kaki + u.lebar) * 0.5f, 0f);
+            if (u.terbang) { bc.size = new Vector3(0.85f, 0.85f, 0.85f); bc.center = new Vector3(0f, u.kaki, 0f); }
+            else { bc.size = new Vector3(Mathf.Max(0.45f, u.lebar * 1.25f), Mathf.Max(0.45f, u.kaki + u.lebar), Mathf.Max(0.6f, u.panjang + u.kepala)); bc.center = new Vector3(0f, bc.size.y * 0.5f, 0f); }
             var ai = root.AddComponent<WildAnimalAI>();
             ai.Pasang(j, t);
             EditorUtility.SetDirty(ai);

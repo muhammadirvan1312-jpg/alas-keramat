@@ -336,8 +336,8 @@ namespace AlasKeramat.EditorTools
         // ---------- UG1 Gua Sungai Bioluminesensi ----------
         static GameObject BangunUG1(GameObject induk)
         {
-            var matBatuGua = SimpanMat(SafeMaterialFactory.CreatePBR("M_BatuGua", ProcTex.Hex("#364048"), 0f, 0.56f, Tex("batu"), Tex("batu_n")));
-            MaskPBR(matBatuGua, "batu"); SafeMaterialFactory.SetF(matBatuGua, "_Smoothness", 0.56f);
+            var matBatuGua = SimpanMat(SafeMaterialFactory.CreatePBR("M_BatuGua", ProcTex.Hex("#5E6C76"), 0f, 0.46f, Tex("batu"), Tex("batu_n")));
+            MaskPBR(matBatuGua, "batu"); SafeMaterialFactory.SetF(matBatuGua, "_Smoothness", 0.46f);
             _matLumut = MatEmisi("M_LumutGua", "#2EE8C4", new Color(0.18f, 1.35f, 1.15f) * 3.6f, false);
             SafeMaterialFactory.SetF(_matLumut, "_Smoothness", 0.32f);
             var matBatangJamur = MatPolos("M_BatangJamur", "#595449");
@@ -402,7 +402,7 @@ namespace AlasKeramat.EditorTools
                 sg.AddComponent<MeshRenderer>().sharedMaterial = matBatuGua;
             }
             var meshBatuGua = new[] { MuatPropScan("BatuLumutA"), MuatPropScan("BatuBesarScan") };
-            var matBatuGuaScan = MaterialSolidScan("BatuLumutAsli", "M_BatuGuaScan", ProcTex.Hex("#4B585C"), 0.52f) ?? matBatuGua;
+            var matBatuGuaScan = MaterialSolidScan("BatuLumutAsli", "M_BatuGuaScan", ProcTex.Hex("#66747A"), 0.42f) ?? matBatuGua;
             if (meshBatuGua[0] != null || meshBatuGua[1] != null)
             {
                 for (int i = 0; i < 18; i++)
@@ -453,13 +453,13 @@ namespace AlasKeramat.EditorTools
                 }
             }
             Color cyan = ProcTex.Hex("#3CF2C8");
-            Lampu(hias, "Lampu_R0", r0.pos + Vector3.up * 3f, cyan, 12f, 2.0f);
-            Lampu(hias, "Lampu_R1a", r1.pos + new Vector3(-5f, 5.2f, 3f), cyan, 26f, 3.0f);
-            Lampu(hias, "Lampu_R1b", r1.pos + new Vector3(4.5f, 5.4f, -3f), cyan, 26f, 3.0f);
-            Lampu(hias, "Lampu_R1c", r1.pos + new Vector3(-2f, 1.4f, -4.5f), ProcTex.Hex("#28D8B8"), 18f, 2.6f);
-            Lampu(hias, "Lampu_R2", r2.pos + Vector3.up * 3f, new Color(0.95f, 0.72f, 0.42f), 14f, 2.2f);
-            Lampu(hias, "Lampu_R3", r3.pos + Vector3.up * 4f, cyan, 16f, 2.4f);
-            Lampu(hias, "Lampu_R4", r4.pos + Vector3.up * 5f, cyan, 16f, 2.4f);
+            Lampu(hias, "Lampu_R0", r0.pos + Vector3.up * 3f, cyan, 14f, 6.0f);
+            Lampu(hias, "Lampu_R1a", r1.pos + new Vector3(-5f, 5.2f, 3f), cyan, 28f, 14.0f);
+            Lampu(hias, "Lampu_R1b", r1.pos + new Vector3(4.5f, 5.4f, -3f), cyan, 28f, 14.0f);
+            Lampu(hias, "Lampu_R1c", r1.pos + new Vector3(-2f, 1.4f, -4.5f), ProcTex.Hex("#28D8B8"), 22f, 10.0f);
+            Lampu(hias, "Lampu_R2", r2.pos + Vector3.up * 3f, new Color(0.95f, 0.72f, 0.42f), 16f, 8.0f);
+            Lampu(hias, "Lampu_R3", r3.pos + Vector3.up * 4f, cyan, 18f, 9.0f);
+            Lampu(hias, "Lampu_R4", r4.pos + Vector3.up * 5f, cyan, 18f, 10.0f);
 
             // Isi ruang.
             var batu = AmbilMat("M_Batu"); var kayu = AmbilMat("M_Kayu"); var kain = AmbilMat("M_CatOranye");

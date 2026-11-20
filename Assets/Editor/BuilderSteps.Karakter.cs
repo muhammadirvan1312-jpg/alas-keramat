@@ -39,11 +39,11 @@ namespace AlasKeramat.EditorTools
 
             var npc = Anak(_root, "Karakter");
             var deden = BuatKarakter(J.Deden, "KangDeden", ProceduralAnimator.Mode.DudukTerhuyung, false);
-            Tempatkan(deden, npc, PosDeden, Arah(PosDeden, SpawnAndi));
+            Tempatkan(deden, npc, PosDeden, 14f);
             deden.tag = GameTags.Companion; SetLayer(deden, GameLayers.Companion);
             deden.GetComponent<ProceduralAnimator>().TargetLihat = kamAndi;
             var ningsih = BuatKarakter(J.Ningsih, "Ningsih", ProceduralAnimator.Mode.Normal, false);
-            Tempatkan(ningsih, npc, PosNingsih, 200f);
+            Tempatkan(ningsih, npc, PosNingsih, 214f);
             ningsih.tag = GameTags.Companion; SetLayer(ningsih, GameLayers.Companion);
             ningsih.GetComponent<ProceduralAnimator>().TargetLihat = kamAndi;
 

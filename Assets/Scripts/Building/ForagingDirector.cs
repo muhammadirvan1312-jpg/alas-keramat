@@ -8,8 +8,8 @@ namespace AlasKeramat.Building
     public class ForagingDirector : MonoBehaviour, ISaveable
     {
         public enum JenisPungut { Batu, Sirih, Kunyit, Jahe, Jamur, JamurBeracun, Sarang }
-        public const float Sel = 25f, Setengah = 1000f, RadiusPool = 22f, Interval = 0.5f;
-        public const int MaksPool = 40, HariTumbuh = 2, Benih = 7331;
+        public const float Sel = 25f, Setengah = 1000f, RadiusPool = 30f, Interval = 0.5f;
+        public const int MaksPool = 56, HariTumbuh = 2, Benih = 7331;
 
         [SerializeField] ForagingNode[] pool = new ForagingNode[0];
         [SerializeField] Vector3[] _pos;
@@ -38,15 +38,17 @@ namespace AlasKeramat.Building
         // Kepadatan per ha (03 §7; batu dikurangi dari 30 ke 8 agar layar tidak penuh batu).
         static float Kepadatan(JenisPungut j, Biome b)
         {
-            bool hutan = b == Biome.HutanJatiSelatan || b == Biome.HutanCampuran;
+            if (b == Biome.Laut) return 0f;
+            bool hutan = b == Biome.HutanJatiSelatan || b == Biome.HutanCampuran || b == Biome.KawahBeringin;
+            bool lembap = b == Biome.TepiSungai || b == Biome.HutanBambu;
             switch (j)
             {
-                case JenisPungut.Batu: return b == Biome.Laut ? 0f : 8f;
-                case JenisPungut.Sirih: return hutan ? 3f : 0f;
-                case JenisPungut.Kunyit: case JenisPungut.Jahe: return hutan ? 2f : 0f;
-                case JenisPungut.Jamur: return hutan || b == Biome.HutanBambu ? 4f : 0f;
-                case JenisPungut.JamurBeracun: return hutan ? 3f : 0f;
-                default: return b == Biome.HutanCampuran ? 0.5f : 0f;
+                case JenisPungut.Batu: return 11f;
+                case JenisPungut.Sirih: return hutan ? 5.5f : lembap ? 3.5f : 1f;
+                case JenisPungut.Kunyit: case JenisPungut.Jahe: return hutan ? 4f : lembap ? 2.5f : 0.5f;
+                case JenisPungut.Jamur: return hutan || lembap ? 6f : 1.5f;
+                case JenisPungut.JamurBeracun: return hutan ? 3.5f : lembap ? 1.5f : 0f;
+                default: return (hutan || lembap) ? 1.2f : 0.3f;
             }
         }
 

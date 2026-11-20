@@ -48,7 +48,7 @@ namespace AlasKeramat.EditorTools
             var arena = Anak(k, "Arena");
             arena.transform.localPosition = k3.pos;
             var batu = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_BatuArena.mat") ?? AmbilMat("M_Batu");
-            var apiMat = MatEmisi("M_ApiTungku", "#FF6B1A", new Color(6.0f, 2.2f, 0.35f), false);
+            var apiMat = MatEmisi("M_ApiTungku", "#FF6B1A", new Color(9.5f, 4.0f, 0.7f), false);
             var baraMat = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_Banaspati.mat") ?? apiMat;
             var meshPilar = new[] { SimpanMeshGua(ProcGua.PilarAkar("PilarAkar_0", 22f, 1.45f, 101)), SimpanMeshGua(ProcGua.PilarAkar("PilarAkar_1", 22f, 1.45f, 202)) };
             var meshTungku = SimpanMeshGua(ProcGua.TungkuBatu("TungkuBatu", 11));
@@ -89,7 +89,7 @@ namespace AlasKeramat.EditorTools
                 api.AddComponent<MeshFilter>().sharedMesh = meshApi;
                 api.AddComponent<MeshRenderer>().sharedMaterial = apiMat;
                 PasangBaraTungku(api, baraMat);
-                var lTungku = Lampu(dasar, "Cahaya", new Vector3(0f, 2.0f, 0f), new Color(1f, 0.50f, 0.18f), 28f, 5.2f);
+                var lTungku = Lampu(dasar, "Cahaya", new Vector3(0f, 2.0f, 0f), new Color(1f, 0.54f, 0.20f), 26f, 12.0f);
                 tungku[i] = dasar.AddComponent<TungkuObor>();
                 if (i % 2 == 1) panggil[i / 2] = dasar.transform;
             }
@@ -108,13 +108,13 @@ namespace AlasKeramat.EditorTools
                 var lilit = Hias(tutup, PrimitiveType.Cylinder, "LilitUrat_" + r, new Vector3(Mathf.Sin(rad) * 0.62f, 1.0f, Mathf.Cos(rad) * 0.62f), new Vector3(0.11f, 0.65f, 0.11f), _matUrat, false);
                 lilit.transform.localRotation = Quaternion.Euler(24f, r * 60f, 16f);
             }
-            Lampu(arena, "CahayaAltarBoss", new Vector3(-1.5f, 5.5f, -1f), new Color(1f, 0.55f, 0.25f), 40f, 7.5f);
-            Lampu(arena, "CahayaArenaDepan", new Vector3(-4.5f, 5.5f, -5.5f), new Color(1f, 0.48f, 0.20f), 38f, 6.0f);
-            Lampu(arena, "CahayaKubahAtas", new Vector3(-3f, 10.5f, 0f), ProcTex.Hex("#5278AD"), 52f, 3.8f);
+            Lampu(arena, "CahayaAltarBoss", new Vector3(-1.5f, 5.5f, -1f), new Color(1f, 0.56f, 0.24f), 42f, 28.0f);
+            Lampu(arena, "CahayaArenaDepan", new Vector3(-4.5f, 4.8f, -7.5f), new Color(1f, 0.50f, 0.22f), 40f, 22.0f);
+            Lampu(arena, "CahayaKubahAtas", new Vector3(-2f, 11.5f, -2f), ProcTex.Hex("#6A92C8"), 56f, 16.0f);
             var meshAkarBoss = MuatPropScan("AkarScan");
             var matAkarScan = MaterialSolidScan("AkarAsli", "M_AkarScan", new Color(0.78f, 0.74f, 0.68f, 1f), 0.24f) ?? akarMat;
             var meshBatuBoss = MuatPropScan("BatuBesarScan") ?? MuatPropScan("BatuLumutA");
-            var matBatuBoss = MaterialSolidScan("BatuBesarAsli", "M_BatuArenaScan", ProcTex.Hex("#524846"), 0.44f) ?? batu;
+            var matBatuBoss = MaterialSolidScan("BatuBesarAsli", "M_BatuArenaScan", ProcTex.Hex("#6E625E"), 0.34f) ?? batu;
             for (int i = 0; i < 8 && (meshAkarBoss != null || meshBatuBoss != null); i++)
             {
                 float a = (i + 0.25f) * 45f * Mathf.Deg2Rad;

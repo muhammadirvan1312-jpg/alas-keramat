@@ -10,12 +10,18 @@ SOURCE=ROOT/'Assets/ThirdParty/Characters'
 OUT=ROOT/'Assets/ThirdParty/Prepared'
 OUT.mkdir(parents=True,exist_ok=True)
 BONES=['pelvis','spine_01','spine_03','neck_01','head',None,'clavicle_l','clavicle_r','upperarm_l','upperarm_r','lowerarm_l','lowerarm_r','hand_l','hand_r','thigh_l','thigh_r','calf_l','calf_r','foot_l','foot_r',None,None,None,None]
-BONES_LENGAN=tuple(i for i,name in enumerate(BONES) if name and name.startswith(('upperarm_','lowerarm_','hand_')))
+BONES_LENGAN=tuple(i for i,name in enumerate(BONES) if name and name.startswith(('clavicle_','upperarm_','lowerarm_','hand_')))
+
+def ningsih_top_t(x,z):
+    # Garis leher sweetheart kebaya modern yang menonjolkan tulang selangka & bahu anggun; punggung rapi.
+    if z<0.05:return 0.768
+    return 0.742+0.024*math.sin(min(1.0,abs(x)/0.72)*math.pi)-0.022*math.exp(-((x/0.30)**2))
 
 def kulit_ningsih_terlihat(tinggi_rel,x,z,weights):
-    # Mask pakaian tetap diperiksa pemanggil; lengan telanjang tidak ikut dipotong bersama dada.
-    lengan=sum(weights.get(bone,0) for bone in BONES_LENGAN)>0.25
-    return tinggi_rel>0.822 or (abs(x)<0.65 and z>0.1 and tinggi_rel>0.75) or lengan
+    # Pertahankan kepala, leher, dada atas, bahu, seluruh lengan (wajib self-test >=12), serta kaki bagian bawah/belahan rok.
+    lengan=sum(weights.get(bone,0) for bone in BONES_LENGAN)>0.20
+    if lengan or tinggi_rel<0.455:return True
+    return tinggi_rel>ningsih_top_t(x,z)-0.022
 
 def obj_read(path):
     vertices=[];uv=[];faces=[];groups={};group=''
@@ -242,7 +248,91 @@ def remap_u(part,scale_u,offset_u=0.0):
     nuv=[(u*scale_u+offset_u,v) for u,v in uv]
     return (vs,nuv,faces,ws,*part[4:])
 
-def add_deden_accessories(clothes,base):
+def sculpt_ningsih_beauty(base):
+    """Pahat proporsi wajah feminin halus & siluet hourglass proporsional khas karakter utama AAA."""
+    for i in GROUP['body']:
+        p=base[i]
+        arm_w=sum(W[i].get(b,0) for b in BONES_LENGAN)
+        if 4.70<p.y<6.65 and p.z>0.25:
+            # Rahang V-line & dagu lembut.
+            if 4.72<p.y<5.32 and abs(p.x)>0.14:
+                k=math.sin((p.y-4.72)/0.60*math.pi)*min(1.0,(abs(p.x)-0.14)/0.45)*max(0.0,min(1.0,(p.z-0.30)/0.60))
+                base[i].x*=1.0-0.10*k
+            if abs(p.x)<0.22 and 4.72<p.y<4.98 and p.z>0.90:
+                k=(1.0-abs(p.x)/0.22)*math.sin((p.y-4.72)/0.26*math.pi)
+                base[i].z+=0.024*k
+            # Tulang pipi terangkat lembut.
+            if 5.28<p.y<5.66 and 0.26<abs(p.x)<0.58 and p.z>0.72:
+                k=math.sin((p.y-5.28)/0.38*math.pi)*math.sin(min(1.0,(abs(p.x)-0.26)/0.32)*math.pi)
+                base[i].z+=0.030*k;base[i].y+=0.014*k
+            # Hidung mancung ramping & lembut.
+            if abs(p.x)<0.17 and 5.40<p.y<5.84 and p.z>1.22:
+                k=(1.0-abs(p.x)/0.17)*math.sin((p.y-5.40)/0.44*math.pi)
+                base[i].x*=1.0-0.12*k;base[i].z+=0.022*k
+            # Kelopak mata atas sedikit lebih terbuka ekspresif.
+            if 0.14<abs(p.x)<0.43 and 5.78<p.y<5.91 and p.z>1.12:
+                k=math.sin(min(1.0,max(0.0,(abs(p.x)-0.14)/0.29))*math.pi)*math.sin(min(1.0,max(0.0,(p.y-5.78)/0.13))*math.pi)
+                base[i].y+=0.022*k
+            # Bibir penuh lembut dengan sudut senyum tipis alami.
+            if abs(p.x)<0.26 and 5.01<p.y<5.29 and p.z>1.14:
+                k=(1.0-abs(p.x)/0.26)*math.sin((p.y-5.01)/0.28*math.pi)
+                base[i].z+=0.026*k
+            if 0.14<abs(p.x)<0.27 and 5.05<p.y<5.22 and p.z>1.10:
+                base[i].y+=0.015*min(1.0,(abs(p.x)-0.14)/0.13)
+        elif arm_w<0.18:
+            # Bahu feminin ramping, siluet dada proporsional, pinggang ramping & pinggul anggun.
+            if 3.50<p.y<4.50 and abs(p.x)<1.90:
+                ks=math.sin((p.y-3.50)/1.00*math.pi)
+                base[i].x*=1.0-0.055*ks
+            if 1.75<p.y<3.45 and p.z>0.25 and abs(p.x)<1.55:
+                ky=math.sin((p.y-1.75)/1.70*math.pi)
+                lobe=math.exp(-((abs(p.x)-0.62)/0.48)**2)
+                zf=max(0.0,min(1.0,(p.z-0.25)/0.85))
+                base[i].z+=0.26*ky*lobe*zf
+                base[i].y+=0.06*ky*lobe*zf
+            if 0.25<p.y<1.75 and abs(p.x)<1.50:
+                kw=math.sin((p.y-0.25)/1.50*math.pi)
+                base[i].x*=1.0-0.14*kw
+                base[i].z-=(p.z-0.56)*0.08*kw
+            if -1.85<p.y<0.30 and abs(p.x)<1.85:
+                kh=math.sin((p.y+1.85)/2.15*math.pi)
+                base[i].x*=1.0+0.09*kh
+                if p.z<0.15:base[i].z-=0.12*kh*min(1.0,(0.15-p.z)/0.70)
+
+def body_normals_mh(base):
+    vn=[Vector((0,0,0)) for _ in base]
+    for grp,face in FACES:
+        if grp=='body' and len(face)>=3:
+            a,b,c=base[face[0][0]],base[face[1][0]],base[face[2][0]]
+            n=(b-a).cross(c-a)
+            for vi,_ in face:vn[vi]+=n
+    return [n.normalized() if n.length>1e-7 else Vector((0,0,1)) for n in vn]
+
+def radial_envelope(base,y,band=0.30,radial=36):
+    pts=[base[i] for i in GROUP['body'] if abs(base[i].y-y)<=band and sum(W[i].get(b,0) for b in BONES_LENGAN)<0.22]
+    if not pts:return 0.55,[1.2]*radial
+    cz=(min(p.z for p in pts)+max(p.z for p in pts))*0.5
+    rx=max(0.4,max(abs(p.x) for p in pts))
+    rzp=max(0.35,max(p.z-cz for p in pts))
+    rzn=max(0.35,max(cz-p.z for p in pts))
+    rad=[0.0]*radial
+    for s in range(radial):
+        a=s*2.0*math.pi/radial;dx=math.sin(a);dz=math.cos(a)
+        rz=rzp if dz>=0 else rzn
+        re=((abs(dx)/rx)**2.2+(abs(dz)/rz)**2.2)**(-1.0/2.2)
+        best=re
+        for p in pts:
+            vx=p.x;vz=p.z-cz;r=math.hypot(vx,vz)
+            if r>1e-4 and (vx*dx+vz*dz)/r>0.92:best=max(best,r)
+        rad[s]=best
+    # Haluskan kontur agar kain jatuh luwes namun selalu di luar permukaan kulit.
+    smooth=[]
+    for s in range(radial):
+        v_avg=0.22*rad[(s-1)%radial]+0.56*rad[s]+0.22*rad[(s+1)%radial]
+        smooth.append(max(rad[s],v_avg))
+    return cz,smooth
+
+def add_deden_accessories(clothes,base,bottom,height):
     clothes=remap_u(clothes,0.88,0.0)
     pb=PartBuilder()
     head_w={4:1.0}
@@ -256,7 +346,46 @@ def add_deden_accessories(clothes,base):
             pts.append(Vector((math.sin(a)*rx,y+dy,0.39+math.cos(a)*rz)))
         rings.append((pts,head_w))
     pb.tube(rings,28,(0.91,0.54,0.07,0.42),closed=False)
-    return append_part(clothes,pb.build())
+    # Rompi taktis SAR pas-badan dari offset normal torso atas Deden (gaya penyintas SOTF).
+    vn=body_normals_mh(base)
+    def in_vest(vi):
+        arm_w=sum(W[vi].get(b,0) for b in BONES_LENGAN)
+        if arm_w>=0.20:return False
+        p=base[vi];t=(p.y-bottom)/height
+        if t<0.58 or t>0.80:return False
+        if p.z>0.15 and abs(p.x)<0.22 and t>0.68:return False # bukaan V depan rompi
+        return True
+    vmap={};v_vs=[];v_uv=[];v_fs=[];v_ws=[]
+    for grp,face in FACES:
+        if grp=='body' and all(in_vest(vi) for vi,_ in face):
+            nf=[]
+            for vi,_ in face:
+                if vi not in vmap:
+                    vmap[vi]=len(v_vs)
+                    v_vs.append(base[vi]+vn[vi]*0.095)
+                    p=base[vi];t=(p.y-bottom)/height
+                    ang=math.atan2(p.x,p.z-0.35)/(2.0*math.pi)+0.5
+                    v_uv.append((0.905+0.075*ang,0.05+0.40*min(1.0,max(0.0,(t-0.58)/0.22))))
+                    v_ws.append(W[vi])
+                ni=vmap[vi];nf.append((ni,ni))
+            v_fs.append(('',nf))
+    clothes=append_part(clothes,pb.build())
+    if v_fs:clothes=append_part(clothes,(v_vs,v_uv,v_fs,v_ws))
+    return clothes
+
+def add_deden_hair(hair,base):
+    pb=PartBuilder()
+    hv=[base[i] for i in GROUP['body'] if base[i].y>6.0 and abs(base[i].x)<1.0]
+    top_y=max(v.y for v in hv) if hv else 7.8
+    cz=(min(v.z for v in hv)+max(v.z for v in hv))*0.42 if hv else 0.42
+    for i in range(18):
+        ang=(i/18.0)*2.0*math.pi+0.2
+        rx=0.58+0.12*(i%2);rz=0.72+0.14*(i%3)
+        p0=Vector((math.sin(ang)*rx*0.45,top_y-0.02,cz+math.cos(ang)*rz*0.45))
+        p1=Vector((math.sin(ang+0.18)*rx*0.92,top_y-0.25,cz+math.cos(ang+0.18)*rz*0.92))
+        p2=Vector((math.sin(ang-0.10)*rx*1.04,top_y-0.68-(i%3)*0.12,cz+math.cos(ang-0.10)*rz*1.06))
+        pb.ribbon_double([p0,p1,p2],lambda t:0.15*(1.0-0.4*t),lambda p,t:{4:1.0},(0.08,0.10,0.80,0.80))
+    return append_part(hair,pb.build())
 
 def add_kirogo_blangkon(clothes,base):
     clothes=remap_u(clothes,0.88,0.0)
@@ -273,29 +402,182 @@ def add_kirogo_blangkon(clothes,base):
     pb.tube(mrings,12,(0.91,0.04,0.07,0.90),closed=True)
     return append_part(clothes,pb.build())
 
-def add_kantil(hair):
-    hair=remap_u(hair,0.88,0.0)
-    pb=PartBuilder();hw={4:1.0}
-    uv_rambut=(0.90,0.06,0.07,0.38)
-    # Mahkota rambut rapat mengikuti tengkorak wanita MakeHuman hasil morph (y ~ 6.18..6.82, cz ~ 0.44).
-    crown=[(ring_ellipse(0.0,y,0.44,rx,rz,22),hw) for y,rx,rz in [(6.18,0.69,0.86),(6.42,0.68,0.84),(6.64,0.55,0.68),(6.82,0.28,0.34)]]
-    pb.tube(crown,22,uv_rambut,closed=True)
-    # Belahan poni tengah & sapuan pelipis membingkai dahi hingga ke konde belakang telinga.
+def build_ningsih_outfit(base,bottom,height):
+    """Kebaya renda merah-delima pas-badan berkerah sweetheart anggun + selendang pinggang emas + rok lilit Batik Parang belahan tinggi."""
+    vn=body_normals_mh(base)
+    def in_bodice(vi):
+        arm_w=sum(W[vi].get(b,0) for b in BONES_LENGAN)
+        if arm_w>=0.22:return False
+        p=base[vi];t=(p.y-bottom)/height
+        return 0.585<=t<=ningsih_top_t(p.x,p.z)
+
+    vmap={};b_vs=[];b_uv=[];b_fs=[];b_ws=[]
+    for grp,face in FACES:
+        if grp=='body' and all(in_bodice(vi) for vi,_ in face):
+            nf=[]
+            for vi,_ in face:
+                if vi not in vmap:
+                    vmap[vi]=len(b_vs)
+                    p=base[vi];t=(p.y-bottom)/height
+                    top_t=ningsih_top_t(p.x,p.z)
+                    b_vs.append(p+vn[vi]*0.056)
+                    ang=(math.atan2(p.x,p.z-0.45)+math.pi)/(2.0*math.pi)
+                    v_dist=min(1.0,max(0.0,(top_t-t)/0.185))
+                    b_uv.append((0.03+0.43*ang,0.94-0.86*v_dist))
+                    b_ws.append(W[vi])
+                ni=vmap[vi];nf.append((ni,ni))
+            b_fs.append(('',nf))
+
+    # Tali bahu tipis elegan (off-shoulder drape) & sabuk selendang pinggang emas.
+    acc=PartBuilder()
     for side in (-1.0,1.0):
-        pts=[(side*0.08,6.58,1.24),(side*0.44,6.38,1.18),(side*0.68,6.08,0.88),(side*0.64,5.84,0.18),(0.0,5.94,-0.38)]
-        rads=(0.14,0.16,0.15,0.13,0.10)
-        part=[(ring_ellipse(px,py,pz,rr,rr*0.75,12),hw) for (px,py,pz),rr in zip(pts,rads)]
-        pb.tube(part,12,uv_rambut,closed=True)
-    # Konde / sanggul Jawa klasik di tengkuk belakang + 3 kuncup melati kantil putih.
-    bun=[(ring_ellipse(0.0,5.96+0.05*math.sin(t*math.pi),-0.40-t*0.50,0.44*math.sin(t*math.pi*0.85+0.25),0.38*math.sin(t*math.pi*0.85+0.25),20),hw) for t in (0.0,0.28,0.62,0.90,1.0)]
-    pb.tube(bun,20,uv_rambut,closed=True)
-    for k in range(3):
-        by=5.98-k*0.12;bz=-0.46-k*0.03;bx=-0.42
+        sw={6 if side>0 else 7:0.55,8 if side>0 else 9:0.45}
+        rings=[]
+        for px,py,pz in [(side*0.64,3.88,0.68),(side*0.86,3.96,0.34),(side*0.92,3.88,-0.12),(side*0.68,3.72,-0.52)]:
+            rings.append((ring_ellipse(px,py,pz,0.048,0.042,8),sw))
+        acc.tube(rings,8,(0.06,0.84,0.36,0.10),closed=True)
+    # Sabuk lilit pinggang emas (t ~ 0.618..0.646).
+    radial_b=28
+    belt_rings=[]
+    for t_b in (0.616,0.630,0.644):
+        yb=bottom+t_b*height;czb,rads_b=radial_envelope(base,yb,0.22,radial_b)
         pts=[]
-        for ri,dy,r in [(0,0.0,0.025),(1,-0.08,0.078),(2,-0.17,0.045),(3,-0.23,0.012)]:
-            pts.append((ring_ellipse(bx,by+dy,bz,r,r,8),hw))
+        for s in range(radial_b+1):
+            a=(s%radial_b)*2.0*math.pi/radial_b;rr=rads_b[s%radial_b]+0.088
+            pts.append(Vector((math.sin(a)*rr,yb,czb+math.cos(a)*rr)))
+        belt_rings.append((pts,{1:0.75,0:0.25}))
+    acc.tube(belt_rings,radial_b,(0.05,0.06,0.40,0.12),closed=False)
+
+    # Rok lilit Batik Parang Rusak pas-pinggang sampai bawah lutut (t=0.20..0.635) dengan belahan sisi paha kanan anggun.
+    sk=PartBuilder()
+    radial=36
+    t_steps=[0.20+0.435*(k/13.0) for k in range(14)]
+    grid=[]
+    prev_rads=None
+    for ri,ts in enumerate(t_steps):
+        ys=bottom+ts*height
+        cz,rads=radial_envelope(base,ys,0.28,radial)
+        # Jaga kelonggaran kain halus agar paha/lutut tidak menembus saat melangkah/berdiri.
+        clr=0.068+0.030*(1.0-(ts-0.20)/0.435)
+        rads=[r+clr for r in rads]
+        if prev_rads is not None and ts<0.48:
+            rads=[max(r,pr*0.95) for r,pr in zip(rads,prev_rads)]
+        prev_rads=rads
+        row=[];vv=0.05+0.90*((ts-0.20)/0.435)
+        for s in range(radial+1):
+            idx=s%radial;a=idx*2.0*math.pi/radial
+            rr=rads[idx];px=math.sin(a)*rr;pz=cz+math.cos(a)*rr
+            # Lipatan tepi belahan paha kanan (-X MH, depan-samping a ~ -0.52).
+            diff=abs(((a+math.pi-(-0.52))%(2.0*math.pi))-math.pi)
+            if ts<0.44 and diff<0.36:rr+=0.035*(1.0-diff/0.36);px=math.sin(a)*rr;pz=cz+math.cos(a)*rr
+            if ts>=0.56:bw={0:0.7,1:0.3}
+            elif ts>=0.46:bw={0:0.85,(14 if px>=0 else 15):0.15}
+            else:
+                if abs(px)<=0.22:bw={0:0.25,14:0.375,15:0.375}
+                elif px>0:bw={0:0.15,14:0.85} if ts>=0.30 else {14:0.35,16:0.65}
+                else:bw={0:0.15,15:0.85} if ts>=0.30 else {15:0.35,17:0.65}
+            row.append(sk.add_v((px,ys,pz),0.53+0.44*(s/radial),vv,bw))
+        grid.append(row)
+    for ri in range(len(t_steps)-1):
+        t_mid=0.5*(t_steps[ri]+t_steps[ri+1])
+        for s in range(radial):
+            a_mid=(s+0.5)*2.0*math.pi/radial
+            diff=abs(((a_mid+math.pi-(-0.52))%(2.0*math.pi))-math.pi)
+            # Buka belahan rok diagonal dari betis (t=0.20) naik ke paha kanan (t=0.44).
+            if t_mid<0.435 and diff<0.30*((0.435-t_mid)/0.235):continue
+            sk.add_quad(grid[ri][s],grid[ri][s+1],grid[ri+1][s+1],grid[ri+1][s])
+
+    part=(b_vs,b_uv,b_fs,b_ws)
+    part=append_part(part,acc.build())
+    part=append_part(part,sk.build())
+    return (*part,set())
+
+def build_ningsih_hair(base):
+    """Rambut panjang bergelombang lembut berlapis, poni belah-tengah curtain bangs, bulu mata 3D, & tusuk konde melati putih."""
+    pb=PartBuilder();hw={4:1.0}
+    hv=[base[i] for i in GROUP['body'] if base[i].y>5.2 and abs(base[i].x)<1.0]
+    top_y=max(v.y for v in hv) if hv else 6.78
+    cz=(min(v.z for v in hv)+max(v.z for v in hv))*0.42 if hv else 0.34
+    uv_rambut=(0.04,0.06,0.80,0.88)
+
+    def hw_back(p,t):
+        if p.y>top_y-1.35:return {4:1.0}
+        if p.y>top_y-2.55:return {4:0.45,3:0.55}
+        if p.y>top_y-4.05:return {3:0.35,2:0.65}
+        return {2:0.75,1:0.25}
+
+    # Tutup mahkota rambut lembut di kulit kepala (tidak akan ada kepala botak terlihat).
+    crown=[(ring_ellipse(0.0,top_y-1.10+t*1.12,cz+0.02*(1.0-t),0.74*math.sin(0.32+t*1.18),0.91*math.sin(0.32+t*1.18),20),hw)
+           for t in (0.0,0.22,0.50,0.78,1.0)]
+    pb.tube(crown,20,uv_rambut,closed=True)
+
+    # 12 untaian poni belah curtain bangs membingkai pelipis & tulang pipi lembut.
+    for i in range(12):
+        side=-1.0 if i<6 else 1.0;k=i%6
+        px0=0.06*side+side*(k*0.07)
+        pz0=cz+0.68-k*0.07
+        pts=[]
+        for seg in range(7):
+            t=seg/6.0
+            swept_x=side*(0.06+k*0.07+0.66*math.sin(t*math.pi*0.62)+0.16*t)
+            swept_y=top_y-0.04-t*(1.45+k*0.16)
+            swept_z=pz0+0.36*math.sin(t*math.pi*0.58)-0.48*(t**1.6)
+            pts.append(Vector((swept_x,swept_y,swept_z)))
+        pb.ribbon_double(pts,lambda t,k=k:0.15*(1.0-0.38*t),lambda p,t:{4:1.0},uv_rambut)
+
+    # 32 helai rambut panjang bergelombang menutupi punggung & samping hingga pinggang.
+    for layer in range(2):
+        cnt=16
+        for i in range(cnt):
+            f=(i/(cnt-1))*2.0-1.0
+            ang=math.pi+f*1.48+(0.08 if layer else 0.0)
+            rad_mul=0.92 if layer==0 else 1.05
+            sx=math.sin(ang)*0.71*rad_mul;sz=cz+math.cos(ang)*0.86*rad_mul
+            out=Vector((math.sin(ang),0.0,math.cos(ang))).normalized()
+            length=4.75+0.65*math.sin(i*1.9+layer)
+            pts=[]
+            for seg in range(8):
+                t=seg/7.0
+                push=(0.06+0.38*math.sin(t*math.pi*0.72))*(1.0+0.25*layer)
+                wave_x=0.11*math.sin(t*6.5+i*1.2+layer)
+                wave_z=0.09*math.cos(t*5.5+i*0.9)
+                back_drape=-0.38*(t**1.4) if abs(f)<0.6 else -0.18*(t**1.4)
+                pts.append(Vector((sx+out.x*push+wave_x,top_y-0.06-t*length,sz+out.z*push+wave_z+back_drape)))
+            pb.ribbon_double(pts,lambda t:0.22*(1.0-0.30*t),hw_back,uv_rambut)
+
+    # 10 helai rambut halus menjuntai anggun di depan kedua bahu hingga tulang selangka/dada atas.
+    for side in (-1.0,1.0):
+        for k in range(5):
+            ang_start=side*(1.02+k*0.13)
+            sx=math.sin(ang_start)*0.72;sz=cz+math.cos(ang_start)*0.85
+            pts=[]
+            for seg in range(7):
+                t=seg/6.0
+                px=side*(0.72+0.12*k*0.35-0.22*(t**1.3)+0.05*math.sin(t*5.5+k))
+                py=top_y-0.08-t*(3.35+k*0.18)
+                pz=sz+0.18*math.sin(t*math.pi*0.65)+0.32*(t**1.5)
+                pts.append(Vector((px,py,pz)))
+            pb.ribbon_double(pts,lambda t:0.17*(1.0-0.36*t),lambda p,t:{4:0.85,3:0.15} if p.y>top_y-1.6 else {3:0.55,2:0.45},uv_rambut)
+
+    # Jepit 3 kuntum melati putih + daun hijau di atas pelipis telinga kiri (+X MH).
+    for k in range(3):
+        bx=0.73-k*0.03;by=top_y-0.68-k*0.13;bz=cz+0.16-k*0.09
+        pts=[(ring_ellipse(bx,by+dy,bz,r,r,8),hw) for dy,r in [(0.0,0.022),(-0.07,0.072),(-0.14,0.042),(-0.20,0.012)]]
         pb.tube(pts,8,(0.90,0.56,0.07,0.38),closed=True)
-    return append_part(hair,pb.build())
+
+    # Bulu mata 3D bawaan MakeHuman di submesh rambut agar bingkai mata makin ekspresif & hidup!
+    l_vs,l_uv,l_fs,l_ws=pb.build()
+    voff=len(l_vs);l_vmap={}
+    for gname in ('helper-l-eyelashes-1','helper-l-eyelashes-2','helper-r-eyelashes-1','helper-r-eyelashes-2'):
+        for grp,face in FACES:
+            if grp!=gname:continue
+            nf=[]
+            for vi,_ in face:
+                if vi not in l_vmap:
+                    l_vmap[vi]=len(l_vs);l_vs.append(base[vi]);l_uv.append((0.93,0.25));l_ws.append({4:1.0})
+                ni=l_vmap[vi];nf.append((ni,ni))
+            l_fs.append(('',nf))
+    return (l_vs,l_uv,l_fs,l_ws,set())
 
 def add_topeng(shoes,base,male=True):
     shoes=remap_u(shoes,0.62,0.0)
@@ -353,9 +635,9 @@ def build_pocong(base,bottom,height):
         v_uv=(ri)/(len(prof)-1)
         for s in range(radial+1):
             a=s*2.0*math.pi/radial
-            fold=1.0+0.085*math.sin(a*7.0+ri*0.9)+0.045*math.cos(a*13.0-ri*0.5)
-            flare=1.28 if y>8.75 else 1.0
-            px=math.sin(a)*rx*fold*flare;pz=cz+math.cos(a)*rz*fold*flare
+            fold=1.0+0.135*math.sin(a*6.0+ri*1.1)+0.075*math.cos(a*11.0-ri*0.7)+0.045*math.sin(ri*2.3)
+            flare=1.34 if y>8.75 else 1.0
+            px=math.sin(a)*rx*fold*flare*cinch;pz=cz+math.cos(a)*rz*fold*flare*cinch
             py=y
             # Buka jendela wajah dengan lipatan kain mundur di sisi pipi/dahi/dagu.
             if 6.20<y<7.90 and math.cos(a)>0.35:
@@ -385,6 +667,13 @@ def build_pocong(base,bottom,height):
         a=k*math.pi*0.5+0.4
         sp=[Vector((math.sin(a)*(0.12+0.12*t),8.42+t*1.15,0.24+math.cos(a)*(0.12+0.12*t)-0.16*t*t)) for t in (0.0,0.4,0.8,1.0)]
         wisps.ribbon_double(sp,lambda t:0.06*(1.0-0.5*t),lambda p,t:{4:1.0},(0.1,0.1,0.8,0.8))
+    # Tambah 6 juntaian kain kafan robek di bahu & pinggang agar siluet horor lebih nyata.
+    for k in range(6):
+        ang=k*math.pi/3.0+0.25
+        y0=4.2 if k%2==0 else 0.8
+        rad=1.58 if k%2==0 else 1.24
+        sp=[Vector((math.sin(ang)*(rad+0.16*t),y0-t*2.4,0.18+math.cos(ang)*(rad*0.75+0.14*t))) for t in (0.0,0.35,0.7,1.0)]
+        wisps.ribbon_double(sp,lambda t:0.14*(1.0-0.55*t),lambda p,t:bw(p.y),(0.1,0.1,0.8,0.8))
     return shroud.build(),ropes.build(),wisps.build()
 
 def add_kuntilanak_hair(hair,base):
@@ -549,6 +838,7 @@ def make(name,recipe):
     base=[v.copy() for v in BASE]
     target(base,'asian-female-young.target.gz' if recipe['female'] else 'asian-male-young.target.gz',1-recipe['old'])
     target(base,'asian-male-old.target.gz',recipe['old'])
+    if name=='Ningsih':sculpt_ningsih_beauty(base)
     if role:sculpt_corpse(base,role)
     body_index=GROUP['body'];bottom=min(base[i].y for i in body_index);height=max(base[i].y for i in body_index)-bottom
     scale=recipe['height']/height
@@ -581,28 +871,20 @@ def make(name,recipe):
     body_faces=[(g,f) for g,f in FACES if g=='body' and not any(p[0] in hidden for p in f)]
 
     if name=='Deden':
-        clothes=add_deden_accessories(clothes,base)
+        clothes=add_deden_accessories(clothes,base,bottom,height)
+        hair=add_deden_hair(hair,base)
     elif name=='KiRogo':
         clothes=add_kirogo_blangkon(clothes,base)
     elif name=='Ningsih':
-        body_faces=[(g,f) for g,f in FACES if g=='body' and not any(p[0] in hidden for p in f) and all(
+        body_faces=[(g,f) for g,f in FACES if g=='body' and not any(p[0] in shoes[-1] for p in f) and all(
             kulit_ningsih_terlihat((base[vi].y-bottom)/height,base[vi].x,base[vi].z,W[vi])
             for vi,_ in f)]
-        garment,guv,gfaces,gweights,_=clothes
-        hem=min((v.y-bottom)/height for v in garment)
-        for v in garment:
-            t=(v.y-bottom)/height
-            if t<0.53:v.y=bottom+height*(0.055+(t-hem)/(0.53-hem)*(0.53-0.055))
-        # Pertahankan UV asli pakaian MakeHuman sambil membagi atlas kiri=kebaya, kanan=jarik batik!
-        split_uv=[];faces=[]
-        for group,face in gfaces:
-            skirt=sum((garment[vi].y-bottom)/height for vi,_ in face)/len(face)<0.53
-            newface=[]
-            for vi,ui in face:
-                u0,v0=guv[ui];split_uv.append((u0*0.47+(0.52 if skirt else 0.01),v0));newface.append((vi,len(split_uv)-1))
-            faces.append((group,newface))
-        clothes=(garment,split_uv,faces,gweights,clothes[-1])
-        hair=add_kantil(hair)
+        clothes=build_ningsih_outfit(base,bottom,height)
+        hair=build_ningsih_hair(base)
+        ev=eyes[0]
+        l_pts=[p for p in ev if p.x<0];r_pts=[p for p in ev if p.x>=0]
+        lc=sum(l_pts,Vector((0,0,0)))/max(1,len(l_pts));rc=sum(r_pts,Vector((0,0,0)))/max(1,len(r_pts))
+        eyes=([((lc if v.x<0 else rc)+(v-(lc if v.x<0 else rc))*1.07) for v in ev],*eyes[1:])
     elif role=='pocong':
         # Wajah busuk terbuka & gigi menyeringai; badan lain tertutup rapat kain kafan + 5 tali pocong.
         body_faces=[(g,f) for g,f in FACES if (g=='body' and all(6.18<base[vi].y<7.98 and base[vi].z>0.70 for vi,_ in f)) or g in ('helper-upper-teeth','helper-lower-teeth')]
@@ -668,7 +950,7 @@ def make(name,recipe):
 
     parts=[(base,UV,body_faces,W,0),(*clothes[:4],1),(*shoes[:4],2),(*hair[:4],3),(*eyes[:4],4)]
     output=[];indices=[[],[],[],[],[]];original=[]
-    limits={1:5200,2:1400,3:2400}
+    limits={1:5200,2:1400,3:3400 if name=='Ningsih' else 2400}
     for vs,uv,faces,ws,material in parts:
         posed=[deform(v,w) for v,w in zip(vs,ws)]
         if material in limits:posed,uv,faces,ws=reduce_part(posed,uv,faces,ws,limits[material])

@@ -10,7 +10,7 @@ namespace AlasKeramat.Player
         public const float SuhuKedinginan = 36f, SuhuHipotermia = 35f, SuhuKepanasan = 38f, SuhuHeatstroke = 39.5f;
         public const float LajuSuhu = 0.012f, SprintPanas = 0.02f, ApiHangat = 1.4f, RusakHipotermia = 0.2f, RusakHeatstroke = 0.3f;
         public const float LajuGizi = 0.055f, GiziAwal = 70f;
-        public const float PeluangDiare = 0.35f, LamaDiare = 180f, HausDiare = 0.15f, LamaKeracunan = 60f, RusakKeracunan = 0.2f;
+        public const float PeluangDiare = 0.35f, LamaDiare = 180f, HausDiare = 0.15f, LamaKeracunan = 60f, RusakKeracunan = 0.2f, RusakBisaUlar = 0.9f;
 
         public float SuhuTubuh { get; private set; } = SuhuNormal;
         public float SuhuUdaraSaatIni { get; private set; } = 26f;
@@ -22,10 +22,11 @@ namespace AlasKeramat.Player
         public bool Diare { get { return _diare > 0f; } }
         public StatusEffect Status { get; private set; }
 
-        float _diare, _racun;
+        float _diare, _racun, _bisa;
 
         void AwalGizi() { Karbo = Protein = Lemak = Vitamin = GiziAwal; }
         void SetGiziMinimal(float v) { Karbo = Mathf.Max(Karbo, v); Protein = Mathf.Max(Protein, v); Lemak = Mathf.Max(Lemak, v); Vitamin = Mathf.Max(Vitamin, v); }
+        void BersihkanPenyakit() { _diare = 0f; _racun = 0f; _bisa = 0f; SetStatus(StatusEffect.Keracunan, false); SetStatus(StatusEffect.Racun, false); }
 
         void TickGizi(bool sprint, float dt)
         {
@@ -62,10 +63,11 @@ namespace AlasKeramat.Player
 
         void ObatiDariMakanan(ItemID id)
         {
-            if (id == ItemID.KunyitObat || id == ItemID.JamuHerbal)
+            if (id == ItemID.KunyitObat || id == ItemID.JamuHerbal || id == ItemID.DaunSirih)
             {
-                if (_diare > 0f || _racun > 0f) GameEvents.RaiseToast("Perutmu terasa lebih baik");
-                _diare = 0f; _racun = 0f; SetStatus(StatusEffect.Keracunan, false);
+                if (_diare > 0f || _racun > 0f || _bisa > 0f) GameEvents.RaiseToast("Ramuan meredakan racun dan sakit perutmu");
+                if (id != ItemID.DaunSirih) { _diare = 0f; _racun = 0f; SetStatus(StatusEffect.Keracunan, false); }
+                _bisa = 0f; SetStatus(StatusEffect.Racun, false);
             }
         }
 
@@ -102,6 +104,7 @@ namespace AlasKeramat.Player
             if (SuhuTubuh < SuhuHipotermia) r += RusakHipotermia;
             if (SuhuTubuh > SuhuHeatstroke) r += RusakHeatstroke;
             if (_racun > 0f) r += RusakKeracunan;
+            if (_bisa > 0f) r += RusakBisaUlar;
             return r;
         }
 
@@ -109,6 +112,14 @@ namespace AlasKeramat.Player
         {
             if (_diare > 0f) { _diare -= dt; Hydration = Mathf.Max(0f, Hydration - HausDiare * dt); if (_diare <= 0f) GameEvents.RaiseToast("Diaremu reda"); }
             if (_racun > 0f) { _racun -= dt; if (_racun <= 0f) SetStatus(StatusEffect.Keracunan, false); }
+            if (_bisa > 0f) { _bisa -= dt; if (_bisa <= 0f) { SetStatus(StatusEffect.Racun, false); GameEvents.RaiseToast("Bisa ular mulai mereda"); } }
+        }
+
+        public void KenaBisaUlar(float lama = 20f)
+        {
+            _bisa = Mathf.Max(_bisa, lama);
+            SetStatus(StatusEffect.Racun, true);
+            GameEvents.RaiseToast("Terpatuk Ular Kobra! Obati dengan Jamu Herbal, Kunyit, atau Daun Sirih!");
         }
 
         void RisikoAirMentah()

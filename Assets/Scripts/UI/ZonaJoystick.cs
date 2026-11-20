@@ -4,10 +4,10 @@ using UnityEngine.EventSystems;
 namespace AlasKeramat.UI
 {
     // Joystick mengambang (09 §2.3): muncul di titik sentuh pada zona kiri-bawah. Input lewat event pointer uGUI (H3).
-    public class ZonaJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IInitializePotentialDragHandler
+    public class ZonaJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerExitHandler, ICancelHandler, IInitializePotentialDragHandler
     {
         public const float RadiusGerak = 110f, AlphaDiam = 0.35f, AlphaAktif = 0.8f;
-        public const float AmbangSprint = 0.82f, SudutSprint = 42f, TahanSprint = 0.15f;
+        public const float AmbangSprint = 0.78f, SudutSprint = 50f, TahanSprint = 0.10f;
 
         [SerializeField] RectTransform basis;
         [SerializeField] RectTransform kenop;
@@ -42,8 +42,9 @@ namespace AlasKeramat.UI
             if (_jari != int.MinValue || PengunciInput.Terblokir) return;
             _jari = e.pointerId;
             Vector2 lokal;
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, e.position, e.pressEventCamera, out lokal)) _asal = lokal;
-            if (basis != null) basis.anchoredPosition = BatasBasis(_asal, _rt.rect, basis.rect.width * 0.5f);
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, e.position, e.pressEventCamera, out lokal))
+                _asal = basis != null ? BatasBasis(lokal, _rt.rect, basis.rect.width * 0.5f) : lokal;
+            if (basis != null) basis.anchoredPosition = _asal;
             Warna(AlphaAktif);
             OnDrag(e);
         }
@@ -53,9 +54,25 @@ namespace AlasKeramat.UI
             if (e.pointerId != _jari) return;
             Vector2 lokal;
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, e.position, e.pressEventCamera, out lokal)) return;
-            Vector2 d = Vector2.ClampMagnitude(lokal - _asal, RadiusGerak);
+            Vector2 selisih = lokal - _asal;
+            float jarak = selisih.magnitude;
+            if (jarak > RadiusGerak * 1.15f)
+            {
+                Vector2 targetAsal = lokal - (selisih / jarak) * RadiusGerak;
+                _asal = basis != null ? BatasBasis(targetAsal, _rt.rect, basis.rect.width * 0.5f) : targetAsal;
+                if (basis != null) basis.anchoredPosition = _asal;
+                selisih = lokal - _asal;
+                jarak = selisih.magnitude;
+            }
+            Vector2 d = Vector2.ClampMagnitude(selisih, RadiusGerak);
             if (kenop != null) kenop.anchoredPosition = d;
-            Nilai = d / RadiusGerak;
+            float m = Mathf.Clamp01(d.magnitude / RadiusGerak);
+            if (m < 0.06f) Nilai = Vector2.zero;
+            else
+            {
+                float r = Mathf.Lerp(0.24f, 1f, Mathf.InverseLerp(0.06f, 0.94f, m));
+                Nilai = (d / d.magnitude) * r;
+            }
         }
 
         public void OnPointerUp(PointerEventData e)
@@ -63,6 +80,9 @@ namespace AlasKeramat.UI
             if (e.pointerId != _jari) return;
             Lepas();
         }
+
+        public void OnPointerExit(PointerEventData e) { }
+        public void OnCancel(BaseEventData e) { Lepas(); }
 
         public void ResetSentuh() { Lepas(); }
 
@@ -88,6 +108,9 @@ namespace AlasKeramat.UI
 
         void Update()
         {
+#if ENABLE_LEGACY_INPUT_MANAGER
+            if (_jari != int.MinValue && Input.touchSupported && Input.touchCount == 0) { Lepas(); return; }
+#endif
             bool pos = _jari != int.MinValue && (Lari ? (Nilai.magnitude >= 0.72f && Vector2.Angle(Vector2.up, Nilai) <= 55f) : PosisiSprint(Nilai));
             _tahan = pos ? _tahan + Time.unscaledDeltaTime : 0f;
             bool lari = Lari ? pos : _tahan >= TahanSprint;

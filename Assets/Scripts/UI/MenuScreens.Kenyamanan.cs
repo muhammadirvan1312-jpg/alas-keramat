@@ -65,6 +65,23 @@ namespace AlasKeramat.UI
         public void ToggleGoyangan() { Goyangan = !Goyangan; TerapkanPengaturan(); SimpanPengaturan(); }
         public void ToggleBantuanBidik() { CombatAndLeftHandController.AimAssist = !CombatAndLeftHandController.AimAssist; SimpanPengaturan(); SegarkanPenggeser(); }
         public void ToggleJedaPanel() { PengunciInput.AturJedaPanel(!PengunciInput.JedaPanel); SimpanPengaturan(); SegarkanPenggeser(); }
+
+        // Bekal survival dasar untuk permainan baru (jika tas masih kosong dan bukan hasil muat simpanan)
+        // agar tombol BUKU PANDUAN, Obor, dan alat bertahan hidup langsung bisa dicoba pemain.
+        void BeriBekalAwalJikaKosong()
+        {
+            if (!Application.isPlaying) return;
+            var inv = GameServices.Get<AlasKeramat.Inventory.TikarPandan3DInventory>();
+            if (inv == null) return;
+            foreach (var _ in inv.Isi) return;
+            inv.Tambah(ItemID.BukuPanduan, 1);
+            inv.Tambah(ItemID.KorekGas, 1);
+            inv.Tambah(ItemID.OborBambu, 1);
+            inv.Tambah(ItemID.BotolKosong, 1);
+            inv.Tambah(ItemID.BotolAirBersih, 1);
+            inv.Tambah(ItemID.RansumDarurat, 2);
+            inv.Tambah(ItemID.PerbanKain, 2);
+        }
 #if UNITY_EDITOR
         public void MulaiUjiEditor()
         {

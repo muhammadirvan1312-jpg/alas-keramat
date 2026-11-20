@@ -6,7 +6,7 @@ namespace AlasKeramat.Player
     // Interaksi dari tengah kamera (09 §3): SphereCast 2,5 m r 0,15 ke Interactable/Tree/LogPhysics/Structure; air dangkal di depan = MINUM AIR.
     public class InteraksiAndi : MonoBehaviour
     {
-        public const float Jarak = 3.2f, Radius = 0.35f, LangkahAir = 0.5f, HidrasiTeguk = 20f;
+        public const float Jarak = 3.8f, Radius = 0.45f, LangkahAir = 0.5f, HidrasiTeguk = 20f;
         const string TeksMinum = "MINUM AIR";
 
         public string Prompt { get; private set; } = "";
@@ -54,8 +54,8 @@ namespace AlasKeramat.Player
             }
             if (_target == null)
             {
-                int cnt = Physics.OverlapSphereNonAlloc(cam.position + cam.forward * 1.4f, 1.5f, _overlapBuf, _mask, QueryTriggerInteraction.Collide);
-                float terbaik = 34f;
+                int cnt = Physics.OverlapSphereNonAlloc(cam.position + cam.forward * 1.6f, 1.8f, _overlapBuf, _mask, QueryTriggerInteraction.Collide);
+                float terbaik = 44f;
                 for (int i = 0; i < cnt; i++)
                 {
                     var t = _overlapBuf[i].GetComponentInParent<IInteractable>();

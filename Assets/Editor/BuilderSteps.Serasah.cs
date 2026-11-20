@@ -133,6 +133,16 @@ namespace AlasKeramat.EditorTools
             return false;
         }
 
+        static bool AreaBebasSerasah(float x,float z)
+        {
+            var p=new Vector2(x,z);
+            if(Vector2.Distance(p,new Vector2(PosDeden.x,PosDeden.z))<4.5f || Vector2.Distance(p,new Vector2(25.2f,-437.8f))<3.5f)return true;
+            if(Vector2.Distance(p,new Vector2(PosNingsih.x,PosNingsih.z))<3.4f || Vector2.Distance(p,new Vector2(198.8f,-351.7f))<2.5f)return true;
+            if(Vector2.Distance(p,new Vector2(PosDioramaHantu.x,PosDioramaHantu.z))<5.5f || Vector2.Distance(p,new Vector2(-59.6f,-305.6f))<3.5f)return true;
+            if(Vector2.Distance(p,new Vector2(65f,-335f))<2.2f)return true;
+            return false;
+        }
+
         static void BuatSerasahHutan()
         {
             const int sisiSel=32,calon=340;
@@ -167,7 +177,7 @@ namespace AlasKeramat.EditorTools
                 for(int n=0;n<calon;n++)
                 {
                     float px=x+(float)rand.NextDouble()*sisiSel,pz=z+(float)rand.NextDouble()*sisiSel,y;
-                    if(!BolehTanam(px,pz,out y,true) || DekorasiMenutupAwal(px,pz))continue;
+                    if(!BolehTanam(px,pz,out y,true) || DekorasiMenutupAwal(px,pz) || AreaBebasSerasah(px,pz))continue;
                     int roll=n%25;
                     int tipe=roll<6?0:roll<11?1:roll<17?2:roll<20?3:roll<23?4:roll==23?5:6;
                     float rY=(float)rand.NextDouble()*360f;

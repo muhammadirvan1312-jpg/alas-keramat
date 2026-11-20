@@ -111,6 +111,10 @@ namespace AlasKeramat.EditorTools
                     gk.AddComponent<MeshFilter>().sharedMesh = meshKayuDio; gk.AddComponent<MeshRenderer>().sharedMaterial = matKayuDio;
                 }
             }
+            var lDio = Anak(dio, "CahayaDioramaHantu").AddComponent<Light>();
+            float fx = PosDioramaHantu.x - 0.4f, fz = PosDioramaHantu.z - 2.6f;
+            lDio.transform.position = new Vector3(fx, WorldTerrainGenerator.SampleHeight(fx, fz) + 3.6f, fz);
+            lDio.type = LightType.Point; lDio.range = 20f; lDio.intensity = 7.5f; lDio.color = ProcTex.Hex("#82A8DE"); lDio.shadows = LightShadows.None;
             dio.SetActive(false);
             Catat("Hantu: Pocong, Kuntilanak, Banaspati, Kuyang, Tuyul, Genderuwo Hutan, Hantu Air, Penyerupa + 6 Totem Topeng");
         }
@@ -135,8 +139,8 @@ namespace AlasKeramat.EditorTools
             var pendar = new GameObject("PendarHantu").AddComponent<Light>();
             pendar.transform.SetParent(go.transform, false);
             pendar.transform.localPosition = new Vector3(0f, d.tinggi * 0.88f, -0.5f);
-            pendar.type = LightType.Point; pendar.range = 6.5f;
-            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 0.65f : a == EnemyArchetype.Kuyang ? 0.70f : a == EnemyArchetype.GenderuwoHutan ? 0.85f : a == EnemyArchetype.Tuyul ? 0.25f : 0.32f;
+            pendar.type = LightType.Point; pendar.range = 8.5f;
+            pendar.intensity = a == EnemyArchetype.Kuntilanak ? 2.2f : a == EnemyArchetype.Kuyang ? 2.6f : a == EnemyArchetype.GenderuwoHutan ? 3.0f : a == EnemyArchetype.Tuyul ? 1.1f : 1.4f;
             pendar.color = a == EnemyArchetype.Kuntilanak ? new Color(0.55f, 0.68f, 0.92f) : a == EnemyArchetype.Kuyang ? new Color(0.85f, 0.25f, 0.18f) : a == EnemyArchetype.HantuAir ? new Color(0.32f, 0.80f, 0.72f) : a == EnemyArchetype.GenderuwoHutan ? new Color(0.95f, 0.42f, 0.18f) : new Color(0.55f, 0.70f, 0.85f);
             pendar.shadows = LightShadows.None;
             var h = go.AddComponent<HantuAI>(); h.Pasang(a, pendar);
@@ -247,7 +251,7 @@ namespace AlasKeramat.EditorTools
             var sc = go.AddComponent<SphereCollider>(); sc.radius = 0.5f;
             var lampu = new GameObject("Cahaya").AddComponent<Light>();
             lampu.transform.SetParent(go.transform, false);
-            lampu.type = LightType.Point; lampu.range = 6.5f; lampu.intensity = 1.25f; lampu.color = new Color(1f, 0.45f, 0.12f); lampu.shadows = LightShadows.None;
+            lampu.type = LightType.Point; lampu.range = 16f; lampu.intensity = 10f; lampu.color = new Color(1f, 0.45f, 0.12f); lampu.shadows = LightShadows.None;
             SetLayer(go, GameLayers.Enemy);
             go.AddComponent<HantuAI>().Pasang(EnemyArchetype.Banaspati, lampu);
             return SimpanPrefab(go, "Hantu_Banaspati");
