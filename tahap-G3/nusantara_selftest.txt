@@ -1,11 +1,11 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (3011 = 3011)
+[LULUS] Idempoten: jumlah objek sama (3080 = 3080)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
 [LULUS] Tekstur >= 10 (38)
-[LULUS] Material >= 5 (174)
+[LULUS] Material >= 5 (182)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
 [LULUS] WAV >= 8 (62)
@@ -36,7 +36,7 @@
 [LULUS] Gunung Kapur menjulang > 120 m
 [LULUS] Jam dunia maju
 [LULUS] Atmosfer & langit terpasang
-[LULUS] Pohon 8.000-45.000 (15453)
+[LULUS] Pohon 8.000-45.000 (15460)
 [LULUS] Semak/pakis >= 10.000 (45637)
 [LULUS] VegetationManager & data terpasang
 [LULUS] Semua 7 cuaca bisa diset
@@ -120,7 +120,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 204 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 300 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -205,7 +205,7 @@
 [LULUS] Scene: Heli SAR, layar sinema, statistik
 [LULUS] Malam Darah tambahan: malam berikutnya setelah paku
 [LULUS] Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance
-[LULUS] G3b: 10 permukaan foto PBR 2K, normal GL, mask linear & mip streaming
+[GAGAL] G3b: 10 permukaan foto PBR 2K, normal GL, mask linear & mip streaming
 [LULUS] G3c: kulit kedua lengan bawah Ningsih tidak terhapus bersama torso (498/498)
 [LULUS] G3c: 4 MakeHuman berpakaian, <=30rb tris, 24 tulang, bobot normal, 13 bentuk wajah
 [LULUS] G3c: model nyata tersambung ke scene, material & kendali wajah

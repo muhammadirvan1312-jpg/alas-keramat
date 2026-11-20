@@ -1,16 +1,15 @@
 # LAPORAN CI
-- Commit: 0f5e9c92941e312d44b435049ac09f0054d121ab
+- Commit: df393aa505c6383b3bf72ebad1af9c1d8a9e5f40
 - Hasil aset visual: success
 - Hasil langkah Unity: failure
-- Waktu: 2026-11-19T11:23:18Z
+- Waktu: 2026-11-20T02:22:15Z
 
 [LULUS] pengaturan pemain
 [LULUS] builder
-[LULUS] self-test
+[GAGAL] self-test: RunAll melaporkan gagal
 [LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
-[GAGAL] build APK: build Failed, error 3
+[LULUS] build APK
 
 ## Baris error yang ditemukan
-[Exception] CommandInvokationFailure: Gradle build failed. 
-Rethrow as GradleInvokationException: Gradle build failed
-[Error] [AK][GAGAL] build APK: System.Exception: build Failed, error 3
+[Error] [AK][GAGAL] self-test: [GAGAL] G3b: 10 permukaan foto PBR 2K, normal GL, mask linear & mip streaming
+[Error] [AK][GAGAL] self-test: System.Exception: RunAll melaporkan gagal

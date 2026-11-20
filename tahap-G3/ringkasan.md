@@ -1,5 +1,5 @@
 [LULUS] pengaturan pemain
 [LULUS] builder
-[LULUS] self-test
+[GAGAL] self-test: RunAll melaporkan gagal
 [LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
-[GAGAL] build APK: build Failed, error 3
+[LULUS] build APK
