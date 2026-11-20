@@ -138,13 +138,13 @@ namespace AlasKeramat.EditorTools
         static Texture2D TeksturPanelHeli(string nama, Color cat, Color kotor)
         {
             const int sz = 256;
-            var rust = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/logam_karat.png");
+            var rust = BacaFoto("Karat", "Albedo");
             var t = new Texture2D(sz, sz, TextureFormat.RGBA32, true);
             var px = new Color[sz * sz];
             for (int y = 0; y < sz; y++) for (int x = 0; x < sz; x++)
             {
                 float u = (float)x / sz, v = (float)y / sz;
-                float rl = rust != null ? rust.GetPixelBilinear(u, v).grayscale : 0.5f;
+                float rl = rust != null && rust.isReadable ? rust.GetPixelBilinear(u, v).grayscale : 0.5f;
                 float panel = (Mathf.Abs(Mathf.Repeat(u * 3f, 1f) - 0.5f) > 0.485f || Mathf.Abs(Mathf.Repeat(v * 3f, 1f) - 0.5f) > 0.485f) ? 0.55f : 1.0f;
                 float soot = Mathf.Clamp01((Mathf.PerlinNoise(u * 9f + 1.4f, v * 9f + 4.1f) - 0.48f) * 2.2f);
                 Color c = Color.Lerp(cat, kotor, soot * 0.65f + (1f - rl) * 0.20f) * panel;
@@ -162,9 +162,9 @@ namespace AlasKeramat.EditorTools
             var bekas = GameObject.CreatePrimitive(PrimitiveType.Quad);
             bekas.name = "JejakJatuhHeli"; Object.DestroyImmediate(bekas.GetComponent<Collider>());
             bekas.transform.SetParent(_induk.transform, false);
-            bekas.transform.position = new Vector3(hx, WorldTerrainGenerator.SampleHeight(hx, hz) + 0.04f, hz + 0.6f);
+            bekas.transform.position = new Vector3(hx, WorldTerrainGenerator.SampleHeight(hx, hz) + 0.03f, hz + 0.6f);
             bekas.transform.rotation = Quaternion.Euler(90f, 35f, 0f);
-            bekas.transform.localScale = new Vector3(7.5f, 11.5f, 1f);
+            bekas.transform.localScale = new Vector3(5.2f, 8.0f, 1f);
             bekas.GetComponent<Renderer>().sharedMaterial = mHangus;
 
             var meshKayu = MuatPropScan("KayuTumbangScan");
