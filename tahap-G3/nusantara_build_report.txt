@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-20 07:42:14
+Laporan Builder Alas Keramat - 2026-11-20 10:30:31
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -25,7 +25,7 @@ Laporan Builder Alas Keramat - 2026-11-20 07:42:14
   - Terrain 16 tile @1025, laut, 2 sungai
 [LULUS] 3b. Dunia 2x2 km
   - G3b: 9 varian scan pohon/pakis tersambung ke instancing dan tebang, dengan LOD
-  - Vegetasi: 25594 pohon, 89421 semak/pakis, 3857 sel instancing
+  - Vegetasi: 25585 pohon, 89420 semak/pakis, 3856 sel instancing
 [LULUS] 3c. Vegetasi
   - Landmark: 38 objek (Beringin Agung, heli, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula, 2 mulut gua, altar)
 [LULUS] 3d. Landmark
@@ -49,7 +49,7 @@ Laporan Builder Alas Keramat - 2026-11-20 07:42:14
 [LULUS] 7g. Karakter & animasi
   - Tebang: pool pohon interaktif, melee golok/kapak, model senjata FP, tombol TEBAS
 [LULUS] 7h. Tebang & melee
-  - Hewan: 5 template (rusa, kancil, babi hutan, ayam hutan, biawak); titik pungut pool 40
+  - Hewan: 13 template (rusa, kancil, babi hutan, ayam hutan, biawak, harimau, buaya, tawon, piton, kobra, monyet, anjing, kucing); titik pungut pool 56
 [LULUS] 7i. Hewan & titik pungut
   - Tikar Pandan 3D: panggung, kamera, layar rakit/makan/zirah, tombol TAS, kotak zirah
 [LULUS] 7j. Tikar Pandan & zirah
@@ -88,7 +88,7 @@ Laporan Builder Alas Keramat - 2026-11-20 07:42:14
   - Peta Survei: kontur, sungai, legenda lokasi, posisi GPS & tujuan ketuk
 [LULUS] 7y. Peta survei & navigasi
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 3161
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4821
 [LULUS] 9. Simpan scene
-Durasi: 743.0 detik
+Durasi: 978.2 detik
 HASIL: SEMUA LANGKAH LULUS
