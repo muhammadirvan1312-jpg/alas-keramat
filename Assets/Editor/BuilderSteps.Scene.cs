@@ -63,6 +63,7 @@ namespace AlasKeramat.EditorTools
 
             var texSiang = ImporLangitHDR("Assets/ThirdParty/CC0/Langit/LangitSiang.hdr", 2048);
             var texMalam = ImporLangitHDR("Assets/ThirdParty/CC0/Langit/LangitMalam.hdr", 2048);
+            var texSenja = ImporLangitHDR("Assets/ThirdParty/CC0/Langit/LangitSenja.hdr", 2048);
             var envCube = ImporKubusHDR("Assets/ThirdParty/CC0/Langit/RefleksiHutan.hdr", 512);
             if (envCube != null)
             {
@@ -76,6 +77,7 @@ namespace AlasKeramat.EditorTools
             _langit = new Material(sky) { name = "M_Langit" };
             if (_langit.HasProperty("_DayTex") && texSiang != null) _langit.SetTexture("_DayTex", texSiang);
             if (_langit.HasProperty("_NightTex") && texMalam != null) _langit.SetTexture("_NightTex", texMalam);
+            if (_langit.HasProperty("_DuskTex") && texSenja != null) _langit.SetTexture("_DuskTex", texSenja);
             AssetDatabase.CreateAsset(_langit, PathSkybox);
             _langit = AssetDatabase.LoadAssetAtPath<Material>(PathSkybox);
             RenderSettings.skybox = _langit;
