@@ -39,6 +39,10 @@ namespace AlasKeramat.EditorTools
                 var bar = Kotak2D(panel, "Bar" + nama[i], new Vector2(0f, y), new Vector2(lebar[i], tinggi[i]), ProcTex.Hex(latar[i]));
                 var fill = Kotak2D(bar, "Isi", Vector2.zero, new Vector2(lebar[i], tinggi[i]), ProcTex.Hex(warna[i]));
                 isi[i] = (RectTransform)fill.transform; img[i] = fill.GetComponent<Image>();
+                // Bar bulat (sprite 9-slice sama dengan tombol HUD): latar redup, isian penuh warna.
+                var gBar = bar.GetComponent<Image>(); GayakanTombol(gBar, ProcTex.Hex(latar[i]), null); gBar.color = new Color(gBar.color.r, gBar.color.g, gBar.color.b, 0.85f);
+                GayakanTombol(img[i], ProcTex.Hex(warna[i]), null); img[i].color = ProcTex.Hex(warna[i]);
+                img[i].type = Image.Type.Filled; img[i].fillMethod = Image.FillMethod.Horizontal; img[i].fillOrigin = 0;
                 if (i == HUDVital.Darah) plafon = Rentang(bar, "PlafonDarah", ProcTex.Hex("#2A0A0AE6"));
                 if (i == HUDVital.Stamina) beku = Rentang(bar, "BekuStamina", ProcTex.Hex("#2E6EA8E6"));
                 y -= tinggi[i] + 8f;

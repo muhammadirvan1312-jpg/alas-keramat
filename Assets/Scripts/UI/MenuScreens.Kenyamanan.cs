@@ -48,7 +48,7 @@ namespace AlasKeramat.UI
 
         // Penggeser diterapkan langsung; persistensi dilakukan saat menutup menu, bukan menulis disk tiap drag.
         public void AturSensitivitas(float nilai) { Sensitivitas = Mathf.Clamp(nilai, 0.5f, 2f); var a = GameServices.Get<AndiFPSController>(); if (a != null) a.PengaliSensitivitas = Sensitivitas; SegarkanPenggeser(); }
-        public void AturFov(float nilai) { Fov = Mathf.Clamp(nilai, 60f, 85f); var c = Camera.main; if (c != null) c.fieldOfView = Fov; SegarkanPenggeser(); }
+        public void AturFov(float nilai) { Fov = Mathf.Clamp(nilai, 60f, 85f); AndiFPSController.FovDasar = Fov; var c = Camera.main; if (c != null) c.fieldOfView = Fov; SegarkanPenggeser(); }
         public void AturUkuranTombol(float nilai)
         {
             SkalaTombol = Mathf.Clamp(nilai, 0.8f, 1.3f);

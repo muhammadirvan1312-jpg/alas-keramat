@@ -90,17 +90,20 @@ namespace AlasKeramat.EditorTools
             var pr = pAsap.GetComponent<ParticleSystemRenderer>(); pr.sharedMaterial = mAsap; pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             DandanLokasiHeli(8f, -448f);
 
+            // Dinding bilik bambu anyaman (foto CC0) untuk sebagian rumah desa agar tidak seragam kayu.
+            Material bilik = kayu;
+            if (Tex("bilik") != null) { bilik = SimpanMat(SafeMaterialFactory.CreatePBR("M_Bilik", ProcTex.Hex("#C9B79C"), 0f, 0.12f, Tex("bilik"), Tex("bilik_n"))); MaskPBR(bilik, "bilik"); }
             // Zona 3: Desa Mati (6 rumah, dikali 2 dari 03).
             float[,] desa = { { 564, 224, 200, 0.3f }, { 524, 236, 180, 0.4f }, { 592, 176, 260, 0.3f }, { 544, 140, 330, 0.4f }, { 504, 200, 120, 0.85f }, { 580, 260, 210, 0.9f } };
             for (int i = 0; i < desa.GetLength(0); i++)
-                Taruh("RumahDesa_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(100 + i, i == 0 ? 8f : 7f, i == 0 ? 6f : 5.5f, 1.5f, desa[i, 3])), new[] { kayu, i % 2 == 0 ? seng : ijuk }, desa[i, 0], desa[i, 1], desa[i, 2], Vector3.one, true);
+                Taruh("RumahDesa_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(100 + i, i == 0 ? 8f : 7f, i == 0 ? 6f : 5.5f, 1.5f, desa[i, 3])), new[] { i % 2 == 1 ? bilik : kayu, i % 2 == 0 ? seng : ijuk }, desa[i, 0], desa[i, 1], desa[i, 2], Vector3.one, true);
 
             // Zona 11: Kampung Sukamaju (22 rumah seragam, ditinggal mendadak).
             for (int i = 0; i < 22; i++)
             {
                 int baris = i / 6, kolom = i % 6;
                 float x = 560f + kolom * 26f + (baris % 2) * 8f, z = 560f + baris * 30f;
-                Taruh("RumahKampung_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(300 + i, 6.5f, 5f, 0.6f, 0.15f)), new[] { kayu, seng }, x, z, baris % 2 == 0 ? 180f : 0f, Vector3.one, true);
+                Taruh("RumahKampung_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(300 + i, 6.5f, 5f, 0.6f, 0.15f)), new[] { i % 3 == 1 ? bilik : kayu, seng }, x, z, baris % 2 == 0 ? 180f : 0f, Vector3.one, true);
             }
 
             // Zona 7: Mercusuar.

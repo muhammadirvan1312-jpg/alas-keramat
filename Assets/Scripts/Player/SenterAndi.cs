@@ -8,6 +8,8 @@ namespace AlasKeramat.Player
     {
         public const float Jangkau = 28f, Sudut = 48f, Intensitas = 3.2f, Tick = 0.3f;
         [SerializeField] Light lampu;
+        [SerializeField] Texture cookie;
+        public void PasangCookie(Texture t) { cookie = t; }
         float _t;
         public bool Nyala { get { return lampu != null && lampu.enabled; } }
         void Awake()
@@ -23,6 +25,8 @@ namespace AlasKeramat.Player
                 lampu.type = LightType.Spot; lampu.range = Jangkau; lampu.spotAngle = Sudut; lampu.intensity = Intensitas;
                 lampu.color = new Color(0.92f, 0.95f, 1f); lampu.shadows = LightShadows.None; lampu.enabled = false;
             }
+            // Pola pantul reflektor senter (titik terang, cincin, tepi lembut) agar cahaya tidak tampak seperti kerucut polos.
+            if (lampu != null && cookie != null) { lampu.cookie = cookie; lampu.innerSpotAngle = Sudut * 0.35f; }
         }
         void Update()
         {
