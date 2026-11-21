@@ -1,0 +1,15 @@
+{
+  "commit": "022b57c7259bb6c422bf890104700c16e93183c8",
+  "passed": false,
+  "photos": [],
+  "errors": [
+    "Sumber foto tidak cocok dengan commit yang diuji",
+    "Foto belum tersedia: g3_01_deden_wajah",
+    "Foto belum tersedia: g3_02_ningsih_wajah",
+    "Foto belum tersedia: g3_03_hutan_malam",
+    "Foto belum tersedia: g3_04_lantai_hutan",
+    "Foto belum tersedia: t10_01_gua_lumut",
+    "Foto belum tersedia: t10_02_kubah_akar_boss"
+  ],
+  "note": "Pemeriksaan teknis gambar; kualitas seni dan kesetaraan visual belum dinilai"
+}
