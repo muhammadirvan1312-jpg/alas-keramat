@@ -26,6 +26,7 @@ namespace AlasKeramat.EditorTools
                 && NusantaraMasterBuilder.NilaiCookie(0f,0f,0.5f)>0.9f && NusantaraMasterBuilder.NilaiCookie(0.99f,0f,0.5f)<0.1f);
             float rd,rb,rdM,rbM,rdH,rbH;
             PartikelAlam.Laju(10f,WeatherState.Cerah,true,out rd,out rb);PartikelAlam.Laju(22f,WeatherState.Cerah,true,out rdM,out rbM);PartikelAlam.Laju(10f,WeatherState.HujanBadai,true,out rdH,out rbH);
+            cek("Partikel alam: percikan hujan di tanah ikut intensitas",PartikelAlam.LajuPercik(WeatherState.HujanBadai)>PartikelAlam.LajuPercik(WeatherState.Gerimis) && PartikelAlam.LajuPercik(WeatherState.Cerah)==0f);
             cek("Partikel alam: daun & debu siang cerah, mati malam & hujan, terpasang",rd>0f && rb>0f && rdM==0f && rbM==0f && rdH==0f && rbH==0f && Object.FindFirstObjectByType<PartikelAlam>()!=null);
             cek("Langit: HDRI senja terpasang dan memuncak saat maghrib",RenderSettings.skybox!=null && RenderSettings.skybox.HasProperty("_DuskTex") && RenderSettings.skybox.GetTexture("_DuskTex")!=null
                 && AlasKeramat.Core.URPAtmosphereAndWeather.Senja01(18.1f)>0.95f && AlasKeramat.Core.URPAtmosphereAndWeather.Senja01(12f)==0f && AlasKeramat.Core.URPAtmosphereAndWeather.Senja01(0f)==0f);
