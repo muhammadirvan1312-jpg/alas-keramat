@@ -71,6 +71,16 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Player.CombatAndLeftHandController.TarikBusur01(false, 0.5f, 1.0f) == 0f
                 && Object.FindFirstObjectByType<AlasKeramat.Core.SuarMercusuar>() != null
                 && GameObject.Find("MesinPabrik_0") != null && GameObject.Find("LoriTebu_0") != null);
+            cek("SOTF v4: senter taktis, lentera companion malam, suara sungai/pantai & gapura keramat",
+                AlasKeramat.Player.SenterAndi.HarusMenyala(21f, false, false)
+                && !AlasKeramat.Player.SenterAndi.HarusMenyala(12f, false, false)
+                && !AlasKeramat.Player.SenterAndi.HarusMenyala(21f, false, true)
+                && AlasKeramat.AI.CompanionDasar.HitungIntensitasLampuTeman(22f, false, 1f) > 1f
+                && AlasKeramat.AI.CompanionDasar.HitungIntensitasLampuTeman(12f, false, 1f) == 0f
+                && AlasKeramat.Core.SuaraAirDunia.HitungVolumeAir(4f, 10f, false) > 0.3f
+                && AlasKeramat.Core.SuaraAirDunia.HitungVolumeAir(200f, 30f, false) == 0f
+                && GameObject.Find("GapuraKeramat_0") != null
+                && AlasKeramat.Core.ProcBangunan.GapuraBatuKeramat().vertexCount > 40);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

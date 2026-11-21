@@ -391,5 +391,31 @@ namespace AlasKeramat.Core
             }
             return b.Jadi("Altar");
         }
+
+        // Gapura candi bentar Nusantara & dua tungku batu sesaji di kanan-kiri gerbang Beringin Agung. 0 batu candi, 1 batu gelap/arang tungku.
+        public static Mesh GapuraBatuKeramat()
+        {
+            var b = new B(2);
+            for (int side = -1; side <= 1; side += 2)
+            {
+                float x = side * 2.6f;
+                // Alas umpak bertingkat + tubuh gapura berukir + mahkota candi berjenjang.
+                b.Kotak(0, new Vector3(x, 0.35f, 0f), new Vector3(1.85f, 0.70f, 1.85f), Quaternion.identity, 1.2f);
+                b.Kotak(0, new Vector3(x, 0.88f, 0f), new Vector3(1.52f, 0.36f, 1.52f), Quaternion.identity, 1.2f);
+                b.Kotak(0, new Vector3(x, 2.05f, 0f), new Vector3(1.18f, 2.00f, 1.18f), Quaternion.identity, 1.2f);
+                b.Kotak(1, new Vector3(x - side * 0.12f, 2.05f, 0f), new Vector3(0.98f, 1.35f, 0.72f), Quaternion.identity, 1f);
+                for (int t = 0; t < 4; t++)
+                {
+                    float w = 1.46f - t * 0.24f;
+                    b.Kotak(0, new Vector3(x, 3.22f + t * 0.32f, 0f), new Vector3(w, 0.28f, w), Quaternion.identity, 1f);
+                }
+                // Tungku batu & mangkuk arang sesaji di samping tiang.
+                float tx = side * 3.85f;
+                b.Silinder(0, new Vector3(tx, 0f, 0.95f), 0.42f, 0.32f, 0.85f, 8, Quaternion.identity, 1f);
+                b.Silinder(0, new Vector3(tx, 0.85f, 0.95f), 0.32f, 0.52f, 0.28f, 8, Quaternion.identity, 1f);
+                b.Silinder(1, new Vector3(tx, 1.08f, 0.95f), 0.42f, 0.36f, 0.10f, 8, Quaternion.identity, 1f);
+            }
+            return b.Jadi("GapuraBatuKeramat");
+        }
     }
 }

@@ -31,10 +31,13 @@ namespace AlasKeramat.EditorTools
             var hitam = SimpanMat(SafeMaterialFactory.CreatePBR("M_GelapGua", Color.black, 0f, 0f));
             var ijuk = SimpanMat(SafeMaterialFactory.CreatePBR("M_AtapIjuk", ProcTex.Hex("#3A2E22"), 0f, 0.1f, Tex("kulit_kayu")));
 
-            // Zona 5: Beringin Agung (28 m) + altar.
+            // Zona 5: Beringin Agung (28 m) + altar + dua gapura candi bentar keramat.
             var beringin = ProcPohon.Buat(ProcPohon.Jenis.BeringinKecil, 7, false);
             Taruh("BeringinAgung", Simpan(beringin), new[] { AmbilMat("M_KulitPohon"), AmbilMat("M_DaunPohon") }, 0f, 0f, 0f, new Vector3(2.6f, 2.2f, 2.6f), false);
             Taruh("Altar", Simpan(ProcBangunan.Altar()), new[] { batu }, 0f, -18f, 180f, Vector3.one, true);
+            var gapuraMesh = Simpan(ProcBangunan.GapuraBatuKeramat());
+            Taruh("GapuraKeramat_0", gapuraMesh, new[] { batu, hitam }, 0f, -24f, 0f, Vector3.one, true);
+            Taruh("GapuraKeramat_1", gapuraMesh, new[] { batu, hitam }, 0f, 16f, 180f, Vector3.one, true);
 
             // Zona 1: heli rusak (yaw 35, roll 18) + bara turbin & asap kecelakaan.
             var heli = Taruh("HeliRusak", Simpan(ProcBangunan.HeliRusak()), new[] { putih, oranye, gelap }, 8f, -448f, 35f, Vector3.one, true);

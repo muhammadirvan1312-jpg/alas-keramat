@@ -151,9 +151,11 @@ Shader "AlasKeramat/Daun"
             half back = saturate(dot(-d.normalWS, sun.direction) * 0.75h + 0.25h);
             half towardSun = pow(saturate(dot(-d.viewDirectionWS, sun.direction)), 3);
             half rim = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3) * 0.12h * back;
+            half skySheen = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3.0h) * wet * 0.22h;
             half3 sssTint = s.albedo * half3(0.92h, 1.24h, 0.58h);
             lit.rgb += sssTint * sun.color * ((_Translucency * 1.18h * back * (0.30h + 0.70h * towardSun) + rim)
-                * sun.distanceAttenuation * sun.shadowAttenuation);
+                * sun.distanceAttenuation * sun.shadowAttenuation)
+                + sun.color * (skySheen * sun.distanceAttenuation);
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;
         }

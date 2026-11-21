@@ -166,3 +166,8 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `BangunanBlueprint` kini memakai material PBR berserat kayu/batu (`BahanBP`) di semua 26 cetak biru survival; `ApiUnggun` ditambah lidah api berkedip + partikel bara api 3D saat menyala.
   - `TanganKiri` menampilkan lengan, telapak tangan, dan jari menggenggam obor bambu berikut lidah api; `CombatAndLeftHandController` menambah animasi tarik busur ke tengah bidikan (`TarikBusur01`) serta partikel serpihan kayu (`PancarSerpih`) saat menebang pohon/kayu/struktur.
   - `Mercusuar` kini memiliki `SuarMercusuar` berputar saat malam/badai/kabut, dan halaman Pabrik Gula diisi ketel uap/penggiling (`MesinPabrik_0..1`) + rel & gerobak lori tebu (`LoriTebu_0..2`).
+- Gelombang 4 SOTF (`imp-sotf-v3`):
+  - `SenterAndi` dilengkapi bodi senter taktis 3D, lensa bercahaya, berkas sinar volumetrik (`BerkasSenter`), serta fungsi `ToggleSenter()`.
+  - `CompanionDasar` menambahkan lentera malam hangat (`LampuTeman` / `HitungIntensitasLampuTeman`) saat malam atau di dalam gua sehingga Deden dan Ningsih menerangi sekitar bersama pemain.
+  - `SuaraAirDunia` memutar gemericik sungai dan deburan ombak pantai yang volumenya mengikuti jarak terdekat ke aliran sungai/garis pantai.
+  - Shader `AK_Kulit.shader` & `AK_Daun.shader` diperhalus dengan root AO dan pantulan basah Fresnel saat hujan; `ProcBangunan.GapuraBatuKeramat` dan dua gapura candi bentar + tungku sesaji dipasang mengapit Altar & Beringin Agung.

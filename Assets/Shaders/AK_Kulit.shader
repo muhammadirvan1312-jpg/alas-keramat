@@ -138,11 +138,15 @@ Shader "AlasKeramat/Kulit"
             s.metallic = _Metallic;
             half4 mask=SAMPLE_TEXTURE2D(_MaskMap,sampler_MaskMap,i.uv);
             half wet=_AK_Basah*saturate(d.normalWS.y*0.7+0.4);
-            s.albedo*=1-wet*0.2;
+            half rootAO = saturate(d.positionWS.y * 0.35h + 0.55h);
+            s.albedo *= (1.0h - wet * 0.2h) * lerp(0.84h, 1.0h, rootAO);
             s.smoothness = saturate(lerp(_Smoothness,mask.a,_PakaiMask)+wet*0.35);
-            s.occlusion = lerp(1,mask.g,_PakaiMask);
+            s.occlusion = lerp(1,mask.g,_PakaiMask) * rootAO;
             s.normalTS = half3(0,0,1);
             half4 lit = UniversalFragmentPBR(d, s);
+            Light sun = GetMainLight(d.shadowCoord, d.positionWS, half4(1,1,1,1));
+            half rimBasah = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3.0h) * wet * 0.18h;
+            lit.rgb += sun.color * (rimBasah * sun.distanceAttenuation);
 
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;
