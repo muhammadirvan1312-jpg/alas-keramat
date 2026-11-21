@@ -6,7 +6,7 @@ namespace AlasKeramat.Core
     {
         public string[] NamaPanggang { get { return clipNames; } }
         public AudioClip[] KlipPanggang { get { return clips; } }
-        public const string KlipHujan = "rekaman_hujan";
+        public const string KlipHujan = "rekaman_hujan", KlipApi = "rekaman_api";
 
         // Hanya klip terpanggang (rekaman), tanpa cadangan sintetis; null bila tidak ada.
         public AudioClip AmbilRekaman(string nama)

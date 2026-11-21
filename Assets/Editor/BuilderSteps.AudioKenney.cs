@@ -25,7 +25,7 @@ namespace AlasKeramat.EditorTools
             { S.KlipTembak, "tembak.wav", "m" }, { S.KlipGeramSekte, "geram.ogg", "m" }, { S.KlipTeriakSekte, "teriak.ogg", "m" },
             { S.KlipJeritGua, "jerit_gua.ogg", "m" }, { S.KlipRintihSekte, "rintih.ogg", "m" },
             { S.BedTebing, "angin.ogg", "b" }, { S.BedPabrik, "angin.ogg", "b" }, { S.BedWingit, "musik_seram.ogg", "b" },
-            { S.KlipMusikTempur, "musik_tegang.ogg", "b" }, { S.KlipHujan, "hujan_malam.ogg", "b" },
+            { S.KlipMusikTempur, "musik_tegang.ogg", "b" }, { S.KlipHujan, "hujan_malam.ogg", "b" }, { S.KlipApi, "api.ogg", "m" },
             { S.OsJangkrik, "jangkrik.ogg", "m" }, { S.OsKatak, "katak.ogg", "m" }, { S.OsHantu, "burung_malam.ogg", "m" }, { S.OsPagi, "burung_pagi.ogg", "m" },
         };
 

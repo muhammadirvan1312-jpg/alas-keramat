@@ -1253,6 +1253,16 @@
       "slot": "Audio",
       "size": 8956,
       "sha256": "261c5ac5f9fe649ed30202b91d3f84ffc62f28db7ee047dbd3171b057dcc59a2"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/fire-1.ogg",
+      "path": "CC0/Audio/oga/api.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/fire-crackling",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 22784,
+      "sha256": "f922929805bc6afdf0a35727fa3998033db544c1b6f62ed3aeab94341ed6ddeb"
     }
   ]
 }
