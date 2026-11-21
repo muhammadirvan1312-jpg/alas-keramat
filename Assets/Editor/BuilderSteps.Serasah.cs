@@ -139,25 +139,42 @@ namespace AlasKeramat.EditorTools
             int i=(int)b;
             return b==Biome.HutanCampuran || b==Biome.HutanJatiSelatan || b==Biome.HutanBambu || b==Biome.TepiSungai || b==Biome.KawahBeringin || i==11 || i==15;
         }
+        static bool BiomaBatu(Biome b) { return b==Biome.TebingKapur || b==WorldTerrainGenerator.GunungKapur; }
         static readonly int[] TipeSebaran={4,4,10,10,11,5,6,7,8,8,9,2,2,3};
         static int SebaranPulau(Mesh[] meshes,Material[] bahan,List<SerasahHutan.KelompokSerasah> hasil)
         {
             const int sel=64,calon=26;int total=0;
+            var mBesar=MuatPropScan("BatuBesarScan");
+            var matBesar=MaterialSolidScan("BatuBesarAsli","M_BatuBesarScan",new Color(0.86f,0.85f,0.82f,1f),0.22f);
             for(int z=-1000;z<1000;z+=sel)for(int x=-1000;x<1000;x+=sel)
             {
                 if(x+sel>-256 && x<352 && z+sel>-576 && z<-160)continue;
                 var rand=new System.Random(x*92821^z*68917^0x5A17);
                 var daftar=new List<Matrix4x4>[meshes.Length];
                 for(int k=0;k<meshes.Length;k++)daftar[k]=new List<Matrix4x4>();
+                var batuBesar=new List<Matrix4x4>();
                 for(int n=0;n<calon;n++)
                 {
                     float px=x+(float)rand.NextDouble()*sel,pz=z+(float)rand.NextDouble()*sel,y;
-                    if(!BiomaHutan(WorldTerrainGenerator.GetBiome(px,pz)) || !BolehTanam(px,pz,out y,true))continue;
+                    var bio=WorldTerrainGenerator.GetBiome(px,pz);
+                    if(BiomaBatu(bio) && mBesar!=null && matBesar!=null && n%3==0 && BolehTanam(px,pz,out y,true))
+                    {
+                        float sb=0.9f+(float)rand.NextDouble()*2.2f;
+                        batuBesar.Add(Matrix4x4.TRS(new Vector3(px,y-0.25f*sb,pz),Quaternion.Euler((float)rand.NextDouble()*20f-10f,(float)rand.NextDouble()*360f,(float)rand.NextDouble()*20f-10f),new Vector3(sb,sb*(0.7f+0.4f*(float)rand.NextDouble()),sb)));
+                        continue;
+                    }
+                    if(!BiomaHutan(bio) || !BolehTanam(px,pz,out y,true))continue;
                     int tipe=TipeSebaran[rand.Next(TipeSebaran.Length)];
                     if(tipe>=meshes.Length)continue;
                     float s=0.7f+(float)rand.NextDouble()*0.8f,rY=(float)rand.NextDouble()*360f;
                     var rot=tipe==2 || tipe==3 || tipe==6 || tipe==7?Quaternion.Euler(0f,rY,0f):Quaternion.Euler((float)rand.NextDouble()*10f-5f,rY,(float)rand.NextDouble()*10f-5f);
                     daftar[tipe].Add(Matrix4x4.TRS(new Vector3(px,y-0.05f,pz),rot,new Vector3(s,s*(0.85f+0.3f*(float)rand.NextDouble()),s)));
+                }
+                if(batuBesar.Count>0)
+                {
+                    var ab=batuBesar.ToArray();var bb=new Bounds((Vector3)ab[0].GetColumn(3),Vector3.one*8f);
+                    for(int k=1;k<ab.Length;k++)bb.Encapsulate(new Bounds((Vector3)ab[k].GetColumn(3),Vector3.one*8f));
+                    hasil.Add(new SerasahHutan.KelompokSerasah { mesh=mBesar,material=matBesar,bounds=bb,matriks=ab });total+=ab.Length;
                 }
                 for(int t=0;t<meshes.Length;t++)
                 {
