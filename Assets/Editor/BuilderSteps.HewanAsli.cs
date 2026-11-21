@@ -1,4 +1,5 @@
 using AlasKeramat.AI;
+using AlasKeramat.Core;
 using UnityEditor;
 using UnityEngine;
 using JH = AlasKeramat.Core.ResepHewan.JenisHewan;
