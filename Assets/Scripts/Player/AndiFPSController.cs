@@ -16,6 +16,12 @@ namespace AlasKeramat.Player
         public const float MataBerdiri = 1.65f, MataJongkok = 0.95f, PitchMaks = 80f;
         public const float SensH = 0.36f, SensV = 0.26f, SensMouse = 2.2f;
         public const float BobV = 0.035f, BobL = 0.02f, FrekBob = 1.9f;
+        // Rasa kecepatan: FOV melebar halus saat lari (maks +7 derajat), kembali saat jalan/diam.
+        public const float FovLari = 7f, LajuFov = 5f;
+        public static float FovDasar = 70f;
+        float _fovTambah;
+        Camera _cam;
+        public static float TambahFov(bool lari, float laju01) { return lari ? FovLari * Mathf.Clamp01(laju01) : 0f; }
         public const float AirMinRenang = 1.3f, MataDiBawahAir = 0.25f, NapasNormal = 25f, PitchSelam = -25f, Apung = 2.5f;
         public const float JatuhAman = 6f, JatuhMati = 18f, DamagePerMeter = 7f;
         const float JoyMati = 0.2f, JoyPenuh = 0.95f, LerpTinggi = 8f, LajuNapasPulih = 5f;
@@ -144,6 +150,18 @@ namespace AlasKeramat.Player
             float sisa = GoyanganTempur ? Mathf.Clamp01((_akhirGuncang - Time.unscaledTime) / Mathf.Max(_lamaGuncang, 0.01f)) : 0f;
             float guncang = Mathf.Sin(Time.unscaledTime * 95f) * 0.6f * sisa;
             kamera.localRotation = Quaternion.Euler(_pitch + guncang, guncang * 0.45f, 0f);
+            if (_cam == null) _cam = kamera.GetComponent<Camera>();
+            if (_cam != null)
+            {
+                // Hanya menyentuh FOV saat efek aktif, agar kamera foto/sinema tetap memakai FOV-nya sendiri.
+                float target = TambahFov(SedangLari, laju);
+                if (target > 0f || _fovTambah > 0.01f)
+                {
+                    _fovTambah = Mathf.Lerp(_fovTambah, target, Time.deltaTime * LajuFov);
+                    if (_fovTambah <= 0.01f) _fovTambah = 0f;
+                    _cam.fieldOfView = FovDasar + _fovTambah;
+                }
+            }
         }
 
         // H3: keyboard/mouse hanya untuk uji di Editor/PC, di dalam ENABLE_LEGACY_INPUT_MANAGER.
