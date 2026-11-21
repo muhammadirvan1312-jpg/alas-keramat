@@ -1,3 +1,4 @@
+using AlasKeramat.Building;
 using AlasKeramat.Core;
 using AlasKeramat.Inventory;
 using AlasKeramat.Player;
@@ -12,6 +13,7 @@ namespace AlasKeramat.AI
     {
         public enum KeadaanHewan { Merumput, Waspada, Kabur, Menyerang, Mati }
         public const float JedaSeruduk = 1.5f, DamageSeruduk = 12f, JarakSeruduk = 1.4f, LamaMarah = 8f, LamaKabur = 12f, LajuBelok = 240f;
+        public const float JarakTakutObor = 9.5f, JarakTakutApiUnggun = 11f;
 
         [SerializeField] JH jenis;
         [SerializeField] Transform[] tulang = new Transform[ResepHewan.Jumlah];
@@ -26,12 +28,55 @@ namespace AlasKeramat.AI
         public bool IsAlive { get { return State != KeadaanHewan.Mati; } }
         public float HoldDuration { get { return 0f; } }
 
-        float _hp, _t, _tState, _fase, _arah, _tSeruduk, _guling;
+        float _hp, _t, _tState, _fase, _arah, _tSeruduk, _guling, _tCekApi, _jarakApi = 999f;
         Quaternion[] _rest;
         AndiFPSController _andi;
-        bool _diambil;
+        TanganKiri _tanganKiri;
+        CombatAndLeftHandController _combat;
+        bool _diambil, _takutApi;
+        Vector3 _posApi;
         GameObject _mataPemangsa;
         TimeOfDayClock _jamDunia;
+
+        public static bool PredatorTakutApi(JH j, bool apiDekat, float jarakApi, float hp01)
+        {
+            if (!apiDekat || jarakApi > JarakTakutApiUnggun) return false;
+            var u = ResepHewan.Ambil(j);
+            if (!u.pemangsa && !u.agresif) return false;
+            if (hp01 < 0.25f && jarakApi < 3f) return false;
+            return true;
+        }
+
+        void CekApiSekitar(Vector3 p)
+        {
+            if (_tanganKiri == null) _tanganKiri = GameServices.Get<TanganKiri>();
+            if (_combat == null) _combat = GameServices.Get<CombatAndLeftHandController>();
+            float dMin = 999f; Vector3 posTerdekat = p; bool ada = false;
+            if (_andi != null && _tanganKiri != null && _tanganKiri.OborMenyala)
+            {
+                float dObor = Vector3.Distance(p, _andi.transform.position);
+                if (dObor <= JarakTakutObor) { ada = true; dMin = dObor; posTerdekat = _andi.transform.position; }
+            }
+            if (_andi != null && _combat != null && !_combat.Tersimpan && _combat.Aktif.id == ItemID.GolokApiPusaka)
+            {
+                float dGolok = Vector3.Distance(p, _andi.transform.position);
+                if (dGolok <= 7.5f && dGolok < dMin) { ada = true; dMin = dGolok; posTerdekat = _andi.transform.position; }
+            }
+            for (int i = 0; i < ApiUnggun.Semua.Count; i++)
+            {
+                var a = ApiUnggun.Semua[i];
+                if (a == null || !a.Menyala) continue;
+                float dApi = Vector3.Distance(p, a.transform.position);
+                if (dApi <= JarakTakutApiUnggun && dApi < dMin) { ada = true; dMin = dApi; posTerdekat = a.transform.position; }
+            }
+            if (!ada && ZonaPenangkal.AdaObor(p, JarakTakutApiUnggun))
+            {
+                ada = true; dMin = 6f;
+                posTerdekat = _andi != null ? _andi.transform.position : p + transform.forward;
+            }
+            _jarakApi = dMin; _posApi = posTerdekat;
+            _takutApi = PredatorTakutApi(jenis, ada, dMin, _hp / Mathf.Max(1f, HPAwal(jenis)));
+        }
 
         public static bool PunyaMataPemangsa(JH j, bool hidup, float jam, bool bawahTanah)
         {
@@ -122,6 +167,14 @@ namespace AlasKeramat.AI
             if (_andi == null) _andi = GameServices.Get<AndiFPSController>();
             var u = ResepHewan.Ambil(jenis);
             Vector3 p = transform.position;
+            _tCekApi -= dt;
+            if (_tCekApi <= 0f) { _tCekApi = 0.2f; CekApiSekitar(p); }
+            if (_takutApi)
+            {
+                if (State != KeadaanHewan.Kabur) BunyikanSuara(0.75f);
+                State = KeadaanHewan.Kabur;
+                _tState = Mathf.Max(_tState, 5f);
+            }
             float kec = 0f;
             if (_andi != null && State != KeadaanHewan.Menyerang)
             {
@@ -129,7 +182,7 @@ namespace AlasKeramat.AI
                 float d = Vector3.Distance(_andi.transform.position, p);
                 if (d < det)
                 {
-                    if (u.pemangsa && EnemyDirector.Kesulitan != Difficulty.Damai) { if (State != KeadaanHewan.Menyerang) BunyikanSuara(0.85f); State = KeadaanHewan.Menyerang; _tState = LamaMarah; }
+                    if (u.pemangsa && EnemyDirector.Kesulitan != Difficulty.Damai && !_takutApi) { if (State != KeadaanHewan.Menyerang) BunyikanSuara(0.85f); State = KeadaanHewan.Menyerang; _tState = LamaMarah; }
                     else { State = KeadaanHewan.Kabur; _tState = LamaKabur; }
                 }
                 else if (d < det * 1.45f && State == KeadaanHewan.Merumput) { State = KeadaanHewan.Waspada; _tState = 2f; }
@@ -144,7 +197,7 @@ namespace AlasKeramat.AI
                     if (_tState <= 0f) State = KeadaanHewan.Merumput;
                     break;
                 case KeadaanHewan.Kabur:
-                    if (_andi != null) { Vector3 jauh = p - _andi.transform.position; _arah = Mathf.MoveTowardsAngle(_arah, Mathf.Atan2(jauh.x, jauh.z) * Mathf.Rad2Deg, LajuBelok * dt); }
+                    if (_takutApi || _andi != null) { Vector3 asal = _takutApi ? _posApi : _andi.transform.position; Vector3 jauh = p - asal; _arah = Mathf.MoveTowardsAngle(_arah, Mathf.Atan2(jauh.x, jauh.z) * Mathf.Rad2Deg, LajuBelok * dt); }
                     kec = u.kecepatan;
                     if (_tState <= 0f) State = KeadaanHewan.Merumput;
                     break;

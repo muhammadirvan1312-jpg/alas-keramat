@@ -240,6 +240,12 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
 - Gelombang 22 SOTF (`imp-sotf-v3`):
   - `MenuScreens` / `MenuScreens.Kenyamanan` & `BuilderSteps.PengaturanNyaman` menyambungkan tombol UI **Mode Sengsara** (`ak_sengsara`, `PilihanNyaman13`) dan **Mode Pantang Mundur** (`ak_pantang`, `PilihanNyaman14`) di tab Pengaturan Permainan beserta persistensi `MuatPengaturan`/`SimpanPengaturan`, label status (`LabelModeTantangan`), pengali laju vital Pantang Mundur, dan penghapusan slot simpan saat gugur di `AndiVitalsAndSanity.Mati()`.
   - `ProcBangunan.JembatanPapanRawa` dan 2 jembatan papan rawa bertiang bambu (`JembatanRawa_0..1`) menghubungkan kompleks Kemah Rawa ke daratan kering.
+- Gelombang 23 SOTF (`imp-sotf-v3`):
+  - `SenterAndi` menambahkan efek kedip horor saat hantu mendekat dalam radius 18 m (`PengaliKedipHantu` memodulasi intensitas dan berkas senter tanpa GC).
+  - `TanganKiri` memancarkan partikel bara api obor orang-pertama (`BaraOborFP` / `LajuBaraObor`) yang naik mengikuti kecepatan gerak Andi.
+  - `AKPascaProses` menambahkan grading & vignette bawah air saat `Menyelam` serta filter dingin beku & aberasi kromatik saat `SuhuTubuh` turun ke `Kedinginan`/`Hipotermia` (`FaktorHipotermia01`, `EfekLingkunganTubuh`, `WarnaFilterTubuh`).
+  - `CombatAndLeftHandController.Jejak` membedakan jejak ayunan, material emisif, ujung bilah tertinggi, dan percikan partikel khusus senjata pusaka (`GolokApiPusaka`, `KerisPusaka`, `GolokPusaka` via `AdalahSenjataPusaka`).
+  - `WildAnimalAI` membuat satwa pemangsa takut dan kabur menjauhi obor menyala, `GolokApiPusaka`, `ApiUnggun`, dan `OborTengkorak` (`PredatorTakutApi` / `CekApiSekitar`).
 
 ### Audit Visual PR #46 (Rubrik 19 §7, 22 Nov 2026)
 - Perangkat uji pengguna: **Entry-level RAM 4 GB** -> default preset **`Rendah` 30 FPS**. Peta jalan visual tersimpan di `docs/CATATAN_VISUAL_ANTIGRAVITY.md`.

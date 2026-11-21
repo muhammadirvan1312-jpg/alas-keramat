@@ -208,6 +208,22 @@ namespace AlasKeramat.EditorTools
                 && menu22.transform.Find("PanelPengaturan/HalamanAtur3/PilihanNyaman14") != null
                 && AlasKeramat.Core.ProcBangunan.JembatanPapanRawa().vertexCount > 40
                 && GameObject.Find("JembatanRawa_0") != null && GameObject.Find("JembatanRawa_1") != null);
+            cek("SOTF v23: senter kedip hantu, bara obor, pasca-proses selam/hipotermia, jejak pusaka & predator takut api",
+                AlasKeramat.Player.SenterAndi.PengaliKedipHantu(4f, 1.0f) < 0.85f
+                && AlasKeramat.Player.SenterAndi.PengaliKedipHantu(25f, 1.0f) == 1f
+                && AlasKeramat.Player.TanganKiri.LajuBaraObor(true, 4f) > AlasKeramat.Player.TanganKiri.LajuBaraObor(true, 0f)
+                && AlasKeramat.Player.TanganKiri.LajuBaraObor(false, 4f) == 0f
+                && AlasKeramat.Core.AKPascaProses.FaktorHipotermia01(34.5f) > 0.8f
+                && AlasKeramat.Core.AKPascaProses.FaktorHipotermia01(36.8f) == 0f
+                && AlasKeramat.Core.AKPascaProses.EfekLingkunganTubuh(Vector4.zero, 1f, 0f).z < -20f
+                && AlasKeramat.Core.AKPascaProses.WarnaFilterTubuh(1f, 0f).b > AlasKeramat.Core.AKPascaProses.WarnaFilterTubuh(1f, 0f).r
+                && AlasKeramat.Player.CombatAndLeftHandController.AdalahSenjataPusaka(AlasKeramat.Core.ItemID.GolokApiPusaka)
+                && AlasKeramat.Player.CombatAndLeftHandController.AdalahSenjataPusaka(AlasKeramat.Core.ItemID.KerisPusaka)
+                && !AlasKeramat.Player.CombatAndLeftHandController.AdalahSenjataPusaka(AlasKeramat.Core.ItemID.KapakBatu)
+                && AlasKeramat.Player.CombatAndLeftHandController.LebarJejakSenjata(AlasKeramat.Core.ItemID.GolokApiPusaka) > AlasKeramat.Player.CombatAndLeftHandController.LebarJejakSenjata(AlasKeramat.Core.ItemID.KapakBatu)
+                && AlasKeramat.AI.WildAnimalAI.PredatorTakutApi(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, true, 6f, 1f)
+                && !AlasKeramat.AI.WildAnimalAI.PredatorTakutApi(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, false, 6f, 1f)
+                && !AlasKeramat.AI.WildAnimalAI.PredatorTakutApi(AlasKeramat.Core.ResepHewan.JenisHewan.Rusa, true, 5f, 1f));
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

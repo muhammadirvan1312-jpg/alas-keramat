@@ -1,3 +1,4 @@
+using AlasKeramat.AI;
 using AlasKeramat.Core;
 using AlasKeramat.Inventory;
 using UnityEngine;
@@ -6,15 +7,26 @@ namespace AlasKeramat.Player
     // Senter Taktis (04 §4): cahaya yang tidak padam ditiup angin, lengkap dengan bodi taktis FP & berkas cahaya volumetrik.
     public class SenterAndi : MonoBehaviour
     {
-        public const float Jangkau = 28f, Sudut = 48f, Intensitas = 3.2f, Tick = 0.3f;
+        public const float Jangkau = 28f, Sudut = 48f, Intensitas = 3.2f, Tick = 0.3f, RadiusGangguanHantu = 18f;
         [SerializeField] Light lampu;
         [SerializeField] Texture cookie;
         public void PasangCookie(Texture t) { cookie = t; }
-        float _t;
+        float _t, _jarakHantu = 999f;
         bool _paksaMati;
         GameObject _badanSenter;
         MeshRenderer _berkasRen;
         public bool Nyala { get { return lampu != null && lampu.enabled; } }
+
+        // Pengali intensitas senter (0.12..1.0) saat hantu mendekat dalam radius 18 m.
+        public static float PengaliKedipHantu(float jarakHantu, float waktu)
+        {
+            if (jarakHantu <= 0f || jarakHantu >= RadiusGangguanHantu) return 1f;
+            float dekat01 = 1f - Mathf.Clamp01(jarakHantu / RadiusGangguanHantu);
+            float n = 0.5f + 0.5f * Mathf.Sin(waktu * 21f + Mathf.Sin(waktu * 7.5f) * 2.4f);
+            float ambang = 0.35f + dekat01 * 0.40f;
+            float turun = n < ambang ? Mathf.Lerp(0.14f, 0.55f, n / Mathf.Max(0.01f, ambang)) : 1f;
+            return Mathf.Clamp(Mathf.Lerp(1f, turun, 0.45f + dekat01 * 0.55f), 0.12f, 1f);
+        }
 
         public static bool HarusMenyala(float jam, bool bawahTanah, bool paksaMati)
         {
@@ -81,16 +93,42 @@ namespace AlasKeramat.Player
 
         void Update()
         {
-            _t += Time.deltaTime; if (_t < Tick) return; _t = 0f;
-            if (lampu == null) return;
-            var inv = GameServices.Get<TikarPandan3DInventory>();
-            bool punya = inv != null && inv.Punya(ItemID.SenterTaktis);
-            var jam = GameServices.Get<TimeOfDayClock>();
-            bool bawah = WorldTerrainGenerator.DiBawahTanah(transform.position.y);
-            bool nyala = punya && HarusMenyala(jam != null ? jam.Jam : 12f, bawah, _paksaMati);
-            if (lampu.enabled != nyala) lampu.enabled = nyala;
-            if (_badanSenter != null && _badanSenter.activeSelf != nyala) _badanSenter.SetActive(nyala);
-            if (_berkasRen != null && _berkasRen.enabled != nyala) _berkasRen.enabled = nyala;
+            _t += Time.deltaTime;
+            if (_t >= Tick)
+            {
+                _t = 0f;
+                if (lampu == null) return;
+                var inv = GameServices.Get<TikarPandan3DInventory>();
+                bool punya = inv != null && inv.Punya(ItemID.SenterTaktis);
+                var jam = GameServices.Get<TimeOfDayClock>();
+                bool bawah = WorldTerrainGenerator.DiBawahTanah(transform.position.y);
+                bool nyala = punya && HarusMenyala(jam != null ? jam.Jam : 12f, bawah, _paksaMati);
+                if (lampu.enabled != nyala) lampu.enabled = nyala;
+                if (_badanSenter != null && _badanSenter.activeSelf != nyala) _badanSenter.SetActive(nyala);
+                if (_berkasRen != null && _berkasRen.enabled != nyala) _berkasRen.enabled = nyala;
+                _jarakHantu = 999f;
+                if (nyala)
+                {
+                    Vector3 pos = transform.position;
+                    for (int i = 0; i < HantuAI.Semua.Count; i++)
+                    {
+                        var h = HantuAI.Semua[i];
+                        if (h == null || !h.IsAlive || h.Fase == HantuAI.FaseHantu.Hilang) continue;
+                        float d = Vector3.Distance(pos, h.transform.position);
+                        if (d < _jarakHantu) _jarakHantu = d;
+                    }
+                }
+                else
+                {
+                    lampu.intensity = Intensitas;
+                }
+            }
+            if (lampu != null && lampu.enabled)
+            {
+                float k = PengaliKedipHantu(_jarakHantu, Time.time);
+                lampu.intensity = Intensitas * k;
+                if (_berkasRen != null) _berkasRen.enabled = k > 0.35f;
+            }
         }
     }
 }

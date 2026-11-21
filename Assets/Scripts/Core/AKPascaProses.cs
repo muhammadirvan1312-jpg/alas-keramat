@@ -34,10 +34,33 @@ namespace AlasKeramat.Core
         }
 
         AlasKeramat.Player.AndiVitalsAndSanity _vital;
-        float _kritis;
+        AlasKeramat.Player.AndiFPSController _andi;
+        float _kritis, _selam01, _hipo01;
+        static readonly Color WarnaVigDasar = new Color(0.03f, 0.02f, 0.015f);
         public const float AmbangKritis = 0.35f;
         // 0 saat HP >= 35%, naik ke 1 saat HP mendekati 0.
         public static float Kritis01(float hp01) { return Mathf.Clamp01(1f - hp01 / AmbangKritis); }
+        public static float FaktorHipotermia01(float suhuTubuh)
+        {
+            return Mathf.Clamp01((AlasKeramat.Player.AndiVitalsAndSanity.SuhuKedinginan - suhuTubuh) / 1.5f);
+        }
+        public static Vector4 EfekLingkunganTubuh(Vector4 v, float selam01, float hipo01)
+        {
+            float s = Mathf.Clamp01(selam01);
+            float h = Mathf.Clamp01(hipo01);
+            if (s > 0f) { v.x -= 0.35f * s; v.y -= 18f * s; v.z -= 26f * s; v.w = Mathf.Min(0.62f, v.w + 0.18f * s); }
+            if (h > 0f) { v.x -= 0.12f * h; v.y -= 32f * h; v.z -= 28f * h; v.w = Mathf.Min(0.65f, v.w + 0.20f * h); }
+            return v;
+        }
+        public static Color WarnaFilterTubuh(float selam01, float hipo01)
+        {
+            Color c = Color.white;
+            float s = Mathf.Clamp01(selam01);
+            float h = Mathf.Clamp01(hipo01);
+            if (h > 0f) c = Color.Lerp(c, new Color(0.80f, 0.90f, 1.0f), h * 0.75f);
+            if (s > 0f) c = Color.Lerp(c, new Color(0.54f, 0.85f, 0.93f), s * 0.85f);
+            return c;
+        }
         public static float HitungAberasiKromatik(float kritis01, float kewarasan01)
         {
             float tidakWaras = Mathf.Clamp01(1f - kewarasan01 / 0.45f);
@@ -93,16 +116,24 @@ namespace AlasKeramat.Core
             }
             _skrg = Vector4.Lerp(_skrg, _target, Time.deltaTime * Lerp);
             if (_vital == null) _vital = GameServices.Get<AlasKeramat.Player.AndiVitalsAndSanity>();
+            if (_andi == null) _andi = GameServices.Get<AlasKeramat.Player.AndiFPSController>();
             float hp = _vital != null ? _vital.Health / AlasKeramat.Player.AndiVitalsAndSanity.Maks : 1f;
             _kritis = Mathf.MoveTowards(_kritis, Kritis01(hp), Time.deltaTime * 0.8f);
-            var o = EfekKritis(_skrg, _kritis, Time.time);
-            if (_ca != null) { _ca.postExposure.value = o.x; _ca.saturation.value = o.y; }
+            _selam01 = Mathf.MoveTowards(_selam01, (_andi != null && _andi.Menyelam) ? 1f : 0f, Time.deltaTime * 3.5f);
+            _hipo01 = Mathf.MoveTowards(_hipo01, _vital != null ? FaktorHipotermia01(_vital.SuhuTubuh) : 0f, Time.deltaTime * 1.2f);
+            var o = EfekLingkunganTubuh(EfekKritis(_skrg, _kritis, Time.time), _selam01, _hipo01);
+            if (_ca != null) { _ca.postExposure.value = o.x; _ca.saturation.value = o.y; _ca.colorFilter.value = WarnaFilterTubuh(_selam01, _hipo01); }
             if (_wb != null) _wb.temperature.value = o.z;
-            if (_vig != null) _vig.intensity.value = o.w;
+            if (_vig != null)
+            {
+                _vig.intensity.value = o.w;
+                Color vc = Color.Lerp(WarnaVigDasar, new Color(0.18f, 0.34f, 0.52f), _hipo01 * 0.85f);
+                _vig.color.value = Color.Lerp(vc, new Color(0.02f, 0.16f, 0.24f), _selam01 * 0.9f);
+            }
             if (_chr != null)
             {
                 float san01 = _vital != null ? _vital.Sanity / AlasKeramat.Player.AndiVitalsAndSanity.Maks : 1f;
-                _chr.intensity.value = HitungAberasiKromatik(_kritis, san01);
+                _chr.intensity.value = Mathf.Clamp(HitungAberasiKromatik(_kritis, san01) + _hipo01 * 0.18f + _selam01 * 0.08f, 0f, 0.78f);
             }
         }
     }

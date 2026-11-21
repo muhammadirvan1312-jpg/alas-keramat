@@ -106,6 +106,7 @@ namespace AlasKeramat.Player
         public void HentikanAksiPanel()
         {
             BatalkanTebas(); TangkisLepas(); _tParry=-1f; _tElak=0f; _t=-1f;
+            MatikanJejak();
             if (_ctrl != null) _ctrl.GuncangKamera(0f);
             if(_adaKembalikan) { _aktif=_kembalikan; _adaKembalikan=false; }
         }
@@ -131,6 +132,7 @@ namespace AlasKeramat.Player
 #endif
             if (_t < 0f)
             {
+                MatikanJejak();
                 if (pivotFP != null)
                 {
                     float kec = _ctrl != null ? _ctrl.KecepatanDatar : 0f;
