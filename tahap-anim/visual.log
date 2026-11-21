@@ -47,6 +47,25 @@ FBX version: 7400
 [AK] Prop KayuTumbangScan.bytes 620 segitiga
 FBX version: 7400
 [AK] Prop AkarScan.bytes 719 segitiga
+FBX version: 7400
+[AK] Prop TunggulScan.bytes 700 segitiga
+FBX version: 7400
+[AK] Prop RantingScanA.bytes 255 segitiga
+[AK] Prop RantingScanB.bytes 260 segitiga
+FBX version: 7400
+[AK] Prop BatuLumutC.bytes 420 segitiga
+[AK] Prop BatuLumutD.bytes 360 segitiga
+FBX version: 7400
+[AK] LOD SemakScanA_LOD0.bytes 8096 segitiga
+[AK] LOD SemakScanA_LOD1.bytes 3151 segitiga
+FBX version: 7400
+[AK] LOD SemakScanB_LOD0.bytes 2798 segitiga
+[AK] LOD SemakScanB_LOD1.bytes 720 segitiga
+FBX version: 7400
+[AK] Kartu daun utuh 1820 dari 58696 perbesaran 5.68
+[AK] LOD PohonScanD_LOD0.bytes 5200 segitiga
+[AK] Kartu daun utuh 332 dari 58696 perbesaran 13.3
+[AK] LOD PohonScanD_LOD1.bytes 949 segitiga
 Blender 4.3.2 (hash 32f5fdce0a0a built 2024-12-17 01:31:14)
 
 Blender quit
