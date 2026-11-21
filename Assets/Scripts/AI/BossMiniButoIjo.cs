@@ -18,6 +18,7 @@ namespace AlasKeramat.AI
 
         public bool IsAlive { get { return !_mati && _hp > 0f; } }
         public float HP { get { return _hp; } }
+        public string NamaGelar { get { return namaGelar; } }
 
         public void Pasang(string gelar) { namaGelar = string.IsNullOrEmpty(gelar) ? "Buto Ijo Penjaga Alas" : gelar; }
 

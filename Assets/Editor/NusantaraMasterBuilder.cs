@@ -108,6 +108,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7z14. Overhaul Kontrol Mobile Android & Pengayaan Jalur/Bunga Dunia", 0.9995f, LangkahOverhaulKontrolDanDunia);
                 Langkah("7z15. Ekspansi Penuh 4 Kuadran Pulau 4 km2 & Ekosistem Kawanan", 0.9998f, LangkahEkspansiPulau4Km);
                 Langkah("7z16. Dunia Bernapas (Patroli Obor Sekte, Monyet/Kodok, Asap/Kain Angin & Pertemuan Spontan)", 0.9999f, LangkahDuniaBernapas);
+                Langkah("7z17. Revisi & Polish Terpadu (HUD Boss/Status/Kombo & Pos Latihan Awal)", 0.99995f, LangkahRevisiTerpadu);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

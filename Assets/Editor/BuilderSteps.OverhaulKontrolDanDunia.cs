@@ -108,7 +108,12 @@ namespace AlasKeramat.EditorTools
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Jembatan Gantung", posisi = new Vector3(272f, 0f, -218f) },
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Bangkai Kapal", posisi = new Vector3(-115f, 0f, -865f) },
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Pabrik Gula", posisi = new Vector3(665f, 0f, -500f) },
-                new PenandaLandmarkHUD.TitikLandmark { nama = "Rumah Pohon Heli", posisi = new Vector3(46f, 0f, -418f) }
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Rumah Pohon Heli", posisi = new Vector3(46f, 0f, -418f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Desa Nelayan Timur", posisi = new Vector3(710f, 0f, -120f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Pos Gunung Kapur", posisi = new Vector3(-680f, 0f, -180f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Perkebunan Timur Laut", posisi = new Vector3(580f, 0f, 540f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Pulau Karang Selatan", posisi = new Vector3(-420f, 0f, -720f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Kuil Bambu Utara", posisi = new Vector3(-160f, 0f, 680f) }
             };
             var comp = strip.AddComponent<PenandaLandmarkHUD>();
             comp.Pasang(txt, titik);

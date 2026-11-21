@@ -172,19 +172,30 @@ namespace AlasKeramat.Player
         public static bool AimAssist = true;
         static readonly Quaternion PoseBlok = Quaternion.Euler(-20f, 0f, 70f);
 
-        // Mengenai IDamageable: penghabisan bila jendela parry masih terbuka & tebasan berat.
+        SistemKomboDanStagger _kombo;
+        LevelSurvivalAndi _level;
+
+        // Mengenai IDamageable: penghabisan bila jendela parry masih terbuka & tebasan berat, terhubung ke Kombo 3-Hit & Level Kekuatan.
         void KenaiTarget(IDamageable target, RaycastHit hit, Transform cam, float pengali)
         {
+            if (_kombo == null) _kombo = GameServices.Get<SistemKomboDanStagger>();
+            if (_level == null) _level = GameServices.Get<LevelSurvivalAndi>();
+            bool finisher = false;
+            float stam01 = _vital != null ? Mathf.Clamp01(_vital.Stamina / 100f) : 1f;
+            float multKombo = _kombo != null ? _kombo.CatatSerangan(Time.time, stam01, hit.point, out finisher) : 1f;
+            float multLvl = _level != null ? _level.BonusDamage : 1f;
+            if (_level != null) _level.TambahXP(LevelSurvivalAndi.Atribut.Kekuatan, _berat ? 6f : 3f);
+
             bool habis = _berat && _tPenghabisan > 0f;
-            float dmg = (_berat ? _aktif.berat : _aktif.ringan) * pengali * (habis ? PengaliPenghabisan : 1f);
+            float dmg = (_berat ? _aktif.berat : _aktif.ringan) * pengali * multKombo * multLvl * (habis ? PengaliPenghabisan : 1f);
             _pukulanPenghabisan = habis;
-            try { target.TakeDamage(new DamageInfo { amount = dmg, type = _aktif.tipe, point = hit.point, direction = cam.forward, source = gameObject, isHeavy = _berat }); }
+            try { target.TakeDamage(new DamageInfo { amount = dmg, type = _aktif.tipe, point = hit.point, direction = cam.forward, source = gameObject, isHeavy = _berat || finisher }); }
             finally { _pukulanPenghabisan = false; }
             if (habis) _tPenghabisan = 0f;
             if (GoreSystem.BolehDarah(GoreSystem.Tingkat)) { _darahSenjata = Mathf.Clamp01(_darahSenjata + (habis ? 0.7f : 0.35f)); TerapkanDarahSenjata(); }
-            if (_berat) MulaiHitStop();
-            Guncang(_berat ? GuncangBerat : GuncangRingan);
-            var h = OnKena; if (h != null) h(_berat || habis);
+            if (_berat || finisher) MulaiHitStop();
+            Guncang(_berat || finisher ? GuncangBerat : GuncangRingan);
+            var h = OnKena; if (h != null) h(_berat || habis || finisher);
             AlasKeramat.AI.MeterSuara.Pancar(hit.point, AlasKeramat.AI.MeterSuara.Pertarungan);
         }
 

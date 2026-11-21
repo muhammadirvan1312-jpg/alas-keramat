@@ -51,6 +51,7 @@ namespace AlasKeramat.AI
         CombatAndLeftHandController _combat;
         TanganKiri _kiri;
         ReaksiAndi _reaksiAndi;
+        ReputasiSekte _reputasi;
         TimeOfDayClock _jam;
         URPAtmosphereAndWeather _cuaca;
         Renderer[] _rend;
@@ -229,6 +230,11 @@ namespace AlasKeramat.AI
             Vector3 kepala = _andi.Kamera != null ? _andi.Kamera.position : _andi.transform.position + Vector3.up * 1.6f;
             Vector3 pinggul = _andi.transform.position + Vector3.up * 0.9f;
             float jarak = Vector3.Distance(mata, kepala), jl = StatMusuh.JarakLihat(_d, malam, cahaya), f = 0f;
+            if (StatMusuh.Sekte(jenis))
+            {
+                if (_reputasi == null) _reputasi = GameServices.Get<ReputasiSekte>();
+                if (_reputasi != null) jl *= ReputasiSekte.PengaliJarakDeteksi(_reputasi.NilaiAncaman);
+            }
             if (jarak <= jl && _vital != null && _vital.IsAlive)
             {
                 bool kerucut = DalamKerucut(transform.forward, kepala - mata);
@@ -449,6 +455,11 @@ namespace AlasKeramat.AI
             if (prompt != null) prompt.SetActive(PromptMayat().Length > 0);
             if (_dir != null) _dir.LaporMati(this);
             GameEvents.RaiseEnemyKilled(jenis, false);
+            if (StatMusuh.Sekte(jenis))
+            {
+                if (_reputasi == null) _reputasi = GameServices.Get<ReputasiSekte>();
+                if (_reputasi != null) _reputasi.TambahAncaman(15f, "Anggota sekte gugur");
+            }
             if (penghabisan) GameEvents.RaiseToast("Tebasan Penghabisan");
         }
 

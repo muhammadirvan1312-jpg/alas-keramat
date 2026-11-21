@@ -187,8 +187,8 @@ namespace AlasKeramat.EditorTools
 
         static void BangunPendopoDanGerbangDesa(GameObject induk, Material kayu, Material genteng, List<Transform> lentera)
         {
-            // Pendopo alun-alun Desa Mati
-            float x = 540f, z = 204f;
+            // Pendopo alun-alun barat Desa Mati (bebas tabrakan dari RumahDesa_*)
+            float x = 516f, z = 198f;
             float y = WorldTerrainGenerator.SampleHeight(x, z);
             var p = Anak(induk, "PendopoDesaMati");
             p.transform.position = new Vector3(x, y, z);

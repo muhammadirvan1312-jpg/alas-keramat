@@ -87,10 +87,15 @@ namespace AlasKeramat.Player
 
         void BayarLompat() { Pakai(BiayaLompat); }
 
+        LevelSurvivalAndi _level;
+        float _tXpLari;
+
         public bool Pakai(float biaya)
         {
             if (Stamina <= 0f) return false;
-            Stamina = Mathf.Max(0f, Stamina - biaya * PengaliBiayaStaminaLuka(LukaLengan));
+            if (_level == null) _level = GameServices.Get<LevelSurvivalAndi>();
+            float hemat = _level != null ? _level.PenghematanStamina : 1f;
+            Stamina = Mathf.Max(0f, Stamina - biaya * PengaliBiayaStaminaLuka(LukaLengan) * hemat);
             _sejakBiaya = 0f;
             if (Stamina <= 0f) StaminaHabis = true;
             return true;
@@ -131,6 +136,16 @@ namespace AlasKeramat.Player
                     biome = _cacheBiome
                 };
                 Tick(k, Time.deltaTime);
+                if (k.sprint || k.renang)
+                {
+                    _tXpLari += Time.deltaTime;
+                    if (_tXpLari >= 5f)
+                    {
+                        _tXpLari = 0f;
+                        if (_level == null) _level = GameServices.Get<LevelSurvivalAndi>();
+                        if (_level != null) _level.TambahXP(LevelSurvivalAndi.Atribut.StaminaLari, 4f);
+                    }
+                }
                 if (_ctrl != null)
                 {
                     _ctrl.LariDiblokir = StaminaHabis || Stamina < 1f;
@@ -164,8 +179,9 @@ namespace AlasKeramat.Player
             float faktor = FaktorDingin(k.jam) * (kemarau ? 1f : 1.2f);
             ColdWet = k.dekatApi ? Mathf.Max(0f, ColdWet - DinginTurunApi * dt) : Wetness * faktor;
 
-            // Haus, istirahat, gizi
+            // Haus, istirahat, gizi (terhubung ke SistemMusimDinamis & LevelSurvivalAndi)
             float pHaus = (k.sprint ? 1.2f : 1f) * (kemarau && k.jam >= 10f && k.jam < 15f ? 1.4f : 1f) * (Tidur ? PengaliTidur : 1f) * (SuhuTubuh > SuhuKepanasan ? 1.8f : 1f);
+            pHaus *= SistemMusimDinamis.PengaliHidrasiMusim(SistemMusimDinamis.FaseHari(k.hari));
             if (k.cuaca == WeatherState.KabutAsap) pHaus *= 1.2f;
             float pKesulitan = (AI.EnemyDirector.Kesulitan == Difficulty.Damai ? 0.7f : AI.EnemyDirector.Kesulitan == Difficulty.Sulit ? 1.25f : 1f) * PengaliModeSengsara(ModeSengsara || ModePantangMundur);
             Hydration = Mathf.Max(0f, Hydration - LajuHaus * pHaus * pKesulitan * dt);
@@ -176,8 +192,9 @@ namespace AlasKeramat.Player
 
             // Stamina (05 §3.2)
             _sejakBiaya += dt;
-            if (k.sprint) { Stamina = Mathf.Max(0f, Stamina - BiayaSprint * dt); _sejakBiaya = 0f; }
-            if (k.renang) { Stamina = Mathf.Max(0f, Stamina - (k.renangCepat ? BiayaRenangCepat : BiayaRenang) * dt); _sejakBiaya = 0f; }
+            float hematStam = _level != null ? _level.PenghematanStamina : 1f;
+            if (k.sprint) { Stamina = Mathf.Max(0f, Stamina - BiayaSprint * hematStam * dt); _sejakBiaya = 0f; }
+            if (k.renang) { Stamina = Mathf.Max(0f, Stamina - (k.renangCepat ? BiayaRenangCepat : BiayaRenang) * hematStam * dt); _sejakBiaya = 0f; }
             if (Stamina <= 0f) StaminaHabis = true;
             if (_sejakBiaya >= JedaPulih)
             {
