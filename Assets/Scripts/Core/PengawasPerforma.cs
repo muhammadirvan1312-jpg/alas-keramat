@@ -9,8 +9,9 @@ namespace AlasKeramat.Core
     // Penjaga frame-rate adaptif (zero-alloc) di Android: otomatis turunkan skala render & kepadatan bila FPS jatuh berkepanjangan.
     public class PengawasPerforma : MonoBehaviour
     {
+        public const int JendelaTurun = 2, JendelaNaik = 4; // histeresis: turun setelah 6 s buruk, naik setelah 12 s baik (cegah naik-turun)
         float _waktu, _skala = 1f;
-        int _frame;
+        int _frame, _buruk, _baik;
         VegetationManager _veg;
         SerasahHutan _serasah;
         MenuScreens _menu;
@@ -26,10 +27,12 @@ namespace AlasKeramat.Core
 
             if (_menu == null) _menu = GameServices.Get<MenuScreens>();
             int target = _menu != null ? _menu.TargetFps : 60;
-            float ambangTurun = target >= 55 ? 28f : 22f;
+            float ambangTurun = target >= 55 ? 45f : 26f;
             float baru = _skala;
-            if (fps < ambangTurun) baru = Mathf.Max(0.70f, _skala - 0.12f);
-            else if (fps >= target * 0.85f && _skala < 1f) baru = Mathf.Min(1f, _skala + 0.08f);
+            bool buruk = fps < ambangTurun, baik = fps >= target * 0.9f;
+            _buruk = buruk ? _buruk + 1 : 0; _baik = baik ? _baik + 1 : 0;
+            if (_buruk >= JendelaTurun) { baru = Mathf.Max(0.70f, _skala - 0.1f); _buruk = 0; }
+            else if (_baik >= JendelaNaik && _skala < 1f) { baru = Mathf.Min(1f, _skala + 0.05f); _baik = 0; }
             if (Mathf.Approximately(baru, _skala)) return;
             _skala = baru;
             Terapkan();

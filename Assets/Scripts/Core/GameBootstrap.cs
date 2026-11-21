@@ -8,7 +8,7 @@ namespace AlasKeramat.Core
     [DefaultExecutionOrder(-1000)]
     public class GameBootstrap : MonoBehaviour
     {
-        public const int TargetFpsDefault = 60;
+        public const int TargetFpsDefault = 30;
         public const string PrefFps = "ak_target_fps";
         bool _kehilanganFokus, _latar;
 

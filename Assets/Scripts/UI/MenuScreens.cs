@@ -118,7 +118,7 @@ namespace AlasKeramat.UI
                 case PresetGrafis.Ultra:
                     return new DataPresetGrafis { renderScale = 1.0f, bayangan = 90f, cascade = 4, msaa = 2, hdr = true, bloom = true, farKamera = 360f, kabutTambah = 0f, pengaliVeg = 1.4f, detailVeg = 1.15f, rumput = 1f, targetFps = 30 };
                 default:
-                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 1, hdr = true, bloom = false, farKamera = 185f, kabutTambah = 0.002f, pengaliVeg = 0.85f, detailVeg = 0.65f, rumput = 0.35f, targetFps = 60 };
+                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 1, hdr = true, bloom = false, farKamera = 185f, kabutTambah = 0.002f, pengaliVeg = 0.85f, detailVeg = 0.65f, rumput = 0.35f, targetFps = 30 }; // 30 stabil: 60 yang tak tercapai membuat frame tidak rata (terasa patah-patah)
             }
         }
 
