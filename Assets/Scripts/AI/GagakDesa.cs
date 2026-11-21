@@ -13,7 +13,7 @@ namespace AlasKeramat.AI
         public const float LajuTerbang = 7.5f, DurasiKabur = 3.5f, JedaKaokMin = 9f, JedaKaokMaks = 26f, JamTidur = 19.5f, JamBangun = 5.5f;
         const float JedaCek = 0.25f, KepakHinggap = 0.45f, FrekKepak = 11f, SudutKepak = 55f, LajuKembali = 4.5f;
 
-        public enum Keadaan { Hinggap = 0, Kabur = 1, Putar = 2, Kembali = 3 }
+        public enum FaseGagak { Hinggap = 0, Kabur = 1, Putar = 2, Kembali = 3 }
 
         public Transform[] Badan;
         public Transform[] SayapKiri;
@@ -21,7 +21,7 @@ namespace AlasKeramat.AI
         public Vector3[] Tengger;
         public float[] ArahTengger;
 
-        Keadaan[] _keadaan;
+        FaseGagak[] _keadaan;
         float[] _waktuKeadaan, _kaokBerikut, _fase;
         Vector3[] _kecepatan;
         float _cekBerikut;
@@ -31,7 +31,7 @@ namespace AlasKeramat.AI
         System.Random _acak = new System.Random(733);
 
         public int Jumlah { get { return Badan != null ? Badan.Length : 0; } }
-        public Keadaan KeadaanGagak(int i) { return _keadaan != null && i >= 0 && i < _keadaan.Length ? _keadaan[i] : Keadaan.Hinggap; }
+        public FaseGagak KeadaanGagak(int i) { return _keadaan != null && i >= 0 && i < _keadaan.Length ? _keadaan[i] : FaseGagak.Hinggap; }
 
         // Murni: gagak berkaok hanya saat terjaga (05:30-19:30).
         public static bool Terjaga(float jam) { return jam >= JamBangun && jam < JamTidur; }
@@ -48,7 +48,7 @@ namespace AlasKeramat.AI
         {
             int n = Jumlah;
             if (n == 0 || Tengger == null || Tengger.Length < n) { enabled = false; Debug.Log("[AK][GagakDesa] Tidak ada gagak terpasang, dinonaktifkan."); return; }
-            _keadaan = new Keadaan[n]; _waktuKeadaan = new float[n]; _kaokBerikut = new float[n]; _fase = new float[n]; _kecepatan = new Vector3[n];
+            _keadaan = new FaseGagak[n]; _waktuKeadaan = new float[n]; _kaokBerikut = new float[n]; _fase = new float[n]; _kecepatan = new Vector3[n];
             for (int i = 0; i < n; i++)
             {
                 _fase[i] = i * 1.37f;
@@ -91,9 +91,9 @@ namespace AlasKeramat.AI
                 float jarakTengger = (Tengger[i] - _posPemain).magnitude;
                 switch (_keadaan[i])
                 {
-                    case Keadaan.Hinggap:
+                    case FaseGagak.Hinggap:
                         LipatSayap(i, 1f);
-                        if (jarak < JarakKaget) { Ganti(i, Keadaan.Kabur); Kaok(i, 1.15f); break; }
+                        if (jarak < JarakKaget) { Ganti(i, FaseGagak.Kabur); Kaok(i, 1.15f); break; }
                         if (terjaga && jarak < JarakDengar && Time.time >= _kaokBerikut[i])
                         {
                             _kaokBerikut[i] = Time.time + Acak(JedaKaokMin, JedaKaokMaks);
@@ -103,32 +103,32 @@ namespace AlasKeramat.AI
                         }
                         else b.rotation = Quaternion.Slerp(b.rotation, Quaternion.Euler(0f, b.eulerAngles.y, 0f), dt * 3f);
                         break;
-                    case Keadaan.Kabur:
+                    case FaseGagak.Kabur:
                     {
                         Vector3 menjauh = b.position - _posPemain; menjauh.y = 0f;
                         if (menjauh.sqrMagnitude < 0.01f) menjauh = Vector3.forward;
                         Vector3 arah = (menjauh.normalized + Vector3.up * 0.9f).normalized;
                         _kecepatan[i] = Vector3.Lerp(_kecepatan[i], arah * LajuTerbang, dt * 3f);
                         Terbang(i, dt);
-                        if (Time.time - _waktuKeadaan[i] > DurasiKabur) Ganti(i, Keadaan.Putar);
+                        if (Time.time - _waktuKeadaan[i] > DurasiKabur) Ganti(i, FaseGagak.Putar);
                         break;
                     }
-                    case Keadaan.Putar:
+                    case FaseGagak.Putar:
                     {
                         Vector3 target = PosisiPutar(pusat, Time.time, i);
                         _kecepatan[i] = Vector3.Lerp(_kecepatan[i], Vector3.ClampMagnitude(target - b.position, LajuTerbang), dt * 1.5f);
                         Terbang(i, dt);
-                        if (jarakTengger > JarakKembali && Time.time - _waktuKeadaan[i] > DurasiKabur * 2f) Ganti(i, Keadaan.Kembali);
+                        if (jarakTengger > JarakKembali && Time.time - _waktuKeadaan[i] > DurasiKabur * 2f) Ganti(i, FaseGagak.Kembali);
                         break;
                     }
-                    case Keadaan.Kembali:
+                    case FaseGagak.Kembali:
                     {
                         Vector3 ke = Tengger[i] - b.position;
-                        if (jarakTengger < JarakKaget) { Ganti(i, Keadaan.Putar); break; }
+                        if (jarakTengger < JarakKaget) { Ganti(i, FaseGagak.Putar); break; }
                         if (ke.magnitude < 0.12f)
                         {
                             b.SetPositionAndRotation(Tengger[i], Quaternion.Euler(0f, ArahTengger != null && i < ArahTengger.Length ? ArahTengger[i] : b.eulerAngles.y, 0f));
-                            _kecepatan[i] = Vector3.zero; Ganti(i, Keadaan.Hinggap); break;
+                            _kecepatan[i] = Vector3.zero; Ganti(i, FaseGagak.Hinggap); break;
                         }
                         _kecepatan[i] = Vector3.Lerp(_kecepatan[i], Vector3.ClampMagnitude(ke * 1.5f, LajuKembali), dt * 2.5f);
                         Terbang(i, dt);
@@ -138,7 +138,7 @@ namespace AlasKeramat.AI
             }
         }
 
-        void Ganti(int i, Keadaan k) { _keadaan[i] = k; _waktuKeadaan[i] = Time.time; }
+        void Ganti(int i, FaseGagak k) { _keadaan[i] = k; _waktuKeadaan[i] = Time.time; }
 
         void Terbang(int i, float dt)
         {

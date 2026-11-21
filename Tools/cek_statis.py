@@ -49,9 +49,13 @@ for akar, _, files in os.walk("Assets"):
             if any(ord(c) > 0x2FF for c in s): masalah.append(p + ": simbol non-Latin di string " + s[:40])
         for nb, b in enumerate(teks.split("\n"), 1):
             if kutip_rusak(b): masalah.append("%s:%d: tanda kutip di dalam string belum di-escape (pakai \\\")" % (p, nb))
-        for k in re.findall(r"\b(?:class|struct|enum|interface)\s+(\w+)", teks):
-            if k in kelas and not re.search(r"\bpartial\b", teks): masalah.append("%s: nama ganda %s (juga %s)" % (p, k, kelas[k]))
-            kelas.setdefault(k, p)
+        parsial = bool(re.search(r"\bpartial\b", teks))
+        for k in set(re.findall(r"\b(?:class|struct|enum|interface)\s+(\w+)", teks)):
+            kelas.setdefault(k, []).append((p, parsial))
+# Nama tipe ganda dinilai setelah semua file terbaca, jadi hasilnya tidak bergantung urutan os.walk.
+for k, daftar in kelas.items():
+    if len(daftar) > 1 and not all(x[1] for x in daftar):
+        masalah.append("%s: nama ganda %s (juga %s)" % (daftar[1][0], k, daftar[0][0]))
 for m in masalah: print("[AK][GAGAL]", m)
 print("[AK] cek statis: %d masalah" % len(masalah))
 sys.exit(1 if masalah else 0)
