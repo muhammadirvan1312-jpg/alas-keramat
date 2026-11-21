@@ -23,9 +23,10 @@ namespace AlasKeramat.EditorTools
             string p = FolderIkonKontrol + "/ikon_" + nama + ".png";
             if (!File.Exists(p)) return null;
             var imp = AssetImporter.GetAtPath(p) as TextureImporter;
-            if (imp != null && imp.textureType != TextureImporterType.Sprite)
+            if (imp != null && (imp.textureType != TextureImporterType.Sprite || imp.spriteImportMode != SpriteImportMode.Single))
             {
-                imp.textureType = TextureImporterType.Sprite; imp.alphaIsTransparency = true; imp.mipmapEnabled = false;
+                imp.textureType = TextureImporterType.Sprite; imp.spriteImportMode = SpriteImportMode.Single;
+                imp.alphaIsTransparency = true; imp.mipmapEnabled = false;
                 imp.textureCompression = TextureImporterCompression.Uncompressed; imp.SaveAndReimport();
             }
             var sp = AssetDatabase.LoadAssetAtPath<Sprite>(p);
@@ -91,7 +92,8 @@ namespace AlasKeramat.EditorTools
             File.WriteAllBytes(p, t.EncodeToPNG()); Object.DestroyImmediate(t);
             AssetDatabase.ImportAsset(p);
             var imp = (TextureImporter)AssetImporter.GetAtPath(p);
-            imp.textureType = TextureImporterType.Sprite; imp.alphaIsTransparency = true; imp.mipmapEnabled = false;
+            imp.textureType = TextureImporterType.Sprite; imp.spriteImportMode = SpriteImportMode.Single;
+            imp.alphaIsTransparency = true; imp.mipmapEnabled = false;
             imp.wrapMode = TextureWrapMode.Clamp; imp.textureCompression = TextureImporterCompression.Uncompressed; imp.SaveAndReimport();
             return AssetDatabase.LoadAssetAtPath<Sprite>(p);
         }

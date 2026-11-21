@@ -35,6 +35,9 @@ namespace AlasKeramat.Core
             for (int i = 0; i < 4; i++) yield return null;
             Cek("Menu awal dapat ditutup tanpa jeda tertinggal", !JedaDunia.Dijeda && Time.timeScale == 1f);
             string awalTas = tas.CaptureJson(), awalAndi = andi.CaptureJson();
+            var vital = andi.GetComponent<AndiVitalsAndSanity>();
+            string awalVital = vital != null ? vital.CaptureJson() : null;
+            var combat = andi.GetComponent<CombatAndLeftHandController>();
             var joy = kontrol.GetComponentInChildren<ZonaJoystick>(true);
             var geser = kontrol.GetComponentInChildren<ZonaGeser>(true);
             Cek("Zona kedua jari tersambung", joy != null && geser != null);
@@ -56,11 +59,13 @@ namespace AlasKeramat.Core
             float gerak = Vector2.Distance(new Vector2(pos.x, pos.z), new Vector2(andi.transform.position.x, andi.transform.position.z));
             Cek("Analog setengah rentang memindahkan kapsul nyata (" + gerak.ToString("0.00") + " m)", gerak > 0.7f && gerak < 2.6f);
             Cek("Jari kanan memutar POV sambil jari kiri berjalan", Mathf.Abs(Mathf.DeltaAngle(yaw, andi.transform.eulerAngles.y)) > 1f && andi.SedangMembidikManual == false);
+            AmbilFoto("bot_01_jalan");
             geser.OnPointerUp(kanan);
             uiTas.Buka(); yield return null;
             float waktu = Time.time; pos = andi.transform.position;
             yield return new WaitForSecondsRealtime(0.25f);
             Cek("Tas menjeda dunia dan membuang input yang masih ditahan", tikar.Terbuka && JedaDunia.Dijeda && Mathf.Abs(Time.time - waktu) < 0.001f && Vector3.Distance(pos, andi.transform.position) < 0.001f && joy.Nilai == Vector2.zero);
+            AmbilFoto("bot_04_tas");
             menu.ToggleJeda(); uiTas.Tutup(); yield return null;
             Cek("Menutup tas tidak membatalkan menu Jeda", menu.Dijeda && JedaDunia.Dijeda && Time.timeScale == 0f);
             menu.LanjutkanDariJeda(); yield return null;
@@ -72,6 +77,7 @@ namespace AlasKeramat.Core
             if (peta != null)
             {
                 peta.Toggle(); yield return null; Cek("Peta dapat dibuka dan menjeda", peta.Terbuka && JedaDunia.Dijeda);
+                AmbilFoto("bot_05_peta");
                 peta.Tutup(); yield return null; Cek("Peta dapat ditutup tanpa jeda bocor", !peta.Terbuka && !JedaDunia.Dijeda);
             }
             else Cek("Layar peta tersedia", false);
@@ -81,10 +87,19 @@ namespace AlasKeramat.Core
             SaveSystem.DariJson(snapshot, new ISaveable[] { tas, andi });
             Cek("Restore saat Play memulihkan tas dan posisi", tas.CaptureJson() == stok && andi.CaptureJson() == posisi);
             AmbilFoto("main_01_hud");
+            if (combat != null) { combat.Tebas(false); yield return new WaitForSeconds(0.12f); AmbilFoto("bot_02_tebas"); yield return new WaitForSeconds(0.45f); }
+            if (vital != null && awalVital != null)
+            {
+                vital.TakeDamage(new DamageInfo { amount = 75f, type = DamageType.Tebas, point = andi.transform.position - andi.transform.forward, direction = andi.transform.forward });
+                yield return null;
+                AmbilFoto("bot_03_luka_kritis");
+                vital.RestoreJson(awalVital);
+            }
             menu.ToggleJeda(); menu.BukaPengaturan(); menu.BukaTabPengaturan(0); yield return null; AmbilFoto("main_02_kontrol");
             menu.BukaTabPengaturan(2); yield return null; AmbilFoto("main_03_audio");
             menu.TutupPengaturan(); menu.LanjutkanDariJeda();
             tas.RestoreJson(awalTas); andi.RestoreJson(awalAndi);
+            if (vital != null && awalVital != null) vital.RestoreJson(awalVital);
             Akhiri();
         }
 
