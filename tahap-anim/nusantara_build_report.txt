@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-21 08:23:45
+Laporan Builder Alas Keramat - 2026-11-21 09:17:30
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -89,10 +89,10 @@ Laporan Builder Alas Keramat - 2026-11-21 08:23:45
 [LULUS] 7y. Peta survei & navigasi
   - Mixamo: folder Assets/Mixamo belum ada, animasi prosedural dipakai
 [LULUS] 7z. Animasi mocap Mixamo
-  - Kenney CC0: 9 suara rekaman menggantikan sintetis
+  - Kenney CC0: 10 suara rekaman menggantikan sintetis
 [LULUS] 7z2. Rekaman CC0 Kenney
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4821
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4822
 [LULUS] 9. Simpan scene
-Durasi: 517.1 detik
+Durasi: 984.6 detik
 HASIL: SEMUA LANGKAH LULUS
