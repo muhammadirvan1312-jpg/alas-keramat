@@ -131,6 +131,15 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Building.FungsiBangunan.TinggiAirPenampung01(4) == 0.5f
                 && AlasKeramat.Core.ProcBangunan.RambuPetunjukKayu().vertexCount > 30
                 && GameObject.Find("RambuHutan_0") != null);
+            cek("SOTF v11: ayun ombak & buih rakit, jejak proyektil & kilat laras, peti/ransel dunia & serpihan runtuh",
+                AlasKeramat.Player.AndiFPSController.HitungAyunOmbakRakit(1.2f, 0.8f, 45f) != Quaternion.identity
+                && AlasKeramat.Player.AndiFPSController.HitungLajuBuihRakit(2.0f) > 5f
+                && AlasKeramat.Player.AndiFPSController.HitungLajuGelembungSelam(true, 0.5f) > 5f
+                && AlasKeramat.AI.ProyektilAK.PunyaJejakProyektil(AlasKeramat.Core.ItemID.PanahApi)
+                && !AlasKeramat.AI.ProyektilAK.PunyaJejakProyektil(AlasKeramat.Core.ItemID.AnakPanah)
+                && AlasKeramat.Player.CombatAndLeftHandController.HitungIntensitasKilatLaras(AlasKeramat.Player.CombatAndLeftHandController.JenisJarak.Hitscan, 0.05f) > 1f
+                && AlasKeramat.Core.WorldEventScheduler.JumlahBagianPetiTerdampar() == 4
+                && AlasKeramat.Building.BagianStruktur.JumlahPartikelRuntuh(AlasKeramat.Building.BagianStruktur.Tipe.FondasiBatu, true) == 18);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

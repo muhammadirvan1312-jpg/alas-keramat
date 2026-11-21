@@ -18,6 +18,40 @@ namespace AlasKeramat.AI
         bool _berhenti;
         Light _cahaya;
 
+        public static bool PunyaJejakProyektil(ItemID amunisi)
+        {
+            return amunisi == ItemID.PanahApi || amunisi == ItemID.PanahRacun || amunisi == ItemID.PelurSuar || amunisi == ItemID.BomBambuMinyak;
+        }
+
+        void PasangJejakProyektil()
+        {
+            if (!PunyaJejakProyektil(_amunisi)) return;
+            bool racun = _amunisi == ItemID.PanahRacun;
+            bool suar = _amunisi == ItemID.PelurSuar;
+            Color w = racun ? new Color(0.28f, 0.88f, 0.25f, 0.75f) : suar ? new Color(1f, 0.22f, 0.14f, 0.85f) : new Color(1f, 0.56f, 0.14f, 0.85f);
+            var go = new GameObject("JejakProyektil");
+            go.transform.SetParent(transform, false);
+            var ps = go.AddComponent<ParticleSystem>();
+            var m = ps.main;
+            m.loop = true; m.startLifetime = 0.35f; m.startSpeed = 0.25f; m.startSize = suar ? 0.09f : 0.055f;
+            m.maxParticles = 28; m.simulationSpace = ParticleSystemSimulationSpace.World;
+            m.startColor = w;
+            var em = ps.emission; em.rateOverTime = 24f;
+            var sh = ps.shape; sh.shapeType = ParticleSystemShapeType.Sphere; sh.radius = 0.03f;
+            var pr = go.GetComponent<ParticleSystemRenderer>();
+            pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_JejakProyektil_" + (int)_amunisi, w, 0f, 0.3f, null, null, w * 2.2f);
+            pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            if (!racun && _cahaya == null)
+            {
+                _cahaya = go.AddComponent<Light>();
+                _cahaya.type = LightType.Point;
+                _cahaya.color = w;
+                _cahaya.range = suar ? 11f : 5.5f;
+                _cahaya.intensity = suar ? 3.2f : 1.8f;
+                _cahaya.shadows = LightShadows.None;
+            }
+        }
+
         public static void Luncurkan(GameObject prefab, Vector3 asal, Vector3 kecepatan, float skalaGravitasi, float damage, ItemID amunisi, GameObject pemilik)
         {
             GameObject go = prefab != null ? Instantiate(prefab, asal, Quaternion.LookRotation(kecepatan)) : new GameObject("Proyektil");
@@ -26,6 +60,7 @@ namespace AlasKeramat.AI
             if (p == null) p = go.AddComponent<ProyektilAK>();
             p._v = kecepatan; p._g = skalaGravitasi * Gravitasi; p._damage = damage; p._amunisi = amunisi; p._pemilik = pemilik;
             p._cahaya = go.GetComponentInChildren<Light>();
+            p.PasangJejakProyektil();
         }
 
         void Update()

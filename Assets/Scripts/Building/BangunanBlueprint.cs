@@ -187,6 +187,10 @@ namespace AlasKeramat.Building
                 {
                     var g = new GameObject("Rakit").transform; g.SetParent(r, false);
                     for (int i = 0; i < 8; i++) P(g, PrimitiveType.Cylinder, new Vector3(-1.05f + i * 0.3f, 0.1f, 0f), new Vector3(0.28f, 1.8f, 0.28f), Bambu, i == 0 ? I : S, true, new Vector3(90f, 0f, 0f));
+                    P(g, PrimitiveType.Cube, new Vector3(0f, 0.24f, -1.1f), new Vector3(2.3f, 0.08f, 0.18f), Kayu, S, false);
+                    P(g, PrimitiveType.Cube, new Vector3(0f, 0.24f,  1.1f), new Vector3(2.3f, 0.08f, 0.18f), Kayu, S, false);
+                    P(g, PrimitiveType.Cylinder, new Vector3(0f, 1.15f, 0.45f), new Vector3(0.09f, 1.05f, 0.09f), Bambu, 0, false);
+                    P(g, PrimitiveType.Cube, new Vector3(0f, 1.45f, 0.52f), new Vector3(1.25f, 0.95f, 0.04f), Kain, 0, false);
                     Fungsi(g.GetChild(0), id);
                     break;
                 }

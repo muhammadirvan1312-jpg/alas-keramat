@@ -162,6 +162,7 @@ namespace AlasKeramat.Player
                     _cam.fieldOfView = FovDasar + _fovTambah;
                 }
             }
+            PerbaruiGelembungSelam();
         }
 
         // H3: keyboard/mouse hanya untuk uji di Editor/PC, di dalam ENABLE_LEGACY_INPUT_MANAGER.

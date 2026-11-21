@@ -45,8 +45,15 @@ namespace AlasKeramat.Player
         [SerializeField] Transform[] modelJarak = new Transform[0]; // urutan sama dengan TabelJarak
         public void PasangModelJarak(Transform[] m) { modelJarak = m; }
         int _iJarak = -1;
-        float _tTekan = -1f, _tIsi, _tElak;
+        float _tTekan = -1f, _tIsi, _tElak, _tKilatLaras;
+        Light _lampuKilatLaras;
         bool _menarik;
+
+        public static float HitungIntensitasKilatLaras(JenisJarak jenis, float sisaWaktu)
+        {
+            if (sisaWaktu <= 0f || (jenis != JenisJarak.Hitscan && jenis != JenisJarak.Suar)) return 0f;
+            return Mathf.Clamp01(sisaWaktu / 0.08f) * 4.5f;
+        }
         Vector3 _arahElak;
         readonly Dictionary<ItemID, int> _isi = new Dictionary<ItemID, int>();
 
@@ -204,6 +211,7 @@ namespace AlasKeramat.Player
             MeterSuara.Pancar(transform.position, s.bunyi);
             var a = GameServices.Get<ProceduralAudioSynth>();
             if (a != null) a.Play(s.jenis == JenisJarak.Hitscan || s.jenis == JenisJarak.Suar ? ProceduralAudioSynth.KlipTembak : ProceduralAudioSynth.KlipLepasPanah, null, AudioCategory.Efek, 1f, Random.Range(0.95f, 1.05f), 3);
+            if (s.jenis == JenisJarak.Hitscan || s.jenis == JenisJarak.Suar) _tKilatLaras = 0.08f;
             Guncang(s.jenis == JenisJarak.Hitscan ? 0.12f : 0.04f);
             if (s.jenis == JenisJarak.Tombak || s.jenis == JenisJarak.Bom) { _tCekSenjata = 0f; }
         }
@@ -239,6 +247,29 @@ namespace AlasKeramat.Player
         void TickJarak(float dt)
         {
             if (_tIsi > 0f) _tIsi -= dt;
+            if (_tKilatLaras > 0f)
+            {
+                _tKilatLaras = Mathf.Max(0f, _tKilatLaras - dt);
+                if (_lampuKilatLaras == null && pivotFP != null)
+                {
+                    var go = new GameObject("KilatLarasFP");
+                    go.transform.SetParent(pivotFP, false);
+                    go.transform.localPosition = new Vector3(0.18f, -0.08f, 0.72f);
+                    _lampuKilatLaras = go.AddComponent<Light>();
+                    _lampuKilatLaras.type = LightType.Point;
+                    _lampuKilatLaras.color = new Color(1f, 0.76f, 0.35f);
+                    _lampuKilatLaras.range = 7.5f;
+                    _lampuKilatLaras.shadows = LightShadows.None;
+                }
+                if (_lampuKilatLaras != null)
+                {
+                    var j = _iJarak >= 0 ? TabelJarak[_iJarak].jenis : JenisJarak.Hitscan;
+                    float intK = HitungIntensitasKilatLaras(j, _tKilatLaras);
+                    _lampuKilatLaras.enabled = intK > 0.01f;
+                    _lampuKilatLaras.intensity = intK;
+                }
+            }
+            else if (_lampuKilatLaras != null && _lampuKilatLaras.enabled) _lampuKilatLaras.enabled = false;
             if (_tElak > 0f)
             {
                 _tElak -= dt;
