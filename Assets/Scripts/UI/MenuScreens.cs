@@ -60,7 +60,8 @@ namespace AlasKeramat.UI
             "ALAS KERAMAT: SONS OF NUSANTARA\n\n" +
             "Pengarah Permainan & Arsitektur Dunia\nTim Alas Keramat Studio\n\n" +
             "Sistem Prosedural, AI Folklor & Audio Sintetis\nNusantara Engine Pipeline\n\n" +
-            "Aset Visual CC0 & Animasi\nPoly Haven, ambientCG, MakeHuman CC0, CMU Mocap\n\nRekaman Alam & Foley CC0\nTinyWorlds, Wolfgang_, qubodup / pdsounds.org\n\n" +
+            "Aset Visual CC0 & Animasi\nPoly Haven, ambientCG, MakeHuman CC0, CMU Mocap, Adobe Mixamo\n\nRekaman Alam, Foley & Musik CC0\nTinyWorlds, Wolfgang_, qubodup / pdsounds.org, Kenney, OpenGameArt (Juhani Junkala dkk.)\n\n" +
+            "Ikon Kontrol\ngame-icons.net oleh Lorc, Delapouite, guard13007 (CC BY 3.0)\n\n" +
             "Terima kasih telah bermain dan menjaga Alas Keramat.";
 
         [SerializeField] GameObject panelMenuUtama, panelJeda, panelPengaturan, panelCara, panelKredit, panelSlot, panelDebug;
