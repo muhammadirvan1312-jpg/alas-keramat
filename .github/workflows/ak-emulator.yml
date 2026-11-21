@@ -17,19 +17,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api: [34, 30]
+        api: [34]
+        sumber: ["rilis:uji-20261121-1830", "run:44952249743"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Ambil APK dari run CI
+        if: startsWith(matrix.sumber, 'run:')
         uses: actions/download-artifact@v4
         with:
           run-id: ${{ env.RUN_ID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           pattern: hasil-*
           path: apk
+      - name: Ambil APK dari rilis
+        if: startsWith(matrix.sumber, 'rilis:')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ matrix.sumber }}"; TAG="${TAG#rilis:}"; mkdir -p apk
+          gh release download "$TAG" -R "${{ github.repository }}" -p "*.apk" -D apk
       - name: Cari APK
         run: |
           APK=$(find apk -name "*.apk" | head -n1); echo "APK=$APK" >> "$GITHUB_ENV"; ls -la "$APK"
@@ -52,6 +61,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: logcat-api${{ matrix.api }}
-          path: logcat_api*
+          name: logcat-${{ strategy.job-index }}
+          path: logcat_hasil
           if-no-files-found: ignore
