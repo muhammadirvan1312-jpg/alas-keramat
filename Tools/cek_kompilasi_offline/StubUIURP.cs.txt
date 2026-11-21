@@ -1,0 +1,128 @@
+// Tipe pengganti (stub) uGUI/EventSystems/URP untuk cek kompilasi offline saja. Bukan bagian proyek.
+using UnityEngine;
+using UnityEngine.Events;
+namespace UnityEngine.EventSystems
+{
+    public class UIBehaviour : MonoBehaviour { protected virtual void Awake(){} protected virtual void OnEnable(){} protected virtual void OnDisable(){} protected virtual void Start(){} protected virtual void OnDestroy(){} protected virtual void OnRectTransformDimensionsChange(){} protected virtual void OnValidate(){} public virtual bool IsActive(){return true;} }
+    public class BaseEventData { public BaseEventData(EventSystem es){} public dynamic selectedObject; public dynamic currentInputModule; public void Use(){} public bool used; }
+    public class PointerEventData : BaseEventData { public PointerEventData(EventSystem es):base(es){} public bool useDragThreshold; public enum InputButton { Left, Right, Middle } public Vector2 position, delta, pressPosition, scrollDelta; public int pointerId, clickCount; public GameObject pointerPress, pointerEnter, pointerDrag, rawPointerPress; public Camera pressEventCamera, enterEventCamera; public InputButton button; public bool dragging, eligibleForClick; public float clickTime; public RaycastResult pointerCurrentRaycast, pointerPressRaycast; }
+    public struct RaycastResult { public GameObject gameObject; public float distance; public Vector3 worldPosition; public Vector2 screenPosition; public bool isValid; }
+    public class EventSystem : UIBehaviour { public static EventSystem current; public GameObject currentSelectedGameObject; public bool sendNavigation; public int pixelDragThreshold; public void SetSelectedGameObject(GameObject g){} public bool IsPointerOverGameObject(){return false;} public bool IsPointerOverGameObject(int id){return false;} public void RaycastAll(PointerEventData e, System.Collections.Generic.List<RaycastResult> r){} }
+    public class BaseInputModule : UIBehaviour {}
+    public delegate void EventFunction<T1>(T1 handler, BaseEventData eventData);
+    public static class ExecuteEvents {
+        public static EventFunction<IPointerDownHandler> pointerDownHandler; public static EventFunction<IPointerUpHandler> pointerUpHandler; public static EventFunction<IPointerClickHandler> pointerClickHandler;
+        public static EventFunction<IDragHandler> dragHandler; public static EventFunction<IBeginDragHandler> beginDragHandler; public static EventFunction<IEndDragHandler> endDragHandler;
+        public static EventFunction<IInitializePotentialDragHandler> initializePotentialDrag; public static EventFunction<IPointerEnterHandler> pointerEnterHandler; public static EventFunction<IPointerExitHandler> pointerExitHandler;
+        public static EventFunction<ISubmitHandler> submitHandler; public static EventFunction<ICancelHandler> cancelHandler;
+        public static bool Execute<T>(GameObject target, BaseEventData data, EventFunction<T> f) where T : IEventSystemHandler { return true; }
+        public static GameObject ExecuteHierarchy<T>(GameObject root, BaseEventData data, EventFunction<T> f) where T : IEventSystemHandler { return null; }
+        public static GameObject GetEventHandler<T>(GameObject root) where T : IEventSystemHandler { return null; }
+        public static bool CanHandleEvent<T>(GameObject go) where T : IEventSystemHandler { return true; }
+    }
+    public class StandaloneInputModule : BaseInputModule {}
+    public interface IEventSystemHandler {}
+    public interface IPointerDownHandler : IEventSystemHandler { void OnPointerDown(PointerEventData e); }
+    public interface IPointerUpHandler : IEventSystemHandler { void OnPointerUp(PointerEventData e); }
+    public interface IPointerClickHandler : IEventSystemHandler { void OnPointerClick(PointerEventData e); }
+    public interface IPointerEnterHandler : IEventSystemHandler { void OnPointerEnter(PointerEventData e); }
+    public interface IPointerExitHandler : IEventSystemHandler { void OnPointerExit(PointerEventData e); }
+    public interface IDragHandler : IEventSystemHandler { void OnDrag(PointerEventData e); }
+    public interface IBeginDragHandler : IEventSystemHandler { void OnBeginDrag(PointerEventData e); }
+    public interface IEndDragHandler : IEventSystemHandler { void OnEndDrag(PointerEventData e); }
+    public interface IInitializePotentialDragHandler : IEventSystemHandler { void OnInitializePotentialDrag(PointerEventData e); }
+    public interface IScrollHandler : IEventSystemHandler { void OnScroll(PointerEventData e); }
+    public interface ICancelHandler : IEventSystemHandler { void OnCancel(BaseEventData e); }
+    public interface ISubmitHandler : IEventSystemHandler { void OnSubmit(BaseEventData e); }
+    public interface ISelectHandler : IEventSystemHandler { void OnSelect(BaseEventData e); }
+    public interface IDeselectHandler : IEventSystemHandler { void OnDeselect(BaseEventData e); }
+}
+namespace UnityEngine.UI
+{
+    using UnityEngine.EventSystems;
+    public class VertexHelper { public int currentVertCount; public void Clear(){} public void AddVert(Vector3 p, Color32 c, Vector2 uv){} public void AddVert(UIVertex v){} public void AddTriangle(int a,int b,int c){} public void AddUIVertexQuad(UIVertex[] q){} }
+    public class Graphic : UIBehaviour { public Color color = Color.white; public bool raycastTarget = true; public virtual Material material { get; set; } public Material materialForRendering; public Texture mainTexture; public RectTransform rectTransform; public Canvas canvas; public CanvasRenderer canvasRenderer; public float depth; public virtual void SetAllDirty(){} public virtual void SetVerticesDirty(){} public virtual void SetMaterialDirty(){} public void CrossFadeAlpha(float a,float d,bool i){} public void CrossFadeColor(Color c,float d,bool i,bool a){} protected virtual void OnPopulateMesh(VertexHelper vh){} public static Material defaultGraphicMaterial; }
+    public class MaskableGraphic : Graphic { public bool maskable = true; }
+    public class Image : MaskableGraphic { public enum Type { Simple, Sliced, Tiled, Filled } public enum FillMethod { Horizontal, Vertical, Radial90, Radial180, Radial360 } public enum OriginHorizontal { Left, Right } public enum OriginVertical { Bottom, Top } public enum Origin360 { Bottom, Right, Top, Left } public enum Origin90 { BottomLeft, TopLeft, TopRight, BottomRight }
+        public Sprite sprite, overrideSprite; public Type type; public FillMethod fillMethod; public float fillAmount; public int fillOrigin; public bool fillClockwise, preserveAspect, fillCenter, useSpriteMesh; public float pixelsPerUnitMultiplier, alphaHitTestMinimumThreshold; public void SetNativeSize(){} }
+    public class RawImage : MaskableGraphic { public Texture texture; public Rect uvRect; public void SetNativeSize(){} }
+    public class Text : MaskableGraphic { public string text; public Font font; public int fontSize, resizeTextMinSize, resizeTextMaxSize; public FontStyle fontStyle; public TextAnchor alignment; public bool supportRichText, resizeTextForBestFit, alignByGeometry; public HorizontalWrapMode horizontalOverflow; public VerticalWrapMode verticalOverflow; public float lineSpacing, preferredWidth, preferredHeight; public TextGenerator cachedTextGenerator; }
+    public class BaseMeshEffect : UIBehaviour { public virtual void ModifyMesh(VertexHelper vh){} }
+    public class Shadow : BaseMeshEffect { public Color effectColor; public Vector2 effectDistance; public bool useGraphicAlpha; }
+    public class Outline : Shadow {}
+    public class PositionAsUV1 : BaseMeshEffect {}
+    public class Mask : UIBehaviour { public bool showMaskGraphic; }
+    public class RectMask2D : UIBehaviour { public Vector4 padding; public Vector2Int softness; }
+    public struct ColorBlock { public Color normalColor, highlightedColor, pressedColor, selectedColor, disabledColor; public float colorMultiplier, fadeDuration; public static ColorBlock defaultColorBlock; }
+    public struct Navigation { public enum Mode { None, Horizontal, Vertical, Automatic, Explicit } public Mode mode; public static Navigation defaultNavigation; }
+    public class Selectable : UIBehaviour { public enum Transition { None, ColorTint, SpriteSwap, Animation } public bool interactable = true; public Graphic targetGraphic; public Image image; public ColorBlock colors; public Transition transition; public Navigation navigation; public virtual void Select(){} public virtual bool IsInteractable(){return true;} }
+    public class Button : Selectable { public class ButtonClickedEvent : UnityEvent {} public ButtonClickedEvent onClick = new ButtonClickedEvent(); }
+    public class Toggle : Selectable { public class ToggleEvent : UnityEvent<bool> {} public bool isOn; public ToggleEvent onValueChanged = new ToggleEvent(); public Graphic graphic; public ToggleGroup group; public void SetIsOnWithoutNotify(bool v){} }
+    public class ToggleGroup : UIBehaviour { public bool allowSwitchOff; }
+    public class Slider : Selectable { public enum Direction { LeftToRight, RightToLeft, BottomToTop, TopToBottom } public class SliderEvent : UnityEvent<float> {} public float value, minValue, maxValue, normalizedValue; public bool wholeNumbers; public Direction direction; public RectTransform fillRect, handleRect; public SliderEvent onValueChanged = new SliderEvent(); public void SetValueWithoutNotify(float v){} }
+    public class Scrollbar : Selectable { public enum Direction { LeftToRight, RightToLeft, BottomToTop, TopToBottom } public class ScrollEvent : UnityEvent<float> {} public float value, size; public int numberOfSteps; public Direction direction; public RectTransform handleRect; public ScrollEvent onValueChanged = new ScrollEvent(); }
+    public class ScrollRect : UIBehaviour { public enum MovementType { Unrestricted, Elastic, Clamped } public enum ScrollbarVisibility { Permanent, AutoHide, AutoHideAndExpandViewport } public class ScrollRectEvent : UnityEvent<Vector2> {} public RectTransform content, viewport; public bool horizontal, vertical, inertia; public MovementType movementType; public float elasticity, decelerationRate, scrollSensitivity, verticalNormalizedPosition, horizontalNormalizedPosition; public Vector2 normalizedPosition, velocity; public Scrollbar verticalScrollbar, horizontalScrollbar; public ScrollbarVisibility verticalScrollbarVisibility, horizontalScrollbarVisibility; public ScrollRectEvent onValueChanged = new ScrollRectEvent(); public void StopMovement(){} }
+    public class InputField : Selectable { public class SubmitEvent : UnityEvent<string> {} public string text; public Text textComponent; public Graphic placeholder; public int characterLimit; public SubmitEvent onEndEdit = new SubmitEvent(); public SubmitEvent onValueChanged = new SubmitEvent(); }
+    public class CanvasScaler : UIBehaviour { public enum ScaleMode { ConstantPixelSize, ScaleWithScreenSize, ConstantPhysicalSize } public enum ScreenMatchMode { MatchWidthOrHeight, Expand, Shrink } public ScaleMode uiScaleMode; public ScreenMatchMode screenMatchMode; public Vector2 referenceResolution; public float matchWidthOrHeight, scaleFactor, referencePixelsPerUnit; }
+    public class GraphicRaycaster : UIBehaviour { public bool ignoreReversedGraphics; public void Raycast(PointerEventData e, System.Collections.Generic.List<RaycastResult> r){} }
+    public class LayoutElement : UIBehaviour { public float minWidth, minHeight, preferredWidth, preferredHeight, flexibleWidth, flexibleHeight; public bool ignoreLayout; }
+    public class LayoutGroup : UIBehaviour { public RectOffset padding = new RectOffset(); public TextAnchor childAlignment; }
+    public class HorizontalOrVerticalLayoutGroup : LayoutGroup { public float spacing; public bool childForceExpandWidth, childForceExpandHeight, childControlWidth, childControlHeight, childScaleWidth, childScaleHeight, reverseArrangement; }
+    public class HorizontalLayoutGroup : HorizontalOrVerticalLayoutGroup {}
+    public class VerticalLayoutGroup : HorizontalOrVerticalLayoutGroup {}
+    public class GridLayoutGroup : LayoutGroup { public enum Constraint { Flexible, FixedColumnCount, FixedRowCount } public enum Corner { UpperLeft, UpperRight, LowerLeft, LowerRight } public enum Axis { Horizontal, Vertical } public Vector2 cellSize, spacing; public Constraint constraint; public int constraintCount; public Corner startCorner; public Axis startAxis; }
+    public class ContentSizeFitter : UIBehaviour { public enum FitMode { Unconstrained, MinSize, PreferredSize } public FitMode horizontalFit, verticalFit; }
+    public class AspectRatioFitter : UIBehaviour { public enum AspectMode { None, WidthControlsHeight, HeightControlsWidth, FitInParent, EnvelopeParent } public AspectMode aspectMode; public float aspectRatio; }
+    public static class LayoutRebuilder { public static void ForceRebuildLayoutImmediate(RectTransform r){} public static void MarkLayoutForRebuild(RectTransform r){} }
+    public static class DefaultControls { public struct Resources {} }
+}
+namespace UnityEngine.Rendering
+{
+    public class VolumeParameter { public bool overrideState; public virtual void Override(object v){} }
+    public class VolumeParameter<T> : VolumeParameter { public T value; public void Override(T v){} }
+    public class FloatParameter : VolumeParameter<float> { public FloatParameter(float v, bool o=false){} }
+    public class ClampedFloatParameter : FloatParameter { public ClampedFloatParameter(float v, float a, float b, bool o=false):base(v){} }
+    public class MinFloatParameter : FloatParameter { public MinFloatParameter(float v, float a, bool o=false):base(v){} }
+    public class ColorParameter : VolumeParameter<Color> { public ColorParameter(Color v, bool h=false, bool a=true, bool s=true, bool o=false){} }
+    public class BoolParameter : VolumeParameter<bool> { public BoolParameter(bool v, bool o=false){} }
+    public class TextureParameter : VolumeParameter<Texture> { public TextureParameter(Texture v, bool o=false){} }
+    public class Vector2Parameter : VolumeParameter<Vector2> { public Vector2Parameter(Vector2 v, bool o=false){} }
+    public class IntParameter : VolumeParameter<int> { public IntParameter(int v, bool o=false){} }
+    public class VolumeComponent : ScriptableObject { public bool active = true; public System.Collections.ObjectModel.ReadOnlyCollection<VolumeParameter> parameters; public void SetAllOverridesTo(bool s){} }
+    public class VolumeProfile : ScriptableObject { public System.Collections.Generic.List<VolumeComponent> components = new System.Collections.Generic.List<VolumeComponent>(); public T Add<T>(bool o=false) where T : VolumeComponent { return null; } public VolumeComponent Add(System.Type t, bool o=false){return null;} public bool TryGet<T>(out T c) where T : VolumeComponent { c=null; return false; } public bool Has<T>() where T : VolumeComponent {return false;} public void Remove<T>() where T : VolumeComponent {} }
+    public class Volume : MonoBehaviour { public bool isGlobal = true; public float weight = 1f, priority, blendDistance; public VolumeProfile profile, sharedProfile; public bool HasInstantiatedProfile(){return false;} }
+    public enum ShadowResolution { _256=256, _512=512, _1024=1024, _2048=2048, _4096=4096 }
+}
+namespace UnityEngine.Rendering.Universal
+{
+    using UnityEngine.Rendering;
+    public enum TonemappingMode { None, Neutral, ACES }
+    public enum FilmGrainLookup { Thin1, Thin2, Medium1, Medium2, Medium3, Medium4, Medium5, Medium6, Large01, Large02, Custom }
+    public enum MsaaQuality { Disabled=1, _2x=2, _4x=4, _8x=8 }
+    public enum ShadowResolution { _256=256, _512=512, _1024=1024, _2048=2048, _4096=4096 }
+    public enum AntialiasingMode { None, FastApproximateAntialiasing, SubpixelMorphologicalAntiAliasing, TemporalAntiAliasing }
+    public enum AntialiasingQuality { Low, Medium, High }
+    public enum CameraRenderType { Base, Overlay }
+    public class Bloom : VolumeComponent { public MinFloatParameter threshold = new MinFloatParameter(0,0), intensity = new MinFloatParameter(0,0); public ClampedFloatParameter scatter = new ClampedFloatParameter(0,0,1), clamp = new ClampedFloatParameter(0,0,1), dirtIntensity = new ClampedFloatParameter(0,0,1); public ColorParameter tint = new ColorParameter(Color.white); public BoolParameter highQualityFiltering = new BoolParameter(false); public TextureParameter dirtTexture = new TextureParameter(null); public IntParameter skipIterations = new IntParameter(0), maxIterations = new IntParameter(0); }
+    public class Vignette : VolumeComponent { public ColorParameter color = new ColorParameter(Color.black); public Vector2Parameter center = new Vector2Parameter(Vector2.zero); public ClampedFloatParameter intensity = new ClampedFloatParameter(0,0,1), smoothness = new ClampedFloatParameter(0,0,1); public BoolParameter rounded = new BoolParameter(false); }
+    public class ColorAdjustments : VolumeComponent { public FloatParameter postExposure = new FloatParameter(0), contrast = new FloatParameter(0), hueShift = new FloatParameter(0), saturation = new FloatParameter(0); public ColorParameter colorFilter = new ColorParameter(Color.white); }
+    public class ChromaticAberration : VolumeComponent { public ClampedFloatParameter intensity = new ClampedFloatParameter(0,0,1); }
+    public class WhiteBalance : VolumeComponent { public ClampedFloatParameter temperature = new ClampedFloatParameter(0,-100,100), tint = new ClampedFloatParameter(0,-100,100); }
+    public class TonemappingModeParameter : VolumeParameter<TonemappingMode> { public TonemappingModeParameter(TonemappingMode v, bool o=false){} }
+    public class Tonemapping : VolumeComponent { public TonemappingModeParameter mode = new TonemappingModeParameter(TonemappingMode.None); }
+    public class FilmGrainLookupParameter : VolumeParameter<FilmGrainLookup> { public FilmGrainLookupParameter(FilmGrainLookup v, bool o=false){} }
+    public class FilmGrain : VolumeComponent { public FilmGrainLookupParameter type = new FilmGrainLookupParameter(FilmGrainLookup.Thin1); public ClampedFloatParameter intensity = new ClampedFloatParameter(0,0,1), response = new ClampedFloatParameter(0,0,1); public TextureParameter texture = new TextureParameter(null); }
+    public class LiftGammaGain : VolumeComponent { public dynamic lift, gamma, gain; }
+    public class ShadowsMidtonesHighlights : VolumeComponent { public dynamic shadows, midtones, highlights; }
+    public class SplitToning : VolumeComponent { public ColorParameter shadows = new ColorParameter(Color.gray), highlights = new ColorParameter(Color.gray); public ClampedFloatParameter balance = new ClampedFloatParameter(0,-100,100); }
+    public class LensDistortion : VolumeComponent { public ClampedFloatParameter intensity = new ClampedFloatParameter(0,-1,1); }
+    public class DepthOfField : VolumeComponent { public dynamic mode, gaussianStart, gaussianEnd, focusDistance; }
+    public class MotionBlur : VolumeComponent { public ClampedFloatParameter intensity = new ClampedFloatParameter(0,0,1); }
+    public class UniversalAdditionalCameraData : MonoBehaviour { public bool renderPostProcessing, renderShadows, requiresDepthTexture, requiresColorTexture, stopNaN, dithering; public AntialiasingMode antialiasing; public AntialiasingQuality antialiasingQuality; public CameraRenderType renderType; public LayerMask volumeLayerMask; public Transform volumeTrigger; }
+    public class UniversalRenderPipelineAsset : RenderPipelineAsset { public static UniversalRenderPipelineAsset Create(){return null;} public static UniversalRenderPipelineAsset Create(ScriptableRendererData d){return null;} public float renderScale, shadowDistance; public int msaaSampleCount, maxAdditionalLightsCount; public bool supportsHDR, supportsCameraDepthTexture, supportsCameraOpaqueTexture, supportsSoftShadows; public int mainLightShadowmapResolution, additionalLightsShadowmapResolution; public int shadowCascadeCount; public override RenderPipeline CreatePipeline(){return null;} }
+    public class ScriptableRendererFeature : ScriptableObject { public bool isActive; public void SetActive(bool a){} }
+    public class ScriptableRendererData : ScriptableObject { public System.Collections.Generic.List<ScriptableRendererFeature> rendererFeatures = new System.Collections.Generic.List<ScriptableRendererFeature>(); public bool isInvalidated; public void SetDirty(){} }
+    public class UniversalRendererData : ScriptableRendererData { public PostProcessData postProcessData; public LayerMask opaqueLayerMask, transparentLayerMask; public dynamic renderingMode, depthPrimingMode, copyDepthMode; public bool shadowTransparentReceive; }
+    public class PostProcessData : ScriptableObject { public static PostProcessData GetDefaultPostProcessData(){return null;} }
+    public static class CameraExtensions { public static UniversalAdditionalCameraData GetUniversalAdditionalCameraData(this Camera c){return null;} }
+}

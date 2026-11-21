@@ -21,8 +21,6 @@ permissions:
 jobs:
   unity:
     name: Unity — bangun, uji, APK
-    outputs:
-      snapshot: ${{ steps.scenefoto.outcome }}
     runs-on: ubuntu-latest
     timeout-minutes: 140
     steps:
@@ -186,23 +184,6 @@ jobs:
           path: Assets/ThirdParty
           key: imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-${{ github.run_id }}
 
-      - name: Simpan scene untuk audit foto
-        id: scenefoto
-        if: always() && steps.build.outcome != 'cancelled' && hashFiles('Assets/Generated/foto_commit.txt') != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: scene-foto-${{ github.run_id }}
-          path: |
-            Assets
-            ProjectSettings
-            !Assets/Mixamo
-            !Assets/Mixamo.meta
-            !Assets/MixamoKarakter
-            !Assets/MixamoKarakter.meta
-            !Assets/HewanAsli
-            !Assets/HewanAsli.meta
-          retention-days: 2
-
       - name: Susun laporan CI (selalu)
         if: always() && steps.cekproyek.outputs.ada == '1'
         shell: bash
@@ -251,12 +232,14 @@ jobs:
 
   # Foto kualitas dipisah dari build: render perangkat lunak (llvmpipe) bisa sangat lambat untuk terrain besar.
   # Job ini TIDAK menentukan lulus/gagal CI (continue-on-error) dan dibatasi waktunya.
+  # Percepatan: berjalan PARALEL dengan job unity (FotoSaja membangun scene sendiri bila belum ada),
+  # jadi total CI ~ waktu job terlama, bukan jumlah keduanya. Lewati foto dengan label PR "tanpa-foto".
   foto:
     name: Foto kualitas (tidak memblokir)
-    needs: unity
-    if: always() && needs.unity.outputs.snapshot == 'success' && github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'tanpa-foto')
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    # Builder sendiri (+-17 menit) + foto llvmpipe: beri ruang waktu lebih karena tidak lagi memakai scene job unity.
+    timeout-minutes: 80
     continue-on-error: true
     steps:
       - name: Kosongkan disk runner
@@ -302,12 +285,6 @@ jobs:
             Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-
             Library-Android-
 
-      - name: Ambil scene hasil build yang sama
-        uses: actions/download-artifact@v4
-        with:
-          name: scene-foto-${{ github.run_id }}
-          path: .
-
       - name: Ambil animasi Mixamo (repo aset privat)
         shell: bash
         env:
@@ -333,7 +310,7 @@ jobs:
       - name: Unity — Builder + Foto
         id: foto
         continue-on-error: true
-        timeout-minutes: 35
+        timeout-minutes: 65
         uses: game-ci/unity-builder@v4
         env:
           AK_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
