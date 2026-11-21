@@ -1,11 +1,11 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (4863 = 4863)
+[LULUS] Idempoten: jumlah objek sama (4948 = 4948)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
-[LULUS] Tekstur >= 10 (47)
-[LULUS] Material >= 5 (233)
+[LULUS] Tekstur >= 10 (48)
+[LULUS] Material >= 5 (246)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
 [LULUS] WAV >= 8 (62)
@@ -40,7 +40,7 @@
 [LULUS] Semak/pakis >= 10.000 (89420)
 [LULUS] VegetationManager & data terpasang
 [LULUS] Semua 7 cuaca bisa diset
-[LULUS] Landmark >= 35 (38)
+[LULUS] Landmark >= 35 (47)
 [LULUS] Beringin Agung & altar & cerobong ada
 [LULUS] AmbienceDirector ada
 [LULUS] Emitter ambien >= 1000 (1112)
@@ -120,7 +120,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 209 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 274 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -206,13 +206,15 @@
 [LULUS] Malam Darah tambahan: malam berikutnya setelah paku
 [LULUS] Mixamo: diam/jalan/lari/serang/gertak memetakan klip yang benar
 [LULUS] Mixamo: klip berulang vs sekali
-[LULUS] Audio: rekaman CC0 Kenney terpasang (10/10)
+[LULUS] Audio: rekaman CC0 Kenney terpasang (14/14)
 [LULUS] Audio: rekaman CC0 OpenGameArt terpasang (22/22)
 [LULUS] Audio: musik jelajah siang/malam terpasang
 [LULUS] Audio: suara hujan ikut cuaca
-[LULUS] Mixamo: peta model karakter (Genderuwo=Warrok, Wanita=Zombiegirl, Sekte=Nightshade)
+[LULUS] Mixamo: peta model karakter (Deden=Remy, Ningsih=Peasant_Girl, KiRogo=Peasant_Man, Genderuwo=Warrok)
 [LULUS] Hewan asli: peta model & pilihan klip
-[LULUS] Hewan asli: templat memakai model FBX (5)
+[LULUS] Gua & atmosfer: kelelawar gua terbang & god rays sinar tajuk
+[LULUS] Dunia & gameplay SOTF v2: kunang/spora, ayun senjata FP, suara hewan 3D & properti desa/pantai
+[LULUS] Hewan asli: templat memakai model FBX (12)
 [LULUS] Mixamo: prefab musuh memakai model karakter asli (5)
 [LULUS] Mixamo: bank animasi ada (>= 40 klip)
 [LULUS] Mixamo: semua klip legacy (H1)
