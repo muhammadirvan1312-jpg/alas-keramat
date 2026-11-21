@@ -353,6 +353,7 @@ namespace AlasKeramat.EditorTools
             PemeriksaanMixamo.Jalankan(cek);
             PemeriksaanPropDesa.Jalankan(cek);
             PemeriksaanEkspansiSOTF.Jalankan(cek);
+            PemeriksaanEkspansiDunia2.Jalankan(cek);
             PemeriksaanG3.Jalankan(cek);
             PemeriksaanT11.Jalankan(cek);
             PemeriksaanUjiMain.Jalankan(cek);

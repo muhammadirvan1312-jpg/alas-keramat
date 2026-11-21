@@ -101,6 +101,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7z7. Hewan model asli", 0.99f, LangkahHewanAsli);
                 Langkah("7z8. Props desa CC0 & lampu minyak", 0.991f, LangkahPropDesa);
                 Langkah("7z9. Ekspansi besar SOTF (props 2K, biota, perangkap & HUD)", 0.992f, LangkahEkspansiSOTF);
+                Langkah("7z10. Ekspansi Dunia 2 (24 model 4K, jemuran, air hujan, bubu, suar, musim & sekte)", 0.994f, LangkahEkspansiDunia2);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

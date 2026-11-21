@@ -329,7 +329,19 @@ PROPS=[('wooden_crate_01','PetiKayuScan',0.95,'w',700,None),('barrel_03','DrumSc
        ('WoodenChair_01','KursiKayuScan',0.86,'h',460,None),('Shelf_01','RakKayuScan',1.45,'h',460,None),
        ('cardboard_box_01','KardusLogistikScan',0.46,'w',320,None),('cement_bag','KarungSemenScan',0.58,'w',360,None),
        ('brass_vase_02','KendiKuninganScan',0.42,'h',440,None),('brass_pan_01','WajanKuninganScan',0.34,'w',380,None),
-       ('carved_wooden_plate','PiringKayuScan',0.30,'w',320,None)]
+       ('carved_wooden_plate','PiringKayuScan',0.30,'w',320,None),
+       ('Barrel_02','TongBesiScan',0.92,'h',480,None),('CheeseBox_01','KotakKayuKecilScan',0.34,'w',360,None),
+       ('WoodenTable_01','MejaBesarScan',1.55,'w',480,None),('WoodenTable_02','MejaKecilScan',0.85,'w',420,None),
+       ('GreenChair_01','KursiBunkerScan',0.84,'h',460,None),('SchoolChair_01','KursiSekolahScan',0.82,'h',460,None),
+       ('GothicCabinet_01','LemariTuaScan',1.75,'h',560,None),('chinese_cabinet','LemariKayuScan',1.45,'h',560,None),
+       ('chinese_tea_table','MejaTehScan',0.75,'w',440,None),('adjustable_wrench','KunciInggrisScan',0.30,'w',340,None),
+       ('bench_vice_01','RagumScan',0.36,'w',480,None),('binder_notebook','BukuCatatanScan',0.32,'w',300,None),
+       ('boombox','RadioTuaScan',0.52,'w',460,None),('brass_pot_02','PanciKuninganScan',0.36,'w',420,None),
+       ('brass_vase_01','VasKuninganScan',0.42,'h',420,None),('brass_vase_03','GuciKuninganScan',0.46,'h',420,None),
+       ('ceramic_vase_01','GuciKeramikAScan',0.38,'h',400,None),('ceramic_vase_02','GuciKeramikBScan',0.40,'h',400,None),
+       ('ceramic_vase_03','GuciKeramikCScan',0.36,'h',400,None),('ceramic_vase_04','GuciKeramikDScan',0.42,'h',400,None),
+       ('metal_jug','TekoLogamScan',0.32,'h',420,None),('WetFloorSign_01','PapanPeringatanScan',0.64,'h',340,None),
+       ('bunsen_burner','PembakarLabScan',0.24,'h',400,None),('Rockingchair_01','KursiGoyangScan',1.02,'h',520,None)]
 for name,out,size,axis,limit,only in PROPS:
     bpy.ops.wm.read_factory_settings(use_empty=True)
     path=ROOT/'Assets/ThirdParty/CC0/Model'/f'{name}.fbx.source'
