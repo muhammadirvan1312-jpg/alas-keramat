@@ -50,10 +50,10 @@ namespace AlasKeramat.Core
         public static Vector4 TargetGua { get { return new Vector4(1.28f,-2f,-3f,0.20f); } }
         public static Vector4 Target(float jam, WeatherState cuaca)
         {
-            Vector4 siang = new Vector4(0.28f, 2f, 3f, 0.16f);
+            Vector4 siang = new Vector4(0.32f, 3f, 3f, 0.16f);
             Vector4 maghrib = new Vector4(0.24f, 6f, 18f, 0.22f);
-            Vector4 malam = new Vector4(0.24f, -8f, -14f, 0.22f);
-            Vector4 fajar = new Vector4(0.20f, 3f, 12f, 0.22f);
+            Vector4 malam = new Vector4(0.30f, -8f, -12f, 0.22f);
+            Vector4 fajar = new Vector4(0.24f, 3f, 12f, 0.22f);
             Vector4 v;
             if (jam >= 7f && jam < 16.5f) v = siang;
             else if (jam >= 16.5f && jam < 18f) v = Vector4.Lerp(siang, maghrib, (jam - 16.5f) / 1.5f);
@@ -64,6 +64,7 @@ namespace AlasKeramat.Core
             if (cuaca == WeatherState.HujanBadai) { v.x -= 0.25f; v.y -= 22f; v.z -= 8f; v.w += 0.06f; }
             else if (cuaca == WeatherState.Gerimis || cuaca == WeatherState.Berawan) { v.x -= 0.08f; v.y -= 8f; }
             else if (cuaca == WeatherState.KabutDarah) { v.y += 10f; v.z += 35f; v.w += 0.1f; }
+            v.x = Mathf.Max(-1.2f, v.x);
             return v;
         }
 

@@ -41,7 +41,10 @@ namespace AlasKeramat.Core
             float malam=URPAtmosphereAndWeather.Malam01(jam);
             Shader.SetGlobalFloat("_AK_Basah",Mathf.Max(BasahTarget(w),malam*0.38f));
             bool maghrib=jam>=17.4f && jam<19.2f;
+            var bioma=WorldTerrainGenerator.GetBiome(p.x,p.z);
+            bool lembab=bioma==Biome.TepiSungai || bioma==WorldTerrainGenerator.RawaBakau;
             float tebal=w==WeatherState.KabutPagi?0.20f:w==WeatherState.HujanBadai?0.15f:maghrib?0.14f:malam>0.5f?0.16f:0.10f;
+            if(lembab && (malam>0.25f || w==WeatherState.KabutPagi || (jam>=4.5f && jam<8f))) tebal=Mathf.Min(0.30f,tebal*1.45f);
             Color warna=maghrib?new Color(0.68f,0.34f,0.22f):Color.Lerp(new Color(0.58f,0.66f,0.62f),new Color(0.16f,0.25f,0.34f),malam);warna.a=tebal;
             _blok.SetColor("_BaseColor",warna);
             float gridX=Mathf.Floor(p.x/16f)*16f,gridZ=Mathf.Floor(p.z/16f)*16f;
@@ -63,7 +66,7 @@ namespace AlasKeramat.Core
             {
                 float emas=1f-Mathf.InverseLerp(7f,10.5f,jam)+Mathf.InverseLerp(14.8f,17f,jam);
                 Color ws=Color.Lerp(new Color(1f,0.95f,0.82f),new Color(1f,0.82f,0.52f),Mathf.Clamp01(emas));
-                ws.a=kuatSinar*0.18f;
+                ws.a=kuatSinar*0.34f;
                 _blokSinar.SetColor("_BaseColor",ws);
             }
             float miring=Mathf.Lerp(36f,-36f,Mathf.InverseLerp(6f,18f,jam));

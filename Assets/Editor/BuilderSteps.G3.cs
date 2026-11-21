@@ -52,7 +52,8 @@ namespace AlasKeramat.EditorTools
             }
             tex.Apply();
             File.WriteAllBytes(pSinar,tex.EncodeToPNG());Object.DestroyImmediate(tex);AssetDatabase.ImportAsset(pSinar);AturImpor(pSinar,false,false,128);
-            var matSinar=new Material(sh) { name="M_SinarTajuk" };matSinar.SetTexture("_BaseMap",AssetDatabase.LoadAssetAtPath<Texture2D>(pSinar));
+            var shSinar=AmbilShaderAK("AlasKeramat/SinarTajuk")??sh;
+            var matSinar=new Material(shSinar) { name="M_SinarTajuk" };matSinar.SetTexture("_BaseMap",AssetDatabase.LoadAssetAtPath<Texture2D>(pSinar));
             matSinar=SimpanMat(matSinar);
             var ts=new Transform[AtmosferHutan.JumlahSinar];var rs=new Renderer[ts.Length];
             for(int i=0;i<ts.Length;i++)
