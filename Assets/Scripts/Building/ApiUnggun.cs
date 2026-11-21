@@ -43,10 +43,33 @@ namespace AlasKeramat.Building
 
         bool Beratap() { return Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.up, 6f, 1 << GameLayers.Structure, QueryTriggerInteraction.Ignore); }
 
+        AudioSource _kretek;
+        bool _kretekCoba;
+        // Suara kretek api rekaman CC0, 3D, hanya saat menyala.
+        void SuaraKretek()
+        {
+            if (_kretek == null)
+            {
+                if (_kretekCoba || !Menyala) return;
+                _kretekCoba = true;
+                var synth = GameServices.Get<ProceduralAudioSynth>();
+                var c = synth != null ? synth.AmbilRekaman(ProceduralAudioSynth.KlipApi) : null;
+                if (c == null) return;
+                _kretek = gameObject.AddComponent<AudioSource>();
+                _kretek.clip = c; _kretek.loop = true; _kretek.playOnAwake = false; _kretek.spatialBlend = 1f;
+                _kretek.rolloffMode = AudioRolloffMode.Linear; _kretek.minDistance = 1.5f; _kretek.maxDistance = 18f;
+                _kretek.time = Random.Range(0f, Mathf.Max(0f, c.length - 0.1f));
+            }
+            _kretek.volume = 0.7f * ProceduralAudioSynth.VolumeKategori(AudioCategory.Efek);
+            if (Menyala && !_kretek.isPlaying) _kretek.Play();
+            else if (!Menyala && _kretek.isPlaying) _kretek.Stop();
+        }
+
         void Update()
         {
             if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
             float dt = Time.deltaTime;
+            SuaraKretek();
             if (Menyala)
             {
                 bool atap = Beratap();

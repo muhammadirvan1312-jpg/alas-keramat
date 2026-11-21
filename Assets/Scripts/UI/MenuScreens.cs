@@ -307,7 +307,7 @@ namespace AlasKeramat.UI
             var cam = Camera.main;
             if (cam != null)
             {
-                cam.fieldOfView = Fov;
+                cam.fieldOfView = Fov; AlasKeramat.Player.AndiFPSController.FovDasar = Fov;
                 if (Application.isPlaying) cam.farClipPlane = Mathf.Max(dp.farKamera, 135f);
             }
 

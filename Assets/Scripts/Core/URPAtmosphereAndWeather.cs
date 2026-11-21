@@ -136,7 +136,11 @@ namespace AlasKeramat.Core
                 // Shader HDRI AlasKeramat/Langit
                 bool hdriLangit = skybox.HasProperty("_NightBlend");
                 SafeMaterialFactory.SetF(skybox, "_NightBlend", m01);
+                bool adaSenja = skybox.HasProperty("_DuskTex") && skybox.GetTexture("_DuskTex") != null;
+                float senja = adaSenja ? Senja01(jam) : 0f;
+                SafeMaterialFactory.SetF(skybox, "_DuskBlend", senja);
                 Color tint = maghrib ? new Color(1.18f, 0.62f, 0.42f) : Color.Lerp(new Color(0.95f, 0.98f, 1.0f), new Color(0.46f, 0.60f, 0.90f), m01);
+                if (senja > 0f) tint = Color.Lerp(tint, new Color(1.0f, 0.92f, 0.86f), senja * 0.7f);
                 SafeMaterialFactory.SetC(skybox, "_Tint", tint);
                 SafeMaterialFactory.SetF(skybox, "_Exposure", hdriLangit ? (maghrib ? 0.86f : Mathf.Lerp(0.88f, 0.44f, m01)) : Mathf.Lerp(1.22f, 0.24f, m01));
                 SafeMaterialFactory.SetC(skybox, "_HorizonColor", RenderSettings.fogColor);
@@ -169,6 +173,14 @@ namespace AlasKeramat.Core
             if (jam >= 17f) return Mathf.InverseLerp(17f, 20f, jam);
             if (jam < 7f) return 1f - Mathf.InverseLerp(5f, 7f, jam);
             return 0f;
+        }
+
+        // Puncak langit senja (HDRI) sekitar 06:00 dan 18:10, 0 di luar fajar/maghrib.
+        public static float Senja01(float jam)
+        {
+            float pagi = 1f - Mathf.Clamp01(Mathf.Abs(jam - 6.0f) / 1.0f);
+            float sore = 1f - Mathf.Clamp01(Mathf.Abs(jam - 18.1f) / 1.3f);
+            return Mathf.SmoothStep(0f, 1f, Mathf.Max(pagi * 0.75f, sore));
         }
     }
 }
