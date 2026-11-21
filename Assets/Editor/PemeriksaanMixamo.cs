@@ -56,6 +56,14 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Core.AtmosferHutan.KekuatanSinar(8.5f, AlasKeramat.Core.WeatherState.Cerah, false) > 0.5f
                 && AlasKeramat.Core.AtmosferHutan.KekuatanSinar(22f, AlasKeramat.Core.WeatherState.Cerah, false) == 0f
                 && AlasKeramat.Core.AtmosferHutan.KekuatanSinar(9f, AlasKeramat.Core.WeatherState.Cerah, true) == 0f);
+            float pSw;
+            cek("Dunia & gameplay SOTF v2: kunang/spora, ayun senjata FP, suara hewan 3D & properti desa/pantai",
+                AlasKeramat.Core.PartikelAlam.LajuKunang(21f, AlasKeramat.Core.WeatherState.Cerah, true, false) > 0f
+                && AlasKeramat.Core.PartikelAlam.LajuKunang(12f, AlasKeramat.Core.WeatherState.Cerah, true, false) == 0f
+                && AlasKeramat.Core.PartikelAlam.LajuKunang(12f, AlasKeramat.Core.WeatherState.Cerah, false, true) > 0f
+                && AlasKeramat.Player.CombatAndLeftHandController.HitungAyunFP(1.5f, 4f, true, false) != Quaternion.identity
+                && AlasKeramat.AI.WildAnimalAI.KlipSuaraHewan(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, out pSw) == AlasKeramat.Core.ProceduralAudioSynth.KlipTeriakSekte
+                && GameObject.Find("SumurDesa_1") != null && GameObject.Find("PerahuNelayan_0") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

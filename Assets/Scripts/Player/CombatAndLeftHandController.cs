@@ -44,6 +44,19 @@ namespace AlasKeramat.Player
         public Senjata Aktif { get { return _aktif; } }
         public bool SedangMenyerang { get { return _t >= 0f; } }
 
+        public static Quaternion HitungAyunFP(float waktu, float kecepatan, bool lari, bool blok)
+        {
+            if (blok) return PoseBlok;
+            float napasX = Mathf.Sin(waktu * 1.9f) * 1.15f;
+            float napasZ = Mathf.Cos(waktu * 1.4f) * 0.75f;
+            float k = Mathf.Clamp01(kecepatan / 6.5f) * (lari ? 1.35f : 1f);
+            float f = waktu * (lari ? 11.5f : 7.8f);
+            float jalanX = Mathf.Abs(Mathf.Cos(f)) * 4.2f * k;
+            float jalanY = Mathf.Sin(f) * 3.4f * k;
+            float jalanZ = Mathf.Sin(f) * 2.6f * k;
+            return Quaternion.Euler(napasX + jalanX, jalanY, napasZ + jalanZ);
+        }
+
         public void Pasang(Transform pivot, Transform[] model) { pivotFP = pivot; modelSenjata = model; }
 
         void Awake()
@@ -114,7 +127,17 @@ namespace AlasKeramat.Player
             if (Input.GetMouseButtonDown(1)) TangkisTekan();
             if (Input.GetMouseButtonUp(1)) TangkisLepas();
 #endif
-            if (_t < 0f) { if (pivotFP != null) pivotFP.localRotation = Quaternion.Slerp(pivotFP.localRotation, _blok ? _restPivot * PoseBlok : _restPivot, Time.deltaTime * (_blok ? 14f : 10f)); return; }
+            if (_t < 0f)
+            {
+                if (pivotFP != null)
+                {
+                    float kec = _ctrl != null ? _ctrl.KecepatanDatar : 0f;
+                    bool lari = _ctrl != null && _ctrl.SedangLari;
+                    Quaternion targetRot = _restPivot * HitungAyunFP(Time.time, kec, lari, _blok);
+                    pivotFP.localRotation = Quaternion.Slerp(pivotFP.localRotation, targetRot, Time.deltaTime * (_blok ? 14f : 10f));
+                }
+                return;
+            }
             _t += Time.deltaTime;
             float dur = _berat ? _aktif.durB : _aktif.durR, aktif = _berat ? _aktif.aktifB : _aktif.aktifR;
             if (!_sudahKena && _t < aktif) Assist(Time.deltaTime);

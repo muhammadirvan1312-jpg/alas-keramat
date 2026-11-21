@@ -12,9 +12,11 @@ namespace AlasKeramat.EditorTools
         public const string FolderKenney = "Assets/ThirdParty/CC0/Audio/kenney";
         public static readonly string[,] PetaKenney =
         {
-            { S.KlipKenaDaging, "impact_punch_heavy_000" }, { S.KlipParry, "impact_metal_heavy_000" }, { S.KlipTubuhJatuh, "impact_soft_heavy_000" },
-            { S.KlipTebang, "chop" }, { S.KlipAmbilKayu, "impact_wood_medium_000" }, { S.KlipAmbilItem, "handle_small_leather" },
-            { S.KlipTebasBasah, "knife_slice" }, { S.KlipKetukan, "impact_wood_heavy_000" }, { S.KlipKerikil, "impact_generic_light_000" }, { S.KlipUIKlik, "click_001" },
+            { S.KlipKenaDaging, "impact_punch_heavy_000" }, { S.KlipPutusTulang, "impact_punch_medium_000" }, { S.KlipParry, "impact_metal_heavy_000" },
+            { S.KlipTubuhJatuh, "impact_soft_heavy_000" }, { S.KlipTebang, "chop" }, { S.KlipPohonTumbang, "door_open_1" },
+            { S.KlipAmbilKayu, "impact_wood_medium_000" }, { S.KlipAmbilItem, "handle_small_leather" }, { S.KlipTebasBasah, "knife_slice" },
+            { S.KlipKetukan, "impact_wood_heavy_000" }, { S.KlipKerikil, "impact_generic_light_000" }, { S.OsBambu, "creak_1" },
+            { S.OsRantai, "metal_click" }, { S.KlipUIKlik, "click_001" },
         };
 
         // Rekaman CC0 OpenGameArt: {nama klip synth, file di FolderOGA, mode} mode m=efek mono, b=bed/musik stereo streaming.

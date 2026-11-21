@@ -38,18 +38,27 @@ namespace AlasKeramat.EditorTools
                     switch (s.jenis)
                     {
                         case CombatAndLeftHandController.JenisJarak.Busur:
-                            BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, 0.3f, 0f), new Vector3(0.02f, 0.32f, 0.02f), kayu);
-                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.3f, -0.08f), new Vector3(0.004f, 0.6f, 0.004f), logam); break;
+                            BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, 0.18f, 0f), new Vector3(0.024f, 0.14f, 0.030f), kayu);
+                            BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, 0.42f, -0.04f), new Vector3(0.018f, 0.22f, 0.020f), kayu, new Vector3(-22f, 0f, 0f));
+                            BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, -0.06f, -0.04f), new Vector3(0.018f, 0.22f, 0.020f), kayu, new Vector3(22f, 0f, 0f));
+                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.18f, -0.14f), new Vector3(0.004f, 0.72f, 0.004f), logam);
+                            BagianFP(g, PrimitiveType.Cylinder, new Vector3(0.02f, 0.18f, 0.12f), new Vector3(0.008f, 0.28f, 0.008f), kayu, new Vector3(90f, 0f, 0f)); break;
                         case CombatAndLeftHandController.JenisJarak.Tombak:
                             BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, 0.35f, 0f), new Vector3(0.025f, 0.6f, 0.025f), kayu);
-                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.98f, 0f), new Vector3(0.03f, 0.14f, 0.012f), logam); break;
+                            BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, 0.88f, 0f), new Vector3(0.032f, 0.045f, 0.032f), batu);
+                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 1.02f, 0f), new Vector3(0.034f, 0.16f, 0.011f), logam); break;
                         case CombatAndLeftHandController.JenisJarak.Hitscan:
                         case CombatAndLeftHandController.JenisJarak.Suar:
-                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.05f, 0.18f), new Vector3(0.045f, 0.06f, s.id == ItemID.BedilLocok || s.id == ItemID.SenapanLaras ? 0.7f : 0.22f), s.id == ItemID.PistolSuar ? cat : logam);
-                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, -0.04f, 0.05f), new Vector3(0.035f, 0.12f, 0.05f), kayu); break;
+                            bool panjang = s.id == ItemID.BedilLocok || s.id == ItemID.SenapanLaras;
+                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.05f, 0.18f), new Vector3(0.042f, 0.055f, panjang ? 0.72f : 0.22f), s.id == ItemID.PistolSuar ? cat : logam);
+                            BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, 0.085f, panjang ? 0.36f : 0.20f), new Vector3(0.022f, panjang ? 0.32f : 0.11f, 0.022f), logam, new Vector3(90f, 0f, 0f));
+                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.105f, panjang ? 0.62f : 0.28f), new Vector3(0.008f, 0.018f, 0.012f), logam);
+                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, -0.04f, 0.04f), new Vector3(0.034f, 0.12f, 0.055f), kayu, new Vector3(-12f, 0f, 0f)); break;
                         case CombatAndLeftHandController.JenisJarak.Ketapel:
-                            BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, 0.08f, 0f), new Vector3(0.02f, 0.1f, 0.02f), kayu);
-                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.2f, 0f), new Vector3(0.12f, 0.02f, 0.02f), kayu); break;
+                            BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, 0.05f, 0f), new Vector3(0.022f, 0.09f, 0.022f), kayu);
+                            BagianFP(g, PrimitiveType.Cylinder, new Vector3(-0.045f, 0.17f, 0f), new Vector3(0.016f, 0.08f, 0.016f), kayu, new Vector3(0f, 0f, 24f));
+                            BagianFP(g, PrimitiveType.Cylinder, new Vector3( 0.045f, 0.17f, 0f), new Vector3(0.016f, 0.08f, 0.016f), kayu, new Vector3(0f, 0f, -24f));
+                            BagianFP(g, PrimitiveType.Cube, new Vector3(0f, 0.22f, -0.03f), new Vector3(0.14f, 0.012f, 0.012f), cat); break;
                         default:
                             BagianFP(g, PrimitiveType.Cylinder, new Vector3(0f, 0.1f, 0f), new Vector3(0.06f, 0.12f, 0.06f), kayu); break;
                     }

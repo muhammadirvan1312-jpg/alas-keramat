@@ -97,9 +97,98 @@ namespace AlasKeramat.Core
                 if (s > 0) b.Quad(1, a, bb, c, d, 2f); else b.Quad(1, bb, a, d, c, 2f);
                 if (s > 0) b.Quad(1, bb, a, d, c, 2f); else b.Quad(1, a, bb, c, d, 2f); // sisi bawah atap
             }
+            // Bubungan & kasau atap + serambi depan + kusen pintu + jendela + perabotan interior
+            b.Kotak(0, new Vector3(0f, yA + tAtap - 0.04f, 0f), new Vector3(lebar + over * 2f, 0.14f, 0.14f), Quaternion.identity);
+            for (int rk = -2; rk <= 2; rk++)
+                b.Kotak(0, new Vector3(rk * (lebar * 0.22f), yA - 0.04f, 0f), new Vector3(0.10f, 0.12f, dalam + over * 1.8f), Quaternion.identity);
+            float zSerambi = -dalam * 0.5f - 0.55f;
+            b.Kotak(0, new Vector3(0f, tinggiPanggung - 0.02f, zSerambi), new Vector3(lebar * 0.86f, 0.10f, 1.1f), Quaternion.identity);
+            for (int sx = -1; sx <= 1; sx += 2)
+            {
+                b.Kotak(0, new Vector3(sx * (lebar * 0.40f), tinggiPanggung + 0.45f, zSerambi - 0.45f), new Vector3(0.12f, 0.95f, 0.12f), Quaternion.identity);
+                b.Kotak(0, new Vector3(sx * (lebar * 0.27f), tinggiPanggung + 0.78f, zSerambi - 0.45f), new Vector3(lebar * 0.26f, 0.07f, 0.07f), Quaternion.identity);
+            }
+            b.Kotak(0, new Vector3(-0.62f, y0 + 1.05f, -dalam * 0.5f), new Vector3(0.10f, 2.1f, 0.14f), Quaternion.identity);
+            b.Kotak(0, new Vector3( 0.62f, y0 + 1.05f, -dalam * 0.5f), new Vector3(0.10f, 2.1f, 0.14f), Quaternion.identity);
+            b.Kotak(0, new Vector3( 0f,    y0 + 2.08f, -dalam * 0.5f), new Vector3(1.36f, 0.10f, 0.14f), Quaternion.identity);
+            for (int ws = -1; ws <= 1; ws += 2)
+                b.Kotak(1, new Vector3(ws * (lebar * 0.5f + 0.18f), y0 + 1.45f, 0f), new Vector3(0.05f, 0.85f, 1.15f), Quaternion.Euler(0f, 0f, -ws * 28f));
+            if (rusak < 0.75f)
+            {
+                b.Kotak(0, new Vector3(-lebar * 0.22f, y0 + 0.72f, dalam * 0.15f), new Vector3(1.25f, 0.07f, 0.75f), Quaternion.identity);
+                b.Kotak(0, new Vector3(-lebar * 0.22f, y0 + 0.36f, dalam * 0.15f), new Vector3(1.05f, 0.68f, 0.12f), Quaternion.identity);
+                b.Kotak(0, new Vector3(-lebar * 0.22f, y0 + 0.42f, dalam * 0.15f - 0.58f), new Vector3(1.10f, 0.06f, 0.32f), Quaternion.identity);
+                b.Kotak(0, new Vector3(lebar * 0.24f, y0 + 0.32f, dalam * 0.18f), new Vector3(1.35f, 0.12f, 1.85f), Quaternion.identity);
+                b.Kotak(0, new Vector3(0f, y0 + 1.55f, dalam * 0.44f), new Vector3(1.8f, 0.06f, 0.34f), Quaternion.identity);
+            }
             // Tangga
             for (int k = 0; k < 6; k++) b.Kotak(0, new Vector3(0, tinggiPanggung * (k + 0.5f) / 6f, -dalam * 0.5f - 0.3f - (5 - k) * 0.28f), new Vector3(1.0f, 0.06f, 0.25f), Quaternion.identity);
             return b.Jadi("Rumah_" + seed);
+        }
+
+        // Sumur batu desa berpeneduh kayu: 0 batu & kayu, 1 air gelap dalam sumur.
+        public static Mesh SumurDesa()
+        {
+            var b = new B(2);
+            b.Silinder(0, Vector3.zero, 1.05f, 1.0f, 0.92f, 12, Quaternion.identity);
+            b.Silinder(1, new Vector3(0f, 0.06f, 0f), 0.80f, 0.80f, 0.62f, 10, Quaternion.identity);
+            b.Quad(1, new Vector3(-0.75f, 0.66f, -0.75f), new Vector3(0.75f, 0.66f, -0.75f), new Vector3(0.75f, 0.66f, 0.75f), new Vector3(-0.75f, 0.66f, 0.75f), 1.5f);
+            b.Kotak(0, new Vector3(-0.92f, 1.35f, 0f), new Vector3(0.14f, 1.6f, 0.14f), Quaternion.identity);
+            b.Kotak(0, new Vector3( 0.92f, 1.35f, 0f), new Vector3(0.14f, 1.6f, 0.14f), Quaternion.identity);
+            b.Kotak(0, new Vector3(0f, 2.02f, 0f), new Vector3(2.1f, 0.10f, 0.10f), Quaternion.identity);
+            b.Kotak(0, new Vector3(0f, 2.32f, 0.32f), new Vector3(2.3f, 0.06f, 0.95f), Quaternion.Euler(24f, 0f, 0f));
+            b.Kotak(0, new Vector3(0f, 2.32f, -0.32f), new Vector3(2.3f, 0.06f, 0.95f), Quaternion.Euler(-24f, 0f, 0f));
+            return b.Jadi("SumurDesa");
+        }
+
+        // Gerobak kayu kampung: bak papan + dua roda berjari-jari. 0 kayu.
+        public static Mesh GerobakKayu()
+        {
+            var b = new B(1);
+            b.Kotak(0, new Vector3(0f, 0.68f, 0f), new Vector3(1.28f, 0.10f, 2.05f), Quaternion.identity);
+            b.Kotak(0, new Vector3(-0.60f, 0.96f, 0f), new Vector3(0.08f, 0.50f, 2.05f), Quaternion.identity);
+            b.Kotak(0, new Vector3( 0.60f, 0.96f, 0f), new Vector3(0.08f, 0.50f, 2.05f), Quaternion.identity);
+            b.Kotak(0, new Vector3(0f, 0.96f, 0.98f), new Vector3(1.20f, 0.50f, 0.08f), Quaternion.identity);
+            b.Kotak(0, new Vector3(-0.45f, 0.62f, -1.42f), new Vector3(0.09f, 0.09f, 1.1f), Quaternion.Euler(8f, 0f, 0f));
+            b.Kotak(0, new Vector3( 0.45f, 0.62f, -1.42f), new Vector3(0.09f, 0.09f, 1.1f), Quaternion.Euler(8f, 0f, 0f));
+            for (int sx = -1; sx <= 1; sx += 2)
+            {
+                float wx = sx * 0.74f;
+                b.Silinder(0, new Vector3(wx - 0.04f, 0.52f, 0f), 0.52f, 0.52f, 0.08f, 12, Quaternion.Euler(0f, 0f, -90f));
+                for (int sp = 0; sp < 4; sp++)
+                    b.Kotak(0, new Vector3(wx, 0.52f, 0f), new Vector3(0.07f, 0.96f, 0.07f), Quaternion.Euler(sp * 45f, 0f, 0f));
+            }
+            return b.Jadi("GerobakKayu");
+        }
+
+        // Perahu cadik nelayan rusak di pesisir pantai: lambung lengkung + bangku + lengan cadik bambu patah. 0 kayu, 1 bilik/rusak.
+        public static Mesh PerahuNelayanRusak()
+        {
+            var b = new B(2);
+            const int N = 7;
+            Vector3[] pL = new Vector3[N], pR = new Vector3[N], pK = new Vector3[N];
+            for (int i = 0; i < N; i++)
+            {
+                float t = i / (float)(N - 1);
+                float z = Mathf.Lerp(-2.6f, 2.6f, t);
+                float w = Mathf.Sin(t * Mathf.PI) * 0.72f + 0.06f;
+                float y = 0.25f + Mathf.Pow(Mathf.Abs(t - 0.5f) * 2f, 2f) * 0.35f;
+                pL[i] = new Vector3(-w, y, z);
+                pR[i] = new Vector3(w, y, z);
+                pK[i] = new Vector3(0f, y - 0.30f, z);
+            }
+            for (int i = 0; i + 1 < N; i++)
+            {
+                b.Quad(0, pK[i], pL[i], pL[i + 1], pK[i + 1], 1.5f);
+                b.Quad(0, pR[i], pK[i], pK[i + 1], pR[i + 1], 1.5f);
+            }
+            for (int tb = -1; tb <= 1; tb++)
+                b.Kotak(0, new Vector3(0f, 0.24f, tb * 0.95f), new Vector3(1.1f, 0.06f, 0.26f), Quaternion.identity);
+            // Cadik bambu kiri & kanan (salah satu patah miring)
+            b.Kotak(1, new Vector3(-0.9f, 0.32f, -0.8f), new Vector3(1.9f, 0.07f, 0.07f), Quaternion.Euler(0f, 0f, -8f));
+            b.Kotak(1, new Vector3(-0.9f, 0.32f,  0.8f), new Vector3(1.9f, 0.07f, 0.07f), Quaternion.Euler(0f, 0f, -8f));
+            b.Silinder(1, new Vector3(-1.75f, 0.16f, -2.0f), 0.08f, 0.07f, 4.0f, 8, Quaternion.Euler(90f, 0f, 0f));
+            return b.Jadi("PerahuNelayanRusak");
         }
 
         // Heli SAR rusak detail (lofted rounded hull): 0 badan putih/abu, 1 strip & ekor oranye SAR, 2 kaca kokpit/logam gelap/rotor/skid.
