@@ -24,7 +24,7 @@ namespace AlasKeramat.EditorTools
             var norm=BacaFoto(slot,"Normal");
             if(norm!=null)
             {
-                string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,1024);
+                string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,2048);
                 norm=AssetDatabase.LoadAssetAtPath<Texture2D>(pn);
             }
             return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR(namaMat,tint,0f,0.20f,tex,norm,null,SurfaceMode.Cutout,cutoff),ShaderDaun,goyang,0.52f));
@@ -35,11 +35,11 @@ namespace AlasKeramat.EditorTools
             var sudah=AssetDatabase.LoadAssetAtPath<Material>(FolderMat+"/"+namaMat+".mat");if(sudah!=null)return sudah;
             var alb=BacaFoto(slot,"Albedo");var norm=BacaFoto(slot,"Normal");
             if(alb==null)return null;
-            string pa=FolderVeg+"/"+slot+"_a.png";File.WriteAllBytes(pa,alb.EncodeToPNG());AssetDatabase.ImportAsset(pa);AturImpor(pa,false,false,1024);
+            string pa=FolderVeg+"/"+slot+"_a.png";File.WriteAllBytes(pa,alb.EncodeToPNG());AssetDatabase.ImportAsset(pa);AturImpor(pa,false,false,2048);
             alb=AssetDatabase.LoadAssetAtPath<Texture2D>(pa);
             if(norm!=null)
             {
-                string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,1024);
+                string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,2048);
                 norm=AssetDatabase.LoadAssetAtPath<Texture2D>(pn);
             }
             return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR(namaMat,tint,0f,halus,alb,norm),ShaderKulit,0f,0f));
@@ -140,10 +140,10 @@ namespace AlasKeramat.EditorTools
             return b==Biome.HutanCampuran || b==Biome.HutanJatiSelatan || b==Biome.HutanBambu || b==Biome.TepiSungai || b==Biome.KawahBeringin || i==11 || i==15;
         }
         static bool BiomaBatu(Biome b) { return b==Biome.TebingKapur || b==WorldTerrainGenerator.GunungKapur; }
-        static readonly int[] TipeSebaran={4,4,10,10,11,5,6,7,8,8,9,2,2,3};
+        static readonly int[] TipeSebaran={0,0,1,1,2,2,3,4,4,5,6,7,8,8,9,10,10,11};
         static int SebaranPulau(Mesh[] meshes,Material[] bahan,List<SerasahHutan.KelompokSerasah> hasil)
         {
-            const int sel=64,calon=26;int total=0;
+            const int sel=64,calon=88;int total=0;
             var mBesar=MuatPropScan("BatuBesarScan");
             var matBesar=MaterialSolidScan("BatuBesarAsli","M_BatuBesarScan",new Color(0.86f,0.85f,0.82f,1f),0.22f);
             for(int z=-1000;z<1000;z+=sel)for(int x=-1000;x<1000;x+=sel)
@@ -266,9 +266,78 @@ namespace AlasKeramat.EditorTools
                 }
             }
             int sebaran=SebaranPulau(meshes,bahan,hasil);
+            sebaran+=SebaranTepiSungai(meshes,bahan,hasil);
             var detail=Anak(_root,"SerasahHutan").AddComponent<SerasahHutan>();detail.kelompok=hasil.ToArray();EditorUtility.SetDirty(detail);
-            Catat("Lantai hutan photogrammetry CC0: "+hasil.Count+" batch, "+sebaran+" sebaran se-pulau (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)");
+            Catat("Lantai hutan photogrammetry CC0: "+hasil.Count+" batch, "+sebaran+" sebaran se-pulau & tepi sungai (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)");
             Catat("Lantai hutan photogrammetry CC0: "+hasil.Count+" batch (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)");
+        }
+
+        static int SebaranTepiSungai(Mesh[] meshes,Material[] bahan,List<SerasahHutan.KelompokSerasah> hasil)
+        {
+            int total=0;
+            var daftar=new List<Matrix4x4>[meshes.Length];
+            for(int k=0;k<meshes.Length;k++)daftar[k]=new List<Matrix4x4>();
+            var mBesar=MuatPropScan("BatuBesarScan");
+            var matBesar=MaterialSolidScan("BatuBesarAsli","M_BatuBesarScan",new Color(0.86f,0.85f,0.82f,1f),0.22f);
+            var batuBesar=new List<Matrix4x4>();
+            var rng=new System.Random(7731);
+            int[] tipeTepi={2,2,3,4,4,5,6,10,11};
+            for(int s=0;s<WorldTerrainGenerator.SemuaSungai.Length;s++)
+            {
+                var pts=WorldTerrainGenerator.SemuaSungai[s];
+                for(int i=0;i+1<pts.Length;i++)
+                {
+                    var a=pts[i];var b=pts[i+1];
+                    Vector2 dir=new Vector2(b.x-a.x,b.z-a.z);
+                    float len=dir.magnitude;
+                    if(len<1f)continue;
+                    Vector2 perp=new Vector2(-dir.y/len,dir.x/len);
+                    int langkah=Mathf.Max(3,Mathf.RoundToInt(len/9f));
+                    for(int j=0;j<langkah;j++)
+                    {
+                        float t=(j+0.5f)/langkah;
+                        float cx=Mathf.Lerp(a.x,b.x,t),cz=Mathf.Lerp(a.z,b.z,t),lebar=Mathf.Lerp(a.w,b.w,t);
+                        for(int sisi=-1;sisi<=1;sisi+=2)
+                        {
+                            float jarak=lebar*0.58f+0.8f+(float)rng.NextDouble()*4.8f;
+                            float px=cx+perp.x*sisi*jarak+(float)(rng.NextDouble()-0.5)*3f;
+                            float pz=cz+perp.y*sisi*jarak+(float)(rng.NextDouble()-0.5)*3f;
+                            float y=WorldTerrainGenerator.SampleHeight(px,pz);
+                            if(y<0.3f || DekorasiMenutupAwal(px,pz) || AreaBebasSerasah(px,pz))continue;
+                            float rY=(float)rng.NextDouble()*360f;
+                            if(mBesar!=null && matBesar!=null && rng.Next(4)==0)
+                            {
+                                float sb=0.85f+(float)rng.NextDouble()*1.6f;
+                                batuBesar.Add(Matrix4x4.TRS(new Vector3(px,y-0.25f*sb,pz),Quaternion.Euler((float)rng.NextDouble()*14f-7f,rY,(float)rng.NextDouble()*14f-7f),new Vector3(sb,sb*(0.7f+0.35f*(float)rng.NextDouble()),sb)));
+                                continue;
+                            }
+                            int tp=tipeTepi[rng.Next(tipeTepi.Length)];
+                            if(tp>=meshes.Length)continue;
+                            float sc=0.75f+(float)rng.NextDouble()*0.85f;
+                            daftar[tp].Add(Matrix4x4.TRS(new Vector3(px,y-0.04f,pz),Quaternion.Euler(0f,rY,0f),new Vector3(sc,sc*(0.85f+0.3f*(float)rng.NextDouble()),sc)));
+                        }
+                    }
+                }
+            }
+            if(batuBesar.Count>0)
+            {
+                var ab=batuBesar.ToArray();var bb=new Bounds((Vector3)ab[0].GetColumn(3),Vector3.one*8f);
+                for(int k=1;k<ab.Length;k++)bb.Encapsulate(new Bounds((Vector3)ab[k].GetColumn(3),Vector3.one*8f));
+                hasil.Add(new SerasahHutan.KelompokSerasah { mesh=mBesar,material=matBesar,bounds=bb,matriks=ab });total+=ab.Length;
+            }
+            for(int t=0;t<meshes.Length;t++)
+            {
+                var all=daftar[t];
+                for(int a=0;a<all.Count;a+=AlasKeramat.Building.VegetationManager.MaksRender)
+                {
+                    int cnt=Mathf.Min(AlasKeramat.Building.VegetationManager.MaksRender,all.Count-a);
+                    var arr=all.GetRange(a,cnt).ToArray();
+                    var bd=new Bounds((Vector3)arr[0].GetColumn(3),Vector3.one*6f);
+                    for(int k=1;k<cnt;k++)bd.Encapsulate(new Bounds((Vector3)arr[k].GetColumn(3),Vector3.one*6f));
+                    hasil.Add(new SerasahHutan.KelompokSerasah { mesh=meshes[t],material=bahan[t],bounds=bd,matriks=arr });total+=cnt;
+                }
+            }
+            return total;
         }
     }
 }

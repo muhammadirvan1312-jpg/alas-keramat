@@ -35,13 +35,27 @@ namespace AlasKeramat.EditorTools
                 && synth.AmbilRekaman(AlasKeramat.AI.MusikJelajah.KlipSiang) != null);
             cek("Audio: suara hujan ikut cuaca", AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.HujanBadai) > AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.Gerimis)
                 && AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.Cerah) == 0f && synth != null && synth.GetComponent<AlasKeramat.Core.SuaraHujan>() != null);
-            cek("Mixamo: peta model karakter (Genderuwo=Warrok, Wanita=Zombiegirl, Sekte=Nightshade)", NusantaraMasterBuilder.ModelUntuk("BossGenderuwo") == "Warrok"
+            cek("Mixamo: peta model karakter (Deden=Remy, Ningsih=Peasant_Girl, KiRogo=Peasant_Man, Genderuwo=Warrok)", NusantaraMasterBuilder.ModelUntuk("BossGenderuwo") == "Warrok"
+                && NusantaraMasterBuilder.ModelUntuk("Deden") == "Remy" && NusantaraMasterBuilder.ModelUntuk("Ningsih") == "Peasant_Girl" && NusantaraMasterBuilder.ModelUntuk("KiRogo") == "Peasant_Man"
                 && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiWanita") == "Zombiegirl" && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiSekte") == "Nightshade" && NusantaraMasterBuilder.ModelUntuk("Musuh_KiRogo") == null
                 && AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(1.8f, 1.8f) == 1f && AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(3f, 1f) == 2.5f);
             cek("Hewan asli: peta model & pilihan klip", NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Rusa) == "rusa"
-                && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau) == null
+                && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau) == "harimau"
+                && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.BabiHutan) == "babi_hutan"
+                && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Buaya) == "buaya"
+                && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Biawak) == "biawak"
+                && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Monyet) == "monyet"
+                && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Anjing) == "anjing"
+                && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Kucing) == "kucing"
+                && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Tawon) == null
                 && AlasKeramat.AI.ModelHewanAsli.PilihKlip(0f, 5f, "i", "w", "r") == "i" && AlasKeramat.AI.ModelHewanAsli.PilihKlip(1f, 5f, "i", "w", "r") == "w" && AlasKeramat.AI.ModelHewanAsli.PilihKlip(5f, 5f, "i", "w", "r") == "r"
                 && AlasKeramat.AI.ModelHewanAsli.IndeksBahan("Eyes", "Head", null) == -1 && AlasKeramat.AI.ModelHewanAsli.IndeksBahan("Body", "head", new[] { "body", "head" }) == 1);
+            cek("Gua & atmosfer: kelelawar gua terbang & god rays sinar tajuk",
+                AlasKeramat.AI.KelelawarGua.HitungPosisi(Vector3.zero, 3f, 0.5f, 1.2f, 0f, 1.5f).magnitude > 0.5f
+                && Object.FindObjectsByType<AlasKeramat.AI.KelelawarGua>(FindObjectsInactive.Include, FindObjectsSortMode.None).Length >= 6
+                && AlasKeramat.Core.AtmosferHutan.KekuatanSinar(8.5f, AlasKeramat.Core.WeatherState.Cerah, false) > 0.5f
+                && AlasKeramat.Core.AtmosferHutan.KekuatanSinar(22f, AlasKeramat.Core.WeatherState.Cerah, false) == 0f
+                && AlasKeramat.Core.AtmosferHutan.KekuatanSinar(9f, AlasKeramat.Core.WeatherState.Cerah, true) == 0f);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

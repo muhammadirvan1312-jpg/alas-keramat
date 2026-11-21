@@ -60,16 +60,20 @@ namespace AlasKeramat.EditorTools
                     }
                     finally { PrefabUtility.UnloadPrefabContents(root); }
                 }
-            n += PasangDiAdegan<KangDedenKelvinAI>(bank, AnimasiMixamo.Peran.Pria);
-            n += PasangDiAdegan<NingsihVirginiaAI>(bank, AnimasiMixamo.Peran.Wanita);
-            n += PasangDiAdegan<KiRogoPanggung>(bank, AnimasiMixamo.Peran.Pria);
+            n += PasangDiAdegan<KangDedenKelvinAI>(bank, AnimasiMixamo.Peran.Pria, "Deden");
+            n += PasangDiAdegan<NingsihVirginiaAI>(bank, AnimasiMixamo.Peran.Wanita, "Ningsih");
+            n += PasangDiAdegan<KiRogoPanggung>(bank, AnimasiMixamo.Peran.Pria, "KiRogo");
             n += PasangDiAdegan<BossGenderuwo>(bank, AnimasiMixamo.Peran.Raksasa, "Genderuwo");
             Catat("Mixamo: " + klip.Count + " klip mocap, retarget dipasang ke " + n + " karakter/prefab, " + JumlahModelMixamo + " memakai model karakter Mixamo asli");
         }
 
-        // Musuh -> model karakter Mixamo (file di Assets/MixamoKarakter, dari repo aset privat). null = tetap model lama.
+        // Musuh & karakter utama -> model karakter Mixamo (file di Assets/MixamoKarakter, dari repo aset privat). null = tetap model lama.
         public static string ModelUntuk(string nama)
         {
+            if (string.IsNullOrEmpty(nama)) return null;
+            if (nama == "Deden" || nama.Contains("KangDeden")) return "Remy";
+            if (nama == "Ningsih") return "Peasant_Girl";
+            if (nama == "KiRogo" || nama == "KiRogoPanggung") return "Peasant_Man";
             if (nama.Contains("Genderuwo")) return "Warrok";
             if (nama.Contains("AbdiButo")) return "Maw";
             if (nama.Contains("AbdiWanita")) return "Zombiegirl";
