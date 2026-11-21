@@ -1,8 +1,8 @@
 # LAPORAN CI
-- Commit: ba8a5c7199a18881420ece45055c917de54353e1
+- Commit: e8526f072b5aabd7e576e49087873be03b8f30d4
 - Hasil aset visual: success
-- Hasil langkah Unity: success
-- Waktu: 2026-11-21T15:04:34Z
+- Hasil langkah Unity: failure
+- Waktu: 2026-11-21T17:37:50Z
 
 [LULUS] pengaturan pemain
 [LULUS] builder
