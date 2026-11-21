@@ -21,7 +21,35 @@ namespace AlasKeramat.Player
         MaterialPropertyBlock _mpbDarah;
         Renderer[] _rendererDarah;
         float _tVisualDarah;
+        ParticleSystem _percikanParry;
         public float DarahSenjata { get { return _darahSenjata; } }
+
+        public static int JumlahPercikanParry(bool berhasilParry, bool blokKuat)
+        {
+            return berhasilParry ? 22 : blokKuat ? 10 : 0;
+        }
+
+        void PancarPercikanParry(Vector3 posPenyerang, int jumlah)
+        {
+            if (jumlah <= 0) return;
+            if (_percikanParry == null)
+            {
+                var go = new GameObject("PercikanParry");
+                go.transform.SetParent(transform, false);
+                _percikanParry = go.AddComponent<ParticleSystem>();
+                _percikanParry.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                var main = _percikanParry.main;
+                main.playOnAwake = false; main.loop = false; main.startLifetime = 0.24f;
+                main.startSpeed = 5.5f; main.startSize = 0.038f; main.gravityModifier = 1.4f;
+                main.simulationSpace = ParticleSystemSimulationSpace.World; main.maxParticles = 48;
+                var sh = _percikanParry.shape; sh.shapeType = ParticleSystemShapeType.Sphere; sh.radius = 0.12f;
+                var pr = go.GetComponent<ParticleSystemRenderer>();
+                pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_PercikanParry", new Color(1f, 0.85f, 0.35f), 0f, 0.9f, null, null, new Color(3.6f, 2.2f, 0.55f));
+                pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+            _percikanParry.transform.position = Vector3.Lerp(transform.position + Vector3.up * 1.35f, posPenyerang + Vector3.up * 1.2f, 0.45f);
+            _percikanParry.Emit(jumlah);
+        }
 
         public bool Blok { get { return _blok; } }
         public bool ParryAktif { get { return _tParry > 0f; } }
@@ -71,6 +99,7 @@ namespace AlasKeramat.Player
             {
                 diparry = true; _tParry = -1f; _tPenghabisan = LamaPenghabisan;
                 Guncang(GuncangRingan); MulaiHitStop();
+                PancarPercikanParry(posPenyerang, JumlahPercikanParry(true, false));
                 var a = GameServices.Get<ProceduralAudioSynth>();
                 if (a != null) a.Play(ProceduralAudioSynth.KlipParry, posPenyerang, AudioCategory.Efek, 1f, Random.Range(0.95f, 1.08f), 3);
                 return 0f;
@@ -81,6 +110,7 @@ namespace AlasKeramat.Player
                 float biaya = damage * StaminaBlokPerDamage;
                 if (_v != null && !_v.Pakai(biaya)) { _blok = false; GameEvents.RaiseToast("Tangkisan jebol, stamina habis"); return damage; }
                 Guncang(GuncangRingan);
+                PancarPercikanParry(posPenyerang, JumlahPercikanParry(false, true));
                 return damage * (1f - ReduksiBlok);
             }
             return damage;

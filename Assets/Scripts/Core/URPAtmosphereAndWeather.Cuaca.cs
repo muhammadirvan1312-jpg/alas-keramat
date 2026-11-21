@@ -13,8 +13,14 @@ namespace AlasKeramat.Core
 
         WeatherState _cuaca = WeatherState.Cerah, _cuacaLama = WeatherState.Cerah;
         float _transisi = 1f, _jamCekBerikut = 11f, _kilatBerikut = 10f, _kilatSisa, _guruhTunda = -1f;
-        ParticleSystem _hujan;
+        ParticleSystem _hujan, _percikanHujan;
         Dsp.Rng _rng = new Dsp.Rng(20261117u);
+
+        public static float LajuPercikanHujan(float intensitasHujan, bool bawahTanah)
+        {
+            if (bawahTanah || intensitasHujan <= 0.02f) return 0f;
+            return 420f * intensitasHujan;
+        }
 
         public WeatherState Cuaca { get { return _cuaca; } }
         public static Season MusimHari(int hari) { return ((hari - 1) / HariPerMusim) % 2 == 0 ? Season.Kemarau : Season.Penghujan; }
@@ -101,13 +107,26 @@ namespace AlasKeramat.Core
         void PerbaruiHujan()
         {
             float i = IntensitasHujan();
-            if (i <= 0.01f) { if (_hujan != null && _hujan.isPlaying) _hujan.Stop(); return; }
+            if (i <= 0.01f)
+            {
+                if (_hujan != null && _hujan.isPlaying) _hujan.Stop();
+                if (_percikanHujan != null && _percikanHujan.isPlaying) _percikanHujan.Stop();
+                return;
+            }
             if (_hujan == null) BuatHujan();
             if (_hujan == null) return;
             var cam = Camera.main;
             if (cam != null) _hujan.transform.position = cam.transform.position + Vector3.up * 12f;
             var em = _hujan.emission; em.rateOverTime = 4500f * i;
             if (!_hujan.isPlaying) _hujan.Play();
+            if (_percikanHujan != null && cam != null)
+            {
+                Vector3 cp = cam.transform.position;
+                _percikanHujan.transform.position = new Vector3(cp.x, WorldTerrainGenerator.SampleHeight(cp.x, cp.z) + 0.12f, cp.z);
+                var emP = _percikanHujan.emission;
+                emP.rateOverTime = LajuPercikanHujan(i, WorldTerrainGenerator.DiBawahTanah(cp.y));
+                if (!_percikanHujan.isPlaying) _percikanHujan.Play();
+            }
         }
 
         void BuatHujan()
@@ -126,6 +145,18 @@ namespace AlasKeramat.Core
             var r = go.GetComponent<ParticleSystemRenderer>();
             r.renderMode = ParticleSystemRenderMode.Stretch; r.velocityScale = 0.05f; r.lengthScale = 1f;
             r.sharedMaterial = materialHujan;
+
+            var gPercik = new GameObject("PercikanHujanTanah");
+            gPercik.transform.SetParent(transform, false);
+            _percikanHujan = gPercik.AddComponent<ParticleSystem>();
+            _percikanHujan.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var mp = _percikanHujan.main;
+            mp.loop = true; mp.startLifetime = 0.28f; mp.startSpeed = 1.6f; mp.startSize = 0.12f;
+            mp.maxParticles = 600; mp.simulationSpace = ParticleSystemSimulationSpace.World; mp.gravityModifier = 0.8f;
+            mp.startColor = new Color(0.82f, 0.88f, 0.94f, 0.38f);
+            var sp = _percikanHujan.shape; sp.shapeType = ParticleSystemShapeType.Box; sp.scale = new Vector3(24f, 0.2f, 24f);
+            var pr = gPercik.GetComponent<ParticleSystemRenderer>();
+            pr.sharedMaterial = materialHujan; pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
         void PerbaruiKilat()

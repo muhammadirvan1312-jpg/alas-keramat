@@ -175,6 +175,24 @@ namespace AlasKeramat.EditorTools
             float[,] posL = { { 658f, -502f, 32f }, { 672f, -488f, 32f }, { 682f, -478f, 120f } };
             for (int i = 0; i < posL.GetLength(0); i++)
                 Taruh("LoriTebu_" + i, loriMesh, new[] { seng, kayu }, posL[i, 0], posL[i, 1], posL[i, 2], Vector3.one, true);
+
+            var jembatanMesh = Simpan(ProcBangunan.JembatanKayu());
+            float[,] posJ = { { 330f, -370f, 85f }, { 437f, 220f, 66f } };
+            for (int i = 0; i < posJ.GetLength(0); i++)
+            {
+                var jb = Taruh("JembatanSungai_" + i, jembatanMesh, new[] { kayu }, posJ[i, 0], posJ[i, 1], posJ[i, 2], Vector3.one, true);
+                float? wl = WorldTerrainGenerator.GetWaterLevelAt(posJ[i, 0], posJ[i, 1]);
+                float yJ = (wl ?? WorldTerrainGenerator.SampleHeight(posJ[i, 0], posJ[i, 1])) + 1.15f;
+                jb.transform.position = new Vector3(posJ[i, 0], yJ, posJ[i, 1]);
+            }
+
+            var dermaga = Taruh("DermagaPantai_0", Simpan(ProcBangunan.DermagaPantai()), new[] { kayu }, -130f, -868f, 180f, Vector3.one, true);
+            dermaga.transform.position = new Vector3(-130f, 1.1f, -868f);
+
+            var tendaMesh = Simpan(ProcBangunan.TendaEkspedisi());
+            float[,] posT = { { 20f, -436f, 210f }, { -6f, -456f, 45f }, { -518f, 258f, 130f } };
+            for (int i = 0; i < posT.GetLength(0); i++)
+                Taruh("TendaEkspedisi_" + i, tendaMesh, new[] { bilik, kayu }, posT[i, 0], posT[i, 1], posT[i, 2], Vector3.one, true);
         }
 
         static Texture2D Tex(string nama) { return AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + nama + ".png"); }

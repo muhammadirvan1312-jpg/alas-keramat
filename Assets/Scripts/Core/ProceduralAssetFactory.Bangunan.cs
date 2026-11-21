@@ -417,5 +417,62 @@ namespace AlasKeramat.Core
             }
             return b.Jadi("GapuraBatuKeramat");
         }
+
+        // Jembatan kayu gelondong & papan berpagar melintasi sungai (panjang 28 m sepanjang Z). 0 kayu.
+        public static Mesh JembatanKayu()
+        {
+            var b = new B(1);
+            for (int side = -1; side <= 1; side += 2)
+                b.Kotak(0, new Vector3(side * 1.05f, -0.12f, 0f), new Vector3(0.28f, 0.28f, 26f), Quaternion.identity, 2f);
+            for (int p = 0; p < 18; p++)
+            {
+                float z = -12.2f + p * 1.43f;
+                b.Kotak(0, new Vector3(0f, 0.04f, z), new Vector3(2.6f, 0.08f, 1.18f), Quaternion.identity, 1.5f);
+            }
+            b.Kotak(0, new Vector3(0f, -0.18f, -13.2f), new Vector3(2.6f, 0.12f, 2.2f), Quaternion.Euler(14f, 0f, 0f), 1.5f);
+            b.Kotak(0, new Vector3(0f, -0.18f,  13.2f), new Vector3(2.6f, 0.12f, 2.2f), Quaternion.Euler(-14f, 0f, 0f), 1.5f);
+            float[] zp = { -8f, 0f, 8f };
+            for (int i = 0; i < zp.Length; i++)
+                for (int side = -1; side <= 1; side += 2)
+                {
+                    b.Silinder(0, new Vector3(side * 1.1f, -3.6f, zp[i]), 0.16f, 0.14f, 3.8f, 8, Quaternion.identity);
+                    b.Kotak(0, new Vector3(side * 1.24f, 0.6f, zp[i]), new Vector3(0.14f, 1.08f, 0.14f), Quaternion.identity);
+                }
+            for (int side = -1; side <= 1; side += 2)
+                b.Kotak(0, new Vector3(side * 1.24f, 1.05f, 0f), new Vector3(0.10f, 0.10f, 17f), Quaternion.identity, 2f);
+            return b.Jadi("JembatanKayu");
+        }
+
+        // Dermaga kayu nelayan menjorok ke laut: balok, papan dek, 8 tiang pancang laut & patok tambat. 0 kayu.
+        public static Mesh DermagaPantai()
+        {
+            var b = new B(1);
+            for (int side = -1; side <= 1; side += 2)
+                b.Kotak(0, new Vector3(side * 1.25f, -0.1f, 0f), new Vector3(0.28f, 0.28f, 18f), Quaternion.identity, 2f);
+            for (int p = 0; p < 14; p++)
+                b.Kotak(0, new Vector3(0f, 0.06f, -8.4f + p * 1.28f), new Vector3(3.2f, 0.08f, 1.05f), Quaternion.identity, 1.5f);
+            for (int r = 0; r < 4; r++)
+                for (int side = -1; side <= 1; side += 2)
+                {
+                    float z = -7.5f + r * 5f;
+                    b.Silinder(0, new Vector3(side * 1.35f, -3.8f, z), 0.18f, 0.16f, 4.1f, 8, Quaternion.identity);
+                    if (r == 3) b.Silinder(0, new Vector3(side * 1.38f, 0.1f, z + 0.7f), 0.14f, 0.14f, 0.65f, 8, Quaternion.identity);
+                }
+            return b.Jadi("DermagaPantai");
+        }
+
+        // Tenda ekspedisi darurat (A-frame terpal + tiang kayu + matras & peti logistik). 0 terpal, 1 kayu.
+        public static Mesh TendaEkspedisi()
+        {
+            var b = new B(2);
+            b.Kotak(0, new Vector3(-0.78f, 0.92f, 0f), new Vector3(0.06f, 2.05f, 3.4f), Quaternion.Euler(0f, 0f, -38f), 1.5f);
+            b.Kotak(0, new Vector3( 0.78f, 0.92f, 0f), new Vector3(0.06f, 2.05f, 3.4f), Quaternion.Euler(0f, 0f,  38f), 1.5f);
+            b.Kotak(0, new Vector3(0f, 0.05f, 0f), new Vector3(2.2f, 0.08f, 3.1f), Quaternion.identity, 1.5f);
+            b.Silinder(1, new Vector3(0f, 0f, -1.65f), 0.05f, 0.045f, 1.78f, 6, Quaternion.identity);
+            b.Silinder(1, new Vector3(0f, 0f,  1.65f), 0.05f, 0.045f, 1.78f, 6, Quaternion.identity);
+            b.Silinder(1, new Vector3(0f, 1.74f, -1.75f), 0.045f, 0.045f, 3.5f, 6, Quaternion.Euler(90f, 0f, 0f));
+            b.Kotak(1, new Vector3(1.55f, 0.30f, -1.1f), new Vector3(0.68f, 0.56f, 0.88f), Quaternion.Euler(0f, 12f, 0f), 1f);
+            return b.Jadi("TendaEkspedisi");
+        }
     }
 }

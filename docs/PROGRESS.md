@@ -171,3 +171,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `CompanionDasar` menambahkan lentera malam hangat (`LampuTeman` / `HitungIntensitasLampuTeman`) saat malam atau di dalam gua sehingga Deden dan Ningsih menerangi sekitar bersama pemain.
   - `SuaraAirDunia` memutar gemericik sungai dan deburan ombak pantai yang volumenya mengikuti jarak terdekat ke aliran sungai/garis pantai.
   - Shader `AK_Kulit.shader` & `AK_Daun.shader` diperhalus dengan root AO dan pantulan basah Fresnel saat hujan; `ProcBangunan.GapuraBatuKeramat` dan dua gapura candi bentar + tungku sesaji dipasang mengapit Altar & Beringin Agung.
+- Gelombang 5 SOTF (`imp-sotf-v3`):
+  - `CombatAndLeftHandController` memancarkan percikan api logam saat berhasil parry & blok serangan (`PercikanParry` / `JumlahPercikanParry`).
+  - `URPAtmosphereAndWeather` menambahkan cipratan hujan di permukaan tanah sekitar pemain (`PercikanHujanTanah` / `LajuPercikanHujan`) dan `FoleyAndi` memancarkan cipratan air/debu saat berlari, melompat mendarat, atau berenang.
+  - Infrastruktur pulau diperkaya dengan 2 jembatan kayu penyeberangan sungai (`JembatanSungai_0..1`), dermaga nelayan pantai (`DermagaPantai_0`), serta 3 tenda ekspedisi darurat (`TendaEkspedisi_0..2`) di dekat lokasi jatuh heli & bukit utara.

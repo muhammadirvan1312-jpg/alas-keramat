@@ -81,6 +81,16 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Core.SuaraAirDunia.HitungVolumeAir(200f, 30f, false) == 0f
                 && GameObject.Find("GapuraKeramat_0") != null
                 && AlasKeramat.Core.ProcBangunan.GapuraBatuKeramat().vertexCount > 40);
+            cek("SOTF v5: percikan parry, cipratan hujan/langkah & jembatan/dermaga/tenda",
+                AlasKeramat.Player.CombatAndLeftHandController.JumlahPercikanParry(true, false) == 22
+                && AlasKeramat.Player.CombatAndLeftHandController.JumlahPercikanParry(false, false) == 0
+                && AlasKeramat.Core.URPAtmosphereAndWeather.LajuPercikanHujan(1f, false) > 100f
+                && AlasKeramat.Core.URPAtmosphereAndWeather.LajuPercikanHujan(1f, true) == 0f
+                && AlasKeramat.Player.FoleyAndi.JumlahPartikelLangkah(AlasKeramat.Core.SurfaceType.Air, 0.8f) > 0
+                && AlasKeramat.Core.ProcBangunan.JembatanKayu().vertexCount > 60
+                && AlasKeramat.Core.ProcBangunan.DermagaPantai().vertexCount > 40
+                && AlasKeramat.Core.ProcBangunan.TendaEkspedisi().vertexCount > 30
+                && GameObject.Find("JembatanSungai_0") != null && GameObject.Find("DermagaPantai_0") != null && GameObject.Find("TendaEkspedisi_0") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;
