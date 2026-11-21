@@ -118,7 +118,28 @@ namespace AlasKeramat.EditorTools
             // Mulut gua: UG1 lembah bambu (menghadap timur ke sungai), UG3 celah kuil.
             Taruh("CaveEntrance_1", Simpan(ProcBangunan.MulutGua(1, 9f)), new[] { batu, hitam }, 256f, -276f, 90f, Vector3.one, true);
             Taruh("CaveEntrance_3", Simpan(ProcBangunan.MulutGua(3, 12f)), new[] { batu, hitam }, 0f, 694f, 180f, Vector3.one, true);
-            Catat("Landmark: " + JumlahLandmark + " objek (Beringin Agung, heli, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula, 2 mulut gua, altar)");
+            DandanDesaDanPantai(kayu, batu, seng, hitam, bilik);
+            Catat("Landmark: " + JumlahLandmark + " objek (Beringin Agung, heli, 6 rumah desa + interior, 22 rumah kampung, sumur, gerobak, perahu karam, mercusuar, pabrik gula, 2 mulut gua, altar)");
+        }
+
+        static void DandanDesaDanPantai(Material kayu, Material batu, Material seng, Material hitam, Material bilik)
+        {
+            var sumurMesh = Simpan(ProcBangunan.SumurDesa());
+            Taruh("SumurDesa_1", sumurMesh, new[] { batu, hitam }, 548f, 208f, 25f, Vector3.one, true);
+            Taruh("SumurKampung_1", sumurMesh, new[] { batu, hitam }, 612f, 605f, 140f, Vector3.one, true);
+
+            var gerobakMesh = Simpan(ProcBangunan.GerobakKayu());
+            float[,] posG = { { 556f, 218f, 40f }, { 585f, 575f, 115f }, { 638f, 635f, -35f }, { 665f, -490f, 70f } };
+            for (int i = 0; i < posG.GetLength(0); i++)
+                Taruh("GerobakDesa_" + i, gerobakMesh, new[] { kayu }, posG[i, 0], posG[i, 1], posG[i, 2], Vector3.one, true);
+
+            var perahuMesh = Simpan(ProcBangunan.PerahuNelayanRusak());
+            float[,] posP = { { -145f, -855f, 28f }, { 45f, -860f, -42f }, { 310f, -720f, 110f } };
+            for (int i = 0; i < posP.GetLength(0); i++)
+            {
+                var pr = Taruh("PerahuNelayan_" + i, perahuMesh, new[] { kayu, bilik }, posP[i, 0], posP[i, 1], posP[i, 2], Vector3.one, true);
+                pr.transform.rotation = Quaternion.Euler(4f, posP[i, 2], (i % 2 == 0 ? 12f : -10f));
+            }
         }
 
         static Texture2D Tex(string nama) { return AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + nama + ".png"); }

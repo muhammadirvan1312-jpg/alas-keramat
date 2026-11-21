@@ -89,7 +89,7 @@ namespace AlasKeramat.AI
                 float d = Vector3.Distance(_andi.transform.position, p);
                 if (d < det)
                 {
-                    if (u.pemangsa && EnemyDirector.Kesulitan != Difficulty.Damai) { State = KeadaanHewan.Menyerang; _tState = LamaMarah; }
+                    if (u.pemangsa && EnemyDirector.Kesulitan != Difficulty.Damai) { if (State != KeadaanHewan.Menyerang) BunyikanSuara(0.85f); State = KeadaanHewan.Menyerang; _tState = LamaMarah; }
                     else { State = KeadaanHewan.Kabur; _tState = LamaKabur; }
                 }
                 else if (d < det * 1.45f && State == KeadaanHewan.Merumput) { State = KeadaanHewan.Waspada; _tState = 2f; }
@@ -119,6 +119,7 @@ namespace AlasKeramat.AI
                         if (ke.magnitude < jangkauSerang && _tSeruduk <= 0f)
                         {
                             _tSeruduk = u.jeda > 0f ? u.jeda : JedaSeruduk;
+                            BunyikanSuara(0.95f);
                             float dmg = u.damage > 0f ? u.damage : DamageSeruduk;
                             var target = _andi.GetComponent<IDamageable>();
                             if (target != null) target.TakeDamage(new DamageInfo { amount = dmg, type = DamageType.Tusuk, point = _andi.transform.position, direction = ke.normalized, source = gameObject });
@@ -198,10 +199,37 @@ namespace AlasKeramat.AI
 
         void R(int i, float x, float y, float z) { if (tulang[i] != null) tulang[i].localRotation = tulang[i].localRotation * Quaternion.Euler(x, y, z); }
 
+        public static string KlipSuaraHewan(JH j, out float pitch)
+        {
+            switch (j)
+            {
+                case JH.Harimau: pitch = 0.68f; return ProceduralAudioSynth.KlipTeriakSekte;
+                case JH.Buaya: pitch = 0.58f; return ProceduralAudioSynth.KlipGeramSekte;
+                case JH.BabiHutan: pitch = 0.86f; return ProceduralAudioSynth.KlipGeramSekte;
+                case JH.Anjing: pitch = 1.22f; return ProceduralAudioSynth.KlipGeramSekte;
+                case JH.Kucing: pitch = 1.48f; return ProceduralAudioSynth.KlipRintihSekte;
+                case JH.Monyet: pitch = 1.58f; return ProceduralAudioSynth.KlipTeriakSekte;
+                case JH.AyamHutan: pitch = 1.0f; return ProceduralAudioSynth.OsAyam;
+                case JH.Tawon: pitch = 1.35f; return ProceduralAudioSynth.OsKepak;
+                case JH.UlarPiton: case JH.UlarKobra: pitch = 1.45f; return ProceduralAudioSynth.KlipAbu;
+                default: pitch = 1.12f; return ProceduralAudioSynth.OsKepak;
+            }
+        }
+
+        void BunyikanSuara(float vol)
+        {
+            var s = GameServices.Get<ProceduralAudioSynth>();
+            if (s == null) return;
+            float pt;
+            string kl = KlipSuaraHewan(jenis, out pt);
+            s.Play(kl, transform.position, AudioCategory.Efek, vol, pt * Random.Range(0.94f, 1.06f), 2, 38f);
+        }
+
         public void TakeDamage(DamageInfo d)
         {
             if (State == KeadaanHewan.Mati) return;
             _hp -= d.amount;
+            BunyikanSuara(0.8f);
             if (_hp <= 0f) { State = KeadaanHewan.Mati; _guling = 0f; gameObject.layer = GameLayers.Interactable; GameEvents.RaiseToast(NamaTampil(jenis) + " tumbang"); return; }
             if (ResepHewan.Ambil(jenis).agresif) { State = KeadaanHewan.Menyerang; _tState = LamaMarah; }
             else { State = KeadaanHewan.Kabur; _tState = LamaKabur; }

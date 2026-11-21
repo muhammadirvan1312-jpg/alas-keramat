@@ -41,6 +41,7 @@ Shader "AlasKeramat/Air"
         {
             float4 positionOS : POSITION;
             float3 normalOS : NORMAL;
+            float2 uv : TEXCOORD0;
             UNITY_VERTEX_INPUT_INSTANCE_ID
         };
         struct Varyings
@@ -49,6 +50,7 @@ Shader "AlasKeramat/Air"
             float3 positionWS : TEXCOORD0;
             half3 normalWS : TEXCOORD1;
             half4 fogLight : TEXCOORD2;
+            float2 uv : TEXCOORD3;
             UNITY_VERTEX_INPUT_INSTANCE_ID
         };
         Varyings Vert(Attributes v)
@@ -59,6 +61,7 @@ Shader "AlasKeramat/Air"
             o.positionWS = TransformObjectToWorld(v.positionOS.xyz);
             o.positionCS = TransformWorldToHClip(o.positionWS);
             o.normalWS = TransformObjectToWorldNormal(v.normalOS);
+            o.uv = v.uv;
             o.fogLight = half4(ComputeFogFactor(o.positionCS.z), VertexLighting(o.positionWS, o.normalWS));
             return o;
         }
@@ -102,8 +105,10 @@ Shader "AlasKeramat/Air"
             float3 a = NoiseGrad(p - flow);
             const float FrekuensiKedua = 1.93, BobotKedua = 0.5;
             float3 b = NoiseGrad(p * FrekuensiKedua + float2(17.3,9.2) - flow * 0.73);
-            float2 slope = (a.yz + b.yz * BobotKedua) * _KuatNormal;
-            noise = (a.x + b.x) * 0.5;
+            const float FrekuensiKetiga = 4.17, BobotKetiga = 0.35;
+            float3 c = NoiseGrad(p * FrekuensiKetiga - float2(11.4,23.1) + flow * 1.28);
+            float2 slope = (a.yz + b.yz * BobotKedua + c.yz * BobotKetiga) * (_KuatNormal * 1.35);
+            noise = (a.x + b.x * 0.75 + c.x * 0.45) / 2.2;
             half3 n = NormalizeNormalPerPixel(i.normalWS);
             half3 ripple = half3(-slope.x, 0, -slope.y);
             return NormalizeNormalPerPixel(n + ripple - n * dot(ripple,n));
@@ -138,8 +143,13 @@ Shader "AlasKeramat/Air"
             half absorption = 1 - exp(-depth / max(_JarakDalam, 0.001));
             half4 water = lerp(_WarnaDangkal, _WarnaDalam, absorption);
             half edge = 1 - saturate(depth / max(_LebarBuih, 0.001));
-            half foam = smoothstep(0.25, 0.7, noise + edge * 0.45) * edge * _KuatBuih;
-            foam *= _GunakanDepth * (1.0h - saturate(_AK_MatikanDepth));
+            half ring = 0.72h + 0.28h * sin(depth * 14.0 - _Time.y * 3.2);
+            half depthFoam = smoothstep(0.22, 0.68, noise + edge * 0.48) * edge * ring * _KuatBuih;
+            depthFoam *= _GunakanDepth * (1.0h - saturate(_AK_MatikanDepth));
+            half tepiUV = 1.0h - saturate(min(i.uv.x, 1.0 - i.uv.x) / 0.14);
+            half bankFoam = smoothstep(0.26, 0.72, noise + tepiUV * 0.52) * tepiUV * _KuatBuih * 0.85h;
+            half crestFoam = smoothstep(0.62, 0.86, noise) * _KuatBuih * 0.55h;
+            half foam = saturate(max(depthFoam, max(bankFoam, crestFoam)));
             half3 albedo = lerp(water.rgb, _WarnaBuih.rgb, foam);
             half opacity = saturate(lerp(water.a, _WarnaBuih.a, foam));
             // Fresnel air (IOR 1.333), refleksi dipertahankan pada sudut mendatar.

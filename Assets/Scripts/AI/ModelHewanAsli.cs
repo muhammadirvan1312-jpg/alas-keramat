@@ -90,7 +90,7 @@ namespace AlasKeramat.AI
         {
             Transform kepala = null;
             foreach (var t in _model.GetComponentsInChildren<Transform>(true))
-                if ((t.name == "Head" || t.name == "head" || t.name == "Skull") && t.GetComponent<Renderer>() == null) { kepala = t; break; }
+                if ((t.name == "Head" || t.name == "head" || t.name == "Skull" || t.name == "Bip001 Head") && t.GetComponent<Renderer>() == null) { kepala = t; break; }
             if (kepala == null) return;
             var b = BatasModel();
             Vector3 d = kepala.position - b.center; d.y = 0f;
@@ -109,13 +109,20 @@ namespace AlasKeramat.AI
             _model.transform.position += Vector3.up * (transform.position.y - b2.min.y);
         }
 
-        // Varian model bisa memakai nama klip sedikit berbeda (Walk/Walking).
+        // Varian model bisa memakai nama klip sedikit berbeda (Walk/Walking) atau berawalan Armature|.
         string Cari(string k)
         {
-            if (string.IsNullOrEmpty(k)) return k;
+            if (string.IsNullOrEmpty(k) || _anim == null) return k;
             if (_anim.GetClip(k) != null) return k;
             string alt = k.EndsWith("ing") ? k.Substring(0, k.Length - 3) : k + "ing";
-            return _anim.GetClip(alt) != null ? alt : null;
+            if (_anim.GetClip(alt) != null) return alt;
+            foreach (AnimationState st in _anim)
+            {
+                if (st == null) continue;
+                if (string.Equals(st.name, k, StringComparison.OrdinalIgnoreCase) || st.name.EndsWith("|" + k, StringComparison.OrdinalIgnoreCase)) return st.name;
+                if (string.Equals(st.name, alt, StringComparison.OrdinalIgnoreCase) || st.name.EndsWith("|" + alt, StringComparison.OrdinalIgnoreCase)) return st.name;
+            }
+            return null;
         }
 
         void LateUpdate()

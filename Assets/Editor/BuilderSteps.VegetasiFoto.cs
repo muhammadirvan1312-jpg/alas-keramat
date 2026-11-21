@@ -52,7 +52,7 @@ namespace AlasKeramat.EditorTools
             var norm=BacaFoto(slot,"Normal");
             if(norm!=null)
             {
-                string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,1024);
+                string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,2048);
                 norm=AssetDatabase.LoadAssetAtPath<Texture2D>(pn);
             }
             return SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_"+slot,new Color(0.84f,0.88f,0.78f,1f),0f,0.18f,tex,norm,null,SurfaceMode.Cutout,0.38f),ShaderDaun,0.025f,0.48f));
@@ -66,11 +66,11 @@ namespace AlasKeramat.EditorTools
         {
             var alb=BacaFoto(slot,"Albedo");var norm=BacaFoto(slot,"Normal");
             if(alb==null)return null;
-            string pa=FolderVeg+"/"+slot+"_a.png";File.WriteAllBytes(pa,alb.EncodeToPNG());AssetDatabase.ImportAsset(pa);AturImpor(pa,false,false,1024);
+            string pa=FolderVeg+"/"+slot+"_a.png";File.WriteAllBytes(pa,alb.EncodeToPNG());AssetDatabase.ImportAsset(pa);AturImpor(pa,false,false,2048);
             alb=AssetDatabase.LoadAssetAtPath<Texture2D>(pa);
             if(norm!=null)
             {
-                string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,1024);
+                string pn=FolderVeg+"/"+slot+"_n.png";File.WriteAllBytes(pn,norm.EncodeToPNG());AssetDatabase.ImportAsset(pn);AturImpor(pn,true,false,2048);
                 norm=AssetDatabase.LoadAssetAtPath<Texture2D>(pn);
             }
             else norm=AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex+"/kulit_kayu_n.png");

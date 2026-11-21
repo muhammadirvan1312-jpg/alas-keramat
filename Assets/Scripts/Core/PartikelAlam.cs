@@ -7,14 +7,24 @@ namespace AlasKeramat.Core
     public class PartikelAlam : MonoBehaviour
     {
         public const float LajuDaun = 7f, LajuDebu = 14f, BatasGua = -40f;
+        public const float LajuKunangMalam = 18f, LajuSporaGua = 14f;
         [SerializeField] Material daun, debu;
-        ParticleSystem _daun, _debu, _percik;
+        ParticleSystem _daun, _debu, _percik, _kunang;
         public const float PercikGerimis = 110f, PercikBadai = 380f;
 
         // Percikan air di tanah sekitar pemain saat hujan (partikel/detik).
         public static float LajuPercik(WeatherState w)
         {
             return w == WeatherState.HujanBadai ? PercikBadai : w == WeatherState.Gerimis ? PercikGerimis : 0f;
+        }
+
+        public static float LajuKunang(float jam, WeatherState w, bool hutan, bool diGua)
+        {
+            if (diGua) return LajuSporaGua;
+            if (w == WeatherState.HujanBadai) return 0f;
+            bool malam = jam >= 17.5f || jam <= 5.8f;
+            if (!malam || !hutan) return 0f;
+            return w == WeatherState.Gerimis ? LajuKunangMalam * 0.45f : LajuKunangMalam;
         }
         TimeOfDayClock _jam;
         URPAtmosphereAndWeather _atmos;
@@ -72,24 +82,55 @@ namespace AlasKeramat.Core
             if (_gagal || daun == null || debu == null) return;
             try
             {
-                if (_daun == null) { _daun = Buat("DaunGugur", daun, true); _debu = Buat("DebuCahaya", debu, false); _percik = BuatPercik(); }
+                if (_daun == null) { _daun = Buat("DaunGugur", daun, true); _debu = Buat("DebuCahaya", debu, false); _percik = BuatPercik(); _kunang = BuatKunang(); }
                 if (_jam == null) _jam = GameServices.Get<TimeOfDayClock>();
                 if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
                 var cam = Camera.main;
                 if (cam == null) return;
                 Vector3 p = cam.transform.position;
                 float rd = 0f, rb = 0f;
-                if (p.y > BatasGua)
-                    Laju(_jam != null ? _jam.Jam : 12f, _atmos != null ? _atmos.Cuaca : WeatherState.Cerah, BiomaHutan(WorldTerrainGenerator.GetBiome(p.x, p.z)), out rd, out rb);
+                float jamVal = _jam != null ? _jam.Jam : 12f;
                 var w = _atmos != null ? _atmos.Cuaca : WeatherState.Cerah;
-                float rp = p.y > BatasGua ? LajuPercik(w) : 0f;
+                bool hutan = BiomaHutan(WorldTerrainGenerator.GetBiome(p.x, p.z));
+                bool diGua = p.y <= BatasGua;
+                if (!diGua) Laju(jamVal, w, hutan, out rd, out rb);
+                float rp = !diGua ? LajuPercik(w) : 0f;
+                float rk = LajuKunang(jamVal, w, hutan, diGua);
                 _percik.transform.position = new Vector3(p.x, WorldTerrainGenerator.SampleHeight(p.x, p.z) + 0.04f, p.z) + cam.transform.forward * 4f;
                 Atur(_percik, rp);
+                _kunang.transform.position = p + cam.transform.forward * 6f + Vector3.up * 1.1f;
+                Atur(_kunang, rk);
                 _daun.transform.position = p + Vector3.up * 9f;
                 _debu.transform.position = p + cam.transform.forward * 5f;
                 Atur(_daun, rd); Atur(_debu, rb);
             }
             catch (Exception e) { _gagal = true; Debug.LogError("[AK][PartikelAlam] Gagal: " + e.Message); }
+        }
+
+        ParticleSystem BuatKunang()
+        {
+            var go = new GameObject("KunangMalam");
+            go.transform.SetParent(transform, false);
+            var ps = go.AddComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var main = ps.main;
+            main.loop = true; main.simulationSpace = ParticleSystemSimulationSpace.World; main.playOnAwake = false;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(2.2f, 4.0f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.15f, 0.45f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.035f, 0.075f);
+            main.maxParticles = 120;
+            main.startColor = new ParticleSystem.MinMaxGradient(new Color(0.75f, 1.0f, 0.42f, 0.88f), new Color(0.45f, 0.96f, 0.85f, 0.80f));
+            var shape = ps.shape; shape.shapeType = ParticleSystemShapeType.Box; shape.scale = new Vector3(18f, 4.5f, 18f);
+            var noise = ps.noise; noise.enabled = true; noise.strength = 0.65f; noise.frequency = 0.8f; noise.scrollSpeed = 0.45f;
+            var col = ps.colorOverLifetime; col.enabled = true;
+            var g = new Gradient();
+            g.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                      new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(1f, 0.25f), new GradientAlphaKey(0.8f, 0.7f), new GradientAlphaKey(0f, 1f) });
+            col.color = g;
+            var r = go.GetComponent<ParticleSystemRenderer>();
+            r.renderMode = ParticleSystemRenderMode.Billboard; r.sharedMaterial = debu;
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; r.receiveShadows = false;
+            return ps;
         }
 
         ParticleSystem BuatPercik()
