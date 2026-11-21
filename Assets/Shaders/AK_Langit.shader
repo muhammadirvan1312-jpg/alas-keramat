@@ -5,6 +5,8 @@ Shader "AlasKeramat/Langit"
         _DayTex ("Langit Siang HDR", 2D) = "white" {}
         _NightTex ("Langit Malam HDR", 2D) = "black" {}
         _NightBlend ("Paduan Malam", Range(0,1)) = 0
+        _DuskTex ("Langit Senja HDR", 2D) = "black" {}
+        _DuskBlend ("Paduan Senja", Range(0,1)) = 0
         _Tint ("Warna", Color) = (1,1,1,1)
         _Exposure ("Eksposur", Range(0,4)) = 1.0
         _Rotation ("Rotasi Derajat", Range(0,360)) = 0
@@ -27,12 +29,13 @@ Shader "AlasKeramat/Langit"
 
             TEXTURE2D(_DayTex); SAMPLER(sampler_DayTex);
             TEXTURE2D(_NightTex); SAMPLER(sampler_NightTex);
+            TEXTURE2D(_DuskTex); SAMPLER(sampler_DuskTex);
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _DayTex_ST;
                 half4 _Tint, _HorizonColor, _SunColor;
                 float4 _SunDir;
-                float _NightBlend, _Exposure, _Rotation, _HorizonHeight;
+                float _NightBlend, _DuskBlend, _Exposure, _Rotation, _HorizonHeight;
             CBUFFER_END
 
             struct Attributes
@@ -72,7 +75,8 @@ Shader "AlasKeramat/Langit"
 
                 half3 dayCol = SAMPLE_TEXTURE2D_LOD(_DayTex, sampler_DayTex, uv, 0).rgb;
                 half3 nightCol = SAMPLE_TEXTURE2D_LOD(_NightTex, sampler_NightTex, uv, 0).rgb;
-                half3 sky = lerp(dayCol, nightCol, (half)_NightBlend) * _Tint.rgb * (half)_Exposure;
+                half3 duskCol = SAMPLE_TEXTURE2D_LOD(_DuskTex, sampler_DuskTex, uv, 0).rgb;
+                half3 sky = lerp(lerp(dayCol, nightCol, (half)_NightBlend), duskCol, (half)_DuskBlend) * _Tint.rgb * (half)_Exposure;
 
                 float3 sunD = normalize(_SunDir.xyz + float3(0, 0.0001, 0));
                 half sunDot = saturate((half)dot(rawDir, sunD));

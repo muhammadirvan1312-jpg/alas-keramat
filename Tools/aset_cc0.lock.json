@@ -1095,6 +1095,16 @@
       "sha256": "ea67c9d78750e5a356bf53ef8c2063b52cc3ccdae6ae8afeec87f97f79ae692d"
     },
     {
+      "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/qwantani_dusk_2_puresky_2k.hdr",
+      "path": "CC0/Langit/LangitSenja.hdr",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/qwantani_dusk_2_puresky",
+      "author": "Poly Haven",
+      "slot": "Langit",
+      "size": 4612798,
+      "sha256": "440d1b5d29c79bea0985a13777642df6829e80399602a9d5f39bc20203ae6d1b"
+    },
+    {
       "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/tree_stump_01/tree_stump_01_1k.fbx",
       "path": "CC0/Model/tree_stump_01.fbx.source",
       "license": "CC0-1.0",
