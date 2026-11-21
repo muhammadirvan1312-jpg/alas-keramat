@@ -1,11 +1,11 @@
-Laporan Builder Alas Keramat - 2026-11-21 09:17:30
+Laporan Builder Alas Keramat - 2026-11-21 13:06:51
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
   - Aset URP dipasang di 6 level Quality
 [LULUS] 1. Proyek
   - 14 tekstur
-  - G3b: 12 permukaan PBR foto 2K (albedo, normal GL, mask AO/roughness), CC0
+  - G3b: 14 permukaan PBR foto 2K (albedo, normal GL, mask AO/roughness), CC0
   - 20 ikon
   - 6 material
   - Level rekaman forest_day.mp3: RMS -50.9 dB, gain 25.9 dB, peak -2.3 dB
@@ -24,7 +24,7 @@ Laporan Builder Alas Keramat - 2026-11-21 09:17:30
 [LULUS] 3. Scene & langit
   - Terrain 16 tile @1025, laut, 2 sungai
 [LULUS] 3b. Dunia 2x2 km
-  - G3b: 9 varian scan pohon/pakis tersambung ke instancing dan tebang, dengan LOD
+  - G3b: 12 varian scan pohon/pakis/semak tersambung ke instancing dan tebang, dengan LOD
   - Vegetasi: 25584 pohon, 89420 semak/pakis, 3856 sel instancing
 [LULUS] 3c. Vegetasi
   - Landmark: 38 objek (Beringin Agung, heli, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula, 2 mulut gua, altar)
@@ -78,7 +78,8 @@ Laporan Builder Alas Keramat - 2026-11-21 09:17:30
 [LULUS] 7u. Ritual Beringin, siege & lore
   - Ending: Heli SAR, layar intro/Pilihan Takdir/Ending A-B/statistik, Mode Sandbox
 [LULUS] 7v. Heli SAR, ending & statistik
-  - Lantai hutan photogrammetry CC0: 1724 batch (rumput scan, pakis, keladi, batu lumut, kayu tumbang, akar)
+  - Lantai hutan photogrammetry CC0: 6784 batch, 10486 sebaran se-pulau (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)
+  - Lantai hutan photogrammetry CC0: 6784 batch (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)
   - G3a: bulan terbaca, gua tidak hitam, grading netral, bayangan 2 kaskade, kabut lokal 12 kartu & basah dinamis
 [LULUS] 7w. G3 visual realistis
   - Kontrol aksi berjarak, TAS/BUKU ikut safe area, subtitle di atas area aksi
@@ -89,10 +90,14 @@ Laporan Builder Alas Keramat - 2026-11-21 09:17:30
 [LULUS] 7y. Peta survei & navigasi
   - Mixamo: folder Assets/Mixamo belum ada, animasi prosedural dipakai
 [LULUS] 7z. Animasi mocap Mixamo
-  - Kenney CC0: 10 suara rekaman menggantikan sintetis
+  - Kenney CC0: 10 + OpenGameArt CC0: 22 rekaman (musik tegang, hujan, monster, napas, jantung, tembakan)
 [LULUS] 7z2. Rekaman CC0 Kenney
+  - Senter: cookie reflektor 256px terpasang di 1 senter
+[LULUS] 7z4. Cookie senter
+  - Partikel alam: daun gugur di hutan siang, debu berkilau saat cerah
+[LULUS] 7z3. Partikel alam
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4822
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4844
 [LULUS] 9. Simpan scene
-Durasi: 984.6 detik
+Durasi: 1035.9 detik
 HASIL: SEMUA LANGKAH LULUS
