@@ -68,3 +68,15 @@ Kemungkinan konflik kecil, cukup ambil kedua sisi:
 - entri di `aset_cc0.lock.json`, yang digabung per `path`.
 
 Hash lock dan skrip panggang berubah, jadi cache `thirdparty` dan `Prepared` di CI akan dibangun ulang. Wajar bila build pertama lebih lama.
+
+## Alat cek kompilasi offline (pakai sebelum push!)
+`bash Tools/cek_kompilasi_offline/jalankan.sh` (butuh `apt-get install -y dotnet-sdk-8.0`).
+- Cara kerja: Roslyn dengan referensi Unity 2021.3 dari NuGet dan stub uGUI/URP (`StubUIURP.cs.txt`).
+- Mode yang dicek:
+  - Editor (dengan folder `Editor`);
+  - Android (tanpa folder `Editor`), untuk menangkap kode game yang tidak sengaja memakai `UnityEditor`.
+- Sudah terbukti menemukan semua error yang muncul di CI PR #47:
+  - kutip subtitle E37;
+  - `BolehTampilModelMixamo` ganda;
+  - 3 error tersembunyi gelombang SOTF.
+- Batasan: API khusus Unity 6 tidak dicek. Kegagalan self-test atau runtime tetap hanya tertangkap di CI.
