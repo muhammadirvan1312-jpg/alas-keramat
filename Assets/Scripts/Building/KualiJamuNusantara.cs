@@ -61,7 +61,7 @@ namespace AlasKeramat.Building
 
             if (resep == ResepJamu.Kuat)
             {
-                if (vital != null) vital.Stamina = Mathf.Min(vital.MaxStaminaCap, vital.Stamina + 65f * bonus);
+                if (vital != null) vital.TambahStamina(65f * bonus);
                 if (lvl != null) lvl.TambahXP(LevelSurvivalAndi.Atribut.Kekuatan, 16f * bonus);
                 GameEvents.RaiseToast("Meminum Jamu Kuat" + (pakaiHerbal ? " Spesial" : "") + "! Stamina & kekuatan meningkat.");
             }
@@ -76,8 +76,8 @@ namespace AlasKeramat.Building
             {
                 if (vital != null)
                 {
-                    vital.Health = Mathf.Min(vital.TargetHealthCeiling, vital.Health + 45f * bonus);
-                    vital.Hydration = Mathf.Min(AndiVitalsAndSanity.Maks, vital.Hydration + 30f * bonus);
+                    vital.TambahHealth(45f * bonus);
+                    vital.Minum(30f * bonus, false);
                 }
                 if (lvl != null) lvl.TambahXP(LevelSurvivalAndi.Atribut.Ketahanan, 16f * bonus);
                 GameEvents.RaiseToast("Meminum Jamu Sembuh! Luka pulih & dahaga hilang.");

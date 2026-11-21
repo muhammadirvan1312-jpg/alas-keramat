@@ -22,7 +22,8 @@ jobs:
   unity:
     name: Unity — bangun, uji, APK
     runs-on: ubuntu-latest
-    timeout-minutes: 140
+    # Pulau 4 km + Mega Overhaul: Builder & impor ulang tekstur jauh lebih lama; batas GitHub 360 menit.
+    timeout-minutes: 210
     steps:
       - name: Kosongkan disk runner
         uses: jlumbroso/free-disk-space@v1.3.1
@@ -152,7 +153,7 @@ jobs:
         id: build
         if: steps.cekproyek.outputs.ada == '1'
         continue-on-error: true
-        timeout-minutes: 120
+        timeout-minutes: 190
         uses: game-ci/unity-builder@v4
         env:
           AK_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -239,7 +240,7 @@ jobs:
     if: github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'tanpa-foto')
     runs-on: ubuntu-latest
     # Builder sendiri (+-17 menit) + foto llvmpipe: beri ruang waktu lebih karena tidak lagi memakai scene job unity.
-    timeout-minutes: 80
+    timeout-minutes: 160
     continue-on-error: true
     steps:
       - name: Kosongkan disk runner
@@ -310,7 +311,7 @@ jobs:
       - name: Unity — Builder + Foto
         id: foto
         continue-on-error: true
-        timeout-minutes: 65
+        timeout-minutes: 140
         uses: game-ci/unity-builder@v4
         env:
           AK_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}

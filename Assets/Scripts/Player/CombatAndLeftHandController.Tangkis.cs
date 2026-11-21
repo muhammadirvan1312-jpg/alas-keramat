@@ -181,7 +181,7 @@ namespace AlasKeramat.Player
             if (_kombo == null) _kombo = GameServices.Get<SistemKomboDanStagger>();
             if (_level == null) _level = GameServices.Get<LevelSurvivalAndi>();
             bool finisher = false;
-            float stam01 = _vital != null ? Mathf.Clamp01(_vital.Stamina / 100f) : 1f;
+            float stam01 = _v != null ? Mathf.Clamp01(_v.Stamina / AndiVitalsAndSanity.Maks) : 1f;
             float multKombo = _kombo != null ? _kombo.CatatSerangan(Time.time, stam01, hit.point, out finisher) : 1f;
             float multLvl = _level != null ? _level.BonusDamage : 1f;
             if (_level != null) _level.TambahXP(LevelSurvivalAndi.Atribut.Kekuatan, _berat ? 6f : 3f);

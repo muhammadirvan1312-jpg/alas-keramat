@@ -61,6 +61,9 @@ namespace AlasKeramat.Player
         }
 
         public void UbahSanity(float d) { Sanity = Mathf.Clamp(Sanity + d, 0f, Maks); }
+        // Pemulihan dari jamu/obat: dibatasi plafon stamina & HP saat ini (setter properti tetap privat).
+        public void TambahStamina(float d) { Stamina = Mathf.Clamp(Stamina + d, 0f, MaxStaminaCap); }
+        public void TambahHealth(float d) { Health = Mathf.Clamp(Health + d, 0f, Mathf.Max(Health, TargetHealthCeiling)); }
 
         public static float PlafonHP(float full, float haus, float rest)
         {
