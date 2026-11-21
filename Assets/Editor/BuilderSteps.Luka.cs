@@ -52,7 +52,12 @@ namespace AlasKeramat.EditorTools
             var ga = UIGambar(root, "Arah", SpriteLuka("ui_busur_luka", true), new Vector2(560f, 560f), new Vector2(0.5f, 0.5f), Vector2.zero).GetComponent<Image>();
             ga.color = new Color(0.85f, 0.08f, 0.05f, 0f); ga.raycastTarget = false; ga.enabled = false;
             var ind = root.AddComponent<IndikatorLuka>(); ind.Pasang(gv, ga); EditorUtility.SetDirty(ind);
-            Catat("Indikator luka: vinyet merah + busur arah serangan di HUD");
+            var mJejak = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_DebuCahaya.mat");
+            int nJejak = 0;
+            if (mJejak != null)
+                foreach (var c in Object.FindObjectsByType<AlasKeramat.Player.CombatAndLeftHandController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                { c.PasangJejak(mJejak); EditorUtility.SetDirty(c); nJejak++; }
+            Catat("Indikator luka: vinyet merah + busur arah serangan di HUD; jejak ayunan senjata di " + nJejak + " pengendali");
         }
     }
 }
