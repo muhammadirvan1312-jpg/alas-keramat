@@ -85,6 +85,22 @@ jobs:
           python -m pip install --quiet requests
           python Tools/ambil_aset.py --semua --keluar Assets/ThirdParty
 
+      - name: Ambil animasi Mixamo (repo aset privat)
+        if: steps.cekproyek.outputs.ada == '1'
+        shell: bash
+        env:
+          ASET_TOKEN: ${{ secrets.ASET_TOKEN }}
+        run: |
+          # File mentah Mixamo tidak boleh disebar, jadi disimpan di repo privat dan hanya disalin saat build.
+          if [ -z "$ASET_TOKEN" ]; then echo "[AK] ASET_TOKEN belum ada, animasi Mixamo dilewati"; exit 0; fi
+          if git clone -q --depth 1 "https://x-access-token:${ASET_TOKEN}@github.com/muhammadirvan1312-jpg/alas-keramat-aset.git" /tmp/ak-aset; then
+            mkdir -p Assets/Mixamo && cp /tmp/ak-aset/Mixamo/*.fbx Assets/Mixamo/
+            echo "[AK] Mixamo: $(ls Assets/Mixamo/*.fbx | wc -l) klip"
+          else
+            echo "[AK] Gagal mengambil repo aset, animasi Mixamo dilewati"
+          fi
+          rm -rf /tmp/ak-aset
+
       - name: Cache Blender resmi 4.3.2
         id: cacheblender
         uses: actions/cache@v4
@@ -177,6 +193,8 @@ jobs:
           path: |
             Assets
             ProjectSettings
+            !Assets/Mixamo
+            !Assets/Mixamo.meta
           retention-days: 2
 
       - name: Susun laporan CI (selalu)
@@ -283,6 +301,21 @@ jobs:
         with:
           name: scene-foto-${{ github.run_id }}
           path: .
+
+      - name: Ambil animasi Mixamo (repo aset privat)
+        shell: bash
+        env:
+          ASET_TOKEN: ${{ secrets.ASET_TOKEN }}
+        run: |
+          # File mentah Mixamo tidak boleh disebar, jadi disimpan di repo privat dan hanya disalin saat build.
+          if [ -z "$ASET_TOKEN" ]; then echo "[AK] ASET_TOKEN belum ada, animasi Mixamo dilewati"; exit 0; fi
+          if git clone -q --depth 1 "https://x-access-token:${ASET_TOKEN}@github.com/muhammadirvan1312-jpg/alas-keramat-aset.git" /tmp/ak-aset; then
+            mkdir -p Assets/Mixamo && cp /tmp/ak-aset/Mixamo/*.fbx Assets/Mixamo/
+            echo "[AK] Mixamo: $(ls Assets/Mixamo/*.fbx | wc -l) klip"
+          else
+            echo "[AK] Gagal mengambil repo aset, animasi Mixamo dilewati"
+          fi
+          rm -rf /tmp/ak-aset
 
       - name: Bersihkan foto warisan
         run: |

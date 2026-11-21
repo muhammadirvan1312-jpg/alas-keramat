@@ -22,3 +22,7 @@ __pycache__/
 *.pyc
 
 /.tools/
+
+# Animasi Mixamo: file mentah hanya di repo privat alas-keramat-aset
+/Assets/Mixamo/
+/Assets/Mixamo.meta
