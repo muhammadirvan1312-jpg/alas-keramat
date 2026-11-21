@@ -233,3 +233,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `AndiVitalsAndSanity` menambahkan dukungan **Mode Sengsara & Mode Pantang Mundur (`24 §10`)** (`PengaliModeSengsara = 1.45f`).
   - `RadarGPS` menampilkan penanda posisi dinamis (`BlipDeden` biru muda & `BlipNingsih` merah muda keemasan / `TampilBlipTeman`) secara langsung di radar ketika GPS aktif.
   - `AndiFPSController` menambahkan efek redaman tekuk lutut kamera saat mendarat dari lompatan atau ketinggian (`HitungTekukMendarat`) sehingga gerak orang-pertama terasa berbobot nyata.
+- Gelombang 21 SOTF (`imp-sotf-v3`):
+  - `AnimasiMixamo` mengaktifkan model Mixamo `Remy` untuk Kang Deden sejak awal pembukaan game saat duduk terhuyung di ekor heli (`BolehTampilModelMixamo` untuk `Mode.DudukTerhuyung` dengan klip `Sitting_Idle`/`Kneeling_Idle`).
+  - `NusantaraFoto` menajamkan ketepatan kontur medan saat audit visual (`heightmapPixelError = 7`, `basemapDistance = 420`).
+  - `URPAtmosphereAndWeather` menambahkan efek guncangan kamera saat petir menyambar dekat selama hujan badai (`DurasiGuncangGuruh`).

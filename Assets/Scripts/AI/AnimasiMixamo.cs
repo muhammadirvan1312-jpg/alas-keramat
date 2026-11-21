@@ -103,18 +103,26 @@ namespace AlasKeramat.AI
             return peran == Peran.Sekte ? "Running" : peran == Peran.Raksasa ? "Zombie_Running" : "Running";
         }
 
+        public static bool BolehTampilModelMixamo(ProceduralAnimator.Mode mode)
+        {
+            return mode == ProceduralAnimator.Mode.Normal || mode == ProceduralAnimator.Mode.DudukTerhuyung;
+        }
+
         void LateUpdate()
         {
             if (!_siap) return;
             if (_model != null && !_pa.enabled) { MatiModel(); return; }
-            if (_model != null) TampilModel(_pa.ModeAktif == ProceduralAnimator.Mode.Normal);
-            if (_pa.ModeAktif != ProceduralAnimator.Mode.Normal) return;
+            bool boleh = BolehTampilModelMixamo(_pa.ModeAktif);
+            if (_model != null) TampilModel(boleh);
+            if (!boleh) return;
             if (_kamera == null) { var c = Camera.main; if (c != null) _kamera = c.transform; }
             bool dekat = _kamera == null || (_kamera.position - transform.position).sqrMagnitude < JarakAktif * JarakAktif;
             if (_anim.enabled != dekat) _anim.enabled = dekat;
             if (!dekat) return;
             float kec = _pa.Kecepatan;
-            string mau = KlipUntuk(peran, kec, _pa.Pose);
+            string mau = _pa.ModeAktif == ProceduralAnimator.Mode.DudukTerhuyung
+                ? (_anim.GetClip("Sitting_Idle") != null ? "Sitting_Idle" : "Kneeling_Idle")
+                : KlipUntuk(peran, kec, _pa.Pose);
             if (mau.Length > 0 && _anim.GetClip(mau) == null) mau = kec < BatasLari ? "Walking" : "Running";
             if (_model != null && (mau.Length == 0 || _anim.GetClip(mau) == null)) mau = _anim.GetClip("Breathing_Idle") != null ? "Breathing_Idle" : mau;
             if (mau.Length == 0 || _anim.GetClip(mau) == null) { _kini = ""; return; }

@@ -193,6 +193,12 @@ namespace AlasKeramat.EditorTools
                 && !AlasKeramat.UI.RadarGPS.TampilBlipTeman(false, true, true)
                 && AlasKeramat.Player.AndiFPSController.HitungTekukMendarat(2.5f) > 0.08f
                 && AlasKeramat.Player.AndiFPSController.HitungTekukMendarat(0.1f) == 0f);
+            cek("SOTF v21: Mixamo Deden duduk sejak awal heli & guncangan guruh petir dekat",
+                AlasKeramat.AI.AnimasiMixamo.BolehTampilModelMixamo(AlasKeramat.AI.ProceduralAnimator.Mode.DudukTerhuyung)
+                && AlasKeramat.AI.AnimasiMixamo.BolehTampilModelMixamo(AlasKeramat.AI.ProceduralAnimator.Mode.Normal)
+                && !AlasKeramat.AI.AnimasiMixamo.BolehTampilModelMixamo(AlasKeramat.AI.ProceduralAnimator.Mode.Galeri)
+                && AlasKeramat.Core.URPAtmosphereAndWeather.DurasiGuncangGuruh(0.4f) > 0.15f
+                && AlasKeramat.Core.URPAtmosphereAndWeather.DurasiGuncangGuruh(2.0f) == 0f);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

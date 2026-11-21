@@ -103,7 +103,7 @@ namespace AlasKeramat.EditorTools
                 // Ringankan terrain untuk render perangkat lunak (tidak disimpan ke scene).
                 foreach (var t in UnityEngine.Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None))
                 {
-                    t.heightmapPixelError = 12f; t.basemapDistance = 400f; t.drawTreesAndFoliage = false;
+                    t.heightmapPixelError = 7f; t.basemapDistance = 420f; t.drawTreesAndFoliage = false;
                 }
                 var jam = System.Diagnostics.Stopwatch.StartNew();
                 Directory.CreateDirectory("Logs/ci");

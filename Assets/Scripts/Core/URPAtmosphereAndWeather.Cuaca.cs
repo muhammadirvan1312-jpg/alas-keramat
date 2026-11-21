@@ -12,7 +12,12 @@ namespace AlasKeramat.Core
         [SerializeField] Light kilat;
 
         WeatherState _cuaca = WeatherState.Cerah, _cuacaLama = WeatherState.Cerah;
-        float _transisi = 1f, _jamCekBerikut = 11f, _kilatBerikut = 10f, _kilatSisa, _guruhTunda = -1f;
+        float _transisi = 1f, _jamCekBerikut = 11f, _kilatBerikut = 10f, _kilatSisa, _guruhTunda = -1f, _jarakKilatKm = 2f;
+
+        public static float DurasiGuncangGuruh(float jarakKm)
+        {
+            return jarakKm <= 1.2f ? Mathf.Lerp(0.32f, 0.08f, Mathf.Clamp01(jarakKm / 1.2f)) : 0f;
+        }
         ParticleSystem _hujan, _percikanHujan;
         Dsp.Rng _rng = new Dsp.Rng(20261117u);
 
@@ -175,6 +180,9 @@ namespace AlasKeramat.Core
                 {
                     var synth = GameServices.Get<ProceduralAudioSynth>();
                     if (synth != null) synth.Play(ProceduralAudioSynth.KlipGuruh, null, AudioCategory.Ambien, _rng.Range(0.6f, 1f), _rng.Range(0.85f, 1.1f), 1);
+                    float guncang = DurasiGuncangGuruh(_jarakKilatKm);
+                    var andi = guncang > 0f ? GameServices.Get<AlasKeramat.Player.AndiFPSController>() : null;
+                    if (andi != null && !WorldTerrainGenerator.DiBawahTanah(andi.transform.position.y)) andi.GuncangKamera(guncang);
                 }
             }
             if (_cuaca != WeatherState.HujanBadai || _transisi < 0.8f) return;
@@ -183,8 +191,8 @@ namespace AlasKeramat.Core
             _kilatBerikut = _rng.Range(8f, 25f);
             _kilatSisa = 0.18f;
             kilat.transform.rotation = Quaternion.Euler(_rng.Range(30f, 70f), _rng.Range(0f, 360f), 0f);
-            float jarakKm = _rng.Range(0.3f, 3f);
-            _guruhTunda = jarakKm * 1000f / 340f;
+            _jarakKilatKm = _rng.Range(0.3f, 3f);
+            _guruhTunda = _jarakKilatKm * 1000f / 340f;
         }
     }
 }
