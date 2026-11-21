@@ -92,6 +92,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7w2. Tata kontrol mobile", 0.984f, LangkahTataKontrol);
                 Langkah("7x. Menu, pengaturan & debug T11", 0.985f, LangkahT11);
                 Langkah("7y. Peta survei & navigasi", 0.987f, LangkahPetaSurvei);
+                Langkah("7z. Animasi mocap Mixamo", 0.988f, LangkahMixamo);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

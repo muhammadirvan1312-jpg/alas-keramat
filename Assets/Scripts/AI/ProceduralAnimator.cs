@@ -25,6 +25,7 @@ namespace AlasKeramat.AI
         int _klip = -1, _klipGaleri;
 
         public Mode ModeAktif { get { return mode; } set { mode = value; } }
+        public float Kecepatan { get { return _kec; } } // dibaca AnimasiMixamo
         public Transform[] Tulang { get { return tulang; } }
 
         public void Pasang(Transform[] t, Mode m, float tinggiBadan) { tulang = t; mode = m; tinggi = tinggiBadan; }

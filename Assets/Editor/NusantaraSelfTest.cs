@@ -350,6 +350,7 @@ namespace AlasKeramat.EditorTools
             PemeriksaanT8.Jalankan(cek);
             PemeriksaanT9.Jalankan(cek);
             PemeriksaanT10.Jalankan(cek);
+            PemeriksaanMixamo.Jalankan(cek);
             PemeriksaanG3.Jalankan(cek);
             PemeriksaanT11.Jalankan(cek);
             PemeriksaanUjiMain.Jalankan(cek);
