@@ -12,7 +12,7 @@ namespace AlasKeramat.EditorTools
         static readonly string[,] PasanganFoto={
             {"tanah","LantaiHutan"},{"rumput","Rumput"},{"batu","Batu"},{"kayu","Kayu"},
             {"kulit_kayu","KulitKayu"},{"pasir","Pasir"},{"lumpur","Lumpur"},{"daun","LantaiHutan"},
-            {"beton","Beton"},{"logam_karat","Karat"},{"palem","Palem"},{"kain","Kain"}
+            {"beton","Beton"},{"logam_karat","Karat"},{"palem","Palem"},{"kain","Kain"},{"batu_gua","BatuGua"}
         };
         static Texture2D BacaFoto(string slot,string peta)
         {

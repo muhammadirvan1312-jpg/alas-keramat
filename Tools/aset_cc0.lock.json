@@ -1093,6 +1093,39 @@
       "slot": "Audio",
       "size": 10190,
       "sha256": "ea67c9d78750e5a356bf53ef8c2063b52cc3ccdae6ae8afeec87f97f79ae692d"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/marble_cliff_02/marble_cliff_02_diff_2k.jpg",
+      "path": "CC0/BatuGua/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/marble_cliff_02",
+      "author": "Poly Haven",
+      "slot": "BatuGua",
+      "map": "Albedo",
+      "size": 4445553,
+      "sha256": "ef1312591e642534aa34f340c34d128a5e2f3e417effab6fa38e609f13948bf6"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/marble_cliff_02/marble_cliff_02_nor_gl_2k.jpg",
+      "path": "CC0/BatuGua/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/marble_cliff_02",
+      "author": "Poly Haven",
+      "slot": "BatuGua",
+      "map": "Normal",
+      "size": 4883397,
+      "sha256": "4100801a1582ff483c8cad1414c3c8c606db4c30e825cc9725907e4ecf8512af"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/marble_cliff_02/marble_cliff_02_arm_2k.jpg",
+      "path": "CC0/BatuGua/ARM.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/marble_cliff_02",
+      "author": "Poly Haven",
+      "slot": "BatuGua",
+      "map": "ARM",
+      "size": 3387390,
+      "sha256": "6190b2d2b82af8c6eca9fb00da9c7849462e1bfc4109f8528eb422ae9f3f3f24"
     }
   ]
 }
