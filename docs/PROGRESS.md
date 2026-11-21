@@ -162,3 +162,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - Tangan & senjata orang-pertama (`BuilderSteps.Tebang.cs`, `BuilderSteps.Jarak.cs`, `CombatAndLeftHandController.cs`) ditambah jam tangan taktis menyala, jari menggenggam, lilitan kulit, bilah baja `FP_BajaTajam`, cahaya bara `GolokApiPusaka`, detail busur/tombak/senapan/ketapel, serta ayunan napas/jalan/lari `HitungAyunFP`.
   - `PartikelAlam` ditambah kunang-kunang malam di hutan dan spora bercahaya konstan di dalam gua (`KunangMalam`, `LajuKunang`).
   - `BuilderSteps.AudioKenney.cs` dan `WildAnimalAI.cs` memperluas 4 rekaman CC0 Kenney (`impact_punch_medium_000`, `creak_1`, `metal_click`, `door_open_1`) serta suara 3D satwa saat waspada, menyerang, dan terluka (`KlipSuaraHewan`).
+- Gelombang 3 SOTF (`imp-sotf-v3`):
+  - `BangunanBlueprint` kini memakai material PBR berserat kayu/batu (`BahanBP`) di semua 26 cetak biru survival; `ApiUnggun` ditambah lidah api berkedip + partikel bara api 3D saat menyala.
+  - `TanganKiri` menampilkan lengan, telapak tangan, dan jari menggenggam obor bambu berikut lidah api; `CombatAndLeftHandController` menambah animasi tarik busur ke tengah bidikan (`TarikBusur01`) serta partikel serpihan kayu (`PancarSerpih`) saat menebang pohon/kayu/struktur.
+  - `Mercusuar` kini memiliki `SuarMercusuar` berputar saat malam/badai/kabut, dan halaman Pabrik Gula diisi ketel uap/penggiling (`MesinPabrik_0..1`) + rel & gerobak lori tebu (`LoriTebu_0..2`).

@@ -191,6 +191,34 @@ namespace AlasKeramat.Core
             return b.Jadi("PerahuNelayanRusak");
         }
 
+        // Mesin ketel & rol penggiling tebu pabrik gula kolonial: 0 besi gelap, 1 besi karat.
+        public static Mesh MesinPabrikGula()
+        {
+            var b = new B(2);
+            b.Kotak(0, new Vector3(0f, 0.35f, 0f), new Vector3(3.2f, 0.7f, 1.8f), Quaternion.identity);
+            b.Silinder(1, new Vector3(-1.45f, 1.45f, 0f), 0.68f, 0.68f, 2.9f, 12, Quaternion.Euler(0f, 0f, -90f));
+            b.Silinder(0, new Vector3(0f, 1.45f, 0.95f), 0.85f, 0.85f, 0.14f, 14, Quaternion.Euler(90f, 0f, 0f));
+            b.Silinder(1, new Vector3(0.8f, 2.1f, 0f), 0.16f, 0.16f, 2.2f, 8, Quaternion.identity);
+            b.Silinder(0, new Vector3(-0.75f, 1.15f, -0.75f), 0.28f, 0.28f, 1.5f, 10, Quaternion.Euler(90f, 0f, 0f));
+            return b.Jadi("MesinPabrikGula");
+        }
+
+        // Lori rel tebu di halaman pabrik gula: 0 besi karat, 1 bantalan kayu.
+        public static Mesh LoriTebu()
+        {
+            var b = new B(2);
+            for (int r = -1; r <= 1; r += 2)
+                b.Kotak(0, new Vector3(r * 0.45f, 0.06f, 0f), new Vector3(0.08f, 0.08f, 5.2f), Quaternion.identity);
+            for (int s = -4; s <= 4; s++)
+                b.Kotak(1, new Vector3(0f, 0.03f, s * 0.56f), new Vector3(1.35f, 0.06f, 0.14f), Quaternion.identity);
+            b.Kotak(0, new Vector3(0f, 0.42f, 0f), new Vector3(1.05f, 0.12f, 1.95f), Quaternion.identity);
+            b.Kotak(0, new Vector3(-0.48f, 0.82f, 0f), new Vector3(0.07f, 0.72f, 1.95f), Quaternion.identity);
+            b.Kotak(0, new Vector3( 0.48f, 0.82f, 0f), new Vector3(0.07f, 0.72f, 1.95f), Quaternion.identity);
+            b.Kotak(0, new Vector3(0f, 0.82f, -0.94f), new Vector3(1.0f, 0.72f, 0.07f), Quaternion.identity);
+            b.Kotak(0, new Vector3(0f, 0.82f,  0.94f), new Vector3(1.0f, 0.72f, 0.07f), Quaternion.identity);
+            return b.Jadi("LoriTebu");
+        }
+
         // Heli SAR rusak detail (lofted rounded hull): 0 badan putih/abu, 1 strip & ekor oranye SAR, 2 kaca kokpit/logam gelap/rotor/skid.
         public static Mesh HeliRusak()
         {

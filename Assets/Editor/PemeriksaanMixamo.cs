@@ -64,6 +64,13 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Player.CombatAndLeftHandController.HitungAyunFP(1.5f, 4f, true, false) != Quaternion.identity
                 && AlasKeramat.AI.WildAnimalAI.KlipSuaraHewan(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, out pSw) == AlasKeramat.Core.ProceduralAudioSynth.KlipTeriakSekte
                 && GameObject.Find("SumurDesa_1") != null && GameObject.Find("PerahuNelayan_0") != null);
+            cek("SOTF v3: suar mercusuar malam, tarik busur FP & mesin pabrik gula",
+                AlasKeramat.Core.SuarMercusuar.AktifPadaJam(21f, AlasKeramat.Core.WeatherState.Cerah)
+                && !AlasKeramat.Core.SuarMercusuar.AktifPadaJam(12f, AlasKeramat.Core.WeatherState.Cerah)
+                && AlasKeramat.Player.CombatAndLeftHandController.TarikBusur01(true, 0.5f, 1.0f) == 0.5f
+                && AlasKeramat.Player.CombatAndLeftHandController.TarikBusur01(false, 0.5f, 1.0f) == 0f
+                && Object.FindFirstObjectByType<AlasKeramat.Core.SuarMercusuar>() != null
+                && GameObject.Find("MesinPabrik_0") != null && GameObject.Find("LoriTebu_0") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

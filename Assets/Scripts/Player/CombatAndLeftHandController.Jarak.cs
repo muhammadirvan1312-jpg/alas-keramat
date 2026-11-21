@@ -62,6 +62,7 @@ namespace AlasKeramat.Player
         // Damage busur menurut lama tarik (06 §2: 30 + 0-20 sesuai tarikan).
         public static float DamageTarik(SenjataJarak s, float lama) { return s.damage + s.damageTarik * Mathf.InverseLerp(s.tarikMin, s.tarikMaks, lama); }
         public static float LajuTarik(SenjataJarak s, float lama) { return Mathf.Lerp(s.laju, Mathf.Max(s.laju, s.lajuMaks), Mathf.InverseLerp(s.tarikMin, s.tarikMaks, lama)); }
+        public static float TarikBusur01(bool menarik, float lamaTekan, float tarikMaks) { return (!menarik || tarikMaks <= 0.01f) ? 0f : Mathf.Clamp01(lamaTekan / tarikMaks); }
 
         // Urutan GANTI: tangan kosong -> melee dimiliki -> jarak dimiliki.
         public void Ganti()

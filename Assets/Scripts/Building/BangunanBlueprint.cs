@@ -9,6 +9,26 @@ namespace AlasKeramat.Building
         static readonly Color Kayu = new Color(0.45f, 0.32f, 0.2f), Batu = new Color(0.45f, 0.44f, 0.42f), Daun = new Color(0.36f, 0.42f, 0.2f),
             Bambu = new Color(0.62f, 0.66f, 0.36f), Kain = new Color(0.6f, 0.32f, 0.22f), Tulang = new Color(0.88f, 0.84f, 0.74f), Logam = new Color(0.25f, 0.25f, 0.26f);
 
+        static readonly System.Collections.Generic.Dictionary<string, Material> _matBP = new System.Collections.Generic.Dictionary<string, Material>();
+
+        static Material BahanBP(Color w)
+        {
+            string k = ColorUtility.ToHtmlStringRGB(w);
+            Material m;
+            if (_matBP.TryGetValue(k, out m) && m != null) return m;
+            var t = new Texture2D(32, 32, TextureFormat.RGBA32, false);
+            for (int y = 0; y < 32; y++)
+                for (int x = 0; x < 32; x++)
+                {
+                    float n = 0.86f + 0.28f * Mathf.PerlinNoise(x * 0.35f, y * 0.12f);
+                    t.SetPixel(x, y, new Color(Mathf.Clamp01(w.r * n), Mathf.Clamp01(w.g * n), Mathf.Clamp01(w.b * n), 1f));
+                }
+            t.Apply();
+            m = SafeMaterialFactory.CreatePBR("BP_PBR_" + k, Color.white, w == Logam ? 0.65f : 0f, w == Logam ? 0.55f : 0.24f, t);
+            _matBP[k] = m;
+            return m;
+        }
+
         static GameObject P(Transform induk, PrimitiveType t, Vector3 pos, Vector3 skala, Color w, int layer, bool collider, Vector3 rot = default(Vector3))
         {
             var g = GameObject.CreatePrimitive(t);
@@ -16,7 +36,7 @@ namespace AlasKeramat.Building
             g.transform.localPosition = pos; g.transform.localScale = skala; g.transform.localRotation = Quaternion.Euler(rot);
             g.layer = layer;
             if (!collider) { var c = g.GetComponent<Collider>(); if (Application.isPlaying) Object.Destroy(c); else Object.DestroyImmediate(c); }
-            g.GetComponent<MeshRenderer>().sharedMaterial = SafeMaterialFactory.GetCached("BP_" + ColorUtility.ToHtmlStringRGB(w), w, 0f, 0.3f);
+            g.GetComponent<MeshRenderer>().sharedMaterial = BahanBP(w);
             return g;
         }
 

@@ -45,6 +45,47 @@ namespace AlasKeramat.Building
 
         AudioSource _kretek;
         bool _kretekCoba;
+        Transform _nyalaRoot;
+        Transform[] _lidah;
+
+        void PastikanVisualApi()
+        {
+            if (_nyalaRoot != null) return;
+            var root = new GameObject("VisualApi");
+            root.transform.SetParent(transform, false);
+            root.transform.localPosition = new Vector3(0f, 0.22f, 0f);
+            _nyalaRoot = root.transform;
+            var mApi = SafeMaterialFactory.CreatePBR("M_ApiUnggunNyala", new Color(1f, 0.52f, 0.12f), 0f, 0.2f, null, null, new Color(3.4f, 1.35f, 0.25f));
+            _lidah = new Transform[3];
+            Vector3[] offs = { Vector3.zero, new Vector3(-0.10f, -0.02f, 0.08f), new Vector3(0.10f, -0.02f, -0.07f) };
+            for (int i = 0; i < 3; i++)
+            {
+                var l = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                Destroy(l.GetComponent<Collider>());
+                l.transform.SetParent(_nyalaRoot, false);
+                l.transform.localPosition = offs[i];
+                l.transform.localScale = new Vector3(0.14f - i * 0.02f, 0.24f - i * 0.03f, 0.14f - i * 0.02f);
+                var r = l.GetComponent<Renderer>();
+                r.sharedMaterial = mApi;
+                r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                _lidah[i] = l.transform;
+            }
+            var baraGo = new GameObject("BaraApi");
+            baraGo.transform.SetParent(_nyalaRoot, false);
+            var ps = baraGo.AddComponent<ParticleSystem>();
+            var main = ps.main;
+            main.loop = true; main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.8f, 1.6f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.6f, 1.3f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.025f, 0.055f);
+            main.gravityModifier = -0.15f; main.maxParticles = 24;
+            main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.72f, 0.22f, 0.9f), new Color(1f, 0.35f, 0.08f, 0.75f));
+            var em = ps.emission; em.rateOverTime = 9f;
+            var sh = ps.shape; sh.shapeType = ParticleSystemShapeType.Cone; sh.angle = 18f; sh.radius = 0.24f;
+            var pr = baraGo.GetComponent<ParticleSystemRenderer>();
+            pr.sharedMaterial = mApi; pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
+
         // Suara kretek api rekaman CC0, 3D, hanya saat menyala.
         void SuaraKretek()
         {
@@ -70,6 +111,18 @@ namespace AlasKeramat.Building
             if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
             float dt = Time.deltaTime;
             SuaraKretek();
+            if (Menyala) PastikanVisualApi();
+            if (_nyalaRoot != null)
+            {
+                if (_nyalaRoot.gameObject.activeSelf != Menyala) _nyalaRoot.gameObject.SetActive(Menyala);
+                if (Menyala && _lidah != null)
+                    for (int i = 0; i < _lidah.Length; i++)
+                        if (_lidah[i] != null)
+                        {
+                            float g = 0.78f + 0.45f * Mathf.PerlinNoise(Time.time * 9f + i * 2.1f, 0.4f);
+                            _lidah[i].localScale = new Vector3(0.13f, (0.24f - i * 0.03f) * g, 0.13f);
+                        }
+            }
             if (Menyala)
             {
                 bool atap = Beratap();

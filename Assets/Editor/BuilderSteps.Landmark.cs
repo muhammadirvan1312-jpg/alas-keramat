@@ -106,8 +106,9 @@ namespace AlasKeramat.EditorTools
                 Taruh("RumahKampung_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(300 + i, 6.5f, 5f, 0.6f, 0.15f)), new[] { i % 3 == 1 ? bilik : kayu, seng }, x, z, baris % 2 == 0 ? 180f : 0f, Vector3.one, true);
             }
 
-            // Zona 7: Mercusuar.
-            Taruh("Mercusuar", Simpan(ProcBangunan.Mercusuar()), new[] { putih, merah, gelap }, -190f, -876f, 0f, Vector3.one, true);
+            // Zona 7: Mercusuar + kepala suar berputar malam/badai.
+            var mercu = Taruh("Mercusuar", Simpan(ProcBangunan.Mercusuar()), new[] { putih, merah, gelap }, -190f, -876f, 0f, Vector3.one, true);
+            PasangKepalaSuar(mercu);
 
             // Zona 9: Pabrik Gula Sinar Tebu.
             Taruh("Cerobong", Simpan(ProcBangunan.GedungPabrik(9, 0, 0, 0, true)), new[] { bata, seng, kayu }, 700f, -540f, 0f, Vector3.one, true);
@@ -118,11 +119,33 @@ namespace AlasKeramat.EditorTools
             // Mulut gua: UG1 lembah bambu (menghadap timur ke sungai), UG3 celah kuil.
             Taruh("CaveEntrance_1", Simpan(ProcBangunan.MulutGua(1, 9f)), new[] { batu, hitam }, 256f, -276f, 90f, Vector3.one, true);
             Taruh("CaveEntrance_3", Simpan(ProcBangunan.MulutGua(3, 12f)), new[] { batu, hitam }, 0f, 694f, 180f, Vector3.one, true);
-            DandanDesaDanPantai(kayu, batu, seng, hitam, bilik);
-            Catat("Landmark: " + JumlahLandmark + " objek (Beringin Agung, heli, 6 rumah desa + interior, 22 rumah kampung, sumur, gerobak, perahu karam, mercusuar, pabrik gula, 2 mulut gua, altar)");
+            DandanDesaDanPantai(kayu, batu, seng, hitam, bilik, gelap);
+            Catat("Landmark: " + JumlahLandmark + " objek (Beringin Agung, heli, 6 rumah desa + interior, 22 rumah kampung, sumur, gerobak, perahu karam, mercusuar + suar, pabrik gula + mesin/lori, 2 mulut gua, altar)");
         }
 
-        static void DandanDesaDanPantai(Material kayu, Material batu, Material seng, Material hitam, Material bilik)
+        static void PasangKepalaSuar(GameObject mercu)
+        {
+            if (mercu == null) return;
+            var kepala = Anak(mercu, "KepalaSuar");
+            kepala.transform.localPosition = new Vector3(0f, 23.6f, 0f);
+            var l = kepala.AddComponent<Light>();
+            l.type = LightType.Spot; l.spotAngle = 34f; l.range = 140f; l.intensity = 24f;
+            l.color = new Color(1f, 0.90f, 0.65f); l.shadows = LightShadows.None;
+            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.name = "BerkasSuar"; Object.DestroyImmediate(quad.GetComponent<Collider>());
+            quad.transform.SetParent(kepala.transform, false);
+            quad.transform.localPosition = new Vector3(0f, 0f, 18f);
+            quad.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            quad.transform.localScale = new Vector3(36f, 4.5f, 1f);
+            var mr = quad.GetComponent<MeshRenderer>();
+            mr.sharedMaterial = SimpanMat(SafeMaterialFactory.CreatePBR("M_BerkasSuar", new Color(1f, 0.92f, 0.72f, 0.22f), 0f, 0.1f, null, null, new Color(2.4f, 2.0f, 1.3f), SurfaceMode.Transparent));
+            mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; mr.receiveShadows = false;
+            var suar = kepala.AddComponent<SuarMercusuar>();
+            suar.Pasang(l, mr);
+            EditorUtility.SetDirty(suar);
+        }
+
+        static void DandanDesaDanPantai(Material kayu, Material batu, Material seng, Material hitam, Material bilik, Material gelap)
         {
             var sumurMesh = Simpan(ProcBangunan.SumurDesa());
             Taruh("SumurDesa_1", sumurMesh, new[] { batu, hitam }, 548f, 208f, 25f, Vector3.one, true);
@@ -140,6 +163,15 @@ namespace AlasKeramat.EditorTools
                 var pr = Taruh("PerahuNelayan_" + i, perahuMesh, new[] { kayu, bilik }, posP[i, 0], posP[i, 1], posP[i, 2], Vector3.one, true);
                 pr.transform.rotation = Quaternion.Euler(4f, posP[i, 2], (i % 2 == 0 ? 12f : -10f));
             }
+
+            var mesinMesh = Simpan(ProcBangunan.MesinPabrikGula());
+            Taruh("MesinPabrik_0", mesinMesh, new[] { gelap, seng }, 640f, -520f, 10f, Vector3.one, true);
+            Taruh("MesinPabrik_1", mesinMesh, new[] { gelap, seng }, 647f, -518f, 190f, Vector3.one, true);
+
+            var loriMesh = Simpan(ProcBangunan.LoriTebu());
+            float[,] posL = { { 658f, -502f, 32f }, { 672f, -488f, 32f }, { 682f, -478f, 120f } };
+            for (int i = 0; i < posL.GetLength(0); i++)
+                Taruh("LoriTebu_" + i, loriMesh, new[] { seng, kayu }, posL[i, 0], posL[i, 1], posL[i, 2], Vector3.one, true);
         }
 
         static Texture2D Tex(string nama) { return AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + nama + ".png"); }
