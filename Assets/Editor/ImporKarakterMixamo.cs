@@ -17,7 +17,7 @@ namespace AlasKeramat.EditorTools
             m.materialImportMode = ModelImporterMaterialImportMode.ImportViaMaterialDescription;
             m.materialLocation = ModelImporterMaterialLocation.InPrefab;
             m.importBlendShapes = false; m.importCameras = false; m.importLights = false;
-            m.meshCompression = ModelImporterMeshCompression.Medium;
+            m.meshCompression = ModelImporterMeshCompression.Off;
             m.optimizeMeshVertices = true; m.optimizeMeshPolygons = true;
         }
 
@@ -27,7 +27,7 @@ namespace AlasKeramat.EditorTools
             var t = (TextureImporter)assetImporter;
             t.maxTextureSize = 2048;
             var a = t.GetPlatformTextureSettings("Android");
-            a.overridden = true; a.maxTextureSize = 1024; a.format = TextureImporterFormat.ASTC_6x6;
+            a.overridden = true; a.maxTextureSize = 2048; a.format = TextureImporterFormat.ASTC_4x4;
             t.SetPlatformTextureSettings(a);
         }
     }

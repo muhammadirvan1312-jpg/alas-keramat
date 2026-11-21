@@ -30,11 +30,11 @@ namespace AlasKeramat.EditorTools
             imp.sRGBTexture = !normal && !rough;
             imp.mipmapEnabled = true;
             imp.streamingMipmaps = true;
-            imp.maxTextureSize = 1024;
+            imp.maxTextureSize = 2048;
             var andr = imp.GetPlatformTextureSettings("Android");
             andr.overridden = true;
-            andr.maxTextureSize = 1024;
-            andr.format = TextureImporterFormat.ASTC_6x6;
+            andr.maxTextureSize = 2048;
+            andr.format = TextureImporterFormat.ASTC_4x4;
             imp.SetPlatformTextureSettings(andr);
         }
     }

@@ -173,9 +173,8 @@ namespace AlasKeramat.EditorTools
             imp.maxTextureSize = maks;
             var android = imp.GetPlatformTextureSettings("Android");
             android.overridden = true;
-            bool albedoDunia = !normal && !sprite && !path.EndsWith("_mask.png") && path.StartsWith(FolderTex + "/");
-            android.maxTextureSize = albedoDunia ? maks : Mathf.Min(maks, 1024);
-            android.format = (sprite || path.Contains("/Characters/")) ? TextureImporterFormat.ASTC_4x4 : TextureImporterFormat.ASTC_6x6;
+            android.maxTextureSize = maks;
+            android.format = TextureImporterFormat.ASTC_4x4;
             // Sprite UI kecil (<=256) tanpa kompresi: tepi bulat & alfa tetap tajam di semua GPU (juga render foto CI).
             if (sprite && maks <= 256) { android.format = TextureImporterFormat.RGBA32; imp.textureCompression = TextureImporterCompression.Uncompressed; }
             imp.SetPlatformTextureSettings(android);
