@@ -52,7 +52,11 @@ Tidak tumpang tindih dengan V1-V5 maupun SOTF Gelombang 3-23. Belum ada props Po
    - **Sarang laba-laba**: tekstur jaring prosedural, quad transparan dua sisi.
      - 4 sarang di sudut dalam tiap rumah Desa Mati, 1 sarang per rumah Kampung Sukamaju.
    - Self-test ada di `PemeriksaanSuasanaDesa.cs`.
-8. **Foto CI** baru di `NusantaraFoto`: `c3_01_props_desa_siang` dan `c3_02_lampu_minyak_malam` (dekat RumahDesa_1).
+8. **Props bisa digeledah** (`Building/PropGeledah.cs`, IInteractable + ISaveable): tahan 1,2 detik "GELEDAH" pada peti, drum, jeriken, bakul, periuk, panci, dan ember.
+   - Isi diundi deterministik dari posisi. Contoh isi peti: kain batik, tali ijuk, perban, minyak tanah, baterai, korek, dan ransum. Wadah dapur berisi arang dan rempah obat; drum/jeriken berisi minyak tanah.
+   - Kira-kira 1 dari 4 wadah kosong (sudah dijarah).
+   - Status "sudah digeledah" ikut disimpan. Toast menampilkan barang yang didapat.
+9. **Foto CI** baru di `NusantaraFoto`: `c3_01_props_desa_siang` dan `c3_02_lampu_minyak_malam` (dekat RumahDesa_1).
 
 ## Cara menggabungkan
 `git merge origin/imp-claude-props-desa` ke cabang uji Antigravity.

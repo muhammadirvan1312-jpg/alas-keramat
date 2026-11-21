@@ -29,6 +29,18 @@ namespace AlasKeramat.EditorTools
             cek("Prop desa: 13 jenis props CC0 bernama unik", NusantaraMasterBuilder.NamaProp.Length == 13 && unik.Count == 13);
 
             PemeriksaanSuasanaDesa.Jalankan(cek);
+            var isi = new ItemID[AlasKeramat.Building.PropGeledah.MaksIsi];
+            var isi2 = new ItemID[AlasKeramat.Building.PropGeledah.MaksIsi];
+            int nIsi = 0, nKosong = 0; bool tetap = true;
+            for (int i = 0; i < 40; i++)
+            {
+                var pos = new Vector3(500f + i * 3.7f, 0f, 200f - i * 1.3f);
+                int a = AlasKeramat.Building.PropGeledah.Undi(AlasKeramat.Building.PropGeledah.Wadah.Peti, pos, isi);
+                int b = AlasKeramat.Building.PropGeledah.Undi(AlasKeramat.Building.PropGeledah.Wadah.Peti, pos, isi2);
+                if (a != b) tetap = false; else for (int k = 0; k < a; k++) if (isi[k] != isi2[k]) tetap = false;
+                if (a == 0) nKosong++; else nIsi++;
+            }
+            cek("Geledah: isi wadah deterministik per posisi, sebagian kosong dijarah (" + nIsi + " isi / " + nKosong + " kosong)", tetap && nIsi > nKosong && nKosong > 0);
             if (!File.Exists("Assets/ThirdParty/Prepared/PetiKayuScan.bytes"))
             {
                 cek("Prop desa: aset panggang belum ada, langkah dilewati (fail-soft)", true);
@@ -59,6 +71,9 @@ namespace AlasKeramat.EditorTools
                     if (mr.sharedMaterials[1].name.StartsWith("M_AtapGenteng")) genteng++;
                 }
             cek("Atap genteng: >= " + MinGenteng + " rumah desa beratap genteng foto CC0 (" + genteng + ")", genteng >= MinGenteng);
+
+            int geledah = Object.FindObjectsByType<AlasKeramat.Building.PropGeledah>(FindObjectsInactive.Include, FindObjectsSortMode.None).Length;
+            cek("Geledah: >= 25 wadah desa bisa digeledah (" + geledah + ")", geledah >= 25);
 
             var lampu = Object.FindObjectsByType<LampuMinyak>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             bool lampuOk = lampu.Length >= MinLampu;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AlasKeramat.Building;
 using AlasKeramat.Core;
 using UnityEditor;
 using UnityEngine;
@@ -17,7 +18,10 @@ namespace AlasKeramat.EditorTools
         static readonly string[] MeshProp = { "PetiKayuScan", "DrumScan", "BakulScan", "EmberKayuScan", "PeriukScan", "DingklikScan", "JerikenScan", "BanBekasScan", "PanciScan", "TanggaScan", "BangkuScan", "KapakScan", "LampuMinyakScan" };
         static readonly string[] SlotProp = { "PropPeti", "PropDrum", "PropBakul", "PropEmber", "PropPeriuk", "PropDingklik", "PropJeriken", "PropBan", "PropPanci", "PropTangga", "PropBangku", "PropKapak", "PropLampu" };
         static readonly float[] HalusProp = { 0.18f, 0.34f, 0.12f, 0.16f, 0.30f, 0.18f, 0.32f, 0.10f, 0.45f, 0.15f, 0.20f, 0.24f, 0.50f };
-        static readonly bool[] KoliderProp = { true, true, false, false, true, true, true, true, false, true, true, false, false };
+        static readonly bool[] KoliderProp = { true, true, true, true, true, true, true, true, true, true, true, false, false };
+        // Wadah yang bisa digeledah (-1 = tidak): peti, drum, bakul, ember, periuk, jeriken, panci.
+        static readonly int[] WadahProp = { (int)PropGeledah.Wadah.Peti, (int)PropGeledah.Wadah.BahanBakar, (int)PropGeledah.Wadah.Dapur, (int)PropGeledah.Wadah.Ember, (int)PropGeledah.Wadah.Dapur, -1, (int)PropGeledah.Wadah.BahanBakar, -1, (int)PropGeledah.Wadah.Dapur, -1, -1, -1, -1 };
+        public static int JumlahGeledah;
         // Isi halaman rumah yang ditinggal mendadak.
         static readonly int[] PropHalaman = { PropPeriuk, PropEmber, PropBakul, PropDingklik, PropBangku, PropTangga, PropKapak, PropPanci, PropPeti };
         const float CullKecil = 0.035f, CullBesar = 0.015f, JarakCelahRumah = 0.7f, SebaranCelah = 1.4f, LerengMaksProp = 1.1f;
@@ -37,7 +41,7 @@ namespace AlasKeramat.EditorTools
 
         static void LangkahPropDesa()
         {
-            JumlahPropDesa = 0; JumlahLampuDesa = 0;
+            JumlahPropDesa = 0; JumlahLampuDesa = 0; JumlahGeledah = 0;
             var lm = GameObject.Find(NamaRoot + "/World/Landmark");
             if (lm == null) lm = GameObject.Find(NamaRoot + "/Landmark");
             if (lm == null) { Catat("Prop desa: induk Landmark tidak ada, dilewati"); return; }
@@ -79,7 +83,7 @@ namespace AlasKeramat.EditorTools
             KlasterBebas(induk, new Vector2(8f, -448f), 6f, 12f, new[] { PropJeriken, PropJeriken, PropJeriken, PropDrum, PropDrum, PropBan, PropPeti, PropPeti }, rnd);
             // Pabrik Gula Sinar Tebu: drum & ban bekas di halaman pabrik.
             KlasterBebas(induk, new Vector2(665f, -500f), 4f, 22f, new[] { PropDrum, PropDrum, PropDrum, PropDrum, PropBan, PropBan, PropJeriken, PropJeriken, PropPeti, PropPeti, PropTangga }, rnd);
-            Catat("Prop desa CC0: " + JumlahPropDesa + " props, " + JumlahLampuDesa + " lampu minyak (" + ada + "/" + NamaProp.Length + " jenis)");
+            Catat("Prop desa CC0: " + JumlahPropDesa + " props (" + JumlahGeledah + " bisa digeledah), " + JumlahLampuDesa + " lampu minyak (" + ada + "/" + NamaProp.Length + " jenis)");
         }
 
         static Material MaterialGenteng(string nama, string tex, Color tint, float ukuran)
@@ -245,6 +249,13 @@ namespace AlasKeramat.EditorTools
             {
                 var bc = go.AddComponent<BoxCollider>();
                 bc.center = mesh.bounds.center; bc.size = mesh.bounds.size;
+            }
+            if (WadahProp[jenis] >= 0 && KoliderProp[jenis])
+            {
+                var gl = go.AddComponent<PropGeledah>();
+                gl.Jenis = (PropGeledah.Wadah)WadahProp[jenis];
+                EditorUtility.SetDirty(gl);
+                JumlahGeledah++;
             }
             var lod = go.AddComponent<LODGroup>();
             lod.SetLODs(new[] { new LOD(KoliderProp[jenis] ? CullBesar : CullKecil, new Renderer[] { mr }) });
