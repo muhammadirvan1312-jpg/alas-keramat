@@ -24,6 +24,8 @@ namespace AlasKeramat.Player
         public float LukaLengan { get; private set; }
         public float LukaKaki { get; private set; }
         public StatusEffect Status { get; private set; }
+        public static bool ModeSengsara, ModePantangMundur;
+        public static float PengaliModeSengsara(bool aktif) { return aktif ? 1.45f : 1f; }
 
         float _diare, _racun, _bisa;
 

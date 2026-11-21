@@ -229,3 +229,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `LayarSinema` dan `BuilderSteps.Ending` menambahkan **Ending C ("Pewaris Perjanjian" — 3 ending v5)** beserta tombol pilihan takdir ke-3 dan hadiah `KerisPusaka` + `ZirahEmas` di Mode Sandbox.
   - `BuilderSteps.Gua2` menambahkan **Kapsul Eksperimen Rendra (`KapsulRendra_R2`)** dan `MejaRendra_R2` (`TandaPengenalRendra`, `PatungKayuDewi`) di ruang laboratorium bunker UG2 R2.
   - `WadahItem` dan `BuilderSteps.Landmark` menambahkan interaksi **`PERIKSA`** (`PasangPeriksa`) pada **12 objek cerita lingkungan (`ObjekPeriksa_0..11`)** di seluruh zona utama pulau yang memutar monolog investigasi Andi dan memulihkan kewarasan.
+- Gelombang 20 SOTF (`imp-sotf-v3`):
+  - `AndiVitalsAndSanity` menambahkan dukungan **Mode Sengsara & Mode Pantang Mundur (`24 §10`)** (`PengaliModeSengsara = 1.45f`).
+  - `RadarGPS` menampilkan penanda posisi dinamis (`BlipDeden` biru muda & `BlipNingsih` merah muda keemasan / `TampilBlipTeman`) secara langsung di radar ketika GPS aktif.
+  - `AndiFPSController` menambahkan efek redaman tekuk lutut kamera saat mendarat dari lompatan atau ketinggian (`HitungTekukMendarat`) sehingga gerak orang-pertama terasa berbobot nyata.

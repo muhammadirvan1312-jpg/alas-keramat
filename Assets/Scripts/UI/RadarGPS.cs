@@ -27,7 +27,28 @@ namespace AlasKeramat.UI
 
         AndiFPSController _andi;
         TikarPandan3DInventory _inv;
+        AlasKeramat.AI.KangDedenKelvinAI _deden;
+        AlasKeramat.AI.NingsihVirginiaAI _ningsih;
+        RectTransform _blipDeden, _blipNingsih;
         float _t;
+
+        public static bool TampilBlipTeman(bool aktifGPS, bool hidup, bool tampakAtauGabung)
+        {
+            return aktifGPS && hidup && tampakAtauGabung;
+        }
+
+        RectTransform BuatBlipTeman(string nama, Color warna)
+        {
+            if (isi == null) return null;
+            var go = new GameObject(nama);
+            go.transform.SetParent(isi.transform, false);
+            var rt = go.AddComponent<RectTransform>();
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta = new Vector2(18f, 18f);
+            var img = go.AddComponent<UnityEngine.UI.Image>();
+            img.color = warna; img.raycastTarget = false;
+            return rt;
+        }
 
         public void Pasang(RectTransform u, RectTransform[] p, Vector3[] pos, GameObject wadahIsi)
         {
@@ -71,6 +92,22 @@ namespace AlasKeramat.UI
             if (!aktif) return;
             for (int i = 0; i < penanda.Length && i < posisi.Length; i++)
                 if (penanda[i] != null) penanda[i].anchoredPosition = KeRadar(a, posisi[i], yaw);
+            if (_deden == null) _deden = GameServices.Get<AlasKeramat.AI.KangDedenKelvinAI>();
+            if (_ningsih == null) _ningsih = GameServices.Get<AlasKeramat.AI.NingsihVirginiaAI>();
+            bool tampilD = _deden != null && TampilBlipTeman(aktif, _deden.IsAlive, _deden.Bergabung);
+            if (tampilD && _blipDeden == null) _blipDeden = BuatBlipTeman("BlipDeden", new Color(0.22f, 0.72f, 1f, 0.95f));
+            if (_blipDeden != null)
+            {
+                if (_blipDeden.gameObject.activeSelf != tampilD) _blipDeden.gameObject.SetActive(tampilD);
+                if (tampilD) _blipDeden.anchoredPosition = KeRadar(a, _deden.transform.position, yaw);
+            }
+            bool tampilN = _ningsih != null && TampilBlipTeman(aktif, _ningsih.IsAlive, _ningsih.Tampak);
+            if (tampilN && _blipNingsih == null) _blipNingsih = BuatBlipTeman("BlipNingsih", new Color(1f, 0.48f, 0.72f, 0.95f));
+            if (_blipNingsih != null)
+            {
+                if (_blipNingsih.gameObject.activeSelf != tampilN) _blipNingsih.gameObject.SetActive(tampilN);
+                if (tampilN) _blipNingsih.anchoredPosition = KeRadar(a, _ningsih.transform.position, yaw);
+            }
         }
     }
 }

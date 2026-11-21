@@ -186,6 +186,13 @@ namespace AlasKeramat.EditorTools
                 AlasKeramat.UI.LayarSinema.TeksEnding(3, true).Contains("Pewaris Perjanjian")
                 && GameObject.Find("KapsulRendra_R2") != null
                 && GameObject.Find("ObjekPeriksa_0") != null && GameObject.Find("ObjekPeriksa_11") != null);
+            cek("SOTF v20: mode tantangan Sengsara, blip companion Radar GPS & tekuk kamera mendarat",
+                AlasKeramat.Player.AndiVitalsAndSanity.PengaliModeSengsara(true) > 1.3f
+                && AlasKeramat.Player.AndiVitalsAndSanity.PengaliModeSengsara(false) == 1f
+                && AlasKeramat.UI.RadarGPS.TampilBlipTeman(true, true, true)
+                && !AlasKeramat.UI.RadarGPS.TampilBlipTeman(false, true, true)
+                && AlasKeramat.Player.AndiFPSController.HitungTekukMendarat(2.5f) > 0.08f
+                && AlasKeramat.Player.AndiFPSController.HitungTekukMendarat(0.1f) == 0f);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;
