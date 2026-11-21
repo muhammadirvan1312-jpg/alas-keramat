@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         api: [34]
-        sumber: ["rilis:uji-20261121-1830", "run:44952249743"]
+        sumber: ["rilis:uji-20261121-2127", "run:44952249743"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,7 +56,7 @@ jobs:
           disk-size: 8G
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
           disable-animations: true
-          script: bash Tools/uji_emulator.sh "$APK" "$PAKET" logcat_api${{ matrix.api }}
+          script: bash Tools/uji_emulator.sh "$APK" "$PAKET" logcat_hasil
       - name: Unggah logcat
         if: always()
         uses: actions/upload-artifact@v4
