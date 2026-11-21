@@ -1093,6 +1093,105 @@
       "slot": "Audio",
       "size": 10190,
       "sha256": "ea67c9d78750e5a356bf53ef8c2063b52cc3ccdae6ae8afeec87f97f79ae692d"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/leaves_forest_ground/leaves_forest_ground_diff_2k.jpg",
+      "path": "CC0/Serasah/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/leaves_forest_ground",
+      "author": "Poly Haven",
+      "slot": "Serasah",
+      "map": "Albedo",
+      "size": 4253470,
+      "sha256": "bda0ffc30570af7c067a3d6922cb1c7f31ada4fcece24b8f2cc4c5dde742e22c"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/leaves_forest_ground/leaves_forest_ground_nor_gl_2k.jpg",
+      "path": "CC0/Serasah/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/leaves_forest_ground",
+      "author": "Poly Haven",
+      "slot": "Serasah",
+      "map": "Normal",
+      "size": 5273836,
+      "sha256": "2713002b4a75b8b47b983c75d3f388d79f0775f305ca14884eae6a277b8f48bd"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/leaves_forest_ground/leaves_forest_ground_arm_2k.jpg",
+      "path": "CC0/Serasah/ARM.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/leaves_forest_ground",
+      "author": "Poly Haven",
+      "slot": "Serasah",
+      "map": "ARM",
+      "size": 3601680,
+      "sha256": "95a3652c4af181225d90f9c22f6bc1e8401073f41cf8ae42c7f929802ce64f5f"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/mud_forest/mud_forest_diff_2k.jpg",
+      "path": "CC0/TanahHutan/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/mud_forest",
+      "author": "Poly Haven",
+      "slot": "TanahHutan",
+      "map": "Albedo",
+      "size": 3683329,
+      "sha256": "6726cf9ad9b1be9bf284c629dd95d732527b18fc92be06ae9093a96a68f77628"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/mud_forest/mud_forest_nor_gl_2k.jpg",
+      "path": "CC0/TanahHutan/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/mud_forest",
+      "author": "Poly Haven",
+      "slot": "TanahHutan",
+      "map": "Normal",
+      "size": 5909919,
+      "sha256": "8d0ad08c4d0df9aabd2fc42ef34e0d34010d9a63eb472eed214be6fad5bc2d4e"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/mud_forest/mud_forest_arm_2k.jpg",
+      "path": "CC0/TanahHutan/ARM.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/mud_forest",
+      "author": "Poly Haven",
+      "slot": "TanahHutan",
+      "map": "ARM",
+      "size": 3326167,
+      "sha256": "909f709f75601721689f019afe2e1127d7a2fadb90711bba70fd365037003f94"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forest_leaves_02/forest_leaves_02_diffuse_2k.jpg",
+      "path": "CC0/LumutHutan/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/forest_leaves_02",
+      "author": "Poly Haven",
+      "slot": "LumutHutan",
+      "map": "Albedo",
+      "size": 1668009,
+      "sha256": "9c38b2b151a0415457a6914966422cfca5a546c94674442e5395e0b1e908a196"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forest_leaves_02/forest_leaves_02_nor_gl_2k.jpg",
+      "path": "CC0/LumutHutan/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/forest_leaves_02",
+      "author": "Poly Haven",
+      "slot": "LumutHutan",
+      "map": "Normal",
+      "size": 2323898,
+      "sha256": "af0346114834c347a8d6a138f6ea16a97b0bec8d6e4db32c24f1c7e482163235"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forest_leaves_02/forest_leaves_02_arm_2k.jpg",
+      "path": "CC0/LumutHutan/ARM.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/forest_leaves_02",
+      "author": "Poly Haven",
+      "slot": "LumutHutan",
+      "map": "ARM",
+      "size": 1066850,
+      "sha256": "d8423b522d86285e26036d27fc51f4db7b8c6716b1558deb4575b288e14c28b7"
     }
   ]
 }
