@@ -151,6 +151,7 @@ namespace AlasKeramat.EditorTools
             var b = go.AddComponent<Button>(); b.targetGraphic = img;
             label = BuatTeks(go, "Label", teks, font, 28, new Vector2(0.5f, 0.5f), Vector2.zero, ukuran);
             label.raycastTarget = false; label.color = ProcTex.Hex("#F2EFE6");
+            GayakanTombol(img, warna, label);
             return b;
         }
     }
