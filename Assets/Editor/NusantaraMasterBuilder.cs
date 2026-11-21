@@ -94,6 +94,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7y. Peta survei & navigasi", 0.987f, LangkahPetaSurvei);
                 Langkah("7z. Animasi mocap Mixamo", 0.988f, LangkahMixamo);
                 Langkah("7z2. Rekaman CC0 Kenney", 0.989f, LangkahAudioKenney);
+                Langkah("7z4. Cookie senter", 0.9897f, LangkahCookieSenter);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

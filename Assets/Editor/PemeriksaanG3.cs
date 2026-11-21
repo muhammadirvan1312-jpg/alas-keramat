@@ -22,6 +22,8 @@ namespace AlasKeramat.EditorTools
                 foreach(var matrix in group.matriks)detail &= group.bounds.Contains((Vector3)matrix.GetColumn(3));
             }
             cek("Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance",detail);
+            cek("Senter: cookie terpasang, pusat terang, tepi gelap",AssetDatabase.LoadAssetAtPath<Texture2D>(NusantaraMasterBuilder.PathCookieSenter)!=null
+                && NusantaraMasterBuilder.NilaiCookie(0f,0f,0.5f)>0.9f && NusantaraMasterBuilder.NilaiCookie(0.99f,0f,0.5f)<0.1f);
             bool foto=true;
             foreach(string slot in new[]{"tanah","rumput","batu","kayu","kulit_kayu","pasir","lumpur","beton","logam_karat","kain"})
             {
