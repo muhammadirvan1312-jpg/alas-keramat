@@ -145,7 +145,7 @@ namespace AlasKeramat.EditorTools
 
         static void BuatSerasahHutan()
         {
-            const int sisiSel=32,calon=340;
+            const int sisiSel=32,calon=410;
             var fallRumput=MeshRumputHutan();var fallBatu=MeshBatuAlam();var fallKayu=MeshKayuTumbang();
             var mFallBatu=AssetDatabase.LoadAssetAtPath<Material>(FolderMat+"/M_Batu.mat");
             var mFallKayu=AssetDatabase.LoadAssetAtPath<Material>(FolderMat+"/M_KulitPohon.mat")??AssetDatabase.LoadAssetAtPath<Material>(FolderMat+"/M_Kayu.mat");
@@ -154,7 +154,9 @@ namespace AlasKeramat.EditorTools
             var meshes=new Mesh[]{
                 MuatPropScan("RumputScanA")??fallRumput, MuatPropScan("RumputScanB")??fallRumput,
                 MuatPropScan("PakisScan_LOD0")??fallRumput, MuatPropScan("KeladiScan")??fallRumput,
-                MuatPropScan("BatuLumutA")??fallBatu, MuatPropScan("KayuTumbangScan")??fallKayu, MuatPropScan("AkarScan")??fallBatu
+                MuatPropScan("BatuLumutA")??fallBatu, MuatPropScan("KayuTumbangScan")??fallKayu, MuatPropScan("AkarScan")??fallBatu,
+                MuatPropScan("TunggulScan")??fallKayu, MuatPropScan("RantingScanA")??fallKayu, MuatPropScan("RantingScanB")??fallKayu,
+                MuatPropScan("BatuLumutC")??fallBatu, MuatPropScan("BatuLumutD")??fallBatu
             };
             Color folTint=new Color(0.76f,0.82f,0.68f,1f);
             var mPakis=AssetDatabase.LoadAssetAtPath<Material>(FolderMat+"/M_PakisAsli.mat");
@@ -165,7 +167,12 @@ namespace AlasKeramat.EditorTools
                 MaterialFolScan("KeladiAsli","M_KeladiScan",0.36f,0.035f,new Color(0.84f,0.88f,0.78f,1f))??mFallRumput,
                 MaterialSolidScan("BatuLumutAsli","M_BatuLumutScan",new Color(0.84f,0.86f,0.82f,1f),0.26f)??mFallBatu,
                 MaterialSolidScan("KayuTumbangAsli","M_KayuTumbangScan",new Color(0.80f,0.77f,0.72f,1f),0.22f)??mFallKayu,
-                MaterialSolidScan("AkarAsli","M_AkarScan",new Color(0.78f,0.74f,0.68f,1f),0.24f)??mFallBatu
+                MaterialSolidScan("AkarAsli","M_AkarScan",new Color(0.78f,0.74f,0.68f,1f),0.24f)??mFallBatu,
+                MaterialSolidScan("TunggulAsli","M_TunggulScan",new Color(0.80f,0.76f,0.70f,1f),0.20f)??mFallKayu,
+                MaterialSolidScan("RantingAsli","M_RantingScan",new Color(0.74f,0.70f,0.64f,1f),0.18f)??mFallKayu,
+                MaterialSolidScan("RantingAsli","M_RantingScan",new Color(0.74f,0.70f,0.64f,1f),0.18f)??mFallKayu,
+                MaterialSolidScan("BatuLumutAsliB","M_BatuLumutScanB",new Color(0.82f,0.85f,0.80f,1f),0.24f)??mFallBatu,
+                MaterialSolidScan("BatuLumutAsliB","M_BatuLumutScanB",new Color(0.82f,0.85f,0.80f,1f),0.24f)??mFallBatu
             };
 
             var hasil=new List<SerasahHutan.KelompokSerasah>();
@@ -178,13 +185,15 @@ namespace AlasKeramat.EditorTools
                 {
                     float px=x+(float)rand.NextDouble()*sisiSel,pz=z+(float)rand.NextDouble()*sisiSel,y;
                     if(!BolehTanam(px,pz,out y,true) || DekorasiMenutupAwal(px,pz) || AreaBebasSerasah(px,pz))continue;
-                    int roll=n%25;
-                    int tipe=roll<6?0:roll<11?1:roll<17?2:roll<20?3:roll<23?4:roll==23?5:6;
+                    int roll=n%32;
+                    int tipe=roll<6?0:roll<11?1:roll<17?2:roll<20?3:roll<23?4:roll==23?5:roll==24?6:roll==25?7:roll<28?8:roll==28?9:roll<31?10:11;
                     float rY=(float)rand.NextDouble()*360f;
                     Vector3 pos;Quaternion rot;Vector3 scale;
-                    if(tipe==4) { float s=0.72f+(float)rand.NextDouble()*0.95f;pos=new Vector3(px,y-0.04f,pz);rot=Quaternion.Euler((float)rand.NextDouble()*12f-6f,rY,(float)rand.NextDouble()*12f-6f);scale=new Vector3(s,s*(0.85f+(float)rand.NextDouble()*0.3f),s); }
+                    if(tipe==8 || tipe==9) { float s=0.75f+(float)rand.NextDouble()*0.6f;pos=new Vector3(px,y-0.01f,pz);rot=Quaternion.Euler((float)rand.NextDouble()*8f-4f,rY,(float)rand.NextDouble()*8f-4f);scale=new Vector3(s,s,s); }
+                    else if(tipe==10 || tipe==11) { float s=0.70f+(float)rand.NextDouble()*0.9f;pos=new Vector3(px,y-0.05f,pz);rot=Quaternion.Euler((float)rand.NextDouble()*14f-7f,rY,(float)rand.NextDouble()*14f-7f);scale=new Vector3(s,s*(0.8f+(float)rand.NextDouble()*0.35f),s); }
+                    else if(tipe==4) { float s=0.72f+(float)rand.NextDouble()*0.95f;pos=new Vector3(px,y-0.04f,pz);rot=Quaternion.Euler((float)rand.NextDouble()*12f-6f,rY,(float)rand.NextDouble()*12f-6f);scale=new Vector3(s,s*(0.85f+(float)rand.NextDouble()*0.3f),s); }
                     else if(tipe==5) { float s=0.65f+(float)rand.NextDouble()*0.55f;pos=new Vector3(px,y-0.04f,pz);rot=Quaternion.Euler((float)rand.NextDouble()*6f-3f,rY,(float)rand.NextDouble()*6f-3f);scale=new Vector3(s,s,s); }
-                    else if(tipe==6) { float s=0.70f+(float)rand.NextDouble()*0.50f;pos=new Vector3(px,y-0.06f,pz);rot=Quaternion.Euler(0f,rY,0f);scale=new Vector3(s,s,s); }
+                    else if(tipe==6 || tipe==7) { float s=0.70f+(float)rand.NextDouble()*0.50f;pos=new Vector3(px,y-0.06f,pz);rot=Quaternion.Euler(0f,rY,0f);scale=new Vector3(s,s,s); }
                     else { float s=0.80f+(float)rand.NextDouble()*0.65f;pos=new Vector3(px,y-0.02f,pz);rot=Quaternion.Euler(0f,rY,0f);scale=new Vector3(s,s*(0.82f+0.36f*(float)rand.NextDouble()),s); }
                     daftar[tipe].Add(Matrix4x4.TRS(pos,rot,scale));
                 }
@@ -202,7 +211,7 @@ namespace AlasKeramat.EditorTools
                 }
             }
             var detail=Anak(_root,"SerasahHutan").AddComponent<SerasahHutan>();detail.kelompok=hasil.ToArray();EditorUtility.SetDirty(detail);
-            Catat("Lantai hutan photogrammetry CC0: "+hasil.Count+" batch (rumput scan, pakis, keladi, batu lumut, kayu tumbang, akar)");
+            Catat("Lantai hutan photogrammetry CC0: "+hasil.Count+" batch (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)");
         }
     }
 }
