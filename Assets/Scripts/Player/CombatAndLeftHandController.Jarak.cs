@@ -55,6 +55,10 @@ namespace AlasKeramat.Player
         public bool PakaiJarak { get { return _iJarak >= 0; } }
         public SenjataJarak AktifJarak { get { return _iJarak >= 0 ? TabelJarak[_iJarak] : default(SenjataJarak); } }
         public bool Kebal { get { return _tElak > 0f; } }
+        public float TarikBusurAktif01
+        {
+            get { return (_iJarak >= 0 && TabelJarak[_iJarak].jenis == JenisJarak.Busur && _menarik && _tTekan >= 0f) ? TarikBusur01(true, Time.unscaledTime - _tTekan, TabelJarak[_iJarak].tarikMaks) : 0f; }
+        }
 
         public static int IndeksJarak(ItemID id) { for (int i = 0; i < TabelJarak.Length; i++) if (TabelJarak[i].id == id) return i; return -1; }
         public static int IndeksMelee(ItemID id) { for (int i = 0; i < Tabel.Length; i++) if (Tabel[i].id == id) return i; return -1; }

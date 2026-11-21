@@ -91,6 +91,14 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Core.ProcBangunan.DermagaPantai().vertexCount > 40
                 && AlasKeramat.Core.ProcBangunan.TendaEkspedisi().vertexCount > 30
                 && GameObject.Find("JembatanSungai_0") != null && GameObject.Find("DermagaPantai_0") != null && GameObject.Find("TendaEkspedisi_0") != null);
+            cek("SOTF v6: obor patroli sekte malam, aberasi kromatik pasca-proses, crosshair bidik/kena & menara pantau",
+                AlasKeramat.AI.NusantaraEnemyAndMutantAI.HitungIntensitasOborSekte(AlasKeramat.Core.EnemyArchetype.AbdiSekte, true, 22f, false, 1f) > 1f
+                && AlasKeramat.AI.NusantaraEnemyAndMutantAI.HitungIntensitasOborSekte(AlasKeramat.Core.EnemyArchetype.AbdiSekte, true, 12f, false, 1f) == 0f
+                && AlasKeramat.Core.AKPascaProses.HitungAberasiKromatik(0.8f, 0.2f) > AlasKeramat.Core.AKPascaProses.HitungAberasiKromatik(0f, 1f)
+                && AlasKeramat.UI.TouchControls.SkalaCrosshair(false, 1f, 0f) < 1f
+                && AlasKeramat.UI.TouchControls.SkalaCrosshair(false, 0f, 0.1f) > 1.5f
+                && AlasKeramat.Core.ProcBangunan.MenaraPantauKayu().vertexCount > 60
+                && GameObject.Find("MenaraPantau_0") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

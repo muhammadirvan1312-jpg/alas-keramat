@@ -474,5 +474,36 @@ namespace AlasKeramat.Core
             b.Kotak(1, new Vector3(1.55f, 0.30f, -1.1f), new Vector3(0.68f, 0.56f, 0.88f), Quaternion.Euler(0f, 12f, 0f), 1f);
             return b.Jadi("TendaEkspedisi");
         }
+
+        // Menara pantau kayu pos ronda/ekspedisi: 4 tiang sudut, penyangga silang, balkon 3.8 m berpagar, tangga miring & atap limas. 0 kayu, 1 atap.
+        public static Mesh MenaraPantauKayu()
+        {
+            var b = new B(2);
+            for (int sx = -1; sx <= 1; sx += 2)
+                for (int sz = -1; sz <= 1; sz += 2)
+                    b.Kotak(0, new Vector3(sx * 1.35f, 3.1f, sz * 1.35f), new Vector3(0.22f, 6.2f, 0.22f), Quaternion.identity, 2f);
+            for (int s = 0; s < 3; s++)
+            {
+                Quaternion q = Quaternion.Euler(0f, (s + 1) * 90f, 0f);
+                b.Kotak(0, q * new Vector3(0f, 1.9f, 1.35f), new Vector3(2.8f, 0.14f, 0.12f), q * Quaternion.Euler(0f, 0f, 34f), 1.5f);
+                b.Kotak(0, q * new Vector3(0f, 1.9f, 1.35f), new Vector3(2.8f, 0.14f, 0.12f), q * Quaternion.Euler(0f, 0f, -34f), 1.5f);
+            }
+            b.Kotak(0, new Vector3(0f, 3.8f, 0f), new Vector3(3.1f, 0.14f, 3.1f), Quaternion.identity, 1.5f);
+            for (int s = 0; s < 4; s++)
+            {
+                Quaternion q = Quaternion.Euler(0f, s * 90f, 0f);
+                b.Kotak(0, q * new Vector3(0f, 4.7f, 1.42f), new Vector3(2.8f, 0.10f, 0.10f), q, 1.5f);
+            }
+            for (int side = -1; side <= 1; side += 2)
+                b.Kotak(0, new Vector3(side * 0.32f, 2.0f, -1.75f), new Vector3(0.08f, 4.2f, 0.10f), Quaternion.Euler(-14f, 0f, 0f), 1.5f);
+            for (int r = 0; r < 8; r++)
+                b.Kotak(0, new Vector3(0f, 0.45f + r * 0.46f, -2.18f + r * 0.11f), new Vector3(0.68f, 0.06f, 0.08f), Quaternion.identity, 1f);
+            for (int s = 0; s < 4; s++)
+            {
+                Quaternion q = Quaternion.Euler(0f, s * 90f, 0f);
+                b.Kotak(1, q * new Vector3(0f, 6.45f, 0.92f), new Vector3(3.6f, 0.08f, 2.3f), q * Quaternion.Euler(28f, 0f, 0f), 2f);
+            }
+            return b.Jadi("MenaraPantauKayu");
+        }
     }
 }

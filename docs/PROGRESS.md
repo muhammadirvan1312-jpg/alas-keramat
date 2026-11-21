@@ -175,3 +175,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `CombatAndLeftHandController` memancarkan percikan api logam saat berhasil parry & blok serangan (`PercikanParry` / `JumlahPercikanParry`).
   - `URPAtmosphereAndWeather` menambahkan cipratan hujan di permukaan tanah sekitar pemain (`PercikanHujanTanah` / `LajuPercikanHujan`) dan `FoleyAndi` memancarkan cipratan air/debu saat berlari, melompat mendarat, atau berenang.
   - Infrastruktur pulau diperkaya dengan 2 jembatan kayu penyeberangan sungai (`JembatanSungai_0..1`), dermaga nelayan pantai (`DermagaPantai_0`), serta 3 tenda ekspedisi darurat (`TendaEkspedisi_0..2`) di dekat lokasi jatuh heli & bukit utara.
+- Gelombang 6 SOTF (`imp-sotf-v3`):
+  - Anggota sekte yang berpatroli di malam hari atau di dalam gua kini membawa obor api berkedip (`OborSekte` / `HitungIntensitasOborSekte`) sehingga pergerakan musuh di hutan gelap terlihat seperti *Sons of the Forest*.
+  - Pasca-proses URP (`AKPascaProses` & `BuilderSteps.Pasca.cs`) ditambah *Film Grain* sinematik dan *Chromatic Aberration* dinamis saat darah kritis atau kewarasan merosot (`HitungAberasiKromatik`).
+  - `TouchControls` menambahkan umpan balik crosshair dinamis (mengecil presisi saat menarik busur & berkedip besar merah/kuning saat mengenai musuh), plus 3 menara pantau kayu beratap (`MenaraPantau_0..2`) di desa, kampung, & pabrik gula.

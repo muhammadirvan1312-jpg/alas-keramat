@@ -193,6 +193,11 @@ namespace AlasKeramat.EditorTools
             float[,] posT = { { 20f, -436f, 210f }, { -6f, -456f, 45f }, { -518f, 258f, 130f } };
             for (int i = 0; i < posT.GetLength(0); i++)
                 Taruh("TendaEkspedisi_" + i, tendaMesh, new[] { bilik, kayu }, posT[i, 0], posT[i, 1], posT[i, 2], Vector3.one, true);
+
+            var menaraMesh = Simpan(ProcBangunan.MenaraPantauKayu());
+            float[,] posM = { { 512f, 165f, 140f }, { 548f, 548f, 220f }, { 612f, -505f, 45f } };
+            for (int i = 0; i < posM.GetLength(0); i++)
+                Taruh("MenaraPantau_" + i, menaraMesh, new[] { kayu, seng }, posM[i, 0], posM[i, 1], posM[i, 2], Vector3.one, true);
         }
 
         static Texture2D Tex(string nama) { return AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + nama + ".png"); }

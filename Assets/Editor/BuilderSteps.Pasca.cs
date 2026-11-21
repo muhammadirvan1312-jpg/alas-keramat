@@ -27,6 +27,8 @@ namespace AlasKeramat.EditorTools
             var st = prof.Add<SplitToning>(true);
             st.shadows.Override(ProcTex.Hex("#647C8E")); st.highlights.Override(ProcTex.Hex("#B29C7E")); st.balance.Override(-6f);
             var lgg = prof.Add<LiftGammaGain>(true); lgg.lift.Override(new Vector4(1f, 1f, 1f, 0f));
+            var chr = prof.Add<ChromaticAberration>(true); chr.intensity.Override(0.04f);
+            var fg = prof.Add<FilmGrain>(true); fg.type.Override(FilmGrainLookup.Thin1); fg.intensity.Override(0.14f); fg.response.Override(0.8f);
             foreach (var k in prof.components) AssetDatabase.AddObjectToAsset(k, prof);
             EditorUtility.SetDirty(prof);
             AssetDatabase.SaveAssets();

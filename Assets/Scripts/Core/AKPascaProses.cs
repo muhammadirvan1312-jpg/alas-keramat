@@ -15,6 +15,7 @@ namespace AlasKeramat.Core
         WhiteBalance _wb;
         Vignette _vig;
         Bloom _bloom;
+        ChromaticAberration _chr;
         TimeOfDayClock _jam;
         URPAtmosphereAndWeather _atmos;
         float _t;
@@ -28,7 +29,7 @@ namespace AlasKeramat.Core
             if (volume == null) volume = GetComponent<Volume>();
             if (volume == null || volume.sharedProfile == null) { Debug.LogError("[AK][AKPascaProses] Volume/profil tidak ada, pasca-proses statis."); enabled = false; return; }
             var p = volume.profile; // salinan runtime: aset profil tidak berubah saat Play di Editor
-            p.TryGet(out _ca); p.TryGet(out _wb); p.TryGet(out _vig); p.TryGet(out _bloom);
+            p.TryGet(out _ca); p.TryGet(out _wb); p.TryGet(out _vig); p.TryGet(out _bloom); p.TryGet(out _chr);
             _skrg = Target(TimeOfDayClock.JamMulai, WeatherState.Cerah);
         }
 
@@ -37,6 +38,11 @@ namespace AlasKeramat.Core
         public const float AmbangKritis = 0.35f;
         // 0 saat HP >= 35%, naik ke 1 saat HP mendekati 0.
         public static float Kritis01(float hp01) { return Mathf.Clamp01(1f - hp01 / AmbangKritis); }
+        public static float HitungAberasiKromatik(float kritis01, float kewarasan01)
+        {
+            float tidakWaras = Mathf.Clamp01(1f - kewarasan01 / 0.45f);
+            return Mathf.Clamp(0.03f + kritis01 * 0.38f + tidakWaras * 0.28f, 0f, 0.75f);
+        }
         // HP kritis: warna memudar, tepi layar menggelap dan berdenyut pelan seperti detak jantung.
         public static Vector4 EfekKritis(Vector4 v, float k, float waktu)
         {
@@ -93,6 +99,11 @@ namespace AlasKeramat.Core
             if (_ca != null) { _ca.postExposure.value = o.x; _ca.saturation.value = o.y; }
             if (_wb != null) _wb.temperature.value = o.z;
             if (_vig != null) _vig.intensity.value = o.w;
+            if (_chr != null)
+            {
+                float san01 = _vital != null ? _vital.Sanity / AlasKeramat.Player.AndiVitalsAndSanity.Maks : 1f;
+                _chr.intensity.value = HitungAberasiKromatik(_kritis, san01);
+            }
         }
     }
 }
