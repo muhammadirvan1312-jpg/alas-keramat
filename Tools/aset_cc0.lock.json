@@ -1095,6 +1095,39 @@
       "sha256": "ea67c9d78750e5a356bf53ef8c2063b52cc3ccdae6ae8afeec87f97f79ae692d"
     },
     {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bamboo_wall_02/bamboo_wall_02_diff_2k.jpg",
+      "path": "CC0/BilikBambu/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/bamboo_wall_02",
+      "author": "Poly Haven",
+      "slot": "BilikBambu",
+      "map": "Albedo",
+      "size": 3071155,
+      "sha256": "531eeca73e33b06e2e70674ad35ef1205b8cde0460a850092d3218eb3efac6ac"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bamboo_wall_02/bamboo_wall_02_nor_gl_2k.jpg",
+      "path": "CC0/BilikBambu/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/bamboo_wall_02",
+      "author": "Poly Haven",
+      "slot": "BilikBambu",
+      "map": "Normal",
+      "size": 3373631,
+      "sha256": "6d87af01e40bd2f97819e05a0d9fc3a13e51257b3104ef344c487c5e071cf31d"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bamboo_wall_02/bamboo_wall_02_arm_2k.jpg",
+      "path": "CC0/BilikBambu/ARM.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/bamboo_wall_02",
+      "author": "Poly Haven",
+      "slot": "BilikBambu",
+      "map": "ARM",
+      "size": 2644769,
+      "sha256": "947eaaa7649170519529f02aad05f2bd960200fb7070918af54058b43b2f3294"
+    },
+    {
       "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/marble_cliff_02/marble_cliff_02_diff_2k.jpg",
       "path": "CC0/BatuGua/Albedo.jpg",
       "license": "CC0-1.0",
