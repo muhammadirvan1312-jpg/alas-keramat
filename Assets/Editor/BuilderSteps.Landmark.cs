@@ -150,6 +150,8 @@ namespace AlasKeramat.EditorTools
 
         static void DandanDesaDanPantai(Material kayu, Material batu, Material seng, Material hitam, Material bilik, Material gelap)
         {
+            var ijuk = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_AtapIjuk.mat");
+            if (ijuk == null) ijuk = kayu;
             var sumurMesh = Simpan(ProcBangunan.SumurDesa());
             Taruh("SumurDesa_1", sumurMesh, new[] { batu, hitam }, 548f, 208f, 25f, Vector3.one, true);
             Taruh("SumurKampung_1", sumurMesh, new[] { batu, hitam }, 612f, 605f, 140f, Vector3.one, true);

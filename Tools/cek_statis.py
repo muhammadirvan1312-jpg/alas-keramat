@@ -4,6 +4,29 @@ import os, re, sys
 LARANG = [r"\bTMPro\b", r"\bNavMesh", r"\bAnimator\b", r"using\s+UnityEngine\.InputSystem", r"\bCinemachine\b",
           r"//\s*TODO", r"NotImplementedException", r"FindObjectOfType\b", r"\brb\.velocity\b"]
 masalah, kelas = [], {}
+
+def kutip_rusak(baris):
+    """True bila sebuah string literal langsung disambung huruf/angka/kutip (mis. "("Andi..."" tanpa escape)."""
+    i, q, verb = 0, False, False
+    while i < len(baris):
+        c = baris[i]
+        if not q:
+            if baris.startswith("//", i): return False
+            if c == "'":
+                j = baris.find("'", i + 2 if baris[i + 1:i + 2] == "\\" else i + 1)
+                i = j + 1 if j > 0 else i + 1
+                continue
+            if c == '"': q, verb = True, (i > 0 and baris[i - 1] == "@")
+        else:
+            if c == "\\" and not verb:
+                i += 2
+                continue
+            if c == '"':
+                q = False
+                nx = baris[i + 1:i + 2]
+                if nx.isalnum() or nx == "_" or (nx == '"' and not verb): return True
+        i += 1
+    return False
 for akar, _, files in os.walk("Assets"):
     if "ThirdParty" in akar:
         continue
@@ -24,6 +47,8 @@ for akar, _, files in os.walk("Assets"):
             if re.search(pola, teks): masalah.append("%s: dilarang %s" % (p, pola))
         for s in re.findall(r'"[^"\n]*"', teks):
             if any(ord(c) > 0x2FF for c in s): masalah.append(p + ": simbol non-Latin di string " + s[:40])
+        for nb, b in enumerate(teks.split("\n"), 1):
+            if kutip_rusak(b): masalah.append("%s:%d: tanda kutip di dalam string belum di-escape (pakai \\\")" % (p, nb))
         for k in re.findall(r"\b(?:class|struct|enum|interface)\s+(\w+)", teks):
             if k in kelas and not re.search(r"\bpartial\b", teks): masalah.append("%s: nama ganda %s (juga %s)" % (p, k, kelas[k]))
             kelas.setdefault(k, p)
