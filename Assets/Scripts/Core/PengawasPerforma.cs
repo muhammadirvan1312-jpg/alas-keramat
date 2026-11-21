@@ -44,7 +44,7 @@ namespace AlasKeramat.Core
             if (_veg == null) _veg = GameServices.Get<VegetationManager>();
             if (_veg != null) { _veg.PengaliDetail = dp.detailVeg * _skala; _veg.PengaliJarak = dp.pengaliVeg * Mathf.Lerp(0.8f, 1f, (_skala - 0.7f) / 0.3f); }
             if (_serasah == null) _serasah = GameServices.Get<SerasahHutan>();
-            if (_serasah != null) _serasah.Kepadatan = dp.rumput * _skala;
+            if (_serasah != null) { _serasah.Kepadatan = dp.rumput * _skala; _serasah.JarakTarik = MenuScreens.JarakSerasahPreset(_menu != null ? _menu.Preset : PresetGrafis.Sedang) * Mathf.Lerp(0.8f, 1f, (_skala - 0.7f) / 0.3f); }
             var urp = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
             if (urp != null && urp.name.EndsWith("_RuntimeClone"))
                 urp.renderScale = Mathf.Clamp(dp.renderScale * _skala, 0.65f, 1f);

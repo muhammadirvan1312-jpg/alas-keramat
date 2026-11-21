@@ -11,6 +11,7 @@ Shader "AlasKeramat/Kulit"
         _Metallic ("Metalik", Range(0,1)) = 0
         _MaskMap ("AO dan roughness",2D)="white"{}
         _PakaiMask ("Mask aktif",Range(0,1))=0
+        _VariasiWarna ("Variasi tiap pohon", Range(0,0.4)) = 0.14
     }
     SubShader
     {
@@ -27,7 +28,7 @@ Shader "AlasKeramat/Kulit"
             float4 _BaseMap_ST;
             half4 _BaseColor;
             float _Smoothness, _Goyang;
-            float _BumpScale, _Metallic, _PakaiMask;
+            float _BumpScale, _Metallic, _PakaiMask, _VariasiWarna;
         CBUFFER_END
         // Global, sengaja bukan Properties/UnityPerMaterial.
         float4 _AK_AnginArah;
@@ -81,6 +82,8 @@ Shader "AlasKeramat/Kulit"
             o.tangentWS = half4(SafeNormalize(t), v.tangentOS.w * GetOddNegativeScale());
             o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
             o.color = v.color;
+            float hash = frac(sin(dot(pivot.xz, float2(12.9898, 78.233))) * 43758.5453);
+            o.color.rgb *= lerp(half3(1,1,1), half3(0.86 + hash * 0.28, 0.88 + hash * 0.22, 0.84 + hash * 0.24), _VariasiWarna / 0.4);
 
             o.fogLight = half4(ComputeFogFactor(o.positionCS.z), VertexLighting(p, n));
             return o;

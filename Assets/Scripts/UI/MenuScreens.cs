@@ -139,6 +139,17 @@ namespace AlasKeramat.UI
             return d == Difficulty.Damai ? 0.7f : d == Difficulty.Sulit ? 1.25f : 1.0f;
         }
 
+        public static float JarakSerasahPreset(PresetGrafis p)
+        {
+            switch (p)
+            {
+                case PresetGrafis.Rendah: return 42f;
+                case PresetGrafis.Sedang: return 62f;
+                case PresetGrafis.Tinggi: return 86f;
+                default: return 105f;
+            }
+        }
+
         public static float PengaliDamageMusuh(Difficulty d)
         {
             return d == Difficulty.Damai ? 0.5f : d == Difficulty.Sulit ? 1.4f : 1.0f;
@@ -331,7 +342,7 @@ namespace AlasKeramat.UI
             var veg = GameServices.Get<VegetationManager>();
             if (veg != null) { veg.PengaliJarak = dp.pengaliVeg; veg.PengaliDetail = dp.detailVeg; }
             var serasah=GameServices.Get<SerasahHutan>();
-            if(serasah!=null) { serasah.Kepadatan=dp.rumput; serasah.BayanganPadat=Preset>=PresetGrafis.Tinggi; }
+            if(serasah!=null) { serasah.Kepadatan=dp.rumput; serasah.JarakTarik=JarakSerasahPreset(Preset); serasah.BayanganPadat=Preset>=PresetGrafis.Tinggi; }
             if(Application.isPlaying)
             {
                 var volume=UnityEngine.Object.FindFirstObjectByType<Volume>();

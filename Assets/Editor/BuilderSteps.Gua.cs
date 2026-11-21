@@ -460,16 +460,16 @@ namespace AlasKeramat.EditorTools
             Lampu(hias, "Lampu_R1a", r1.pos + new Vector3(-5f, 5.2f, 3f), cyan, 34f, 55.0f);
             Lampu(hias, "Lampu_R1b", r1.pos + new Vector3(4.5f, 5.4f, -3f), cyan, 34f, 55.0f);
             Lampu(hias, "Lampu_R1c", r1.pos + new Vector3(-2f, 1.4f, -4.5f), ProcTex.Hex("#48DFC4"), 26f, 36.0f);
-            Lampu(hias, "Lampu_R2", r2.pos + Vector3.up * 3f, new Color(0.95f, 0.72f, 0.42f), 20f, 24.0f);
+            Lampu(hias, "Lampu_R2", r2.pos + Vector3.up * 3f, new Color(0.95f, 0.72f, 0.42f), 20f, 14.0f);
             Lampu(hias, "Lampu_R3", r3.pos + Vector3.up * 4f, cyan, 24f, 32.0f);
             Lampu(hias, "Lampu_R4", r4.pos + Vector3.up * 5f, cyan, 24f, 32.0f);
 
             // Isi ruang.
-            var batu = AmbilMat("M_Batu"); var kayu = AmbilMat("M_Kayu"); var kain = AmbilMat("M_CatOranye");
+            var batu = AmbilMat("M_Batu"); var kayu = AmbilMat("M_Kayu"); var terpal = MatPolos("M_TerpalGua", "#545C46"); var ransel = MatPolos("M_RanselGua", "#7A482A");
             var tulang = MatPolos("M_TulangGua", "#D8D0BC");
             for (int i = 0; i < 4; i++) Hias(hias, PrimitiveType.Capsule, "Kerangka_" + i, r1.pos + new Vector3(3f + i * 0.35f, 0.15f, -4f), new Vector3(0.12f, 0.35f, 0.12f), tulang, false);
-            Wadah(k, "Ransel_Lore4", "Jurnal Ekspedisi", r1.pos + new Vector3(4.5f, 0f, -4.2f), new Vector3(0.6f, 0.45f, 0.4f), kain, new ItemID[0], new int[0], (int)LoreID.L04, false);
-            Hias(hias, PrimitiveType.Cube, "Tenda", r2.pos + new Vector3(-2f, 0.9f, 1f), new Vector3(3f, 1.8f, 2.4f), kain, true);
+            Wadah(k, "Ransel_Lore4", "Jurnal Ekspedisi", r1.pos + new Vector3(4.5f, 0f, -4.2f), new Vector3(0.6f, 0.45f, 0.4f), ransel, new ItemID[0], new int[0], (int)LoreID.L04, false);
+            Hias(hias, PrimitiveType.Cube, "Tenda", r2.pos + new Vector3(-2f, 0.9f, 1f), new Vector3(3f, 1.8f, 2.4f), terpal, true);
             Wadah(k, "Peti_Ekspedisi", "Peti Ekspedisi", r2.pos + new Vector3(2.5f, 0f, -1f), new Vector3(1.1f, 0.6f, 0.7f), kayu,
                 new[] { ItemID.AlatSelamRebreather, ItemID.KartuAksesBunker, ItemID.Baterai, ItemID.Tulang }, new[] { 1, 1, 2, 3 }, (int)LoreID.L11, false);
             Hias(hias, PrimitiveType.Cube, "AltarBatu", r4.pos + new Vector3(2f, 0.5f, 3f), new Vector3(2.4f, 1f, 1.4f), batu, true);

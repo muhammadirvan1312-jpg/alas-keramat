@@ -250,6 +250,11 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.UI.MenuScreens.AnggaranMemoriPreset(AlasKeramat.UI.PresetGrafis.Rendah) <= 250f
                 && AlasKeramat.UI.MenuScreens.AnggaranMemoriPreset(AlasKeramat.UI.PresetGrafis.Ultra) >= 1000f
                 && AlasKeramat.Core.AKPascaProses.Target(22f, AlasKeramat.Core.WeatherState.HujanBadai).x >= -1.2f);
+            cek("V4 Dunia & Vegetasi: scale-fade serasah & jarak tarik per preset",
+                AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(70f, 80f) > 0.99f
+                && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(76f, 80f) > 0.1f && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(76f, 80f) < 0.9f
+                && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(80f, 80f) == 0f
+                && AlasKeramat.UI.MenuScreens.JarakSerasahPreset(AlasKeramat.UI.PresetGrafis.Rendah) < AlasKeramat.UI.MenuScreens.JarakSerasahPreset(AlasKeramat.UI.PresetGrafis.Ultra));
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

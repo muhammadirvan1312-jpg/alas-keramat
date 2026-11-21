@@ -56,7 +56,7 @@ namespace AlasKeramat.EditorTools
             var hasil = new TerrainLayer[LapisTerrain.Length];
             for (int i = 0; i < LapisTerrain.Length; i++)
             {
-                float ubin = i == L_Batu ? 5.2f : i == L_Pasir ? 4.2f : i == L_Daun ? 2.8f : i == L_Rumput ? 2.6f : 2.6f;
+                float ubin = i == L_Batu ? 12.5f : i == L_Pasir ? 9.5f : i == L_Daun ? 6.8f : i == L_Rumput ? 7.2f : 6.4f;
                 var tl = new TerrainLayer
                 {
                     diffuseTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + ".png"),
