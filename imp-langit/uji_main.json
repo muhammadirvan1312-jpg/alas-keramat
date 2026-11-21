@@ -1,0 +1,19 @@
+{
+    "commit": "e098bcfe230040b5355783c82a9f15e3abff1636",
+    "passed": true,
+    "checks": [
+        "[LULUS] Layanan pemain, tas dan kontrol aktif saat Play",
+        "[LULUS] Menu awal dapat ditutup tanpa jeda tertinggal",
+        "[LULUS] Zona kedua jari tersambung",
+        "[LULUS] Raycast UI benar-benar mencapai analog dan area POV",
+        "[LULUS] Analog setengah rentang memindahkan kapsul nyata (2.14 m)",
+        "[LULUS] Jari kanan memutar POV sambil jari kiri berjalan",
+        "[LULUS] Tas menjeda dunia dan membuang input yang masih ditahan",
+        "[LULUS] Menutup tas tidak membatalkan menu Jeda",
+        "[LULUS] Kembali bermain tanpa meluncur dari analog lama",
+        "[LULUS] Peta dapat dibuka dan menjeda",
+        "[LULUS] Peta dapat ditutup tanpa jeda bocor",
+        "[LULUS] Restore saat Play memulihkan tas dan posisi"
+    ],
+    "note": "Urutan kontrol/panel di Editor PlayMode tanpa render 3D otomatis. HUD dirender manual 960x540 dengan jarak kamera maksimal 120 m. Bukan benchmark FPS atau penerimaan kenyamanan HP"
+}
