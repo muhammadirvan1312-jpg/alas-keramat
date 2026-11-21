@@ -22,6 +22,9 @@ namespace AlasKeramat.EditorTools
                 foreach(var matrix in group.matriks)detail &= group.bounds.Contains((Vector3)matrix.GetColumn(3));
             }
             cek("Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance",detail);
+            bool scanBaru=true;
+            foreach(string nm in new[]{"TunggulScan","RantingScanA","RantingScanB","BatuLumutC","BatuLumutD"})scanBaru&=AssetDatabase.LoadAssetAtPath<Mesh>(NusantaraMasterBuilder.FolderVeg+"/"+nm+".asset")!=null;
+            cek("Lantai hutan: scan baru tunggul, ranting, batu lumut B terpasang",scanBaru);
             bool foto=true;
             foreach(string slot in new[]{"tanah","rumput","batu","kayu","kulit_kayu","pasir","lumpur","beton","logam_karat","kain"})
             {
