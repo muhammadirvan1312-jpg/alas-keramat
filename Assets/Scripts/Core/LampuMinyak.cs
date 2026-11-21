@@ -13,6 +13,7 @@ namespace AlasKeramat.Core
 
         public Renderer Api;
         public Light Cahaya;
+        public ParticleSystem Laron; // laron mengerubungi lampu saat menyala
         public float Intensitas = 1.4f;
 
         static readonly List<LampuMinyak> _semua = new List<LampuMinyak>();
@@ -119,6 +120,11 @@ namespace AlasKeramat.Core
             {
                 _apiNyala = api;
                 if (Api != null) { Api.enabled = api; if (!api) Api.transform.localScale = _skalaApi; }
+                if (Laron != null)
+                {
+                    if (api && !Laron.isPlaying) Laron.Play();
+                    else if (!api && Laron.isPlaying) Laron.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                }
             }
             if (cahaya != _cahayaNyala || Cahaya == null || Cahaya.enabled != cahaya)
             {

@@ -28,6 +28,7 @@ namespace AlasKeramat.EditorTools
                 && !AlasKeramat.AI.KelelawarGua.TersorotSenter(Vector3.zero, Vector3.forward, new Vector3(0f, 0f, 14f), AlasKeramat.AI.KelelawarGua.JarakSorot, AlasKeramat.AI.KelelawarGua.SudutSorot));
             cek("Prop desa: 13 jenis props CC0 bernama unik", NusantaraMasterBuilder.NamaProp.Length == 13 && unik.Count == 13);
 
+            PemeriksaanSuasanaDesa.Jalankan(cek);
             if (!File.Exists("Assets/ThirdParty/Prepared/PetiKayuScan.bytes"))
             {
                 cek("Prop desa: aset panggang belum ada, langkah dilewati (fail-soft)", true);

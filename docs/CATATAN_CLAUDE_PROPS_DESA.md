@@ -40,7 +40,19 @@ Tidak tumpang tindih dengan V1-V5 maupun SOTF Gelombang 3-23. Belum ada props Po
    - Kampung Watu Ireng tetap beratap ijuk (adat).
    - Hanya submesh atap (indeks 1) yang diganti, di langkah 7z8 (`GantiAtapGenteng`). `BuilderSteps.Landmark.cs` tidak disentuh.
    - Self-test: minimal 15 rumah beratap genteng.
-7. **Foto CI** baru di `NusantaraFoto`: `c3_01_props_desa_siang` dan `c3_02_lampu_minyak_malam` (dekat RumahDesa_1).
+7. **Suasana desa & senja** (`BuilderSteps.SuasanaDesa.cs`, dipanggil dari langkah 7z8):
+   - **Gagak** (`AI/GagakDesa.cs`): 12 gagak bertengger di bubungan atap Desa Mati.
+     - Sesekali berkaok pakai rekaman CC0 OpenGameArt `crow_caw.wav`, disimpan sebagai `gagak.wav` di `PetaOGA`. Diam di malam hari.
+     - Kabur beterbangan bila Andi mendekat (11 m atau kurang), berputar di atas desa, lalu kembali saat Andi menjauh.
+     - Satu pengelola untuk semua gagak, tanpa alokasi per frame.
+   - **Kawanan kelelawar Maghrib** (`AI/KawananKelelawarSenja.cs`): ParticleSystem billboard dengan lembar kepak 4 frame prosedural di setiap mulut gua.
+     - Keluar jam 18:05-19:20 dan memuncak di tengah jendela itu.
+     - Maksimal 220 partikel per gua; emisi mati bila kamera lebih dari 420 m.
+   - **Laron** di setiap lampu minyak: maksimal 16 partikel, hanya menyala bersama apinya (`LampuMinyak.Laron`).
+   - **Sarang laba-laba**: tekstur jaring prosedural, quad transparan dua sisi.
+     - 4 sarang di sudut dalam tiap rumah Desa Mati, 1 sarang per rumah Kampung Sukamaju.
+   - Self-test ada di `PemeriksaanSuasanaDesa.cs`.
+8. **Foto CI** baru di `NusantaraFoto`: `c3_01_props_desa_siang` dan `c3_02_lampu_minyak_malam` (dekat RumahDesa_1).
 
 ## Cara menggabungkan
 `git merge origin/imp-claude-props-desa` ke cabang uji Antigravity.

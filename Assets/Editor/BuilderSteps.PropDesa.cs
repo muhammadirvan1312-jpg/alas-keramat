@@ -20,7 +20,7 @@ namespace AlasKeramat.EditorTools
         static readonly bool[] KoliderProp = { true, true, false, false, true, true, true, true, false, true, true, false, false };
         // Isi halaman rumah yang ditinggal mendadak.
         static readonly int[] PropHalaman = { PropPeriuk, PropEmber, PropBakul, PropDingklik, PropBangku, PropTangga, PropKapak, PropPanci, PropPeti };
-        const float CullKecil = 0.035f, CullBesar = 0.015f, JarakCelahRumah = 0.7f, SebaranCelah = 1.4f, LerengMaks = 1.1f;
+        const float CullKecil = 0.035f, CullBesar = 0.015f, JarakCelahRumah = 0.7f, SebaranCelah = 1.4f, LerengMaksProp = 1.1f;
         const float JangkauanLampu = 5.5f, IntensitasLampu = 1.4f;
         static readonly Color WarnaApiLampu = new Color(1f, 0.62f, 0.30f, 1f);
         const int CobaTaruh = 7;
@@ -41,6 +41,7 @@ namespace AlasKeramat.EditorTools
             var lm = GameObject.Find(NamaRoot + "/World/Landmark");
             if (lm == null) lm = GameObject.Find(NamaRoot + "/Landmark");
             if (lm == null) { Catat("Prop desa: induk Landmark tidak ada, dilewati"); return; }
+            LangkahSuasanaDesa(lm);
 
             _meshProp = new Mesh[NamaProp.Length]; _matProp = new Material[NamaProp.Length];
             int ada = 0;
@@ -134,7 +135,7 @@ namespace AlasKeramat.EditorTools
         {
             float kiri = WorldTerrainGenerator.SampleHeight(pos.x - 1f, pos.z), kanan = WorldTerrainGenerator.SampleHeight(pos.x + 1f, pos.z);
             float depan = WorldTerrainGenerator.SampleHeight(pos.x, pos.z + 1f), belakang = WorldTerrainGenerator.SampleHeight(pos.x, pos.z - 1f);
-            if (Mathf.Abs(kiri - kanan) > LerengMaks || Mathf.Abs(depan - belakang) > LerengMaks) return false;
+            if (Mathf.Abs(kiri - kanan) > LerengMaksProp || Mathf.Abs(depan - belakang) > LerengMaksProp) return false;
             return !Physics.CheckSphere(pos + Vector3.up * (radius + 0.15f), radius, 1 << GameLayers.Structure, QueryTriggerInteraction.Ignore);
         }
 
@@ -213,6 +214,7 @@ namespace AlasKeramat.EditorTools
 
             var lm = lampu.AddComponent<LampuMinyak>();
             lm.Api = mr; lm.Cahaya = l; lm.Intensitas = IntensitasLampu;
+            lm.Laron = BuatLaron(lampu, tinggi * 0.5f);
             EditorUtility.SetDirty(lm);
             JumlahLampuDesa++;
         }

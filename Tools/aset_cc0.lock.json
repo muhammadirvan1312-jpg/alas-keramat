@@ -2190,6 +2190,16 @@
       "license": "CC0-1.0",
       "size": 170410,
       "sha256": "76a9fecf7e4f80799b1c6d3d2d4809598364263cd766523c8135658353783120"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/crow_caw.wav",
+      "path": "CC0/Audio/oga/gagak.wav",
+      "source": "https://opengameart.org/content/crow-caw",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "license": "CC0-1.0",
+      "size": 209746,
+      "sha256": "bba22883209b435905471d057160f1badae59b89a62e9a8b3199d7e327b17339"
     }
   ]
 }
