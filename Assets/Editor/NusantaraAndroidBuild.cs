@@ -36,7 +36,8 @@ namespace AlasKeramat.EditorTools
 
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel26;
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
-            PlayerSettings.SetManagedStrippingLevel(NamedBuildTarget.Android, ManagedStrippingLevel.Low);
+            PlayerSettings.SetManagedStrippingLevel(NamedBuildTarget.Android, ManagedStrippingLevel.Minimal);
+            PlayerSettings.stripEngineCode = false; // DIAG: jangan pangkas modul engine Unity
 
             if (il2cpp)
             {
