@@ -177,6 +177,11 @@ namespace AlasKeramat.EditorTools
                 AlasKeramat.Core.TerrorDirector.Katalog().Count == 37
                 && AlasKeramat.AI.HantuAI.PengaliLajuHantuAir(true) > 1.5f
                 && AlasKeramat.AI.HantuAI.PengaliLajuHantuAir(false) == 1f);
+            cek("SOTF v18: 13 lokasi Peta Survei, indikator HUD luka/semak & burung rangkong/elang kanopi",
+                AlasKeramat.UI.PetaSurveiUI.NamaLokasi.Length == 13
+                && AlasKeramat.UI.PetaSurveiUI.IndeksLokasiTerdekat(new Vector2(-322f, 182f), 60f) >= 0
+                && AlasKeramat.UI.HUDVital.FormatStatusTambahanHUD(false, false, false, 0f, 0f, 30f, true).Contains("SEMAK")
+                && AlasKeramat.AI.KehidupanAlam.SkalaBentangBurung(0) > AlasKeramat.AI.KehidupanAlam.SkalaBentangBurung(1));
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

@@ -221,3 +221,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
 - Gelombang 17 SOTF (`imp-sotf-v3`):
   - `TerrorDirector` melengkapi seluruh **37 katalog kejadian horor `E01–E37`** (`13 §3`), termasuk kejadian gua/air/kesurupan (`E15–E17`, `E19–E20`, `E25–E26`, `E28–E29`, `E31`, `E36–E37`).
   - `HantuAI` mengaktifkan mekanik folklor nyata: **Tuyul** mencuri barang dari tas dan menjatuhkannya saat disorot cahaya (`PilihBarangCurianTuyul`), **Hantu Air** melesat 1,65x di air dan menguras stamina (`PengaliLajuHantuAir`), serta **Genderuwo Hutan** mengguncang kamera & menggerus kewarasan saat menghantam.
+- Gelombang 18 SOTF (`imp-sotf-v3`):
+  - `PetaSurveiUI` memperluas daftar penanda navigasi pulau menjadi **13 lokasi utama** (termasuk Kampung, Pabrik Gula, Mercusuar, Makam Tua, Kemah Rawa, dan Watu Ireng).
+  - `HUDVital` menampilkan status kondisi tubuh dan taktis secara langsung di layar (`FormatStatusTambahanHUD`: `SEMAK`, `LUKA KAKI`, `LUKA LENGAN`, `LUKA KEPALA`, `BISA ULAR`, `DIARE`, `KERACUNAN`).
+  - `KehidupanAlam` menambahkan variasi ukuran burung pemangsa & rangkong berbentang sayap lebar (`SkalaBentangBurung`) di atas kanopi hutan.
