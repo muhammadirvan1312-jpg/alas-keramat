@@ -187,3 +187,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `IndikatorLuka` kini berdenyut merah/oranye di tepi layar saat Andi mengalami pendarahan atau terbakar (`AlfaDenyutKondisi`).
   - Tekstur kabut hutan & berkas sinar god rays (`BuilderSteps.G3.cs`) dinaikkan ke `256px`; `BuilderSteps.Ambien.cs` menambah emitter suara statis radio darurat di heli jatuh, gema gamelan di Beringin/Gapura, burung pantai di Mercusuar, dan suara ayam di Desa Mati.
   - `FungsiBangunan` menambahkan partikel bara api yang naik saat `OborTengkorak`, `LampuMinyak`, `PatungNgeri`, dan `KomporBatu` dinyalakan (`PunyaBaraBangunan`).
+- Gelombang 9 SOTF (`imp-sotf-v3`):
+  - `TikarPanggung` mengganti balok/bola polos dengan model 3D berlapis (gagang kayu + pelindung kuningan + bilah baja/api/emas, busur + tali, anak panah berbulu, zirah berlapis, alat & makanan) serta rotasi inspeksi 3D saat dipilih di lingkaran rakit (`HitungRotasiInspeksi`).
+  - `DirectionalTree` menampilkan coakan takikan kayu 3D (`Takik_0..3` / `KedalamanTakik01`) sesuai kuadran tebangan, dan `PohonRebah` memberikan damage timpaan pohon tumbang (`HitungDamageTimpaan`, 60-220 damage + guncang kamera) ke musuh/hewan di bawahnya.
+  - `InteraksiAndi` & `CombatAndLeftHandController` otomatis membasuh darah di senjata (`BasuhDarahSenjata`) dan mengisi botol kosong (`IsiBotolDiSungai`) saat minum di sungai; `PanciMasak` menampilkan kuah sup yang berubah warna & partikel uap panas (`ProgresMasak01`), serta `BuilderSteps.Hewan` memperkaya visual rumpun jamur, daun sirih berlapis, dan sarang 3 telur.

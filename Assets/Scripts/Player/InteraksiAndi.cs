@@ -115,10 +115,26 @@ namespace AlasKeramat.Player
                 {
                     var v = GetComponent<IVitalAndi>();
                     if (v != null) v.Minum(HidrasiTeguk, true);
-                    GameEvents.RaiseToast("Kamu meneguk air sungai");
+                    var inv = GameServices.Get<AlasKeramat.Inventory.TikarPandan3DInventory>();
+                    bool isiBotol = IsiBotolDiSungai(inv);
+                    var combat = GetComponent<CombatAndLeftHandController>();
+                    bool basuh = combat != null && combat.BasuhDarahSenjata();
+                    if (isiBotol && basuh) GameEvents.RaiseToast("Kamu meneguk air sungai, mengisi botol & membasuh senjata");
+                    else if (isiBotol) GameEvents.RaiseToast("Kamu meneguk air sungai & mengisi botol air");
+                    else if (basuh) GameEvents.RaiseToast("Kamu meneguk air sungai & membasuh darah di senjata");
+                    else GameEvents.RaiseToast("Kamu meneguk air sungai");
                 }
             }
             catch (System.Exception e) { Debug.LogError("[AK][InteraksiAndi] Interaksi gagal: " + e.Message); }
+        }
+
+        public static bool IsiBotolDiSungai(AlasKeramat.Inventory.TikarPandan3DInventory inv)
+        {
+            if (inv == null || !inv.Punya(ItemID.BotolKosong)) return false;
+            if (inv.SisaRuang(ItemID.BotolAirBersih) <= 0 && !inv.Punya(ItemID.BotolAirBersih)) return false;
+            if (!inv.Kurangi(ItemID.BotolKosong, 1)) return false;
+            if (inv.Tambah(ItemID.BotolAirBersih, 1) <= 0) { inv.Tambah(ItemID.BotolKosong, 1); return false; }
+            return true;
         }
 
 #if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)

@@ -24,6 +24,14 @@ namespace AlasKeramat.Player
         ParticleSystem _percikanParry;
         public float DarahSenjata { get { return _darahSenjata; } }
 
+        public bool BasuhDarahSenjata()
+        {
+            if (_darahSenjata <= 0f) return false;
+            _darahSenjata = 0f;
+            TerapkanDarahSenjata();
+            return true;
+        }
+
         public static int JumlahPercikanParry(bool berhasilParry, bool blokKuat)
         {
             return berhasilParry ? 22 : blokKuat ? 10 : 0;

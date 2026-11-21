@@ -113,6 +113,14 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.UI.IndikatorLuka.AlfaDenyutKondisi(false, false, 1f) == 0f
                 && AlasKeramat.Building.FungsiBangunan.PunyaBaraBangunan(AlasKeramat.Core.BlueprintID.OborTengkorak, 10f)
                 && !AlasKeramat.Building.FungsiBangunan.PunyaBaraBangunan(AlasKeramat.Core.BlueprintID.OborTengkorak, 0f));
+            cek("SOTF v9: model 3D tikar berlapis, takikan & timpaan pohon, basuh senjata/isi botol sungai & uap panci masak",
+                AlasKeramat.Inventory.TikarPanggung.JumlahBagianModelItem(AlasKeramat.Core.ItemID.GolokPusaka) >= 3
+                && AlasKeramat.Inventory.TikarPanggung.HitungRotasiInspeksi(true, 1.5f) != Quaternion.identity
+                && AlasKeramat.Inventory.TikarPanggung.HitungRotasiInspeksi(false, 1.5f) == Quaternion.identity
+                && AlasKeramat.Building.DirectionalTree.KedalamanTakik01(30f, 120f) > 0.4f
+                && AlasKeramat.Building.PohonRebah.HitungDamageTimpaan(AlasKeramat.Core.ProcPohon.Jenis.Jati, 75f) >= 60f
+                && AlasKeramat.Building.PohonRebah.HitungDamageTimpaan(AlasKeramat.Core.ProcPohon.Jenis.Jati, 15f) == 0f
+                && AlasKeramat.Building.PanciMasak.ProgresMasak01(20f) == 0.5f);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

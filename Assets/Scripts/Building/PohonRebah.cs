@@ -8,6 +8,16 @@ namespace AlasKeramat.Building
     public class PohonRebah : MonoBehaviour
     {
         public const float Massa = 400f, Torsi = 2600f, SudutLepas = 25f, BatasWaktu = 4f, TinggiTunggul = 0.5f;
+        public const float DamageTimpaMin = 60f, DamageTimpaMaks = 220f, RadiusGuncangRebah = 14f;
+        static readonly Collider[] _bufTimpa = new Collider[24];
+
+        public static float HitungDamageTimpaan(ProcPohon.Jenis jenis, float sudutMiring)
+        {
+            if (sudutMiring < 35f) return 0f;
+            float bobot = Mathf.Clamp01((DirectionalTree.HPTebang(jenis) - 40f) / 100f);
+            float faktorSudut = Mathf.Clamp01((sudutMiring - 35f) / 45f);
+            return Mathf.Lerp(DamageTimpaMin, DamageTimpaMaks, bobot) * faktorSudut;
+        }
 
         VegetationManager.InfoPohon _info;
         VegetationData.JenisVeg _jenis;
@@ -75,6 +85,7 @@ namespace AlasKeramat.Building
             int n = DirectionalTree.JumlahKayu(_info.jenis);
             float tinggi = _jenis.lod0 != null ? _jenis.lod0.bounds.size.y * _info.skala : 12f;
             Vector3 sumbu = transform.up;
+            TimpaMusuhDanHewan(sumbu, tinggi);
             for (int i = 0; i < n; i++)
             {
                 Vector3 p = transform.position + sumbu * (KayuFisik.Panjang * (i + 0.5f)) + Vector3.up * 0.4f;
@@ -87,6 +98,28 @@ namespace AlasKeramat.Building
             if (_info.jenis == ProcPohon.Jenis.Kelapa) KayuFisik.Benda("Kelapa", tajuk, ItemID.KelapaMuda, Random.Range(2, 4), "Kelapa Muda");
             GameEvents.RaiseTreeFelled(_info.id, (TreeKind)Mathf.Clamp((int)_info.jenis, 0, 6));
             Destroy(gameObject);
+        }
+
+        void TimpaMusuhDanHewan(Vector3 sumbu, float tinggi)
+        {
+            float dmg = HitungDamageTimpaan(_info.jenis, Mathf.Max(55f, Vector3.Angle(Vector3.up, sumbu)));
+            int mask = (1 << GameLayers.Enemy) | 1;
+            Vector3 pangkal = transform.position + sumbu * 1.0f;
+            Vector3 ujung = transform.position + sumbu * Mathf.Max(2.5f, tinggi * 0.9f);
+            int hitCount = Physics.OverlapCapsuleNonAlloc(pangkal, ujung, 1.15f, _bufTimpa, mask, QueryTriggerInteraction.Ignore);
+            for (int i = 0; i < hitCount; i++)
+            {
+                var c = _bufTimpa[i];
+                if (c == null) continue;
+                bool musuh = c.gameObject.layer == GameLayers.Enemy || c.GetComponentInParent<AlasKeramat.AI.WildAnimalAI>() != null;
+                if (!musuh) continue;
+                var d = c.GetComponentInParent<IDamageable>();
+                if (d != null && d.IsAlive)
+                    d.TakeDamage(new DamageInfo { amount = dmg, type = DamageType.PohonTumbang, point = c.bounds.center, direction = _arah, source = gameObject, isHeavy = true });
+            }
+            var andi = GameServices.Get<AlasKeramat.Player.AndiFPSController>();
+            if (andi != null && (andi.transform.position - transform.position).sqrMagnitude <= RadiusGuncangRebah * RadiusGuncangRebah)
+                andi.GuncangKamera(0.18f);
         }
     }
 }
