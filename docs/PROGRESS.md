@@ -210,3 +210,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
 - Gelombang 14 SOTF (`imp-sotf-v3`):
   - `FungsiBangunan` membuat tanaman di `KebunTanam` tumbuh secara visual mengikuti `SkalaTanamanKebun(Stok)`, memunculkan hasil tangkapan 3D (`HasilTangkap3D`) di `BubuIkan` & `JeratHewan`, serta memancarkan percikan bunga api logam (`PancarPercikanAsah` / `JumlahPercikanAsah`) saat mengasah senjata di `BatuAsah` dan `MejaKerja`.
   - `ProcBangunan.PosPengintaiSekte` dan 4 pos pengintai berbarikade bambu runcing (`PosSekte_0..3`) dipasang menjaga jalur strategis menuju Desa Mati, Kampung Sukamaju, Pabrik Gula, dan Lembah Bambu.
+- Gelombang 15 SOTF (`imp-sotf-v3`):
+  - 3 zona landmark baru dibangun di pulau (`BuilderSteps.Landmark` & `ProcBangunan`): **Kompleks Makam Tua** (`MakamTua_0..7`), **Kemah Rawa Panggung** (`KemahRawa_0..2`), dan **Kampung Watu Ireng** beserta **Monolit Watu Ireng** (`MonolitWatuIreng_0`, `KampungWatuIreng_1..6`).
+  - Sistem *stealth* semak hutan aktif: `VegetationManager.DiDalamSemak` mendeteksi posisi Andi di dalam semak (`TersembunyiDiSemak`) saat jongkok dan menyambungkannya ke persepsi Sekte (`FaktorSemak = 0.35f`).
+  - `WorldEventScheduler` mengaktifkan kejadian dunia dinamis **W02–W04 & W07–W10** (badai menumbangkan pohon, petir memicu kebakaran sawit, banjir menghanyutkan kayu sungai, prosesi obor malam, bentrokan Sekte vs satwa, serta kawanan monyet hutan).

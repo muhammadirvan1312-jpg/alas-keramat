@@ -158,6 +158,14 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Building.FungsiBangunan.JumlahPercikanAsah() >= 15
                 && AlasKeramat.Core.ProcBangunan.PosPengintaiSekte().vertexCount > 40
                 && GameObject.Find("PosSekte_0") != null);
+            cek("SOTF v15: Makam Tua/Kemah Rawa/Watu Ireng, stealth semak hutan & kejadian dunia W02-W10",
+                AlasKeramat.Core.ProcBangunan.NisanMakamTua().vertexCount > 30
+                && AlasKeramat.Core.ProcBangunan.KemahRawaPanggung().vertexCount > 40
+                && AlasKeramat.Core.ProcBangunan.MonolitWatuIreng().vertexCount > 40
+                && GameObject.Find("MakamTua_0") != null && GameObject.Find("KemahRawa_0") != null && GameObject.Find("MonolitWatuIreng_0") != null
+                && AlasKeramat.Building.VegetationManager.CekJarakSemak(Vector3.zero, Vector3.right * 1.2f, 1.75f)
+                && AlasKeramat.Core.WorldEventScheduler.KodeKejadianCuacaDanMalam(AlasKeramat.Core.WeatherState.HujanBadai, 12f, 2) == 2
+                && AlasKeramat.Core.WorldEventScheduler.KodeKejadianCuacaDanMalam(AlasKeramat.Core.WeatherState.Cerah, 22.5f, 3) == 7);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

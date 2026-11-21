@@ -213,6 +213,20 @@ namespace AlasKeramat.EditorTools
             float[,] posSekte = { { 470f, 120f, 220f }, { 520f, 495f, 200f }, { 580f, -415f, 185f }, { 215f, -255f, 115f } };
             for (int i = 0; i < posSekte.GetLength(0); i++)
                 Taruh("PosSekte_" + i, posMesh, new[] { kayu, bilik }, posSekte[i, 0], posSekte[i, 1], posSekte[i, 2], Vector3.one, true);
+
+            // 3 zona landmark cerita v3: Kompleks Makam Tua, Kemah Rawa & Kampung Watu Ireng.
+            var nisanMesh = Simpan(ProcBangunan.NisanMakamTua());
+            for (int i = 0; i < 8; i++)
+                Taruh("MakamTua_" + i, nisanMesh, new[] { batu, gelap }, -320f + (i % 4) * 5.2f, 180f + (i / 4) * 6.5f, 12f + (i % 3) * 4f, Vector3.one, true);
+
+            var rawaMesh = Simpan(ProcBangunan.KemahRawaPanggung());
+            float[,] posRawa = { { 378f, -312f, 40f }, { 392f, -304f, 130f }, { 384f, -326f, -35f } };
+            for (int i = 0; i < posRawa.GetLength(0); i++)
+                Taruh("KemahRawa_" + i, rawaMesh, new[] { kayu, bilik }, posRawa[i, 0], posRawa[i, 1], posRawa[i, 2], Vector3.one, true);
+
+            Taruh("MonolitWatuIreng_0", Simpan(ProcBangunan.MonolitWatuIreng()), new[] { gelap, batu }, -420f, 460f, 25f, Vector3.one, true);
+            for (int i = 0; i < 6; i++)
+                Taruh("KampungWatuIreng_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(700 + i, 6.2f, 5.0f, 0.8f, 0.55f)), new[] { i % 2 == 0 ? bilik : kayu, ijuk }, -440f + (i % 3) * 18f, 438f + (i / 3) * 22f, i * 55f, Vector3.one, true);
         }
 
         static Texture2D Tex(string nama) { return AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + nama + ".png"); }

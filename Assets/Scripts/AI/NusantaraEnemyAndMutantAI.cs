@@ -233,7 +233,7 @@ namespace AlasKeramat.AI
             {
                 bool kerucut = DalamKerucut(transform.forward, kepala - mata);
                 bool halang = kerucut && Terhalang(mata, kepala) && Terhalang(mata, pinggul);
-                f = FaktorTerlihat(kerucut, halang, _andi.Jongkok, false, malam, cahaya, badai);
+                f = FaktorTerlihat(kerucut, halang, _andi.Jongkok, _andi.TersembunyiDiSemak, malam, cahaya, badai);
                 if (Tertidur()) f *= FaktorTidur;
                 if (_reaksiAndi == null) _reaksiAndi = GameServices.Get<ReaksiAndi>();
                 if (_reaksiAndi != null && _reaksiAndi.Berlumpur) f *= ReaksiAndi.FaktorLumpur; // kamuflase lumpur 17 §2.4

@@ -38,7 +38,10 @@ namespace AlasKeramat.Player
         public bool PakaiHeadBob; // Opsional; bawaan tanpa goyangan untuk kenyamanan layar sentuh.
         public event System.Action OnLompat;
         public bool Jongkok { get; private set; }
+        public bool TersembunyiDiSemak { get; private set; }
         public bool Berenang { get; private set; }
+        float _tCekSemak;
+        Building.VegetationManager _veg;
         public bool Menyelam { get; private set; }
         public bool DiTanah { get; private set; }
         public bool SedangLari { get; private set; }
@@ -123,6 +126,13 @@ namespace AlasKeramat.Player
                 }
                 else BacaKeyboardMouse();
                 if (!GerakKendaraan(Time.deltaTime)) Gerak(Time.deltaTime);
+                _tCekSemak -= Time.deltaTime;
+                if (_tCekSemak <= 0f)
+                {
+                    _tCekSemak = 0.25f;
+                    if (_veg == null) _veg = GameServices.Get<Building.VegetationManager>();
+                    TersembunyiDiSemak = Jongkok && _veg != null && _veg.DiDalamSemak(transform.position);
+                }
             }
             catch (System.Exception e) { Debug.LogError("[AK][AndiFPSController] " + e.Message); }
         }

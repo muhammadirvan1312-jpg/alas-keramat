@@ -17,9 +17,19 @@ namespace AlasKeramat.Core
 
         TimeOfDayClock _jam;
         AndiFPSController _andi;
-        int _hariUndi = -1, _hariPesawat = -1, _hariMeteor = -1, _hariKunang = -1, _jenazah, _hariJenazah = -10, _hariPenyu = -1;
+        int _hariUndi = -1, _hariPesawat = -1, _hariMeteor = -1, _hariKunang = -1, _jenazah, _hariJenazah = -10, _hariPenyu = -1, _hariCuacaKejadian = -1;
         float _jamPesawat = -1f, _tPesawat;
         bool _penyuBesok;
+
+        public static int KodeKejadianCuacaDanMalam(WeatherState cuaca, float jam, int hari)
+        {
+            if (cuaca == WeatherState.HujanBadai) return hari % 2 == 0 ? 2 : 3;
+            if (cuaca == WeatherState.Gerimis) return 4;
+            if (jam >= 22f && jam < 23.5f) return 7;
+            if (jam >= 14f && jam < 16f) return 8;
+            if (jam >= 9f && jam < 11f) return 10;
+            return 0;
+        }
 
         public string SaveKey { get { return "peristiwa_dunia"; } }
         public int JumlahJenazah { get { return _jenazah; } }
@@ -66,7 +76,17 @@ namespace AlasKeramat.Core
                 foreach (var api in ApiUnggun.Semua) if (api != null && api.Menyala && Vector3.Distance(api.transform.position, _andi.transform.position) < 40f) suar = true;
                 if (suar) { _tPesawat = 0f; GameEvents.RaiseSubtitle("(Pesawat itu berbelok sedikit... lalu pergi. Mereka mencari, tapi kabut menutupi semuanya.)"); }
             }
-            bool cerah = GameServices.Get<URPAtmosphereAndWeather>() is URPAtmosphereAndWeather c && c.Cuaca == WeatherState.Cerah;
+            var atm = GameServices.Get<URPAtmosphereAndWeather>();
+            bool cerah = atm != null && atm.Cuaca == WeatherState.Cerah;
+            if (_hariCuacaKejadian != hari && atm != null)
+            {
+                int kode = KodeKejadianCuacaDanMalam(atm.Cuaca, jam, hari);
+                if (kode > 0)
+                {
+                    _hariCuacaKejadian = hari;
+                    JalankanKejadianDunia(kode);
+                }
+            }
             if (hari == 7 && jam >= 21f && jam < 22f && _hariMeteor != hari && cerah)
             {
                 _hariMeteor = hari;
@@ -198,6 +218,49 @@ namespace AlasKeramat.Core
             JarahanTanah.Jatuhkan(p + Vector3.up * 0.4f, ItemID.RansumDarurat, 1);
             JarahanTanah.Jatuhkan(p + new Vector3(0.7f, 0.4f, 0f), ItemID.Baterai, 1);
             GameEvents.RaiseSubtitle("(Di tepi sungai: jenazah anggota ekspedisi. Tanda pengenalnya: " + nama + ".)");
+        }
+
+        void JalankanKejadianDunia(int kode)
+        {
+            var a = _andi.transform.position;
+            var audio = GameServices.Get<ProceduralAudioSynth>();
+            Vector3 sekitar = a + new Vector3(Random.Range(-28f, 28f), 0f, Random.Range(-28f, 28f));
+            sekitar.y = Mathf.Max(0.2f, WorldTerrainGenerator.SampleHeight(sekitar.x, sekitar.z));
+            switch (kode)
+            {
+                case 2:
+                    if (audio != null) audio.PlayTreeCrackAndFall(sekitar);
+                    KayuFisik.Buat(sekitar + Vector3.up * 0.5f, Vector3.right, null, false);
+                    GameEvents.RaiseSubtitle("(Angin kencang menumbangkan sebatang pohon di dekat sini!)");
+                    break;
+                case 3:
+                    if (audio != null) audio.Play(ProceduralAudioSynth.KlipGuruh, sekitar, AudioCategory.Efek, 1f, 0.9f, 5);
+                    ApiArea.Buat(sekitar);
+                    GameEvents.RaiseSubtitle("(Petir menyambar pepohonan dan menyulut kobaran api!)");
+                    break;
+                case 4:
+                    if (JarakKeSungai(a.x, a.z) < 120f)
+                    {
+                        KayuFisik.Buat(sekitar + Vector3.up * 0.4f, Vector3.forward, null, false);
+                        GameEvents.RaiseToast("Air sungai meluap membawa gelondong kayu");
+                    }
+                    break;
+                case 7:
+                    if (audio != null) audio.PlayKentonganBamboo(a + Vector3.forward * 75f);
+                    GameEvents.RaiseSubtitle("(Dari kejauhan terdengar kentongan bersahutan... prosesi obor Sekte melintas.)");
+                    break;
+                case 8:
+                    JarahanTanah.Jatuhkan(sekitar + Vector3.up * 0.3f, ItemID.DagingMentah, 1);
+                    GameEvents.RaiseSubtitle("(Terdengar geraman bentrokan antara babi hutan dan penjaga Sekte di balik rimba.)");
+                    break;
+                case 10:
+                    if (!FungsiBangunan.MenangkalTuyul(a))
+                    {
+                        if (audio != null) audio.Play(ProceduralAudioSynth.KlipKedasih, sekitar, AudioCategory.Efek, 0.8f, 1.35f, 3);
+                        GameEvents.RaiseToast("Kawanan monyet hutan berkeliaran di sekitar kemah");
+                    }
+                    break;
+            }
         }
 
         public static float JarakKeSungai(float x, float z)

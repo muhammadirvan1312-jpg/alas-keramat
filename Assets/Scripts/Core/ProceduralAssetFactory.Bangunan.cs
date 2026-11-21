@@ -550,5 +550,47 @@ namespace AlasKeramat.Core
             b.Kotak(1, new Vector3(1.18f, 3.05f, -0.78f), new Vector3(0.06f, 0.72f, 0.82f), Quaternion.identity, 1f);
             return b.Jadi("PosPengintaiSekte");
         }
+
+        // Nisan Makam Tua Nusantara: umpak batu berundak, jirat datar, serta dua batu nisan kepala berukir. 0 batu, 1 batu gelap.
+        public static Mesh NisanMakamTua()
+        {
+            var b = new B(2);
+            b.Kotak(0, new Vector3(0f, 0.10f, 0f), new Vector3(1.25f, 0.20f, 2.35f), Quaternion.identity, 1f);
+            b.Kotak(1, new Vector3(0f, 0.24f, 0f), new Vector3(0.92f, 0.14f, 1.95f), Quaternion.identity, 1f);
+            b.Kotak(0, new Vector3(0f, 0.62f,  0.65f), new Vector3(0.32f, 0.72f, 0.14f), Quaternion.identity, 1f);
+            b.Kotak(0, new Vector3(0f, 0.56f, -0.65f), new Vector3(0.28f, 0.60f, 0.14f), Quaternion.identity, 1f);
+            b.Kotak(1, new Vector3(0f, 1.04f,  0.65f), new Vector3(0.20f, 0.16f, 0.16f), Quaternion.Euler(0f, 0f, 45f), 1f);
+            b.Kotak(1, new Vector3(0f, 0.92f, -0.65f), new Vector3(0.18f, 0.14f, 0.16f), Quaternion.Euler(0f, 0f, 45f), 1f);
+            return b.Jadi("NisanMakamTua");
+        }
+
+        // Kemah Rawa panggung: 4 tiang tinggi di atas air, dek papan, tenda terpal & drum logistik. 0 kayu, 1 bilik/terpal.
+        public static Mesh KemahRawaPanggung()
+        {
+            var b = new B(2);
+            for (int sx = -1; sx <= 1; sx += 2)
+                for (int sz = -1; sz <= 1; sz += 2)
+                    b.Silinder(0, new Vector3(sx * 1.45f, -0.6f, sz * 1.45f), 0.11f, 0.10f, 2.35f, 6, Quaternion.identity, 1.5f);
+            b.Kotak(0, new Vector3(0f, 1.72f, 0f), new Vector3(3.3f, 0.14f, 3.3f), Quaternion.identity, 1.5f);
+            b.Kotak(1, new Vector3(-0.72f, 2.55f, 0f), new Vector3(0.06f, 1.85f, 2.9f), Quaternion.Euler(0f, 0f, -38f), 1.5f);
+            b.Kotak(1, new Vector3( 0.72f, 2.55f, 0f), new Vector3(0.06f, 1.85f, 2.9f), Quaternion.Euler(0f, 0f,  38f), 1.5f);
+            b.Kotak(0, new Vector3(0f, 1.98f, 1.1f), new Vector3(0.65f, 0.45f, 0.55f), Quaternion.identity, 1f);
+            return b.Jadi("KemahRawaPanggung");
+        }
+
+        // Monolit Watu Ireng: batu hitam sakral tinggi menjulang & lingkaran batu sesaji di Kampung Watu Ireng. 0 batu gelap, 1 batu abu.
+        public static Mesh MonolitWatuIreng()
+        {
+            var b = new B(2);
+            b.Silinder(1, Vector3.zero, 2.2f, 1.85f, 0.45f, 10, Quaternion.identity, 1.5f);
+            b.Kotak(0, new Vector3(0f, 2.65f, 0f), new Vector3(1.15f, 4.9f, 0.78f), Quaternion.Euler(4f, 12f, -3f), 2f);
+            b.Kotak(0, new Vector3(0.65f, 1.55f, 0.35f), new Vector3(0.68f, 2.8f, 0.56f), Quaternion.Euler(-6f, -25f, 12f), 1.5f);
+            for (int k = 0; k < 6; k++)
+            {
+                float a = k * Mathf.PI / 3f;
+                b.Kotak(1, new Vector3(Mathf.Cos(a) * 1.95f, 0.38f, Mathf.Sin(a) * 1.95f), new Vector3(0.45f, 0.55f, 0.45f), Quaternion.Euler(0f, k * 60f, 0f), 1f);
+            }
+            return b.Jadi("MonolitWatuIreng");
+        }
     }
 }
