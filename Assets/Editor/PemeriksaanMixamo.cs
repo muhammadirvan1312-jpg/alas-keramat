@@ -19,6 +19,12 @@ namespace AlasKeramat.EditorTools
                 && AnimasiMixamo.KlipUntuk(AnimasiMixamo.Peran.Sekte, 0f, PT.Gertak) == "Zombie_Scream"
                 && AnimasiMixamo.KlipUntuk(AnimasiMixamo.Peran.Sekte, 0f, PT.Tari) == "");
             cek("Mixamo: klip berulang vs sekali", ImporMixamo.Berulang("Walking") && ImporMixamo.Berulang("Zombie_Running") && !ImporMixamo.Berulang("Dying") && !ImporMixamo.Berulang("Hit_Reaction"));
+            var synth = Object.FindFirstObjectByType<AlasKeramat.Core.ProceduralAudioSynth>();
+            int rekam = 0;
+            if (synth != null && synth.NamaPanggang != null)
+                for (int i = 0; i < synth.NamaPanggang.Length && i < synth.KlipPanggang.Length; i++)
+                    if (synth.KlipPanggang[i] != null && AssetDatabase.GetAssetPath(synth.KlipPanggang[i]).Contains("/kenney/")) rekam++;
+            cek("Audio: rekaman CC0 Kenney terpasang (" + rekam + "/" + NusantaraMasterBuilder.PetaKenney.GetLength(0) + ")", rekam >= NusantaraMasterBuilder.PetaKenney.GetLength(0) - 1);
             if (!AssetDatabase.IsValidFolder(ImporMixamo.Folder)) { Debug.Log("[AK][SelfTest] Mixamo: aset belum ada (repo perlu private), pemeriksaan aset dilewati"); return; }
             var bank = AssetDatabase.LoadAssetAtPath<BankAnimasiMixamo>(NusantaraMasterBuilder.PathBankMixamo);
             cek("Mixamo: bank animasi ada (>= 40 klip)", bank != null && bank.klip.Length >= 40);

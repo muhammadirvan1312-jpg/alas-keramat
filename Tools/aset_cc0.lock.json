@@ -953,6 +953,136 @@
       "source": "https://polyhaven.com/a/island_tree_02",
       "author": "Poly Haven",
       "slot": "DaunAsliB"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-impact-sounds-for-godot/999dd1684873f8b020a3aa5b26e713da21688924/addons/kenney%20impact%20sounds/impact_punch_heavy_000.ogg",
+      "path": "CC0/Audio/kenney/impact_punch_heavy_000.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-impact-sounds-for-godot",
+      "slot": "Audio",
+      "size": 11617,
+      "sha256": "b33a8f14068aec24ec69ba85e5e87fdc41228975f6a1a3e44a6e7d6fc3d9f8d8"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-impact-sounds-for-godot/999dd1684873f8b020a3aa5b26e713da21688924/addons/kenney%20impact%20sounds/impact_punch_medium_000.ogg",
+      "path": "CC0/Audio/kenney/impact_punch_medium_000.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-impact-sounds-for-godot",
+      "slot": "Audio",
+      "size": 8800,
+      "sha256": "486988aa2d6440ffc4c62a0e8ccf3c23673ba84424bd4723378d451b7255eb5c"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-impact-sounds-for-godot/999dd1684873f8b020a3aa5b26e713da21688924/addons/kenney%20impact%20sounds/impact_metal_heavy_000.ogg",
+      "path": "CC0/Audio/kenney/impact_metal_heavy_000.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-impact-sounds-for-godot",
+      "slot": "Audio",
+      "size": 6110,
+      "sha256": "e07045693e4a2b3d165c424e3dab4c781d9ff8880a386880ac89a51315d7f831"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-impact-sounds-for-godot/999dd1684873f8b020a3aa5b26e713da21688924/addons/kenney%20impact%20sounds/impact_soft_heavy_000.ogg",
+      "path": "CC0/Audio/kenney/impact_soft_heavy_000.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-impact-sounds-for-godot",
+      "slot": "Audio",
+      "size": 6570,
+      "sha256": "49e7ca88743fca974bb8676ea138b751cfd8f9033b5e7af8736c2a215d6edbc1"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-impact-sounds-for-godot/999dd1684873f8b020a3aa5b26e713da21688924/addons/kenney%20impact%20sounds/impact_wood_medium_000.ogg",
+      "path": "CC0/Audio/kenney/impact_wood_medium_000.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-impact-sounds-for-godot",
+      "slot": "Audio",
+      "size": 6575,
+      "sha256": "1723a9fd25103ed41af06054814e84e65f4a772bac86ab2dc927da93d9592ff5"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-impact-sounds-for-godot/999dd1684873f8b020a3aa5b26e713da21688924/addons/kenney%20impact%20sounds/impact_wood_heavy_000.ogg",
+      "path": "CC0/Audio/kenney/impact_wood_heavy_000.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-impact-sounds-for-godot",
+      "slot": "Audio",
+      "size": 6233,
+      "sha256": "15ff82332f342c30e469215539e1cc57e11b221aa2cf7e11e811d313a9927f3d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-impact-sounds-for-godot/999dd1684873f8b020a3aa5b26e713da21688924/addons/kenney%20impact%20sounds/impact_generic_light_000.ogg",
+      "path": "CC0/Audio/kenney/impact_generic_light_000.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-impact-sounds-for-godot",
+      "slot": "Audio",
+      "size": 5827,
+      "sha256": "f0e982611e97512fee5f777986b67e8b435434b601f94992ec044f7e89fb5acb"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-rpg-audio-for-godot/22eb79bb843bbcadcaa6ed119353a33265ffad11/addons/kenney%20rpg%20audio/chop.ogg",
+      "path": "CC0/Audio/kenney/chop.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-rpg-audio-for-godot",
+      "slot": "Audio",
+      "size": 9370,
+      "sha256": "d00c2b3c9fff07e376145c8c8c45c90e5084ec192f6ce0387db233f7b86f1486"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-rpg-audio-for-godot/22eb79bb843bbcadcaa6ed119353a33265ffad11/addons/kenney%20rpg%20audio/knife_slice.ogg",
+      "path": "CC0/Audio/kenney/knife_slice.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-rpg-audio-for-godot",
+      "slot": "Audio",
+      "size": 15532,
+      "sha256": "4cd96dc630bed9840c15f1dd2306da2cc56a4da26a5d3f1a03c5a7265ac5e54f"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-rpg-audio-for-godot/22eb79bb843bbcadcaa6ed119353a33265ffad11/addons/kenney%20rpg%20audio/handle_small_leather.ogg",
+      "path": "CC0/Audio/kenney/handle_small_leather.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-rpg-audio-for-godot",
+      "slot": "Audio",
+      "size": 10492,
+      "sha256": "ae3cbf695aa0a8b98b5a80a835be5a3ccbd5446a24db2235cd4c3cd6fc92ed96"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-rpg-audio-for-godot/22eb79bb843bbcadcaa6ed119353a33265ffad11/addons/kenney%20rpg%20audio/creak_1.ogg",
+      "path": "CC0/Audio/kenney/creak_1.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-rpg-audio-for-godot",
+      "slot": "Audio",
+      "size": 15761,
+      "sha256": "8a346186fd297254248cab8e8117060a52a5cf2a84f603153a762108550ea95e"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-rpg-audio-for-godot/22eb79bb843bbcadcaa6ed119353a33265ffad11/addons/kenney%20rpg%20audio/door_open_1.ogg",
+      "path": "CC0/Audio/kenney/door_open_1.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-rpg-audio-for-godot",
+      "slot": "Audio",
+      "size": 22848,
+      "sha256": "4ab93bab96522d8eb109ff96dc57cb6765deb02448fe14c10472084be5bb2a0b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Boyquotes/kenney-rpg-audio-for-godot/22eb79bb843bbcadcaa6ed119353a33265ffad11/addons/kenney%20rpg%20audio/metal_click.ogg",
+      "path": "CC0/Audio/kenney/metal_click.ogg",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "author": "Kenney (kenney.nl), mirror Boyquotes/kenney-rpg-audio-for-godot",
+      "slot": "Audio",
+      "size": 13615,
+      "sha256": "9851a69d0c613e13bceef08060ecc4148f098ef487927cbebe270d642398a3b3"
     }
   ]
 }
