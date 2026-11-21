@@ -162,7 +162,6 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - Tangan & senjata orang-pertama (`BuilderSteps.Tebang.cs`, `BuilderSteps.Jarak.cs`, `CombatAndLeftHandController.cs`) ditambah jam tangan taktis menyala, jari menggenggam, lilitan kulit, bilah baja `FP_BajaTajam`, cahaya bara `GolokApiPusaka`, detail busur/tombak/senapan/ketapel, serta ayunan napas/jalan/lari `HitungAyunFP`.
   - `PartikelAlam` ditambah kunang-kunang malam di hutan dan spora bercahaya konstan di dalam gua (`KunangMalam`, `LajuKunang`).
   - `BuilderSteps.AudioKenney.cs` dan `WildAnimalAI.cs` memperluas 4 rekaman CC0 Kenney (`impact_punch_medium_000`, `creak_1`, `metal_click`, `door_open_1`) serta suara 3D satwa saat waspada, menyerang, dan terluka (`KlipSuaraHewan`).
-<<<<<<< HEAD
 - Gelombang 3 SOTF (`imp-sotf-v3`):
   - `BangunanBlueprint` kini memakai material PBR berserat kayu/batu (`BahanBP`) di semua 26 cetak biru survival; `ApiUnggun` ditambah lidah api berkedip + partikel bara api 3D saat menyala.
   - `TanganKiri` menampilkan lengan, telapak tangan, dan jari menggenggam obor bambu berikut lidah api; `CombatAndLeftHandController` menambah animasi tarik busur ke tengah bidikan (`TarikBusur01`) serta partikel serpihan kayu (`PancarSerpih`) saat menebang pohon/kayu/struktur.
@@ -255,3 +254,6 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
 - **Visual V1 (`vis-v1-foto-hud`, 22 Nov 2026)**:
   - Perbaikan HUD Unity 6: `SpriteImportMode.Single` di `BuilderSteps.Aset.cs`, `BuilderSteps.IkonKontrol.cs`, `BuilderSteps.Luka.cs`; kenop slider bulat (`preserveAspect`) di `BuilderSteps.PengaturanNyaman.cs`; latar penuh `PanelPengaturan` di `BuilderSteps.T11.cs`.
   - Alat ukur V1: `NusantaraFoto.cs` diperluas ke 12 shot audit (`v1_01..v1_06` money shot termasuk malam senter) + close-up 0,85 m `v1_wajah_deden`/`ningsih`/`kirogo` (mempreview prefab Mixamo bila tersedia) + `v1_hewan_barisan`; `UjiMainOtomatis.cs` + `Tools/cek_uji_main.py` merekam 5 frame bot (`jalan`, `tebas`, `luka_kritis`, `tas`, `peta`) & merakit `bot_uji_main.gif`; `Tools/cek_foto.py` ikut mengaudit `v1_*.png`.
+- **Visual V2 (`vis-v2-karakter`, 22 Nov 2026)**:
+  - `AnimasiMixamo.Karakter.cs` & `BuilderSteps.Mixamo.cs`: konversi material kulit karakter utama Mixamo ke shader `AlasKeramat/KulitManusia` dengan tint sawo matang Indonesia, rambut hitam alpha-clip tanpa pantulan plastik, dan pakaian bernuansa tanah redup; LookAt kepala + angguk halus di `mixamorig:Head`; `BayanganKontak` ringan saat bayangan real-time mati (preset Rendah HP 4 GB); Deden tampil Mixamo sejak duduk awal heli.
+  - `BuilderSteps.Mixamo.cs` & `AnimasiMixamo.cs`: perluas Mixamo ke prefab `Hantu_Kuntilanak` (`Zombiegirl` bergaun putih kusam), `Hantu_GenderuwoHutan` (`Warrok` bermata menyala malam), dan `Hantu_Penyerupa` (`Peasant_Girl`), serta utamakan klip `Zombie_Attack` untuk serang Raksasa/Sekte.
