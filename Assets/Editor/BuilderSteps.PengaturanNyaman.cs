@@ -63,13 +63,21 @@ namespace AlasKeramat.EditorTools
             var judul = BuatTeks(go, "Judul", label, font, 26, new Vector2(0.5f, 1), new Vector2(-85, 15), new Vector2(420, 44));
             judul.alignment = TextAnchor.MiddleLeft; judul.raycastTarget = false;
             nilai = BuatTeks(go, "Nilai", "", font, 26, new Vector2(1, 1), new Vector2(-65, 15), new Vector2(170, 44)); nilai.raycastTarget = false;
+            // Latar transparen sebagai area sentuh; rel bulat tipis, isian emas, kenop bulat.
             var fondasi = UIGambar(go, "Latar", null, new Vector2(600, 64), new Vector2(0.5f, 0.5f), new Vector2(0, -25));
-            fondasi.GetComponent<Image>().color = new Color(0.16f, 0.19f, 0.18f, 1);
+            fondasi.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0.001f);
+            var rel = UIGambar(fondasi, "Rel", null, new Vector2(560, 16), new Vector2(0.5f, 0.5f), Vector2.zero);
+            GayakanTombol(rel.GetComponent<Image>(), new Color(0.12f, 0.14f, 0.13f), null); rel.GetComponent<Image>().raycastTarget = false;
+            var areaIsi = UIStretch(fondasi, "AreaIsi", new Vector2(0.05f, 0.5f), new Vector2(0.95f, 0.5f));
+            ((RectTransform)areaIsi.transform).sizeDelta = new Vector2(0f, 16f);
+            var isi = UIStretch(areaIsi, "Isi", new Vector2(0f, 0f), new Vector2(0f, 1f));
+            var gIsi = isi.AddComponent<Image>(); GayakanTombol(gIsi, ProcTex.Hex("#E0B33A"), null); gIsi.color = ProcTex.Hex("#E0B33A"); gIsi.raycastTarget = false;
             var area = UIStretch(fondasi, "AreaKenop", new Vector2(0.05f, 0), new Vector2(0.95f, 1));
-            var kenop = UIGambar(area, "Kenop", null, new Vector2(56, 76), new Vector2(0.5f, 0.5f), Vector2.zero);
-            kenop.GetComponent<Image>().color = ProcTex.Hex("#E0B33A");
+            var kenop = UIGambar(area, "Kenop", null, new Vector2(58, 58), new Vector2(0.5f, 0.5f), Vector2.zero);
+            var gk = kenop.GetComponent<Image>(); var sk = SpriteLingkaran(); if (sk != null) gk.sprite = sk;
+            gk.color = ProcTex.Hex("#F2CE5A");
             var s = fondasi.AddComponent<Slider>(); s.minValue = min; s.maxValue = max; s.wholeNumbers = max > 10;
-            s.targetGraphic = kenop.GetComponent<Image>(); s.handleRect = (RectTransform)kenop.transform;
+            s.targetGraphic = gk; s.handleRect = (RectTransform)kenop.transform; s.fillRect = (RectTransform)isi.transform;
             var nav = s.navigation; nav.mode = Navigation.Mode.None; s.navigation = nav;
             return s;
         }
