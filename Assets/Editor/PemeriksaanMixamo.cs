@@ -166,6 +166,13 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Building.VegetationManager.CekJarakSemak(Vector3.zero, Vector3.right * 1.2f, 1.75f)
                 && AlasKeramat.Core.WorldEventScheduler.KodeKejadianCuacaDanMalam(AlasKeramat.Core.WeatherState.HujanBadai, 12f, 2) == 2
                 && AlasKeramat.Core.WorldEventScheduler.KodeKejadianCuacaDanMalam(AlasKeramat.Core.WeatherState.Cerah, 22.5f, 3) == 7);
+            cek("SOTF v16: luka per bagian tubuh Andi, singkirkan mayat sekte & misi sampingan S01-S04",
+                AlasKeramat.Player.AndiVitalsAndSanity.PengaliKecepatanLuka(30f) < 1f
+                && AlasKeramat.Player.AndiVitalsAndSanity.PengaliKecepatanLuka(0f) == 1f
+                && AlasKeramat.Player.AndiVitalsAndSanity.PengaliBiayaStaminaLuka(25f) > 1f
+                && AlasKeramat.AI.NusantaraEnemyAndMutantAI.BisaSingkirkanMayat(true, false)
+                && !AlasKeramat.AI.NusantaraEnemyAndMutantAI.BisaSingkirkanMayat(true, true)
+                && AlasKeramat.Core.QuestManager.TeksMisiSampingan(0, false).Length > 10);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;
