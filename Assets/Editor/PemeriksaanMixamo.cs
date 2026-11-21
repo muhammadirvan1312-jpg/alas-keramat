@@ -173,6 +173,10 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.AI.NusantaraEnemyAndMutantAI.BisaSingkirkanMayat(true, false)
                 && !AlasKeramat.AI.NusantaraEnemyAndMutantAI.BisaSingkirkanMayat(true, true)
                 && AlasKeramat.Core.QuestManager.TeksMisiSampingan(0, false).Length > 10);
+            cek("SOTF v17: katalog penuh 37 kejadian teror, mekanik curi Tuyul & sergapan Hantu Air",
+                AlasKeramat.Core.TerrorDirector.Katalog().Count == 37
+                && AlasKeramat.AI.HantuAI.PengaliLajuHantuAir(true) > 1.5f
+                && AlasKeramat.AI.HantuAI.PengaliLajuHantuAir(false) == 1f);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

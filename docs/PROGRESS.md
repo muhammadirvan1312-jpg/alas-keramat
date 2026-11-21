@@ -218,3 +218,6 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `AndiVitalsAndSanity` menambahkan sistem **Luka Per Bagian Tubuh** (`LukaKepala`, `LukaLengan`, `LukaKaki` sesuai `24 §5`): jatuh menyebabkan kaki terkilir (`PengaliKecepatanLuka = 0.78f`), benturan berat melukai lengan (`PengaliBiayaStaminaLuka = 1.25f`) atau kepala, dan sembuh dengan `PerbanKain`, `JamuHerbal`, `KunyitObat`, `DaunSirih`, atau tidur (`ObatiLukaTubuh`).
   - `NusantaraEnemyAndMutantAI` menambahkan aksi **`SINGKIRKAN MAYAT`** (`BisaSingkirkanMayat`) setelah mayat digeledah agar patroli Sekte tidak curiga (membakar menjadi `Arang` dengan `KorekGas` atau menyembunyikan mayat ke semak).
   - `QuestManager` melengkapi pelacakan dan hadiah **4 Misi Sampingan S01–S04** (*Kenangan Dewi*, *Mencari Rendra*, *Arwah Tersesat*, *Persembahan Kemenyan*).
+- Gelombang 17 SOTF (`imp-sotf-v3`):
+  - `TerrorDirector` melengkapi seluruh **37 katalog kejadian horor `E01–E37`** (`13 §3`), termasuk kejadian gua/air/kesurupan (`E15–E17`, `E19–E20`, `E25–E26`, `E28–E29`, `E31`, `E36–E37`).
+  - `HantuAI` mengaktifkan mekanik folklor nyata: **Tuyul** mencuri barang dari tas dan menjatuhkannya saat disorot cahaya (`PilihBarangCurianTuyul`), **Hantu Air** melesat 1,65x di air dan menguras stamina (`PengaliLajuHantuAir`), serta **Genderuwo Hutan** mengguncang kamera & menggerus kewarasan saat menghantam.
