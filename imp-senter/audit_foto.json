@@ -1,15 +1,62 @@
 {
   "commit": "7b22d3a4e1923f8e7944b86d8781958ecba6be05",
-  "passed": false,
-  "photos": [],
-  "errors": [
-    "Sumber foto tidak cocok dengan commit yang diuji",
-    "Foto belum tersedia: g3_01_deden_wajah",
-    "Foto belum tersedia: g3_02_ningsih_wajah",
-    "Foto belum tersedia: g3_03_hutan_malam",
-    "Foto belum tersedia: g3_04_lantai_hutan",
-    "Foto belum tersedia: t10_01_gua_lumut",
-    "Foto belum tersedia: t10_02_kubah_akar_boss"
+  "passed": true,
+  "photos": [
+    {
+      "shot": "g3_01_deden_wajah",
+      "width": 960,
+      "height": 540,
+      "p95": 0.443,
+      "variation": 0.1473,
+      "pink": 0.0,
+      "sha256": "b77fa5bd4d8488440278becf34100d95af1ef722e5b8d70ff57440a857d00b35"
+    },
+    {
+      "shot": "g3_02_ningsih_wajah",
+      "width": 960,
+      "height": 540,
+      "p95": 0.5079,
+      "variation": 0.1757,
+      "pink": 0.0,
+      "sha256": "be219643a60490d3900bb964a08cc419855985d3930d314a883f85f9ad75e188"
+    },
+    {
+      "shot": "g3_03_hutan_malam",
+      "width": 960,
+      "height": 540,
+      "p95": 0.1746,
+      "variation": 0.066,
+      "pink": 0.0,
+      "sha256": "1bf9c8846c27c3ab073bcab691100fa35c8da12eb695ff9ff7220477c0ba7d1a"
+    },
+    {
+      "shot": "g3_04_lantai_hutan",
+      "width": 960,
+      "height": 540,
+      "p95": 0.2526,
+      "variation": 0.0777,
+      "pink": 0.0,
+      "sha256": "faedb68cfe5b8357bc4e537ab60c29287d14242bfd7721fc94c582ddda59f580"
+    },
+    {
+      "shot": "t10_01_gua_lumut",
+      "width": 960,
+      "height": 540,
+      "p95": 0.2815,
+      "variation": 0.0986,
+      "pink": 0.0,
+      "sha256": "0134f70d77ca692188eba66692828c1bdc334f494b8bbc546385801688abf02c"
+    },
+    {
+      "shot": "t10_02_kubah_akar_boss",
+      "width": 960,
+      "height": 540,
+      "p95": 0.3072,
+      "variation": 0.1043,
+      "pink": 0.0,
+      "sha256": "2fa7cb6be73ca83d863d16457d378264939aa7cba97dfeb62826b968588470e5"
+    }
   ],
+  "errors": [],
   "note": "Pemeriksaan teknis gambar; kualitas seni dan kesetaraan visual belum dinilai"
 }
