@@ -14,6 +14,16 @@ namespace AlasKeramat.UI
         [SerializeField] RectTransform[] penanda = new RectTransform[0];
         [SerializeField] Vector3[] posisi = new Vector3[0];
         [SerializeField] GameObject isi;
+        [SerializeField] UnityEngine.UI.RawImage petaMini; // peta survei berputar di bawah penanda (minimap)
+        public const float SisiDunia = 2000f, LebihRotasi = 1.42f;
+        public void PasangPeta(UnityEngine.UI.RawImage r) { petaMini = r; }
+
+        // Jendela UV peta survei berpusat di Andi (selebar 2 x Jangkauan, diperbesar agar sudut tetap tertutup saat berputar).
+        public static Rect JendelaUV(Vector3 a)
+        {
+            float w = Jangkauan * 2f * LebihRotasi / SisiDunia;
+            return new Rect((a.x + SisiDunia * 0.5f) / SisiDunia - w * 0.5f, (a.z + SisiDunia * 0.5f) / SisiDunia - w * 0.5f, w, w);
+        }
 
         AndiFPSController _andi;
         TikarPandan3DInventory _inv;
@@ -50,6 +60,12 @@ namespace AlasKeramat.UI
             Vector3 a = _andi.transform.position;
             float yaw = _andi.transform.eulerAngles.y;
             if (utara != null) utara.anchoredPosition = KeRadar(a, a + Vector3.forward * Jangkauan * 2f, yaw);
+            if (petaMini != null)
+            {
+                bool on = Aktif() && !WorldTerrainGenerator.DiBawahTanah(a.y);
+                if (petaMini.enabled != on) petaMini.enabled = on;
+                if (on) { petaMini.uvRect = JendelaUV(a); petaMini.rectTransform.localEulerAngles = new Vector3(0f, 0f, yaw); }
+            }
             bool aktif = Aktif();
             if (isi != null && isi.activeSelf != aktif) isi.SetActive(aktif);
             if (!aktif) return;

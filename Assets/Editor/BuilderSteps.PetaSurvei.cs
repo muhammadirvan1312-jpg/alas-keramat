@@ -33,6 +33,7 @@ namespace AlasKeramat.EditorTools
             tex.SetPixels(warna);tex.Apply();string path=FolderTex+"/peta_survei.png";SimpanPng(tex,path);AssetDatabase.ImportAsset(path);AturImpor(path,false,false,n);
             var map=Anak(nav.Panel,"BidangPeta");var mr=map.AddComponent<RectTransform>();mr.anchorMin=mr.anchorMax=new Vector2(0.5f,0.5f);mr.sizeDelta=new Vector2(760,760);
             var raw=map.AddComponent<RawImage>();raw.texture=AssetDatabase.LoadAssetAtPath<Texture2D>(path);nav.Bidang=mr;
+            PasangPetaMini(AssetDatabase.LoadAssetAtPath<Texture2D>(path));
             for(int i=0;i<PetaSurveiUI.Lokasi.Length;i++)
             {
                 var label=BuatTeks(map,"Lokasi"+i,"+ "+PetaSurveiUI.NamaLokasi[i],font,19,PetaSurveiUI.KeUV(PetaSurveiUI.Lokasi[i]),Vector2.zero,new Vector2(180,38));
@@ -50,5 +51,19 @@ namespace AlasKeramat.EditorTools
             var go=Anak(map,nama);var rt=go.AddComponent<RectTransform>();rt.anchorMin=rt.anchorMax=Vector2.one*0.5f;rt.sizeDelta=Vector2.one*size;
             var img=go.AddComponent<Image>();img.color=warna;img.raycastTarget=false;return rt;
         }
-    }
+    
+        // Minimap: peta survei berputar di dalam lingkaran radar (Mask), di belakang penanda.
+        static void PasangPetaMini(Texture2D tex)
+        {
+            var radar=Object.FindFirstObjectByType<RadarGPS>();
+            if(radar==null||tex==null)return;
+            var lama=radar.transform.Find("PetaMini");if(lama!=null)Object.DestroyImmediate(lama.gameObject);
+            if(radar.GetComponent<Mask>()==null){var mk=radar.gameObject.AddComponent<Mask>();mk.showMaskGraphic=true;}
+            var go=Anak(radar.gameObject,"PetaMini");go.layer=GameLayers.UI;go.transform.SetAsFirstSibling();
+            var rt=go.AddComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(0.5f,0.5f);rt.anchoredPosition=Vector2.zero;
+            float d=((RectTransform)radar.transform).sizeDelta.x;rt.sizeDelta=new Vector2(d,d)*RadarGPS.LebihRotasi;
+            var raw=go.AddComponent<RawImage>();raw.texture=tex;raw.raycastTarget=false;raw.color=new Color(1f,1f,1f,0.85f);raw.enabled=false;
+            radar.PasangPeta(raw);EditorUtility.SetDirty(radar);
+        }
+}
 }
