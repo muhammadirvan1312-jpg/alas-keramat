@@ -143,7 +143,7 @@ namespace AlasKeramat.Core
                 case "E29": Bunyi(ProceduralAudioSynth.KlipKetukan, a + _andi.transform.forward * 3f, 0.75f, 0.8f); break;
                 case "E31": GameEvents.RaiseSubtitle("(Kang Deden menunjuk gelisah ke luar lingkaran api!)"); break;
                 case "E36": Bunyi(ProceduralAudioSynth.KlipBisikan, a + _andi.transform.right * 1.4f, 0.7f, 0.85f); break;
-                case "E37": Bunyi(ProceduralAudioSynth.KlipBisikan, a - _andi.transform.right * 1.2f, 0.8f, 0.75f); GameEvents.RaiseSubtitle("("Andi..." - gema memanggil dari lorong gelap.)"); break;
+                case "E37": Bunyi(ProceduralAudioSynth.KlipBisikan, a - _andi.transform.right * 1.2f, 0.8f, 0.75f); GameEvents.RaiseSubtitle("(\"Andi...\" - gema memanggil dari lorong gelap.)"); break;
             }
             if (_audio != null && (id == "E14" || id == "E18" || id == "E27")) Bunyi(ProceduralAudioSynth.KlipStinger, a, 0.6f);
         }
