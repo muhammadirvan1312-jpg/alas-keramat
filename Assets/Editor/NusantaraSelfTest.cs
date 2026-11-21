@@ -356,6 +356,7 @@ namespace AlasKeramat.EditorTools
             PemeriksaanEkspansiDunia2.Jalankan(cek);
             PemeriksaanFiturBaruSOTF.Jalankan(cek);
             PemeriksaanOverhaulVisual.Jalankan(cek);
+            PemeriksaanSistemLanjutan.Jalankan(cek);
             PemeriksaanG3.Jalankan(cek);
             PemeriksaanT11.Jalankan(cek);
             PemeriksaanUjiMain.Jalankan(cek);
