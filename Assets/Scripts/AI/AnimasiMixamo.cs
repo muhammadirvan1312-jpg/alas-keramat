@@ -6,7 +6,7 @@ namespace AlasKeramat.AI
     // tersembunyi, lalu rotasi tiap tulang disalin sebagai delta relatif pose diam yang sudah dikalibrasi arah tulangnya.
     // Wajah (rahang, mata, alis) tetap prosedural. Jauh dari kamera (> JarakAktif) kembali ke animasi prosedural.
     [DefaultExecutionOrder(200)]
-    public class AnimasiMixamo : MonoBehaviour
+    public partial class AnimasiMixamo : MonoBehaviour
     {
         public enum Peran { Pria, Sekte, Wanita, Terluka, Raksasa }
         public const float Crossfade = 0.25f, JarakAktif = 45f, LajuJalanAsli = 1.45f, LajuLariAsli = 3.8f, BatasLari = 2.6f, BatasDiam = 0.25f;
@@ -76,6 +76,7 @@ namespace AlasKeramat.AI
                 _invAcuan[i] = Quaternion.Inverse(A * (invRoot * _p[i].rotation));
                 _t0[i] = invRoot * _t[i].rotation;
             }
+            if (modelKarakter != null && PasangModel()) { Destroy(go); _siap = true; return; }
             _anim = go.AddComponent<Animation>();
             _anim.playAutomatically = false;
             _anim.cullingType = AnimationCullingType.AlwaysAnimate;
@@ -104,7 +105,10 @@ namespace AlasKeramat.AI
 
         void LateUpdate()
         {
-            if (!_siap || _pa.ModeAktif != ProceduralAnimator.Mode.Normal) return;
+            if (!_siap) return;
+            if (_model != null && !_pa.enabled) { MatiModel(); return; }
+            if (_model != null) TampilModel(_pa.ModeAktif == ProceduralAnimator.Mode.Normal);
+            if (_pa.ModeAktif != ProceduralAnimator.Mode.Normal) return;
             if (_kamera == null) { var c = Camera.main; if (c != null) _kamera = c.transform; }
             bool dekat = _kamera == null || (_kamera.position - transform.position).sqrMagnitude < JarakAktif * JarakAktif;
             if (_anim.enabled != dekat) _anim.enabled = dekat;
@@ -112,12 +116,13 @@ namespace AlasKeramat.AI
             float kec = _pa.Kecepatan;
             string mau = KlipUntuk(peran, kec, _pa.Pose);
             if (mau.Length > 0 && _anim.GetClip(mau) == null) mau = kec < BatasLari ? "Walking" : "Running";
+            if (_model != null && (mau.Length == 0 || _anim.GetClip(mau) == null)) mau = _anim.GetClip("Breathing_Idle") != null ? "Breathing_Idle" : mau;
             if (mau.Length == 0 || _anim.GetClip(mau) == null) { _kini = ""; return; }
             if (mau != _kini) { _anim.CrossFade(mau, Crossfade); _kini = mau; }
             var st = _anim[mau];
             if (st != null) st.speed = mau == "Walking" || mau == "Female_Walk" || mau == "Injured_Walk" ? Mathf.Clamp(kec / LajuJalanAsli, 0.6f, 1.6f)
                 : mau == "Running" || mau == "Zombie_Running" ? Mathf.Clamp(kec / LajuLariAsli, 0.7f, 1.5f) : 1f;
-            Salin();
+            if (_model != null) KunciPinggul(); else Salin();
         }
 
         void Salin()

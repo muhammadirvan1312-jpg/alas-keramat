@@ -42,7 +42,7 @@ namespace AlasKeramat.EditorTools
             AssetDatabase.CreateAsset(bank, PathBankMixamo);
             AssetDatabase.SaveAssets();
 
-            int n = 0;
+            int n = 0; JumlahModelMixamo = 0;
             if (AssetDatabase.IsValidFolder(FolderPrefabMusuh))
                 foreach (var g in AssetDatabase.FindAssets("t:Prefab", new[] { FolderPrefabMusuh }))
                 {
@@ -54,7 +54,7 @@ namespace AlasKeramat.EditorTools
                         if (pa != null && root.GetComponent<NusantaraEnemyAndMutantAI>() != null)
                         {
                             var peran = p.Contains("Buto") ? AnimasiMixamo.Peran.Raksasa : p.Contains("Wanita") ? AnimasiMixamo.Peran.Wanita : AnimasiMixamo.Peran.Sekte;
-                            Pasangkan(pa.gameObject, bank, peran);
+                            Pasangkan(pa.gameObject, bank, peran, System.IO.Path.GetFileNameWithoutExtension(p));
                             PrefabUtility.SaveAsPrefabAsset(root, p); n++;
                         }
                     }
@@ -63,26 +63,49 @@ namespace AlasKeramat.EditorTools
             n += PasangDiAdegan<KangDedenKelvinAI>(bank, AnimasiMixamo.Peran.Pria);
             n += PasangDiAdegan<NingsihVirginiaAI>(bank, AnimasiMixamo.Peran.Wanita);
             n += PasangDiAdegan<KiRogoPanggung>(bank, AnimasiMixamo.Peran.Pria);
-            n += PasangDiAdegan<BossGenderuwo>(bank, AnimasiMixamo.Peran.Raksasa);
-            Catat("Mixamo: " + klip.Count + " klip mocap, retarget dipasang ke " + n + " karakter/prefab");
+            n += PasangDiAdegan<BossGenderuwo>(bank, AnimasiMixamo.Peran.Raksasa, "Genderuwo");
+            Catat("Mixamo: " + klip.Count + " klip mocap, retarget dipasang ke " + n + " karakter/prefab, " + JumlahModelMixamo + " memakai model karakter Mixamo asli");
         }
 
-        static void Pasangkan(GameObject go, BankAnimasiMixamo bank, AnimasiMixamo.Peran peran)
+        // Musuh -> model karakter Mixamo (file di Assets/MixamoKarakter, dari repo aset privat). null = tetap model lama.
+        public static string ModelUntuk(string nama)
+        {
+            if (nama.Contains("Genderuwo")) return "Warrok";
+            if (nama.Contains("AbdiButo")) return "Maw";
+            if (nama.Contains("AbdiWanita")) return "Zombiegirl";
+            if (nama.Contains("AbdiLumpur") || nama.Contains("MutanGembung")) return "Mutant";
+            if (nama.Contains("PemimpinPatroli")) return "Parasite";
+            if (nama.Contains("MutanJemari")) return "Mremireh";
+            if (nama.Contains("AbdiSekte")) return "Nightshade";
+            return null;
+        }
+        public static int JumlahModelMixamo;
+
+        static GameObject MuatModelKarakter(string nama)
+        {
+            if (nama == null) return null;
+            return AssetDatabase.LoadAssetAtPath<GameObject>(ImporKarakterMixamo.Folder + "/" + nama + ".fbx");
+        }
+
+        static void Pasangkan(GameObject go, BankAnimasiMixamo bank, AnimasiMixamo.Peran peran, string namaUntukModel = null)
         {
             var am = go.GetComponent<AnimasiMixamo>();
             if (am == null) am = go.AddComponent<AnimasiMixamo>();
             am.Pasang(bank, peran);
+            var model = MuatModelKarakter(ModelUntuk(namaUntukModel ?? ""));
+            am.PasangModel(model);
+            if (model != null) JumlahModelMixamo++;
             EditorUtility.SetDirty(am);
         }
 
-        static int PasangDiAdegan<T>(BankAnimasiMixamo bank, AnimasiMixamo.Peran peran) where T : Component
+        static int PasangDiAdegan<T>(BankAnimasiMixamo bank, AnimasiMixamo.Peran peran, string namaModel = null) where T : Component
         {
             int n = 0;
             foreach (var c in Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 var pa = c.GetComponentInChildren<ProceduralAnimator>(true);
                 if (pa == null) continue;
-                Pasangkan(pa.gameObject, bank, peran); n++;
+                Pasangkan(pa.gameObject, bank, peran, namaModel); n++;
             }
             return n;
         }

@@ -62,7 +62,7 @@ namespace AlasKeramat.EditorTools
             var go=Anak(radar.gameObject,"PetaMini");go.layer=GameLayers.UI;go.transform.SetAsFirstSibling();
             var rt=go.AddComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(0.5f,0.5f);rt.anchoredPosition=Vector2.zero;
             float d=((RectTransform)radar.transform).sizeDelta.x;rt.sizeDelta=new Vector2(d,d)*RadarGPS.LebihRotasi;
-            var raw=go.AddComponent<RawImage>();raw.texture=tex;raw.raycastTarget=false;raw.color=new Color(1f,1f,1f,0.85f);raw.enabled=false;
+            var raw=go.AddComponent<RawImage>();raw.texture=tex;raw.raycastTarget=false;raw.color=new Color(0.72f,0.78f,0.72f,0.7f);raw.enabled=false;
             radar.PasangPeta(raw);EditorUtility.SetDirty(radar);
         }
 }

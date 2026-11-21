@@ -119,6 +119,7 @@ namespace AlasKeramat.Player
             float dur = _berat ? _aktif.durB : _aktif.durR, aktif = _berat ? _aktif.aktifB : _aktif.aktifR;
             if (!_sudahKena && _t < aktif) Assist(Time.deltaTime);
             if (!_sudahKena && _t >= aktif) { _sudahKena = true; Kenai(); }
+            TickJejak(dur);
             if (pivotFP != null)
             {
                 float u = Mathf.Clamp01(_t / dur);
