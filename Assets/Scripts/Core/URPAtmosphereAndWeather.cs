@@ -84,9 +84,9 @@ namespace AlasKeramat.Core
             _warnaMatahari = G("#283652@0", "#FF8848@5.8", "#FFD59E@7.5", "#FFF0D8@12", "#FF5428@18", "#B31E12@18.6", "#283652@19.5", "#283652@24");
             _warnaLangit = G("#060912@0", "#EC945D@6", "#8AB2D8@8", "#7BA4D4@13", "#C84B28@18", "#741410@18.6", "#0A0E18@19.6", "#060912@24");
             _warnaKabut = G("#101B28@0", "#565466@5.5", "#B6C4BE@7", "#A4BFC0@12", "#A4422C@18", "#501412@18.7", "#131F2E@19.6", "#101B28@24");
-            _ambienAtas = G("#364E6E@0", "#4E4E68@5.6", "#9EC2E0@8", "#B4CFE4@12", "#AD4E38@18", "#341412@18.8", "#364E6E@19.6", "#364E6E@24");
-            _ambienTengah = G("#22364C@0", "#38363E@5.6", "#566C52@8", "#62785C@12", "#6E3022@18", "#22100E@18.8", "#22364C@19.6", "#22364C@24");
-            _ambienBawah = G("#14202C@0", "#221D20@5.6", "#2E3024@8", "#363E2C@12", "#341812@18", "#120A08@18.8", "#14202C@19.6", "#14202C@24");
+            _ambienAtas = G("#1E324B@0", "#4E4E68@5.6", "#A4C8E6@8", "#BAD6EA@12", "#AD4E38@18", "#341412@18.8", "#1E324B@19.6", "#1E324B@24");
+            _ambienTengah = G("#142236@0", "#38363E@5.6", "#60785B@8", "#6C8466@12", "#6E3022@18", "#22100E@18.8", "#142236@19.6", "#142236@24");
+            _ambienBawah = G("#0C1424@0", "#242022@5.6", "#384030@8", "#424E38@12", "#341812@18", "#120A08@18.8", "#0C1424@19.6", "#0C1424@24");
         }
 
         public void Terapkan(float jam)
@@ -116,7 +116,7 @@ namespace AlasKeramat.Core
             RenderSettings.ambientSkyColor = _ambienAtas.Evaluate(u);
             RenderSettings.ambientEquatorColor = _ambienTengah.Evaluate(u);
             RenderSettings.ambientGroundColor = _ambienBawah.Evaluate(u);
-            TerapkanProbeAmbien(RenderSettings.ambientEquatorColor,RenderSettings.ambientSkyColor);
+            TerapkanProbeAmbien(RenderSettings.ambientEquatorColor,RenderSettings.ambientSkyColor,RenderSettings.ambientGroundColor);
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
             RenderSettings.fogColor = _warnaKabut.Evaluate(u);
@@ -160,9 +160,15 @@ namespace AlasKeramat.Core
         // Isi SH secara eksplisit: Builder/foto headless tidak menunggu bake langit atau GI realtime.
         public static void TerapkanProbeAmbien(Color tengah,Color atas)
         {
+            TerapkanProbeAmbien(tengah,atas,Color.Lerp(tengah,Color.black,0.35f));
+        }
+
+        public static void TerapkanProbeAmbien(Color tengah,Color atas,Color bawah)
+        {
             var probe=new UnityEngine.Rendering.SphericalHarmonicsL2();
             probe.AddAmbientLight(tengah.linear);
-            probe.AddDirectionalLight(Vector3.up,atas.linear,0.35f);
+            probe.AddDirectionalLight(Vector3.up,atas.linear,0.42f);
+            probe.AddDirectionalLight(Vector3.down,bawah.linear,0.22f);
             RenderSettings.ambientProbe=probe;
         }
 

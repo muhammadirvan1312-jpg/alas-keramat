@@ -115,6 +115,70 @@ namespace AlasKeramat.AI
             else if (_mataPemangsa != null && _mataPemangsa.activeSelf) _mataPemangsa.SetActive(false);
         }
 
+        float _tMata;
+        SenterAndi _senter;
+        GameObject _kilauMata;
+        static Material _matKilauMata;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetStatisMata() { _matKilauMata = null; }
+
+        // Kilau mata hewan malam (tapetum lucidum) memantul saat disorot senter Andi.
+        public static bool MataMenyalaDiSenter(bool nokturnal, float jam, bool senterNyala, Vector3 posHewan, Vector3 posKamera, Vector3 arahKamera, out float intensitas)
+        {
+            intensitas = 0f;
+            if (!nokturnal || !senterNyala) return false;
+            if (jam < 18.5f && jam >= 5.5f) return false;
+            Vector3 d = posHewan - posKamera;
+            float dist = d.magnitude;
+            if (dist < 3.5f || dist > 26f) return false;
+            float dot = Vector3.Dot(d / dist, arahKamera.normalized);
+            if (dot < 0.78f) return false;
+            intensitas = Mathf.Clamp01((dot - 0.78f) / 0.22f) * Mathf.Clamp01(1f - (dist - 16f) / 10f);
+            return intensitas > 0.05f;
+        }
+
+        void PerbaruiKilauMata(float dt)
+        {
+            _tMata -= dt;
+            if (_tMata > 0f) return;
+            _tMata = 0.2f;
+            var u = ResepHewan.Ambil(jenis);
+            if (!u.pemangsa && !u.agresif) { if (_kilauMata != null && _kilauMata.activeSelf) _kilauMata.SetActive(false); return; }
+            if (_senter == null) _senter = GameServices.Get<SenterAndi>();
+            if (_jamDunia == null) _jamDunia = GameServices.Get<TimeOfDayClock>();
+            var cam = Camera.main;
+            float inten = 0f;
+            bool nyala = State != KeadaanHewan.Mati && cam != null && _senter != null
+                && MataMenyalaDiSenter(true, _jamDunia != null ? _jamDunia.Jam : 12f, _senter.Nyala, transform.position, cam.transform.position, cam.transform.forward, out inten);
+            if (!nyala) { if (_kilauMata != null && _kilauMata.activeSelf) _kilauMata.SetActive(false); return; }
+            if (_kilauMata == null)
+            {
+                if (_matKilauMata == null)
+                    _matKilauMata = SafeMaterialFactory.CreatePBR("MataKilauMalam", Color.black, 0f, 0.9f, emission: new Color(1.5f, 0.95f, 0.22f));
+                _kilauMata = new GameObject("KilauMata");
+                Transform kepala = null;
+                foreach (var t in GetComponentsInChildren<Transform>(true))
+                    if (t.name == "Head" || t.name == "head" || t.name == "Skull" || t.name == "Bip001 Head") { kepala = t; break; }
+                _kilauMata.transform.SetParent(kepala != null ? kepala : transform, false);
+                _kilauMata.transform.localPosition = kepala != null ? new Vector3(0f, 0.04f, 0.09f) : new Vector3(0f, Mathf.Max(0.28f, u.kaki * 0.95f), Mathf.Max(0.25f, u.panjang * 0.42f));
+                for (int i = -1; i <= 1; i += 2)
+                {
+                    var m = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    m.name = i < 0 ? "MataL" : "MataR";
+                    Object.Destroy(m.GetComponent<Collider>());
+                    m.transform.SetParent(_kilauMata.transform, false);
+                    m.transform.localPosition = new Vector3(i * 0.045f, 0f, 0f);
+                    m.transform.localScale = Vector3.one * 0.022f;
+                    var mr = m.GetComponent<MeshRenderer>();
+                    if (mr != null) { mr.sharedMaterial = _matKilauMata; mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; mr.receiveShadows = false; }
+                }
+            }
+            if (!_kilauMata.activeSelf) _kilauMata.SetActive(true);
+            float s = 0.75f + inten * 0.45f;
+            _kilauMata.transform.localScale = new Vector3(s, s, s);
+        }
+
         public void Pasang(JH j, Transform[] t) { jenis = j; tulang = t; }
 
         public static float HPAwal(JH j)
@@ -160,10 +224,11 @@ namespace AlasKeramat.AI
 
         void Update()
         {
-            if (State == KeadaanHewan.Mati) { KecepatanKini = 0f; if (_mataPemangsa != null && _mataPemangsa.activeSelf) _mataPemangsa.SetActive(false); if (!PakaiModel()) Guling(); return; }
+            if (State == KeadaanHewan.Mati) { KecepatanKini = 0f; if (_mataPemangsa != null && _mataPemangsa.activeSelf) _mataPemangsa.SetActive(false); if (_kilauMata != null && _kilauMata.activeSelf) _kilauMata.SetActive(false); if (!PakaiModel()) Guling(); return; }
             PerbaruiMataPemangsa();
             float dt = Time.deltaTime;
             _tState -= dt;
+            PerbaruiKilauMata(dt);
             if (_andi == null) _andi = GameServices.Get<AndiFPSController>();
             var u = ResepHewan.Ambil(jenis);
             Vector3 p = transform.position;

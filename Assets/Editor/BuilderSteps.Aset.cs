@@ -175,7 +175,7 @@ namespace AlasKeramat.EditorTools
             var android = imp.GetPlatformTextureSettings("Android");
             android.overridden = true;
             android.maxTextureSize = maks;
-            android.format = TextureImporterFormat.ASTC_4x4;
+            android.format = sprite ? TextureImporterFormat.ASTC_4x4 : TextureImporterFormat.ASTC_6x6;
             // Sprite UI kecil (<=256) tanpa kompresi: tepi bulat & alfa tetap tajam di semua GPU (juga render foto CI).
             if (sprite && maks <= 256) { android.format = TextureImporterFormat.RGBA32; imp.textureCompression = TextureImporterCompression.Uncompressed; }
             imp.SetPlatformTextureSettings(android);

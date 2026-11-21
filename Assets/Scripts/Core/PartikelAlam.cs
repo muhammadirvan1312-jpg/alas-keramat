@@ -53,6 +53,15 @@ namespace AlasKeramat.Core
             rDebu = siang && !basah && (w == WeatherState.Cerah || w == WeatherState.Berawan || w == WeatherState.KabutPagi) ? (hutan ? LajuDebu : LajuDebu * 0.4f) : 0f;
         }
 
+        // Partikel debu tetap tampak melayang dalam kerucut senter di malam hari atau dalam gua.
+        public static float LajuDebuSenter(WeatherState w, bool senterNyala)
+        {
+            if (!senterNyala || w == WeatherState.HujanBadai) return 0f;
+            return LajuDebu * 0.65f;
+        }
+
+        AlasKeramat.Player.SenterAndi _senter;
+
         ParticleSystem Buat(string nama, Material m, bool isDaun)
         {
             var go = new GameObject(nama);
@@ -100,6 +109,10 @@ namespace AlasKeramat.Core
                 bool hutan = BiomaHutan(WorldTerrainGenerator.GetBiome(p.x, p.z));
                 bool diGua = p.y <= BatasGua;
                 if (!diGua) Laju(jamVal, w, hutan, out rd, out rb);
+                if (_senter == null) _senter = GameServices.Get<AlasKeramat.Player.SenterAndi>();
+                bool senterNyala = _senter != null && _senter.Nyala;
+                float rDebuSenter = LajuDebuSenter(w, senterNyala);
+                if (rDebuSenter > rb) rb = rDebuSenter;
                 float rp = !diGua ? LajuPercik(w) : 0f;
                 float rk = LajuKunang(jamVal, w, hutan, diGua);
                 _percik.transform.position = new Vector3(p.x, WorldTerrainGenerator.SampleHeight(p.x, p.z) + 0.04f, p.z) + cam.transform.forward * 4f;
@@ -109,7 +122,7 @@ namespace AlasKeramat.Core
                 _uapNapas.transform.position = p + cam.transform.forward * 0.34f - cam.transform.up * 0.14f;
                 Atur(_uapNapas, LajuUapNapas(jamVal, w, diGua));
                 _daun.transform.position = p + Vector3.up * 9f;
-                _debu.transform.position = p + cam.transform.forward * 5f;
+                _debu.transform.position = p + cam.transform.forward * (senterNyala ? 4f : 5f);
                 Atur(_daun, rd); Atur(_debu, rb);
             }
             catch (Exception e) { _gagal = true; Debug.LogError("[AK][PartikelAlam] Gagal: " + e.Message); }

@@ -240,6 +240,16 @@ namespace AlasKeramat.EditorTools
                 && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_joy_basis.png") != null
                 && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_joy_kenop.png") != null
                 && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_vinyet_luka.png") != null);
+            float ki;
+            cek("V3 Cahaya & RAM 4GB: SinarTajuk, debu senter, kilau mata malam, batas EV, anggaran mipmap",
+                Shader.Find("AlasKeramat/SinarTajuk") != null
+                && AlasKeramat.Core.PartikelAlam.LajuDebuSenter(AlasKeramat.Core.WeatherState.Cerah, true) > 0f
+                && AlasKeramat.Core.PartikelAlam.LajuDebuSenter(AlasKeramat.Core.WeatherState.HujanBadai, true) == 0f
+                && AlasKeramat.AI.WildAnimalAI.MataMenyalaDiSenter(true, 22f, true, new Vector3(0f, 0f, 10f), Vector3.zero, Vector3.forward, out ki) && ki > 0.5f
+                && !AlasKeramat.AI.WildAnimalAI.MataMenyalaDiSenter(true, 12f, true, new Vector3(0f, 0f, 10f), Vector3.zero, Vector3.forward, out ki)
+                && AlasKeramat.UI.MenuScreens.AnggaranMemoriPreset(AlasKeramat.UI.PresetGrafis.Rendah) <= 250f
+                && AlasKeramat.UI.MenuScreens.AnggaranMemoriPreset(AlasKeramat.UI.PresetGrafis.Ultra) >= 1000f
+                && AlasKeramat.Core.AKPascaProses.Target(22f, AlasKeramat.Core.WeatherState.HujanBadai).x >= -1.2f);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

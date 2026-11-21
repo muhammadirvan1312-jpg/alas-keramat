@@ -7,7 +7,7 @@ namespace AlasKeramat.Player
     // Senter Taktis (04 §4): cahaya yang tidak padam ditiup angin, lengkap dengan bodi taktis FP & berkas cahaya volumetrik.
     public class SenterAndi : MonoBehaviour
     {
-        public const float Jangkau = 28f, Sudut = 48f, Intensitas = 3.2f, Tick = 0.3f, RadiusGangguanHantu = 18f;
+        public const float Jangkau = 30f, Sudut = 54f, Intensitas = 3.6f, Tick = 0.3f, RadiusGangguanHantu = 18f;
         [SerializeField] Light lampu;
         [SerializeField] Texture cookie;
         public void PasangCookie(Texture t) { cookie = t; }
@@ -16,6 +16,7 @@ namespace AlasKeramat.Player
         GameObject _badanSenter;
         MeshRenderer _berkasRen;
         public bool Nyala { get { return lampu != null && lampu.enabled; } }
+        public Transform TransformLampu { get { return lampu != null ? lampu.transform : null; } }
 
         // Pengali intensitas senter (0.12..1.0) saat hantu mendekat dalam radius 18 m.
         public static float PengaliKedipHantu(float jarakHantu, float waktu)
@@ -47,7 +48,7 @@ namespace AlasKeramat.Player
                 go.transform.localPosition = new Vector3(0.25f, -0.2f, 0.3f);
                 lampu = go.AddComponent<Light>();
                 lampu.type = LightType.Spot; lampu.range = Jangkau; lampu.spotAngle = Sudut; lampu.intensity = Intensitas;
-                lampu.color = new Color(0.92f, 0.95f, 1f); lampu.shadows = LightShadows.None; lampu.enabled = false;
+                lampu.color = new Color(1f, 0.94f, 0.84f); lampu.shadows = LightShadows.None; lampu.enabled = false;
             }
             if (lampu != null && _badanSenter == null) BangunVisualSenter(lampu.transform);
             // Pola pantul reflektor senter (titik terang, cincin, tepi lembut) agar cahaya tidak tampak seperti kerucut polos.

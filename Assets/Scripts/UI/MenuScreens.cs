@@ -107,6 +107,17 @@ namespace AlasKeramat.UI
             tombolSkala = daftarTombol ?? new RectTransform[0];
         }
 
+        public static float AnggaranMemoriPreset(PresetGrafis p)
+        {
+            switch (p)
+            {
+                case PresetGrafis.Rendah: return 220f;
+                case PresetGrafis.Sedang: return 400f;
+                case PresetGrafis.Tinggi: return 750f;
+                default: return 1200f;
+            }
+        }
+
         // ---------- Rumus Murni (diuji Self-Test T11) ----------
         public static DataPresetGrafis AmbilPreset(PresetGrafis p)
         {
@@ -279,6 +290,8 @@ namespace AlasKeramat.UI
             QualitySettings.vSyncCount = 0;
             QualitySettings.asyncUploadTimeSlice = 2;
             QualitySettings.asyncUploadBufferSize = 16;
+            QualitySettings.streamingMipmapsActive = true;
+            QualitySettings.streamingMipmapsMemoryBudget = AnggaranMemoriPreset(Preset);
             Application.targetFrameRate = TargetFps;
             Time.fixedDeltaTime = 0.025f;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
