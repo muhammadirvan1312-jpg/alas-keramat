@@ -336,8 +336,11 @@ namespace AlasKeramat.EditorTools
         // ---------- UG1 Gua Sungai Bioluminesensi ----------
         static GameObject BangunUG1(GameObject induk)
         {
-            var matBatuGua = SimpanMat(SafeMaterialFactory.CreatePBR("M_BatuGua", ProcTex.Hex("#8A99A4"), 0f, 0.46f, Tex("batu"), Tex("batu_n")));
-            MaskPBR(matBatuGua, "batu"); SafeMaterialFactory.SetF(matBatuGua, "_Smoothness", 0.46f);
+            // Dinding gua kapur: foto batu tebing kasar CC0 (marble_cliff_02) bila ada, cadangan batu terrain.
+            string tg = Tex("batu_gua") != null && Tex("batu_gua_n") != null ? "batu_gua" : "batu";
+            var matBatuGua = SimpanMat(SafeMaterialFactory.CreatePBR("M_BatuGua", ProcTex.Hex(tg == "batu_gua" ? "#A8B4BA" : "#8A99A4"), 0f, 0.46f, Tex(tg), Tex(tg + "_n")));
+            MaskPBR(matBatuGua, tg); SafeMaterialFactory.SetF(matBatuGua, "_Smoothness", 0.46f);
+            if (tg == "batu_gua") { SafeMaterialFactory.SetF(matBatuGua, "_BumpScale", 1.6f); matBatuGua.mainTextureScale = new Vector2(0.55f, 0.55f); }
             _matLumut = MatEmisi("M_LumutGua", "#2EE8C4", new Color(0.18f, 1.35f, 1.15f) * 3.6f, false);
             SafeMaterialFactory.SetF(_matLumut, "_Smoothness", 0.32f);
             var matBatangJamur = MatPolos("M_BatangJamur", "#595449");

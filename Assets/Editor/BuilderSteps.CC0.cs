@@ -10,6 +10,9 @@ namespace AlasKeramat.EditorTools
         public const string FolderFoto="Assets/ThirdParty/CC0";
         public static int JumlahFotoPBR;
         static readonly string[,] PasanganFoto={
+            {"tanah","LantaiHutan"},{"rumput","Rumput"},{"batu","Batu"},{"kayu","Kayu"},
+            {"kulit_kayu","KulitKayu"},{"pasir","Pasir"},{"lumpur","Lumpur"},{"daun","LantaiHutan"},
+            {"beton","Beton"},{"logam_karat","Karat"},{"palem","Palem"},{"kain","Kain"},{"batu_gua","BatuGua"}
             {"tanah","TanahHutan"},{"rumput","LumutHutan"},{"batu","Batu"},{"kayu","Kayu"},
             {"kulit_kayu","KulitKayu"},{"pasir","Pasir"},{"lumpur","Lumpur"},{"daun","Serasah"},
             {"beton","Beton"},{"logam_karat","Karat"},{"palem","Palem"},{"kain","Kain"}
