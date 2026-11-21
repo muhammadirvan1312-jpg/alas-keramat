@@ -253,7 +253,7 @@ def write_prop(path,objects,limit,target_size,cluster=1,pick=0,sink=0.0,size_axi
         f.write(struct.pack('<i',len(triangles)));f.write(struct.pack('<%di'%len(triangles),*triangles))
     print('[AK] Prop',path.name,len(vertices)//3,'segitiga',flush=True)
 
-for name in ['island_tree_01','fern_02','island_tree_02','grass_medium_01','grass_medium_02','anthurium_botany_01','boulder_01','rock_moss_set_01','dead_tree_trunk','root_cluster_01','tree_stump_01','dry_branches_medium_01','rock_moss_set_02','shrub_01','shrub_03']:
+for name in ['island_tree_01','fern_02','island_tree_02','grass_medium_01','grass_medium_02','anthurium_botany_01','boulder_01','rock_moss_set_01','dead_tree_trunk','root_cluster_01','tree_stump_01','dry_branches_medium_01','rock_moss_set_02','shrub_01','shrub_03','island_tree_03']:
     bpy.ops.wm.read_factory_settings(use_empty=True)
     path=ROOT/'Assets/ThirdParty/CC0/Model'/f'{name}.fbx.source'
     if not path.exists():raise RuntimeError('Aset scan hilang: '+str(path))
@@ -297,6 +297,9 @@ for name in ['island_tree_01','fern_02','island_tree_02','grass_medium_01','gras
     elif name=='dry_branches_medium_01':
         write_prop(OUT/'RantingScanA.bytes',objects,260,1.7,cluster=1,pick=0,sink=0.02,size_axis='w')
         write_prop(OUT/'RantingScanB.bytes',objects,260,1.3,cluster=1,pick=1,sink=0.02,size_axis='w')
+    elif name=='island_tree_03':
+        write_mesh(OUT/'PohonScanD_LOD0.bytes',objects,5200,True,0.0,19.5)
+        write_mesh(OUT/'PohonScanD_LOD1.bytes',objects,950,True,0.0,19.5)
     elif name=='shrub_01':
         write_mesh(OUT/'SemakScanA_LOD0.bytes',objects,900)
         write_mesh(OUT/'SemakScanA_LOD1.bytes',objects,220)

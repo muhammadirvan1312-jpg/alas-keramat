@@ -82,6 +82,8 @@ namespace AlasKeramat.EditorTools
             var tree0=ScanMesh("PohonScan_LOD0");var tree1=ScanMesh("PohonScan_LOD1");
             var treeB0=ScanMesh("PohonScanB_LOD0");var treeB1=ScanMesh("PohonScanB_LOD1");
             var treeC0=ScanMesh("PohonScanC_LOD0");var treeC1=ScanMesh("PohonScanC_LOD1");
+            var treeD0=ScanMesh("PohonScanD_LOD0");var treeD1=ScanMesh("PohonScanD_LOD1");
+            var leafD=MaterialDaunFoto("DaunAsliD");var barkD=MaterialKulitScan("KulitPohonD","M_KulitScanD");
             if(treeB0==null)treeB0=tree0;if(treeB1==null)treeB1=tree1;
             var fern0=ScanMesh("PakisScan_LOD0");var fern1=ScanMesh("PakisScan_LOD1");
             var semA0=ScanMesh("SemakScanA_LOD0");var semA1=ScanMesh("SemakScanA_LOD1");var semB0=ScanMesh("SemakScanB_LOD0");var semB1=ScanMesh("SemakScanB_LOD1");
@@ -94,7 +96,9 @@ namespace AlasKeramat.EditorTools
             for(int i=0;i<data.jenis.Length;i++)
             {
                 var j=data.jenis[i];
-                if((j.nama=="Mahoni_1" || j.nama=="Mahoni_2" || j.nama=="Jati_2") && tree0!=null && tree1!=null && leaf!=null)
+                if((j.nama=="Mahoni_2" || j.nama=="Jati_2") && treeD0!=null && treeD1!=null && leafD!=null && barkD!=null)
+                { j.lod0=treeD0;j.lod1=treeD1;j.kayu=barkD;j.daun=leafD;j.jarakLod1=28f;j.jarakMaks=450f;JumlahMeshScan++; }
+                else if((j.nama=="Mahoni_1" || j.nama=="Mahoni_2" || j.nama=="Jati_2") && tree0!=null && tree1!=null && leaf!=null)
                 { j.lod0=tree0;j.lod1=tree1;j.kayu=bark;j.daun=leaf;j.jarakLod1=28f;j.jarakMaks=450f;JumlahMeshScan++; }
                 else if((j.nama=="Jati_0" || j.nama=="Jati_1" || j.nama=="Mahoni_0") && treeC0!=null && treeC1!=null && leafB!=null)
                 { j.lod0=treeC0;j.lod1=treeC1;j.kayu=barkB;j.daun=leafB;j.jarakLod1=28f;j.jarakMaks=450f;JumlahMeshScan++; }
