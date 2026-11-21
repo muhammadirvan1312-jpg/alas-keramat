@@ -36,6 +36,7 @@ Shader "AlasKeramat/Air"
             float _GunakanDepth, _TulisDepth, _Bayangan;
         CBUFFER_END
         float _AK_MatikanDepth;
+        float _AK_Basah;
         float3 _LightDirection, _LightPosition;
         struct Attributes
         {
@@ -108,6 +109,17 @@ Shader "AlasKeramat/Air"
             const float FrekuensiKetiga = 4.17, BobotKetiga = 0.35;
             float3 c = NoiseGrad(p * FrekuensiKetiga - float2(11.4,23.1) + flow * 1.28);
             float2 slope = (a.yz + b.yz * BobotKedua + c.yz * BobotKetiga) * (_KuatNormal * 1.35);
+            // Riak lingkaran tetesan hujan dinamis di permukaan sungai & laut saat cuaca basah (_AK_Basah > 0).
+            if (_AK_Basah > 0.05)
+            {
+                float2 rGrid = i.positionWS.xz * 2.1;
+                float2 rCell = floor(rGrid), rFrac = frac(rGrid) - 0.5;
+                float rSeed = Hash(rCell);
+                float rAge = frac(_Time.y * 1.45 + rSeed * 6.3);
+                float rDist = length(rFrac);
+                float rWave = sin((rDist - rAge * 0.48) * 34.0) * (1.0 - rAge) * smoothstep(0.48, 0.05, rDist);
+                slope += (rFrac / max(rDist, 0.02)) * (rWave * _AK_Basah * 0.24);
+            }
             noise = (a.x + b.x * 0.75 + c.x * 0.45) / 2.2;
             half3 n = NormalizeNormalPerPixel(i.normalWS);
             half3 ripple = half3(-slope.x, 0, -slope.y);
@@ -170,7 +182,8 @@ Shader "AlasKeramat/Air"
             Light sun = GetMainLight(shadowCoord, i.positionWS, half4(1,1,1,1));
             half3 color = LightingPhysicallyBased(brdf, sun, n, view);
             half glint = pow(saturate(dot(reflect(-sun.direction, n), view)), 96.0h) * (1.0h - foam);
-            color += sun.color * (glint * 1.35h * sun.distanceAttenuation * sun.shadowAttenuation);
+            half kilauLebar = pow(saturate(dot(reflect(-sun.direction, n), view)), 22.0h) * (1.0h - foam) * 0.22h;
+            color += sun.color * ((glint * 1.45h + kilauLebar) * sun.distanceAttenuation * sun.shadowAttenuation);
             #if defined(_ADDITIONAL_LIGHTS)
             #if USE_FORWARD_PLUS
             [loop] for (uint lightIndex = 0; lightIndex < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); lightIndex++)

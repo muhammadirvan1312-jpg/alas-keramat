@@ -25,7 +25,7 @@ namespace AlasKeramat.AI
         public static float HitungDamageMasuk(float dasar, DamageType tipe)
         {
             if (tipe == DamageType.Api) return dasar * 1.5f;
-            if (tipe == DamageType.Keramat) return dasar * 1.6f;
+            if (tipe == DamageType.Gaib) return dasar * 1.6f;
             return dasar;
         }
 

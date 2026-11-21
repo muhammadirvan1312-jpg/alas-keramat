@@ -150,8 +150,9 @@ Shader "AlasKeramat/Kulit"
             s.normalTS = half3(0,0,1);
             half4 lit = UniversalFragmentPBR(d, s);
             Light sun = GetMainLight(d.shadowCoord, d.positionWS, half4(1,1,1,1));
-            half rimBasah = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3.0h) * wet * 0.18h;
-            lit.rgb += sun.color * (rimBasah * sun.distanceAttenuation);
+            half rimBasah = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3.0h) * wet * 0.24h;
+            half pantulHutan = saturate(-d.normalWS.y * 0.5h + 0.5h) * (1.0h - rootAO * 0.45h) * 0.08h;
+            lit.rgb += sun.color * (rimBasah * sun.distanceAttenuation) + half3(0.18h, 0.24h, 0.12h) * pantulHutan * s.albedo;
 
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;

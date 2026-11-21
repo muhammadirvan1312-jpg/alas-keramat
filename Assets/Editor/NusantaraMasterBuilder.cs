@@ -109,6 +109,8 @@ namespace AlasKeramat.EditorTools
                 Langkah("7z15. Ekspansi Penuh 4 Kuadran Pulau 4 km2 & Ekosistem Kawanan", 0.9998f, LangkahEkspansiPulau4Km);
                 Langkah("7z16. Dunia Bernapas (Patroli Obor Sekte, Monyet/Kodok, Asap/Kain Angin & Pertemuan Spontan)", 0.9999f, LangkahDuniaBernapas);
                 Langkah("7z17. Revisi & Polish Terpadu (HUD Boss/Status/Kombo & Pos Latihan Awal)", 0.99995f, LangkahRevisiTerpadu);
+                Langkah("7z18a. Mega Overhaul Visual & Dunia (7 Landmark Baru, God-Rays, Kabut Lembah, Kunang-Kunang & Vignette)", 0.99997f, LangkahOverhaulMegaVisual);
+                Langkah("7z18b. Mega Overhaul Gameplay (4 Glider Bambu, 6 Spot Pancing, 8 Peti Parasut, 5 Kuali Jamu, Kentongan & Jurnal 22 Lokasi)", 0.99999f, LangkahOverhaulMegaGameplay);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

@@ -99,7 +99,13 @@ namespace AlasKeramat.Core
             RenderSettings.fogDensity += kabut;
             Color tint = Color.Lerp(t0, t1, a);
             RenderSettings.fogColor = Color.Lerp(RenderSettings.fogColor, RenderSettings.fogColor * tint * 1.2f, kabut > 0f ? 0.7f : 0f);
-            if (skybox != null) SafeMaterialFactory.SetF(skybox, "_Exposure", skybox.GetFloat("_Exposure") * Mathf.Lerp(1f, 0.55f, 1f - cahaya));
+            if (skybox != null)
+            {
+                SafeMaterialFactory.SetF(skybox, "_Exposure", skybox.GetFloat("_Exposure") * Mathf.Lerp(1f, 0.55f, 1f - cahaya));
+                float badai01 = Mathf.Clamp01(Mathf.Lerp(h0, h1, a) * 0.85f + (1f - cahaya) * 0.45f);
+                SafeMaterialFactory.SetF(skybox, "_StormBlend", badai01);
+                SafeMaterialFactory.SetF(skybox, "_CloudCover", Mathf.Lerp(0.36f, 0.92f, badai01));
+            }
         }
 
         float IntensitasHujan()
@@ -174,8 +180,17 @@ namespace AlasKeramat.Core
                 bool hidup = _kilatSisa > 0f;
                 kilat.intensity = _kilatSisa > 0.08f ? 3.5f : (_kilatSisa > 0.05f ? 0.2f : 2.4f);
                 kilat.enabled = hidup;
-                if (skybox != null && hidup) SafeMaterialFactory.SetF(skybox, "_Exposure", _kilatSisa > 0.08f ? 1.55f : 0.9f);
-                if (!hidup && _kilatNyala) { _kilatNyala = false; if (_jam != null) Terapkan(_jam.Jam); }
+                if (skybox != null && hidup)
+                {
+                    SafeMaterialFactory.SetF(skybox, "_Exposure", _kilatSisa > 0.08f ? 1.55f : 0.9f);
+                    SafeMaterialFactory.SetF(skybox, "_Lightning", _kilatSisa > 0.08f ? 1f : 0.45f);
+                }
+                if (!hidup && _kilatNyala)
+                {
+                    _kilatNyala = false;
+                    if (skybox != null) SafeMaterialFactory.SetF(skybox, "_Lightning", 0f);
+                    if (_jam != null) Terapkan(_jam.Jam);
+                }
                 else if (hidup) _kilatNyala = true;
             }
             if (_guruhTunda > 0f)

@@ -34,7 +34,7 @@ namespace AlasKeramat.EditorTools
 
             cek("Fitur Baru SOTF: 2 Boss Mini Buto Ijo (lemah api/pusaka & Ground Slam)",
                 BossMiniButoIjo.HitungDamageMasuk(20f, DamageType.Api) > 25f
-                && BossMiniButoIjo.HitungDamageMasuk(20f, DamageType.Keramat) > 30f
+                && BossMiniButoIjo.HitungDamageMasuk(20f, DamageType.Gaib) > 30f
                 && Object.FindObjectsByType<BossMiniButoIjo>(FindObjectsInactive.Include, FindObjectsSortMode.None).Length >= 2);
 
             cek("Fitur Baru SOTF: 3 Suar Sinyal Darurat pengusir hantu",

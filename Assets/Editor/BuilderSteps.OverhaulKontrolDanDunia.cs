@@ -113,7 +113,14 @@ namespace AlasKeramat.EditorTools
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Pos Gunung Kapur", posisi = new Vector3(-680f, 0f, -180f) },
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Perkebunan Timur Laut", posisi = new Vector3(580f, 0f, 540f) },
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Pulau Karang Selatan", posisi = new Vector3(-420f, 0f, -720f) },
-                new PenandaLandmarkHUD.TitikLandmark { nama = "Kuil Bambu Utara", posisi = new Vector3(-160f, 0f, 680f) }
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Kuil Bambu Utara", posisi = new Vector3(-160f, 0f, 680f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Dermaga Tua Barat", posisi = new Vector3(-520f, 0f, -340f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Menara Pengawas Api", posisi = new Vector3(-195f, 0f, -240f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Gua Air Terjun Rahasia", posisi = new Vector3(326f, 0f, -158f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Pasar Hantu Desa", posisi = new Vector3(468f, 0f, 178f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Jembatan Batu Kuno", posisi = new Vector3(-240f, 0f, 88f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Kamp Peneliti", posisi = new Vector3(-390f, 0f, 310f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Taman Batu Megalit", posisi = new Vector3(210f, 0f, 420f) }
             };
             var comp = strip.AddComponent<PenandaLandmarkHUD>();
             comp.Pasang(txt, titik);
