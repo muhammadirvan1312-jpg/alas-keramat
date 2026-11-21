@@ -28,7 +28,18 @@ namespace AlasKeramat.EditorTools
                 imp.textureType = TextureImporterType.Sprite; imp.alphaIsTransparency = true; imp.mipmapEnabled = false;
                 imp.textureCompression = TextureImporterCompression.Uncompressed; imp.SaveAndReimport();
             }
-            return AssetDatabase.LoadAssetAtPath<Sprite>(p);
+            var sp = AssetDatabase.LoadAssetAtPath<Sprite>(p);
+            if (sp != null) return sp;
+            // Cadangan bila pengimpor lain menimpa tipe tekstur: buat aset Sprite terpisah dari Texture2D.
+            var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(p);
+            if (tex == null) return null;
+            EnsureFolder(FolderIkon);
+            string ps = FolderIkon + "/ikon_" + nama + "_sprite.asset";
+            AssetDatabase.DeleteAsset(ps);
+            sp = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100f);
+            sp.name = "ikon_" + nama;
+            AssetDatabase.CreateAsset(sp, ps);
+            return AssetDatabase.LoadAssetAtPath<Sprite>(ps);
         }
 
         static void CariSemua(Transform t, string nama, System.Collections.Generic.List<Transform> hasil)
