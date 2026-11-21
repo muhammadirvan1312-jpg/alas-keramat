@@ -1,0 +1,98 @@
+Laporan Builder Alas Keramat - 2026-11-21 09:35:35
+[LULUS] 0. Bersihkan Assets/Generated
+  - Tag 15 & layer 6-18 terdaftar
+  - Player Settings: Linear, landscape, com.alaskeramat.game
+  - Aset URP dipasang di 6 level Quality
+[LULUS] 1. Proyek
+  - 14 tekstur
+  - G3b: 12 permukaan PBR foto 2K (albedo, normal GL, mask AO/roughness), CC0
+  - 20 ikon
+  - 6 material
+  - Level rekaman forest_day.mp3: RMS -50.9 dB, gain 25.9 dB, peak -2.3 dB
+  - Level rekaman forest_night.mp3: RMS -33.8 dB, gain 8.8 dB, peak -9.6 dB
+  - Level rekaman mud02.ogg: RMS -23.8 dB, gain -1.0 dB, peak -1.0 dB
+  - Level rekaman leaves01.ogg: RMS -23.2 dB, gain -1.0 dB, peak -1.0 dB
+  - Level rekaman leaves02.ogg: RMS -21.8 dB, gain -2.2 dB, peak -2.2 dB
+  - Level rekaman gravel.ogg: RMS -27.6 dB, gain -1.0 dB, peak -1.0 dB
+  - Level rekaman wood01.ogg: RMS -16.7 dB, gain -7.3 dB, peak -7.3 dB
+  - Level rekaman wood02.ogg: RMS -14.5 dB, gain -9.5 dB, peak -9.5 dB
+  - Level rekaman wood03.ogg: RMS -19.1 dB, gain -4.9 dB, peak -4.9 dB
+  - Level rekaman stone01.ogg: RMS -25.0 dB, gain -1.0 dB, peak -1.0 dB
+  - 52 klip WAV
+[LULUS] 2. Aset
+  - Scene, matahari, bulan, langit prosedural
+[LULUS] 3. Scene & langit
+  - Terrain 16 tile @1025, laut, 2 sungai
+[LULUS] 3b. Dunia 2x2 km
+  - G3b: 9 varian scan pohon/pakis tersambung ke instancing dan tebang, dengan LOD
+  - Vegetasi: 25584 pohon, 89420 semak/pakis, 3856 sel instancing
+[LULUS] 3c. Vegetasi
+  - Landmark: 38 objek (Beringin Agung, heli, 6 rumah desa, 22 rumah kampung, mercusuar, pabrik gula, 2 mulut gua, altar)
+[LULUS] 3d. Landmark
+  - Ambien: 23 klip, 1112 emitter titik
+[LULUS] 3e. Ambien hidup
+  - Pasca-proses: ACES, color grading, bloom, vignette, split-tone + dinamis jam/cuaca
+[LULUS] 3f. Pasca-proses
+  - Sistem: Bootstrap, Diagnostik, Jam, Atmosfer, Synth (29 klip)
+[LULUS] 6. Sistem
+  - UI: judul, label zona & jam tur pratinjau, EventSystem
+[LULUS] 7. UI
+  - Andi di (-4.00, 10.70, -424.00), kontrol sentuh (joystick, geser, LOMPAT, JONGKOK), baris info HUD
+[LULUS] 7b. Andi & kontrol sentuh
+  - Interaksi: inventaris, 3 koper, 3 puing, tombol TANGAN & OBOR, toast, radar GPS
+[LULUS] 7c. Interaksi, koper, radar
+  - Vital Andi + 5 bar HUD + suhu/basah
+[LULUS] 7e. Vital Andi & bar HUD
+  - Foley Andi, subtitle + monolog pembuka, sabuk cepat 4 slot
+[LULUS] 7f. Foley, subtitle, sabuk cepat
+  - Karakter: Andi (2 renderer), Deden di heli, Ningsih di Sarang, galeri 16 humanoid
+[LULUS] 7g. Karakter & animasi
+  - Tebang: pool pohon interaktif, melee golok/kapak, model senjata FP, tombol TEBAS
+[LULUS] 7h. Tebang & melee
+  - Hewan: 13 template (rusa, kancil, babi hutan, ayam hutan, biawak, harimau, buaya, tawon, piton, kobra, monyet, anjing, kucing); titik pungut pool 56
+[LULUS] 7i. Hewan & titik pungut
+  - Tikar Pandan 3D: panggung, kamera, layar rakit/makan/zirah, tombol TAS, kotak zirah
+[LULUS] 7j. Tikar Pandan & zirah
+  - Bangun bebas: pemanggul kayu, hantu, tombol LEMPAR & MODE
+[LULUS] 7k. Panggul & bangun bebas
+  - Buku Panduan 26 blueprint, penempatan cetak biru, SaveSystem
+[LULUS] 7l. Buku Panduan & simpan
+  - T6c: dunia tersimpan, 26 blueprint, rakit, bongkar dan misi M01-M04
+[LULUS] 7m. Dunia, bangunan & misi
+  - Musuh: SurfaceGrid 500x500 (lewat 178177/188416 darat), prefab Sekte x5, EnemyDirector, TANGKIS
+[LULUS] 7n. Musuh, jalur & tempur
+  - Hantu: Pocong, Kuntilanak, Banaspati, Kuyang, Tuyul, Genderuwo Hutan, Hantu Air, Penyerupa + 6 Totem Topeng
+[LULUS] 7o. Hantu, raid & totem
+  - Gore: 4 percikan, genangan, atlas luka 8, tutup potongan, partikel darah, GoreSystem, peringatan 18+
+[LULUS] 7p. Gore, luka & peringatan 18+
+  - Senjata jarak: 5 proyektil, 10 model FP, tombol GANTI, cincin suara, 3 titik lumpur
+[LULUS] 7q. Senjata jarak, elak, stealth
+  - Companion: Kang Deden (15 perintah) & Ningsih (Trust 3 tahap), Buku Catatan & menu Ningsih
+[LULUS] 7r. Companion Kang Deden & Ningsih
+  - Teror: TerrorDirector (25 kejadian), WorldEventScheduler, 20 catatan Deden
+[LULUS] 7s. Sutradara Teror & dunia hidup
+  - Gerbang permukaan: tanah gali bunker, 2 mulut gua, zipline jurang, 5 lore dunia + Cangkul
+  - Bawah tanah: 3 kompleks (Gua Sungai, Bunker, Kuil Akar), 7 pintu gua, kolam & terowongan selam
+[LULUS] 7t. Gua, bunker & kuil bawah tanah
+  - Ritual Beringin: altar 3 lubang, siege 60 detik (9 gelombang), cahaya emas, suar hijau SAR; layar lore + jurnal, bar boss
+[LULUS] 7u. Ritual Beringin, siege & lore
+  - Ending: Heli SAR, layar intro/Pilihan Takdir/Ending A-B/statistik, Mode Sandbox
+[LULUS] 7v. Heli SAR, ending & statistik
+  - Lantai hutan photogrammetry CC0: 1724 batch (rumput scan, pakis, keladi, batu lumut, kayu tumbang, akar)
+  - G3a: bulan terbaca, gua tidak hitam, grading netral, bayangan 2 kaskade, kabut lokal 12 kartu & basah dinamis
+[LULUS] 7w. G3 visual realistis
+  - Kontrol aksi berjarak, TAS/BUKU ikut safe area, subtitle di atas area aksi
+[LULUS] 7w2. Tata kontrol mobile
+  - T11: MenuScreens (Menu Utama, Jeda, Pengaturan, Cara Bermain 6 kartu, Kredit, 3 Slot Simpan, Panel Debug HP)
+[LULUS] 7x. Menu, pengaturan & debug T11
+  - Peta Survei: kontur, sungai, legenda lokasi, posisi GPS & tujuan ketuk
+[LULUS] 7y. Peta survei & navigasi
+  - Mixamo: folder Assets/Mixamo belum ada, animasi prosedural dipakai
+[LULUS] 7z. Animasi mocap Mixamo
+  - Kenney CC0: 10 suara rekaman menggantikan sintetis
+[LULUS] 7z2. Rekaman CC0 Kenney
+[LULUS] 7d. Pasca-proses kamera
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4843
+[LULUS] 9. Simpan scene
+Durasi: 864.7 detik
+HASIL: SEMUA LANGKAH LULUS
