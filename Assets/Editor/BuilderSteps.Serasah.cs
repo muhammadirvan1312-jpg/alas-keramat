@@ -133,6 +133,44 @@ namespace AlasKeramat.EditorTools
             return false;
         }
 
+        // Hutan di luar zona awal: batu lumut, kayu tumbang, akar, tunggul, ranting, pakis dan keladi jarang tapi merata.
+        static bool BiomaHutan(Biome b)
+        {
+            int i=(int)b;
+            return b==Biome.HutanCampuran || b==Biome.HutanJatiSelatan || b==Biome.HutanBambu || b==Biome.TepiSungai || b==Biome.KawahBeringin || i==11 || i==15;
+        }
+        static readonly int[] TipeSebaran={4,4,10,10,11,5,6,7,8,8,9,2,2,3};
+        static int SebaranPulau(Mesh[] meshes,Material[] bahan,List<SerasahHutan.KelompokSerasah> hasil)
+        {
+            const int sel=64,calon=26;int total=0;
+            for(int z=-1000;z<1000;z+=sel)for(int x=-1000;x<1000;x+=sel)
+            {
+                if(x+sel>-256 && x<352 && z+sel>-576 && z<-160)continue;
+                var rand=new System.Random(x*92821^z*68917^0x5A17);
+                var daftar=new List<Matrix4x4>[meshes.Length];
+                for(int k=0;k<meshes.Length;k++)daftar[k]=new List<Matrix4x4>();
+                for(int n=0;n<calon;n++)
+                {
+                    float px=x+(float)rand.NextDouble()*sel,pz=z+(float)rand.NextDouble()*sel,y;
+                    if(!BiomaHutan(WorldTerrainGenerator.GetBiome(px,pz)) || !BolehTanam(px,pz,out y,true))continue;
+                    int tipe=TipeSebaran[rand.Next(TipeSebaran.Length)];
+                    if(tipe>=meshes.Length)continue;
+                    float s=0.7f+(float)rand.NextDouble()*0.8f,rY=(float)rand.NextDouble()*360f;
+                    var rot=tipe==2 || tipe==3 || tipe==6 || tipe==7?Quaternion.Euler(0f,rY,0f):Quaternion.Euler((float)rand.NextDouble()*10f-5f,rY,(float)rand.NextDouble()*10f-5f);
+                    daftar[tipe].Add(Matrix4x4.TRS(new Vector3(px,y-0.05f,pz),rot,new Vector3(s,s*(0.85f+0.3f*(float)rand.NextDouble()),s)));
+                }
+                for(int t=0;t<meshes.Length;t++)
+                {
+                    var arr=daftar[t].ToArray();if(arr.Length==0)continue;
+                    var b=new Bounds((Vector3)arr[0].GetColumn(3),Vector3.one*6f);
+                    for(int k=1;k<arr.Length;k++)b.Encapsulate(new Bounds((Vector3)arr[k].GetColumn(3),Vector3.one*6f));
+                    hasil.Add(new SerasahHutan.KelompokSerasah { mesh=meshes[t],material=bahan[t],bounds=b,matriks=arr });
+                    total+=arr.Length;
+                }
+            }
+            return total;
+        }
+
         static bool AreaBebasSerasah(float x,float z)
         {
             var p=new Vector2(x,z);
@@ -210,8 +248,9 @@ namespace AlasKeramat.EditorTools
                     }
                 }
             }
+            int sebaran=SebaranPulau(meshes,bahan,hasil);
             var detail=Anak(_root,"SerasahHutan").AddComponent<SerasahHutan>();detail.kelompok=hasil.ToArray();EditorUtility.SetDirty(detail);
-            Catat("Lantai hutan photogrammetry CC0: "+hasil.Count+" batch (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)");
+            Catat("Lantai hutan photogrammetry CC0: "+hasil.Count+" batch, "+sebaran+" sebaran se-pulau (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)");
         }
     }
 }
