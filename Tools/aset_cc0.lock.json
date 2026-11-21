@@ -1213,6 +1213,46 @@
       "slot": "Audio",
       "size": 5083744,
       "sha256": "819f03df9383a41538bfe101d792de9a5dd5ae3c69423d8c3c67fbb6c7afb894"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/cricket.ogg",
+      "path": "CC0/Audio/oga/jangkrik.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/birdcricketfrog-and-mosquito-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 6249,
+      "sha256": "0482f96fd06790654200c475bfdd49c5fb83536d9c2d5d807363e375be18dd35"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/frog.ogg",
+      "path": "CC0/Audio/oga/katak.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/birdcricketfrog-and-mosquito-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 5185,
+      "sha256": "1b19b6b33d15d1ea3911210be2fa9571b0452c7a00643a41380b78edbce71272"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/birdNight.ogg",
+      "path": "CC0/Audio/oga/burung_malam.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/birdcricketfrog-and-mosquito-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 10326,
+      "sha256": "f41e276e967a2617dc90e12e445ea76c5397eae7bc1751ba272189b2c0b91696"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/bird.ogg",
+      "path": "CC0/Audio/oga/burung_pagi.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/birdcricketfrog-and-mosquito-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 8956,
+      "sha256": "261c5ac5f9fe649ed30202b91d3f84ffc62f28db7ee047dbd3171b057dcc59a2"
     }
   ]
 }
