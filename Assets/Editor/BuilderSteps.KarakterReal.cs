@@ -470,9 +470,12 @@ namespace AlasKeramat.EditorTools
                 htex=AssetDatabase.LoadAssetAtPath<Texture2D>(pn);
             }
             Color tint=j==J.KiRogo?new Color(0.95f,0.94f,0.92f):j==J.Ningsih?Color.white:new Color(0.86f,0.82f,0.79f);
-            float cutoff=j==J.Ningsih?0.22f:0.35f;
-            var mr=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,tint,0f,j==J.Ningsih?0.38f:0.26f,htex,hairNorm,null,SurfaceMode.Cutout,cutoff);
-            SafeMaterialFactory.SetF(mr,"_Cull",0f);return mr;
+            float cutoff=j==J.Ningsih?0.32f:0.35f;
+            var mr=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,tint,0f,j==J.Ningsih?0.14f:0.18f,htex,hairNorm,null,SurfaceMode.Cutout,cutoff);
+            SafeMaterialFactory.SetF(mr,"_Cull",0f);
+            // Pantulan langit HDRI membuat rambut tampak biru berkotak (foto G3): matikan pantulan lingkungan pada rambut.
+            SafeMaterialFactory.SetF(mr,"_EnvironmentReflections",0f);mr.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
+            return mr;
         }
 
         static Material BuatMaterialMata(J j)
