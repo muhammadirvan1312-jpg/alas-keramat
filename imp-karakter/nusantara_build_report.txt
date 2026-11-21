@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-21 14:51:27
+Laporan Builder Alas Keramat - 2026-11-21 16:42:43
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -98,10 +98,12 @@ Laporan Builder Alas Keramat - 2026-11-21 14:51:27
 [LULUS] 7z3. Partikel alam
   - Indikator luka: vinyet merah + busur arah serangan di HUD; jejak ayunan senjata di 1 pengendali
 [LULUS] 7z5. Indikator luka
-  - Ikon kontrol: 0 tombol HUD pakai ikon, joystick profesional terpasang
+  - Ikon kontrol: 15 tombol HUD pakai ikon, joystick profesional terpasang
 [LULUS] 7z6. Ikon kontrol & joystick
+  - Hewan asli: 5 templat hewan memakai model FBX CC0 beranimasi (ayam, rusa, kancil, ular)
+[LULUS] 7z7. Hewan model asli
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4848
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4863
 [LULUS] 9. Simpan scene
-Durasi: 1025.5 detik
+Durasi: 890.9 detik
 HASIL: SEMUA LANGKAH LULUS
