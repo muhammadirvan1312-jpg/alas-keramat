@@ -301,7 +301,7 @@ namespace AlasKeramat.UI
             QualitySettings.vSyncCount = 0;
             QualitySettings.asyncUploadTimeSlice = 2;
             QualitySettings.asyncUploadBufferSize = 16;
-            QualitySettings.streamingMipmapsActive = true;
+            QualitySettings.streamingMipmapsActive = false; // DIAG: texture streaming dimatikan
             QualitySettings.streamingMipmapsMemoryBudget = AnggaranMemoriPreset(Preset);
             Application.targetFrameRate = TargetFps;
             Time.fixedDeltaTime = 0.025f;
