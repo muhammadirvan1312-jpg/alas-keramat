@@ -34,7 +34,13 @@ Tidak tumpang tindih dengan V1-V5 maupun SOTF Gelombang 3-23. Belum ada props Po
    - minimal 50 props dan 10 lampu, tanpa material pink;
    - cahaya lampu mati di awal, tanpa bayangan, jangkauan 6 m atau kurang;
    - kerucut sorot kelelawar.
-6. **Foto CI** baru di `NusantaraFoto`: `c3_01_props_desa_siang` dan `c3_02_lampu_minyak_malam` (dekat RumahDesa_1).
+6. **Atap genteng foto CC0** (Poly Haven `clay_roof_tiles_03` dan `ceramic_roof_01`, 1k Albedo/Normal/ARM). Slot `genteng` dan `genteng_lumut` ditambahkan ke `PasanganFoto`.
+   - Semua rumah Desa Mati memakai genteng berlumut.
+   - Kampung Sukamaju memakai genteng tanah liat di 13 dari 22 rumah; sisanya tetap seng.
+   - Kampung Watu Ireng tetap beratap ijuk (adat).
+   - Hanya submesh atap (indeks 1) yang diganti, di langkah 7z8 (`GantiAtapGenteng`). `BuilderSteps.Landmark.cs` tidak disentuh.
+   - Self-test: minimal 15 rumah beratap genteng.
+7. **Foto CI** baru di `NusantaraFoto`: `c3_01_props_desa_siang` dan `c3_02_lampu_minyak_malam` (dekat RumahDesa_1).
 
 ## Cara menggabungkan
 `git merge origin/imp-claude-props-desa` ke cabang uji Antigravity.

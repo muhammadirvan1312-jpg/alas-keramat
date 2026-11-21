@@ -10,7 +10,7 @@ namespace AlasKeramat.EditorTools
     // Self-test props desa CC0 & lampu minyak (langkah 7z8).
     public static class PemeriksaanPropDesa
     {
-        const int MinProps = 50, MinLampu = 10;
+        const int MinProps = 50, MinLampu = 10, MinGenteng = 15;
         const float JangkauanMaks = 6f;
 
         public static void Jalankan(Action<string, bool> cek)
@@ -47,6 +47,17 @@ namespace AlasKeramat.EditorTools
                     if (m == null || m.shader == null || m.shader.name == "Hidden/InternalErrorShader" || (m.HasProperty("_BaseMap") ? m.GetTexture("_BaseMap") : m.mainTexture) == null) { bahanOk = false; break; }
                 }
             cek("Prop desa: semua props bertekstur foto CC0 (tidak pink)", bahanOk);
+
+            int genteng = 0;
+            var lmInduk = induk != null ? induk.transform.parent : null;
+            if (lmInduk != null)
+                for (int i = 0; i < lmInduk.childCount; i++)
+                {
+                    var mr = lmInduk.GetChild(i).GetComponent<MeshRenderer>();
+                    if (mr == null || mr.sharedMaterials.Length < 2 || mr.sharedMaterials[1] == null) continue;
+                    if (mr.sharedMaterials[1].name.StartsWith("M_AtapGenteng")) genteng++;
+                }
+            cek("Atap genteng: >= " + MinGenteng + " rumah desa beratap genteng foto CC0 (" + genteng + ")", genteng >= MinGenteng);
 
             var lampu = Object.FindObjectsByType<LampuMinyak>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             bool lampuOk = lampu.Length >= MinLampu;

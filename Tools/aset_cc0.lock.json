@@ -2124,6 +2124,72 @@
       "license": "CC0-1.0",
       "size": 227296,
       "sha256": "54db7efff64c4117782e25851544a0eb4881e5e28a13a06917a16d15ce26b1db"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/clay_roof_tiles_03/clay_roof_tiles_03_diff_1k.jpg",
+      "path": "CC0/AtapGenteng/Albedo.jpg",
+      "source": "https://polyhaven.com/a/clay_roof_tiles_03",
+      "author": "Poly Haven",
+      "slot": "AtapGenteng",
+      "map": "Albedo",
+      "license": "CC0-1.0",
+      "size": 970368,
+      "sha256": "6719293429932a27c8ed3526b22cd65d1cd1d43194ce30fa5f4590bb3c513844"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/clay_roof_tiles_03/clay_roof_tiles_03_nor_gl_1k.jpg",
+      "path": "CC0/AtapGenteng/Normal.jpg",
+      "source": "https://polyhaven.com/a/clay_roof_tiles_03",
+      "author": "Poly Haven",
+      "slot": "AtapGenteng",
+      "map": "Normal",
+      "license": "CC0-1.0",
+      "size": 974757,
+      "sha256": "7db087939613b6b0ef1d0c21a3956eafcf7e9d0f146267290e409448f1adc17b"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/clay_roof_tiles_03/clay_roof_tiles_03_arm_1k.jpg",
+      "path": "CC0/AtapGenteng/ARM.jpg",
+      "source": "https://polyhaven.com/a/clay_roof_tiles_03",
+      "author": "Poly Haven",
+      "slot": "AtapGenteng",
+      "map": "ARM",
+      "license": "CC0-1.0",
+      "size": 620705,
+      "sha256": "0553be64eb6f3338da2b3d68bc5eb0a867d016d2dcd10a3fb9fd8d349fb7382d"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/ceramic_roof_01/ceramic_roof_01_diff_1k.jpg",
+      "path": "CC0/AtapLumut/Albedo.jpg",
+      "source": "https://polyhaven.com/a/ceramic_roof_01",
+      "author": "Poly Haven",
+      "slot": "AtapLumut",
+      "map": "Albedo",
+      "license": "CC0-1.0",
+      "size": 547031,
+      "sha256": "d16264943b3a052a6b91f4ad7c9c1f37c09f2a9e9c503bdb3477f4705c03ff8c"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/ceramic_roof_01/ceramic_roof_01_nor_gl_1k.jpg",
+      "path": "CC0/AtapLumut/Normal.jpg",
+      "source": "https://polyhaven.com/a/ceramic_roof_01",
+      "author": "Poly Haven",
+      "slot": "AtapLumut",
+      "map": "Normal",
+      "license": "CC0-1.0",
+      "size": 675803,
+      "sha256": "e845af7ee8587e1452e5c2ed2780d9aaf827e21a88a59d074db66bf270ef58dd"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/ceramic_roof_01/ceramic_roof_01_arm_1k.jpg",
+      "path": "CC0/AtapLumut/ARM.jpg",
+      "source": "https://polyhaven.com/a/ceramic_roof_01",
+      "author": "Poly Haven",
+      "slot": "AtapLumut",
+      "map": "ARM",
+      "license": "CC0-1.0",
+      "size": 170410,
+      "sha256": "76a9fecf7e4f80799b1c6d3d2d4809598364263cd766523c8135658353783120"
     }
   ]
 }

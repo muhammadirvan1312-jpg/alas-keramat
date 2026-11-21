@@ -26,7 +26,11 @@ namespace AlasKeramat.EditorTools
         const int CobaTaruh = 7;
         const float FaktorDiagonal = 0.8f;
 
-        public static int JumlahPropDesa, JumlahLampuDesa;
+        // Atap genteng foto CC0: 1 UV atap = 2 m (ProcBangunan.Quad skala 2); genteng 2,6 m, genteng lumut 3,5 m per ubin tekstur.
+        const float UkuranUVAtap = 2f, UkuranGenteng = 2.6f, UkuranGentengLumut = 3.5f;
+        static readonly Color TintGenteng = new Color(0.86f, 0.80f, 0.76f, 1f), TintGentengLumut = new Color(0.78f, 0.80f, 0.74f, 1f);
+
+        public static int JumlahPropDesa, JumlahLampuDesa, JumlahAtapGenteng;
         static Mesh[] _meshProp;
         static Material[] _matProp;
         static Material _matApiLampu;
@@ -51,6 +55,7 @@ namespace AlasKeramat.EditorTools
             if (ada == 0) { Catat("Prop desa: aset panggang belum ada, dilewati (fail-soft)"); return; }
             _matApiLampu = SimpanMat(SafeMaterialFactory.CreatePBR("M_ApiLampuMinyak", WarnaApiLampu, 0f, 0.1f, null, null, new Color(4f, 2.2f, 0.75f, 1f)));
 
+            GantiAtapGenteng(lm);
             var induk = Anak(lm, "PropDesa");
             Physics.SyncTransforms();
             var rnd = new System.Random(4127);
@@ -74,6 +79,46 @@ namespace AlasKeramat.EditorTools
             // Pabrik Gula Sinar Tebu: drum & ban bekas di halaman pabrik.
             KlasterBebas(induk, new Vector2(665f, -500f), 4f, 22f, new[] { PropDrum, PropDrum, PropDrum, PropDrum, PropBan, PropBan, PropJeriken, PropJeriken, PropPeti, PropPeti, PropTangga }, rnd);
             Catat("Prop desa CC0: " + JumlahPropDesa + " props, " + JumlahLampuDesa + " lampu minyak (" + ada + "/" + NamaProp.Length + " jenis)");
+        }
+
+        static Material MaterialGenteng(string nama, string tex, Color tint, float ukuran)
+        {
+            var a = Tex(tex);
+            if (a == null) return null;
+            var m = SafeMaterialFactory.CreatePBR(nama, tint, 0f, 0.22f, a, Tex(tex + "_n"));
+            m.SetTextureScale("_BaseMap", Vector2.one * (UkuranUVAtap / ukuran));
+            MaskPBR(m, tex);
+            return SimpanMat(m);
+        }
+
+        // Atap seng/ijuk rumah desa diganti genteng tanah liat (Kampung Sukamaju, 3 dari 5 rumah) dan genteng
+        // berlumut (semua rumah Desa Mati). Kampung Watu Ireng tetap ijuk (adat). Hanya submesh atap (indeks 1).
+        static void GantiAtapGenteng(GameObject lm)
+        {
+            JumlahAtapGenteng = 0;
+            var genteng = MaterialGenteng("M_AtapGenteng", "genteng", TintGenteng, UkuranGenteng);
+            var lumut = MaterialGenteng("M_AtapGentengLumut", "genteng_lumut", TintGentengLumut, UkuranGentengLumut);
+            if (genteng == null && lumut == null) { Catat("Atap genteng: foto CC0 belum ada, atap lama dipakai"); return; }
+            for (int i = 0; i < lm.transform.childCount; i++)
+            {
+                var t = lm.transform.GetChild(i);
+                Material baru = null;
+                if (t.name.StartsWith("RumahDesa_")) baru = lumut != null ? lumut : genteng;
+                else if (t.name.StartsWith("RumahKampung_"))
+                {
+                    int no;
+                    if (int.TryParse(t.name.Substring("RumahKampung_".Length), out no) && no % 5 != 1 && no % 5 != 3) baru = genteng != null ? genteng : lumut;
+                }
+                if (baru == null) continue;
+                var mr = t.GetComponent<MeshRenderer>();
+                if (mr == null) continue;
+                var mats = mr.sharedMaterials;
+                if (mats.Length < 2) continue;
+                mats[1] = baru;
+                mr.sharedMaterials = mats;
+                JumlahAtapGenteng++;
+            }
+            Catat("Atap genteng CC0: " + JumlahAtapGenteng + " rumah");
         }
 
         static float RadiusRumah(Transform rumah)
