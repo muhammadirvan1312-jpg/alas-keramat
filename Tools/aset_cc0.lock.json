@@ -1183,6 +1183,86 @@
       "slot": "BatuLumutAsliB",
       "size": 273527,
       "sha256": "dd2503789089fb72ef469efd14364d393e769c0de8781a251475cac7e0b6f51d"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/shrub_01/shrub_01_1k.fbx",
+      "path": "CC0/Model/shrub_01.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_01",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 4655340,
+      "sha256": "fcc961e8d9dd45fb807b5bb84dc2bec88f63e1713fb1757762188c8475b96326"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/shrub_01/shrub_01_diff_1k.jpg",
+      "path": "CC0/SemakAsliA/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_01",
+      "author": "Poly Haven",
+      "slot": "SemakAsliA",
+      "size": 502162,
+      "sha256": "fe60e639d694e1807c0a3ae97dd1d5a7e7b3f84e5fc32d0610b868ce48f36331"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/shrub_01/shrub_01_alpha_1k.png",
+      "path": "CC0/SemakAsliA/Alpha.png",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_01",
+      "author": "Poly Haven",
+      "slot": "SemakAsliA",
+      "size": 132597,
+      "sha256": "eb693835205913dfc705a08fb45f3e8d1c338332bd0097e9837773765b421603"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/shrub_01/shrub_01_nor_gl_1k.jpg",
+      "path": "CC0/SemakAsliA/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_01",
+      "author": "Poly Haven",
+      "slot": "SemakAsliA",
+      "size": 746497,
+      "sha256": "076870a39a4e21a364cf94566e6dd1852a29045fdf1f23393637235b19d1c2e8"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/shrub_03/shrub_03_1k.fbx",
+      "path": "CC0/Model/shrub_03.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_03",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 290956,
+      "sha256": "81cf3b341356b2938faec4f7935c0e694b923db1a5bca39660afa6fcfc22dcc7"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/shrub_03/shrub_03_diff_1k.jpg",
+      "path": "CC0/SemakAsliB/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_03",
+      "author": "Poly Haven",
+      "slot": "SemakAsliB",
+      "size": 481841,
+      "sha256": "3cadc7aba46d3aabbd7d6d2b1d04aa32e2a7da0bc87c2d38ef3cb1ee42cb03ec"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/shrub_03/shrub_03_alpha_1k.png",
+      "path": "CC0/SemakAsliB/Alpha.png",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_03",
+      "author": "Poly Haven",
+      "slot": "SemakAsliB",
+      "size": 79069,
+      "sha256": "daef00278879a024fd05216aaa1376067a5f25f1b911d08d9bbdc50fda4a0d66"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/shrub_03/shrub_03_nor_gl_1k.jpg",
+      "path": "CC0/SemakAsliB/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_03",
+      "author": "Poly Haven",
+      "slot": "SemakAsliB",
+      "size": 504734,
+      "sha256": "ff856bacfce859b8a7555dd9a3b92fbd36b2e775d486be71df485afb4235d6c9"
     }
   ]
 }
