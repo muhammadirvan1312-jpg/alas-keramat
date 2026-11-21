@@ -185,5 +185,27 @@ namespace AlasKeramat.UI
         public void TekanLempar() { if(PengunciInput.Terblokir)return; var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.Lempar(); }
         public void TekanModeBangun() { if(PengunciInput.Terblokir)return; var b = GameServices.Get<AlasKeramat.Building.ShoulderLogAndFreeformBuilder>(); if (b != null) b.GantiMode(); }
         public void TekanObor() { if(PengunciInput.Terblokir)return; if (_kiri == null) _kiri = GameServices.Get<TanganKiri>(); if (_kiri != null) _kiri.ToggleObor(); }
+        public void TekanSenter()
+        {
+            if (PengunciInput.Terblokir) return;
+            var s = GameServices.Get<SenterAndi>();
+            if (s != null) { s.ToggleSenter(); GameEvents.RaiseToast("Senter dialihkan."); }
+        }
+        public void TekanAutoLari()
+        {
+            if (PengunciInput.Terblokir || joystick == null) return;
+            joystick.ToggleKunciLari();
+        }
+        public void TekanObatCepat()
+        {
+            if (PengunciInput.Terblokir) return;
+            var inv = GameServices.Get<AlasKeramat.Inventory.TikarPandan3DInventory>();
+            var vital = GameServices.Get<AndiVitalsAndSanity>();
+            if (inv == null || vital == null) return;
+            if (inv.Kurangi(ItemID.PerbanKain, 1)) { vital.ObatiLukaTubuh(); vital.UbahSanity(4f); GameEvents.RaiseToast("Memakai Perban Kain (luka pulih)."); }
+            else if (inv.Kurangi(ItemID.JamuHerbal, 1)) { vital.ObatiLukaTubuh(); vital.UbahSanity(12f); GameEvents.RaiseToast("Minum Jamu Herbal (+kewarasan & pulih)."); }
+            else if (inv.Kurangi(ItemID.JamuEnergi, 1)) { vital.UbahSanity(10f); GameEvents.RaiseToast("Minum Jamu Energi!"); }
+            else GameEvents.RaiseToast("Tidak ada Perban atau Jamu di tas.");
+        }
     }
 }

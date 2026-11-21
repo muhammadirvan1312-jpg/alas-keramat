@@ -105,6 +105,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7z11. Fitur Baru SOTF (Zipline, Perahu Dayung, Rumah Pohon, Sarang, Boss Buto Ijo & Suar)", 0.996f, LangkahFiturBaruSOTF);
                 Langkah("7z12. Overhaul Visual & Mega-Landmark (Air Terjun, Candi, Jembatan Gantung, Kapal, Pendopo)", 0.998f, LangkahOverhaulVisualDunia);
                 Langkah("7z13. Sistem Lanjutan SOTF (Kombo, Level Survival, Radio Darurat, Sesajen & Audio Spasial)", 0.999f, LangkahSistemLanjutan);
+                Langkah("7z14. Overhaul Kontrol Mobile Android & Pengayaan Jalur/Bunga Dunia", 0.9995f, LangkahOverhaulKontrolDanDunia);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }
