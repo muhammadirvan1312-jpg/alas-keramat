@@ -1,0 +1,152 @@
+{
+  "commit": "6e51d850663a5ad832459864ea44312c81728d1e",
+  "passed": true,
+  "photos": [
+    {
+      "shot": "g3_01_deden_wajah",
+      "width": 960,
+      "height": 540,
+      "p95": 0.3834,
+      "variation": 0.1287,
+      "pink": 0.0,
+      "sha256": "3e01d718f7ba7632858e616787163cd13d4646224930027658be4ee3c72ab033"
+    },
+    {
+      "shot": "g3_02_ningsih_wajah",
+      "width": 960,
+      "height": 540,
+      "p95": 0.3687,
+      "variation": 0.1568,
+      "pink": 0.0,
+      "sha256": "75b97c2006ebf53b075c5ddb165b1df65f969faefac6177ce2189544c2adc0fe"
+    },
+    {
+      "shot": "g3_03_hutan_malam",
+      "width": 960,
+      "height": 540,
+      "p95": 0.2017,
+      "variation": 0.0676,
+      "pink": 0.0,
+      "sha256": "f06cb12ee2ca05bd4dbdd82efde1de4a6e99d0c85ebdf13cfd179bb13e806c10"
+    },
+    {
+      "shot": "g3_04_lantai_hutan",
+      "width": 960,
+      "height": 540,
+      "p95": 0.2475,
+      "variation": 0.0771,
+      "pink": 0.0,
+      "sha256": "fb795d0ed8866c5882003ea0d012ebca8817f670a09ad83870f2cef5193d2d8f"
+    },
+    {
+      "shot": "t10_01_gua_lumut",
+      "width": 960,
+      "height": 540,
+      "p95": 0.6684,
+      "variation": 0.1877,
+      "pink": 0.0,
+      "sha256": "5b9ed3d09e83f9570253c83b915501b655d2cea8096f0bff05dfee9601990fee"
+    },
+    {
+      "shot": "t10_02_kubah_akar_boss",
+      "width": 960,
+      "height": 540,
+      "p95": 0.3192,
+      "variation": 0.107,
+      "pink": 0.0,
+      "sha256": "f99668b5ef5d085098cda09bb60df903a39e5a10af5b85d24eccafbd605010bf"
+    },
+    {
+      "shot": "v1_01_heli_pagi_sinar",
+      "width": 960,
+      "height": 540,
+      "p95": 0.1962,
+      "variation": 0.0765,
+      "pink": 0.0,
+      "sha256": "4acde3d8fe2eab7ddec740a033affde48073439c5b8b119a399979aef792c808"
+    },
+    {
+      "shot": "v1_02_desa_senja",
+      "width": 960,
+      "height": 540,
+      "p95": 0.8713,
+      "variation": 0.3327,
+      "pink": 0.0,
+      "sha256": "f808606bc9b64e04ced878396700874ad3b8f64b3a0baa8618809e6510181564"
+    },
+    {
+      "shot": "v1_03_beringin_maghrib",
+      "width": 960,
+      "height": 540,
+      "p95": 0.0854,
+      "variation": 0.1225,
+      "pink": 0.0,
+      "sha256": "b517f5e1e36ef5e7a5b63b6a30600d2d09dd3f7b395685abed185ffa9dc1f06f"
+    },
+    {
+      "shot": "v1_04_pantai_badai",
+      "width": 960,
+      "height": 540,
+      "p95": 0.6477,
+      "variation": 0.203,
+      "pink": 0.0,
+      "sha256": "71025a5aabb62216d939717ef4c78529f3a2fdf7ea479175e9a6b97bc7150954"
+    },
+    {
+      "shot": "v1_05_malam_senter",
+      "width": 960,
+      "height": 540,
+      "p95": 0.9029,
+      "variation": 0.3574,
+      "pink": 0.0,
+      "sha256": "6725cb241fffe3edce09e08188ca88a7849b9849bd6b0e194022ddefd2176dba"
+    },
+    {
+      "shot": "v1_06_sekte_desa",
+      "width": 960,
+      "height": 540,
+      "p95": 0.7953,
+      "variation": 0.1883,
+      "pink": 0.0,
+      "sha256": "e3dc4c397d2fde59b486a833f16eea4a7f7be3b3fdde172b9455d2d2eedb4e23"
+    },
+    {
+      "shot": "v1_hewan_barisan",
+      "width": 960,
+      "height": 540,
+      "p95": 0.371,
+      "variation": 0.1236,
+      "pink": 0.0,
+      "sha256": "e19677a13dc8b5ac8ebd1f0f8e4d1ef9a49f2e8833fc26fb34ce9c3a3958fc59"
+    },
+    {
+      "shot": "v1_wajah_deden",
+      "width": 960,
+      "height": 540,
+      "p95": 0.8156,
+      "variation": 0.311,
+      "pink": 0.0,
+      "sha256": "4e4dc1af39e29b92b143dc922d3776a77d88647c57171fbfae250953c9e4f0a7"
+    },
+    {
+      "shot": "v1_wajah_kirogo",
+      "width": 960,
+      "height": 540,
+      "p95": 0.9033,
+      "variation": 0.3982,
+      "pink": 0.0,
+      "sha256": "957c7923121cfd4e89b706b2a8e4ecf9a154ec7e437901dbcab94f064d7fc0d0"
+    },
+    {
+      "shot": "v1_wajah_ningsih",
+      "width": 960,
+      "height": 540,
+      "p95": 0.833,
+      "variation": 0.2927,
+      "pink": 0.0,
+      "sha256": "bf4558b9bf818212f43b77f64a25df61cb0889e7c3cb763288550d53adb5b3d0"
+    }
+  ],
+  "errors": [],
+  "note": "Pemeriksaan teknis gambar; kualitas seni dan kesetaraan visual belum dinilai"
+}
