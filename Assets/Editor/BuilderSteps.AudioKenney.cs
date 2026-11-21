@@ -17,6 +17,28 @@ namespace AlasKeramat.EditorTools
             { S.KlipTebasBasah, "knife_slice" }, { S.KlipKetukan, "impact_wood_heavy_000" }, { S.KlipKerikil, "impact_generic_light_000" }, { S.KlipUIKlik, "click_001" },
         };
 
+        // Rekaman CC0 OpenGameArt: {nama klip synth, file di FolderOGA, mode} mode m=efek mono, b=bed/musik stereo streaming.
+        public const string FolderOGA = "Assets/ThirdParty/CC0/Audio/oga";
+        public static readonly string[,] PetaOGA =
+        {
+            { S.KlipJantung, "jantung.wav", "m" }, { S.KlipNapas, "napas_lelah.ogg", "m" }, { S.KlipNapasBerat, "napas_horor.ogg", "m" },
+            { S.KlipTembak, "tembak.wav", "m" }, { S.KlipGeramSekte, "geram.ogg", "m" }, { S.KlipTeriakSekte, "teriak.ogg", "m" },
+            { S.KlipJeritGua, "jerit_gua.ogg", "m" }, { S.KlipRintihSekte, "rintih.ogg", "m" },
+            { S.BedTebing, "angin.ogg", "b" }, { S.BedPabrik, "angin.ogg", "b" }, { S.BedWingit, "musik_seram.ogg", "b" },
+            { S.KlipMusikTempur, "musik_tegang.ogg", "b" }, { S.KlipHujan, "hujan_malam.ogg", "b" },
+        };
+
+        static AudioClip ImporRekaman(string path, bool bed)
+        {
+            var imp = AssetImporter.GetAtPath(path) as AudioImporter;
+            if (imp == null) return null;
+            var s = imp.defaultSampleSettings;
+            if (bed) { s.loadType = AudioClipLoadType.Streaming; s.compressionFormat = AudioCompressionFormat.Vorbis; s.quality = 0.55f; }
+            else { s.loadType = AudioClipLoadType.DecompressOnLoad; s.compressionFormat = AudioCompressionFormat.ADPCM; }
+            imp.defaultSampleSettings = s; imp.forceToMono = !bed; imp.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+        }
+
         static void LangkahAudioKenney()
         {
             var synth = Object.FindFirstObjectByType<S>();
@@ -40,9 +62,21 @@ namespace AlasKeramat.EditorTools
                 if (idx >= 0) klip[idx] = c; else { nama.Add(PetaKenney[i, 0]); klip.Add(c); }
                 n++;
             }
+            int nOga = 0;
+            for (int i = 0; i < PetaOGA.GetLength(0); i++)
+            {
+                string path = FolderOGA + "/" + PetaOGA[i, 1];
+                if (!File.Exists(path)) { hilang++; continue; }
+                var c = ImporRekaman(path, PetaOGA[i, 2] == "b");
+                if (c == null) { hilang++; continue; }
+                int idx = nama.IndexOf(PetaOGA[i, 0]);
+                if (idx >= 0) klip[idx] = c; else { nama.Add(PetaOGA[i, 0]); klip.Add(c); }
+                nOga++;
+            }
+            if (synth.GetComponent<SuaraHujan>() == null) synth.gameObject.AddComponent<SuaraHujan>();
             synth.AssignBakedClips(nama.ToArray(), klip.ToArray());
             EditorUtility.SetDirty(synth);
-            Catat("Kenney CC0: " + n + " suara rekaman menggantikan sintetis" + (hilang > 0 ? " (" + hilang + " belum terunduh)" : ""));
+            Catat("Kenney CC0: " + n + " + OpenGameArt CC0: " + nOga + " rekaman (musik tegang, hujan, monster, napas, jantung, tembakan)" + (hilang > 0 ? " (" + hilang + " belum terunduh)" : ""));
         }
     }
 }

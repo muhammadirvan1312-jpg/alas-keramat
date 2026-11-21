@@ -1093,6 +1093,126 @@
       "slot": "Audio",
       "size": 10190,
       "sha256": "ea67c9d78750e5a356bf53ef8c2063b52cc3ccdae6ae8afeec87f97f79ae692d"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/heartbeat_slow_0.wav",
+      "path": "CC0/Audio/oga/jantung.wav",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/heartbeat-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 635216,
+      "sha256": "ce5d2bbe4c9e2a8843fc76419070b9e88f71b2aa4ba7226a5f50a6b45d13be60"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/breathing%20tired.ogg",
+      "path": "CC0/Audio/oga/napas_lelah.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/breathing-tired",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 46106,
+      "sha256": "ee7b1e1f6308fa93fa6e56bfcb38e58578d97ff2eb0eb7cf515025ef082dcdac"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/horrorbreathing.ogg",
+      "path": "CC0/Audio/oga/napas_horor.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/horror-breathing",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 60880,
+      "sha256": "d533585cfcf7635a1cd6143d4aa7a970bc3036ab2b005c8f64d6eb457c9557ac"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/Wind.ogg",
+      "path": "CC0/Audio/oga/angin.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/wind",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 59861,
+      "sha256": "ff4f8a48b824e88ef3a53c5bc726e1da2b9593d84ac1bd6048b4ed6ddd4bad69"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/22%20Magnum.wav",
+      "path": "CC0/Audio/oga/tembak.wav",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/gunshots",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 830924,
+      "sha256": "132a491a1e52c30042cac867ff461fc895c1a31b5420dfff24f5af0f2185d5cc"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/monster-snarls.ogg",
+      "path": "CC0/Audio/oga/geram.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/monster-snarls",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 195986,
+      "sha256": "7401193d0cc5eb193379cf326c8868d6823a284ebc32ffaa298c1a94d2e25994"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/monster-snarl-attack.ogg",
+      "path": "CC0/Audio/oga/teriak.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/monster-snarls",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 185872,
+      "sha256": "34bf1ceef265725abf00ab3263bbbb492792e126bb1619addd4a5d3ad123347f"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/monster-snarl-5.ogg",
+      "path": "CC0/Audio/oga/jerit_gua.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/monster-snarls",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 201559,
+      "sha256": "aeaf9ab0f25cb8b035a3257913206afd8ba33d47876106291d38dfac7e5c07aa"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/troll-idle-noises.ogg",
+      "path": "CC0/Audio/oga/rintih.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/big-scary-troll-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 291562,
+      "sha256": "67d1e35bca545c9c17618333265deb90ed506d14e5b45ea730ef012695bd682a"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/Juhani%20Junkala%20-%20Post%20Apocalyptic%20Wastelands%20%5BLoop%20Ready%5D.ogg",
+      "path": "CC0/Audio/oga/musik_tegang.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/horror-atmosphere",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 14246543,
+      "sha256": "4145080f1a0ba45c3d1b6988c1d26ec3529ee8d8196eb3fa0045b49c86dd20ad"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/Dark_Rainy_Night%28ambience%29.ogg",
+      "path": "CC0/Audio/oga/hujan_malam.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/rain-and-thunders",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 6770906,
+      "sha256": "115c233f9f8bc793f12723030aaae6cfda923e565c32a8e54bb274b2a8199ee1"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/CrEEP.ogg",
+      "path": "CC0/Audio/oga/musik_seram.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/creepy",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 5083744,
+      "sha256": "819f03df9383a41538bfe101d792de9a5dd5ae3c69423d8c3c67fbb6c7afb894"
     }
   ]
 }
