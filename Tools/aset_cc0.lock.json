@@ -1263,6 +1263,46 @@
       "slot": "Audio",
       "size": 22784,
       "sha256": "f922929805bc6afdf0a35727fa3998033db544c1b6f62ed3aeab94341ed6ddeb"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/GameMusic_ForestTheme_24.mp3",
+      "path": "CC0/Audio/oga/musik_siang.mp3",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/dark-forest-theme",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 1942315,
+      "sha256": "c9e83d01741e97a462c44963aff81645a9c2aa3a7a33e5849114a1399d1b0914"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/qubodup-yd-DarkShrineLoop-OpenGameArt.ogg",
+      "path": "CC0/Audio/oga/musik_malam.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/dark-shrine-loop",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 678630,
+      "sha256": "9580618dc851f70c3a11b5ff87672867de44cd38b35dabf926d6befde20e78d0"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/IswearIsawit.ogg",
+      "path": "CC0/Audio/oga/musik_misteri.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/i-swear-i-saw-it-background-track",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 4190827,
+      "sha256": "6e943494d27040091f7a883e5e9e96372def3f912d55d9acc045a2a5f2fa5d22"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/shrine_1.ogg",
+      "path": "CC0/Audio/oga/musik_kuil.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/shrine",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 773355,
+      "sha256": "35a3051a7b6d4fddda564624cff960b77722fd8bcf4a3e07ceceb060b6c0f080"
     }
   ]
 }

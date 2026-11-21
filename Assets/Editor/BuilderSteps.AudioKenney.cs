@@ -26,6 +26,8 @@ namespace AlasKeramat.EditorTools
             { S.KlipJeritGua, "jerit_gua.ogg", "m" }, { S.KlipRintihSekte, "rintih.ogg", "m" },
             { S.BedTebing, "angin.ogg", "b" }, { S.BedPabrik, "angin.ogg", "b" }, { S.BedWingit, "musik_seram.ogg", "b" },
             { S.KlipMusikTempur, "musik_tegang.ogg", "b" }, { S.KlipHujan, "hujan_malam.ogg", "b" }, { S.KlipApi, "api.ogg", "m" },
+            { AlasKeramat.AI.MusikJelajah.KlipSiang, "musik_siang.mp3", "b" }, { AlasKeramat.AI.MusikJelajah.KlipMalam, "musik_malam.ogg", "b" },
+            { AlasKeramat.AI.MusikJelajah.KlipMisteri, "musik_misteri.ogg", "b" }, { S.BedDini, "musik_kuil.ogg", "b" },
             { S.OsJangkrik, "jangkrik.ogg", "m" }, { S.OsKatak, "katak.ogg", "m" }, { S.OsHantu, "burung_malam.ogg", "m" }, { S.OsPagi, "burung_pagi.ogg", "m" },
         };
 
@@ -75,6 +77,7 @@ namespace AlasKeramat.EditorTools
                 nOga++;
             }
             if (synth.GetComponent<SuaraHujan>() == null) synth.gameObject.AddComponent<SuaraHujan>();
+            if (synth.GetComponent<AlasKeramat.AI.MusikJelajah>() == null) synth.gameObject.AddComponent<AlasKeramat.AI.MusikJelajah>();
             synth.AssignBakedClips(nama.ToArray(), klip.ToArray());
             EditorUtility.SetDirty(synth);
             Catat("Kenney CC0: " + n + " + OpenGameArt CC0: " + nOga + " rekaman (musik tegang, hujan, monster, napas, jantung, tembakan)" + (hilang > 0 ? " (" + hilang + " belum terunduh)" : ""));

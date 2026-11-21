@@ -30,6 +30,9 @@ namespace AlasKeramat.EditorTools
                 for (int i = 0; i < synth.NamaPanggang.Length && i < synth.KlipPanggang.Length; i++)
                     if (synth.KlipPanggang[i] != null && AssetDatabase.GetAssetPath(synth.KlipPanggang[i]).Contains("/oga/")) oga++;
             cek("Audio: rekaman CC0 OpenGameArt terpasang (" + oga + "/" + NusantaraMasterBuilder.PetaOGA.GetLength(0) + ")", oga >= NusantaraMasterBuilder.PetaOGA.GetLength(0) - 1);
+            cek("Audio: musik jelajah siang/malam terpasang", synth != null && synth.GetComponent<AlasKeramat.AI.MusikJelajah>() != null
+                && AlasKeramat.AI.MusikJelajah.PilihKlip(22f, 1) == AlasKeramat.AI.MusikJelajah.KlipMalam && AlasKeramat.AI.MusikJelajah.PilihKlip(10f, 1) == AlasKeramat.AI.MusikJelajah.KlipSiang
+                && synth.AmbilRekaman(AlasKeramat.AI.MusikJelajah.KlipSiang) != null);
             cek("Audio: suara hujan ikut cuaca", AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.HujanBadai) > AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.Gerimis)
                 && AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.Cerah) == 0f && synth != null && synth.GetComponent<AlasKeramat.Core.SuaraHujan>() != null);
             if (!AssetDatabase.IsValidFolder(ImporMixamo.Folder)) { Debug.Log("[AK][SelfTest] Mixamo: aset belum ada (repo perlu private), pemeriksaan aset dilewati"); return; }
