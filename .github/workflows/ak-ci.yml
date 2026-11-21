@@ -96,6 +96,7 @@ jobs:
           if git clone -q --depth 1 "https://x-access-token:${ASET_TOKEN}@github.com/muhammadirvan1312-jpg/alas-keramat-aset.git" /tmp/ak-aset; then
             mkdir -p Assets/Mixamo && cp /tmp/ak-aset/Mixamo/*.fbx Assets/Mixamo/
             echo "[AK] Mixamo: $(ls Assets/Mixamo/*.fbx | wc -l) klip"
+            if [ -d /tmp/ak-aset/Karakter ]; then mkdir -p Assets/MixamoKarakter && cp /tmp/ak-aset/Karakter/*.fbx Assets/MixamoKarakter/; echo "[AK] Karakter Mixamo: $(ls Assets/MixamoKarakter/*.fbx | wc -l)"; fi
           else
             echo "[AK] Gagal mengambil repo aset, animasi Mixamo dilewati"
           fi
@@ -195,6 +196,8 @@ jobs:
             ProjectSettings
             !Assets/Mixamo
             !Assets/Mixamo.meta
+            !Assets/MixamoKarakter
+            !Assets/MixamoKarakter.meta
           retention-days: 2
 
       - name: Susun laporan CI (selalu)
@@ -312,6 +315,7 @@ jobs:
           if git clone -q --depth 1 "https://x-access-token:${ASET_TOKEN}@github.com/muhammadirvan1312-jpg/alas-keramat-aset.git" /tmp/ak-aset; then
             mkdir -p Assets/Mixamo && cp /tmp/ak-aset/Mixamo/*.fbx Assets/Mixamo/
             echo "[AK] Mixamo: $(ls Assets/Mixamo/*.fbx | wc -l) klip"
+            if [ -d /tmp/ak-aset/Karakter ]; then mkdir -p Assets/MixamoKarakter && cp /tmp/ak-aset/Karakter/*.fbx Assets/MixamoKarakter/; echo "[AK] Karakter Mixamo: $(ls Assets/MixamoKarakter/*.fbx | wc -l)"; fi
           else
             echo "[AK] Gagal mengambil repo aset, animasi Mixamo dilewati"
           fi

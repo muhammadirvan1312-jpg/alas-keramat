@@ -35,6 +35,20 @@ namespace AlasKeramat.EditorTools
                 && synth.AmbilRekaman(AlasKeramat.AI.MusikJelajah.KlipSiang) != null);
             cek("Audio: suara hujan ikut cuaca", AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.HujanBadai) > AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.Gerimis)
                 && AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.Cerah) == 0f && synth != null && synth.GetComponent<AlasKeramat.Core.SuaraHujan>() != null);
+            cek("Mixamo: peta model karakter (Genderuwo=Warrok, Wanita=Zombiegirl, Sekte=Nightshade)", NusantaraMasterBuilder.ModelUntuk("BossGenderuwo") == "Warrok"
+                && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiWanita") == "Zombiegirl" && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiSekte") == "Nightshade" && NusantaraMasterBuilder.ModelUntuk("Musuh_KiRogo") == null
+                && AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(1.8f, 1.8f) == 1f && AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(3f, 1f) == 2.5f);
+            if (AssetDatabase.IsValidFolder(ImporKarakterMixamo.Folder))
+            {
+                int pakai = 0;
+                foreach (var g in AssetDatabase.FindAssets("t:Prefab", new[] { NusantaraMasterBuilder.FolderPrefabMusuh }))
+                {
+                    var pf = AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(g));
+                    var am = pf != null ? pf.GetComponentInChildren<AlasKeramat.AI.AnimasiMixamo>(true) : null;
+                    if (am != null && new SerializedObject(am).FindProperty("modelKarakter").objectReferenceValue != null) pakai++;
+                }
+                cek("Mixamo: prefab musuh memakai model karakter asli (" + pakai + ")", pakai >= 2);
+            }
             if (!AssetDatabase.IsValidFolder(ImporMixamo.Folder)) { Debug.Log("[AK][SelfTest] Mixamo: aset belum ada (repo perlu private), pemeriksaan aset dilewati"); return; }
             var bank = AssetDatabase.LoadAssetAtPath<BankAnimasiMixamo>(NusantaraMasterBuilder.PathBankMixamo);
             cek("Mixamo: bank animasi ada (>= 40 klip)", bank != null && bank.klip.Length >= 40);
