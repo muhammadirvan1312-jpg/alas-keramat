@@ -48,6 +48,36 @@ namespace AlasKeramat.EditorTools
             return _spriteTombol;
         }
 
+        static Sprite _spriteLingkaran;
+        // Kenop bulat 64 px: isi bergradasi, tepi terang, bayangan lembut di bawah.
+        static Sprite SpriteLingkaran()
+        {
+            if (_spriteLingkaran != null) return _spriteLingkaran;
+            EnsureFolder(FolderIkon);
+            string p = FolderIkon + "/UI_Kenop.png";
+            const int n = 64; float c = n * 0.5f, r = n * 0.5f - 3f;
+            var px = new Color[n * n];
+            for (int y = 0; y < n; y++)
+                for (int x = 0; x < n; x++)
+                {
+                    float d = Mathf.Sqrt((x + 0.5f - c) * (x + 0.5f - c) + (y + 0.5f - c) * (y + 0.5f - c));
+                    float isi = Mathf.Clamp01(r - d + 0.5f), dalam = Mathf.Clamp01(r - 3f - d + 0.5f);
+                    float bay = Mathf.Clamp01((r + 3f - Mathf.Sqrt((x + 0.5f - c) * (x + 0.5f - c) + (y + 2.5f - c) * (y + 2.5f - c))) / 3f) * 0.35f;
+                    float v = Mathf.Lerp(1f, Mathf.Lerp(0.78f, 1f, (float)y / n), dalam);
+                    float a = Mathf.Max(isi, bay);
+                    px[y * n + x] = isi > 0f ? new Color(v, v, v, a) : new Color(0f, 0f, 0f, bay);
+                }
+            var t = new Texture2D(n, n, TextureFormat.RGBA32, false); t.SetPixels(px); t.Apply();
+            File.WriteAllBytes(p, t.EncodeToPNG()); Object.DestroyImmediate(t);
+            AssetDatabase.ImportAsset(p);
+            var imp = (TextureImporter)AssetImporter.GetAtPath(p);
+            imp.textureType = TextureImporterType.Sprite; imp.spriteImportMode = SpriteImportMode.Single;
+            imp.alphaIsTransparency = true; imp.mipmapEnabled = false; imp.textureCompression = TextureImporterCompression.Uncompressed;
+            imp.SaveAndReimport();
+            _spriteLingkaran = AssetDatabase.LoadAssetAtPath<Sprite>(p);
+            return _spriteLingkaran;
+        }
+
         static void GayakanTombol(Image img, Color warna, Text label)
         {
             var s = SpriteTombol();

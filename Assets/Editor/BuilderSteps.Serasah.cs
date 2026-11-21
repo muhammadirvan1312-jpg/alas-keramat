@@ -268,6 +268,7 @@ namespace AlasKeramat.EditorTools
             int sebaran=SebaranPulau(meshes,bahan,hasil);
             var detail=Anak(_root,"SerasahHutan").AddComponent<SerasahHutan>();detail.kelompok=hasil.ToArray();EditorUtility.SetDirty(detail);
             Catat("Lantai hutan photogrammetry CC0: "+hasil.Count+" batch, "+sebaran+" sebaran se-pulau (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)");
+            Catat("Lantai hutan photogrammetry CC0: "+hasil.Count+" batch (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)");
         }
     }
 }
