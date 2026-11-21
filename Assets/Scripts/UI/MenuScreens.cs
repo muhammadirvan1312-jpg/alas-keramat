@@ -124,13 +124,13 @@ namespace AlasKeramat.UI
             switch (p)
             {
                 case PresetGrafis.Rendah:
-                    return new DataPresetGrafis { renderScale = 0.7f, bayangan = 0f, cascade = 1, msaa = 1, hdr = false, bloom = false, farKamera = 135f, kabutTambah = 0.006f, pengaliVeg = 0.55f, detailVeg = 0.45f, rumput = 0.15f, targetFps = 30 };
+                    return new DataPresetGrafis { renderScale = 0.7f, bayangan = 0f, cascade = 1, msaa = 1, hdr = false, bloom = false, farKamera = 185f, kabutTambah = 0.0035f, pengaliVeg = 0.55f, detailVeg = 0.45f, rumput = 0.15f, targetFps = 30 };
                 case PresetGrafis.Tinggi:
-                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 60f, cascade = 2, msaa = 1, hdr = true, bloom = true, farKamera = 250f, kabutTambah = 0f, pengaliVeg = 1.15f, detailVeg = 0.9f, rumput = 0.65f, targetFps = 60 };
+                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 60f, cascade = 2, msaa = 1, hdr = true, bloom = true, farKamera = 340f, kabutTambah = 0f, pengaliVeg = 1.15f, detailVeg = 0.9f, rumput = 0.65f, targetFps = 60 };
                 case PresetGrafis.Ultra:
-                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 90f, cascade = 4, msaa = 2, hdr = true, bloom = true, farKamera = 360f, kabutTambah = 0f, pengaliVeg = 1.4f, detailVeg = 1.15f, rumput = 1f, targetFps = 30 };
+                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 90f, cascade = 4, msaa = 2, hdr = true, bloom = true, farKamera = 450f, kabutTambah = 0f, pengaliVeg = 1.4f, detailVeg = 1.15f, rumput = 1f, targetFps = 30 };
                 default:
-                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 1, hdr = true, bloom = false, farKamera = 185f, kabutTambah = 0.002f, pengaliVeg = 0.85f, detailVeg = 0.65f, rumput = 0.35f, targetFps = 30 }; // 30 stabil: 60 yang tak tercapai membuat frame tidak rata (terasa patah-patah)
+                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 1, hdr = true, bloom = false, farKamera = 260f, kabutTambah = 0.0012f, pengaliVeg = 0.85f, detailVeg = 0.65f, rumput = 0.35f, targetFps = 30 }; // 30 stabil: 60 yang tak tercapai membuat frame tidak rata (terasa patah-patah)
             }
         }
 
