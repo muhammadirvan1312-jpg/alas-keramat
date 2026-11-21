@@ -117,11 +117,6 @@ namespace AlasKeramat.AI
             return peran == Peran.Sekte ? "Running" : peran == Peran.Raksasa ? "Zombie_Running" : "Running";
         }
 
-        public static bool BolehTampilModelMixamo(ProceduralAnimator.Mode mode)
-        {
-            return mode == ProceduralAnimator.Mode.Normal || mode == ProceduralAnimator.Mode.DudukTerhuyung;
-        }
-
         void LateUpdate()
         {
             if (!_siap) return;
