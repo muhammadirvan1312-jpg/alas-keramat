@@ -267,3 +267,8 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `SerasahHutan.cs` menambah `JarakTarik` dinamis per preset (`42/62/86/105 m` via `MenuScreens.JarakSerasahPreset` & `PengawasPerforma`) dengan smooth scale-fade `8 m` terluar (`FaktorSkalaJarak`) agar prop lantai tidak meletup muncul tiba-tiba.
   - `AK_Kulit.shader` menambah `_VariasiWarna` per posisi pohon (selaras `AK_Daun.shader`), dipadukan dengan nilai variasi lebih natural di `BuilderSteps.Vegetasi.cs`.
   - Gua UG1 & Kubah Akar Boss UG3 (`BuilderSteps.Gua.cs`, `BuilderSteps.Gua3.cs`): mengganti terpal/ransel oranye menyolok dengan kanvas lapuk alami, meredupkan lampu kamp R2, menambah kilap basah lantai boss & memperbanyak gugus batu/akar arena. Static check lulus (0 masalah); verifikasi Unity/foto CI menunggu PR.
+- V5 Langit, Air & VFX Atmosfer (`vis-v5-langit-air-vfx`):
+  - `AK_Langit.shader` kini merender awan prosedural bergerak berlapis mengikuti cahaya matahari/senja/malam, piringan bulan + halo di sisi berlawanan matahari, serta bintang berkelip di malam hari.
+  - `AK_Air.shader` menambah fallback buih tepi untuk preset tanpa depth texture (`_AK_MatikanDepth`, RAM 4 GB) dan kilau kaustik air dangkal.
+  - `BuilderSteps.Pasca.cs` menaikkan ambang Bloom ke `1,10` agar pantulan rumput/pasir biasa tidak berpendar; `AKPascaProses.cs` menambah `FilterBioma` dinamis per bioma, cuaca badai, dan jam.
+  - Efek visual tanpa alokasi GC: kilatan langit saat petir (`URPAtmosphereAndWeather.Cuaca`), percikan air langkah & berenang (`FoleyAndi` via `GoreSystem.PercikPartikel`), dan kepulan abu gelap saat hantu diusir (`HantuAI`). Static check lulus (0 masalah); verifikasi Unity/foto CI menunggu PR.

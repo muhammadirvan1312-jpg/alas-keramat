@@ -141,7 +141,15 @@ namespace AlasKeramat.AI
             }
         }
 
-        void Ubah(FaseHantu f) { _fase = f; _t = 0f; _sudahKena = false; }
+        void Ubah(FaseHantu f)
+        {
+            _fase = f; _t = 0f; _sudahKena = false;
+            if (f == FaseHantu.Diusir)
+            {
+                var gore = GameServices.Get<GoreSystem>();
+                if (gore != null) gore.PercikPartikel(transform.position + Vector3.up * 0.9f, new Color(0.14f, 0.14f, 0.17f, 0.78f), 14, 0.14f, 1.3f, 0.95f);
+            }
+        }
 
         // ---------- Rumus murni (self-test) ----------
         public static float IndraPocong(float sanity) { return sanity < 25f ? PocongIndraTakut : PocongIndra; }

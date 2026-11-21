@@ -255,6 +255,11 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(76f, 80f) > 0.1f && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(76f, 80f) < 0.9f
                 && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(80f, 80f) == 0f
                 && AlasKeramat.UI.MenuScreens.JarakSerasahPreset(AlasKeramat.UI.PresetGrafis.Rendah) < AlasKeramat.UI.MenuScreens.JarakSerasahPreset(AlasKeramat.UI.PresetGrafis.Ultra));
+            var fcGua = AlasKeramat.Core.AKPascaProses.FilterBioma(AlasKeramat.Core.Biome.BawahTanah, AlasKeramat.Core.WeatherState.Cerah, 12f);
+            cek("V5 Langit, Air & VFX: shader langit/air & filter bioma gua",
+                Shader.Find("AlasKeramat/Langit") != null
+                && Shader.Find("AlasKeramat/Air") != null
+                && fcGua.b > fcGua.r);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;
