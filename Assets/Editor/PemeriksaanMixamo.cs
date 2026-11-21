@@ -153,6 +153,11 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Player.TitikLumpur.JumlahPercikanLumpur() >= 10
                 && AlasKeramat.AI.HeliSAR.LajuDebuHeliSAR(5f) > AlasKeramat.AI.HeliSAR.LajuDebuHeliSAR(25f)
                 && AlasKeramat.AI.RitualAltar.LajuPartikelSegelAltar(3, true) > AlasKeramat.AI.RitualAltar.LajuPartikelSegelAltar(1, false));
+            cek("SOTF v14: tumbuh tanaman kebun 3D, tangkapan bubu/jerat, percikan batu asah & pos pengintai sekte",
+                AlasKeramat.Building.FungsiBangunan.SkalaTanamanKebun(4) > AlasKeramat.Building.FungsiBangunan.SkalaTanamanKebun(0)
+                && AlasKeramat.Building.FungsiBangunan.JumlahPercikanAsah() >= 15
+                && AlasKeramat.Core.ProcBangunan.PosPengintaiSekte().vertexCount > 40
+                && GameObject.Find("PosSekte_0") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

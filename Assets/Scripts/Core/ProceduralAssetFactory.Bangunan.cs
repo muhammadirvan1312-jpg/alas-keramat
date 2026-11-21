@@ -533,5 +533,22 @@ namespace AlasKeramat.Core
             b.Kotak(1, new Vector3( 0.55f, 2.30f, 0f), new Vector3(0.18f, 0.36f, 0.18f), Quaternion.identity, 1f);
             return b.Jadi("TotemPerbatasanSekte");
         }
+
+        // Pos pengintai & barikade bambu runcing Sekte di tepi jalur utama: dek panggung kayu, pagar runcing miring & tiang panji. 0 kayu, 1 bilik/bambu.
+        public static Mesh PosPengintaiSekte()
+        {
+            var b = new B(2);
+            for (int sx = -1; sx <= 1; sx += 2)
+                for (int sz = -1; sz <= 1; sz += 2)
+                    b.Silinder(0, new Vector3(sx * 1.15f, 0f, sz * 1.15f), 0.11f, 0.10f, 1.45f, 6, Quaternion.identity, 1.5f);
+            b.Kotak(0, new Vector3(0f, 1.42f, 0f), new Vector3(2.65f, 0.14f, 2.65f), Quaternion.identity, 1.5f);
+            b.Kotak(0, new Vector3(0f, 1.78f, 0.55f), new Vector3(0.75f, 0.52f, 0.52f), Quaternion.Euler(0f, 12f, 0f), 1f);
+            for (int k = -2; k <= 2; k++)
+                b.Silinder(1, new Vector3(k * 0.52f, 0f, -1.65f), 0.06f, 0.02f, 1.95f, 6, Quaternion.Euler(-28f, 0f, 0f), 1f);
+            b.Kotak(1, new Vector3(0f, 0.85f, -1.35f), new Vector3(2.55f, 0.12f, 0.10f), Quaternion.identity, 1f);
+            b.Silinder(0, new Vector3(1.18f, 1.45f, -1.18f), 0.06f, 0.05f, 2.2f, 6, Quaternion.identity, 1f);
+            b.Kotak(1, new Vector3(1.18f, 3.05f, -0.78f), new Vector3(0.06f, 0.72f, 0.82f), Quaternion.identity, 1f);
+            return b.Jadi("PosPengintaiSekte");
+        }
     }
 }
