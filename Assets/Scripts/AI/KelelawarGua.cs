@@ -17,8 +17,26 @@ namespace AlasKeramat.AI
         [SerializeField] float skalaModel = 0.35f;
         [SerializeField] string klipTerbang = "Bat_Flying";
 
+        // Panik saat tersorot senter Andi: orbit lebih cepat, lebar, dan naik ke langit-langit gua.
+        public const float JarakSorot = 10f, SudutSorot = 24f, DurasiPanik = 3.2f, PengaliLajuPanik = 3.2f, PengaliRadiusPanik = 1.6f, NaikPanik = 0.7f;
+        const float JedaCekSorot = 0.2f, LajuPanik = 2.5f;
+
         Transform _sayapKiri, _sayapKanan;
         Vector3 _posSebelum;
+        AlasKeramat.Player.SenterAndi _senter;
+        float _waktu, _panik, _akhirPanik, _cekBerikut;
+        AnimationState _klip;
+
+        public float Panik { get { return _panik; } }
+
+        // Murni (diuji self-test): kelelawar berada di kerucut sorot senter dan cukup dekat.
+        public static bool TersorotSenter(Vector3 posKamera, Vector3 arahKamera, Vector3 posKelelawar, float jarakMaks, float sudutMaks)
+        {
+            Vector3 d = posKelelawar - posKamera;
+            float jarak = d.magnitude;
+            if (jarak < 0.01f || jarak > jarakMaks) return false;
+            return Vector3.Angle(arahKamera, d) <= sudutMaks;
+        }
 
         public void Pasang(GameObject model, Material utama, Material bagian, Vector3 pusat, float radius, float tinggi, float kecepatan, float fase, float skala, string klip)
         {
@@ -48,6 +66,9 @@ namespace AlasKeramat.AI
         {
             if (pusatOrbit.sqrMagnitude < 0.001f) pusatOrbit = transform.position;
             _posSebelum = transform.position;
+            _waktu = Time.time;
+            _senter = AlasKeramat.Core.GameServices.Get<AlasKeramat.Player.SenterAndi>();
+            if (_senter == null) _senter = FindFirstObjectByType<AlasKeramat.Player.SenterAndi>();
             if (sumberModel != null)
             {
                 var inst = Instantiate(sumberModel, transform, false);
@@ -75,7 +96,7 @@ namespace AlasKeramat.AI
                     if (!string.IsNullOrEmpty(pakai))
                     {
                         var st = anim[pakai];
-                        if (st != null) { st.wrapMode = WrapMode.Loop; st.normalizedTime = Mathf.Repeat(faseAwal * 0.159f, 1f); }
+                        if (st != null) { _klip = st; st.wrapMode = WrapMode.Loop; st.normalizedTime = Mathf.Repeat(faseAwal * 0.159f, 1f); }
                         anim.Play(pakai);
                     }
                 }
@@ -130,15 +151,26 @@ namespace AlasKeramat.AI
 
         void Update()
         {
-            Vector3 p = HitungPosisi(pusatOrbit, radiusOrbit, tinggiGelombang, kecepatanSudut, faseAwal, Time.time);
+            if (Time.time >= _cekBerikut)
+            {
+                _cekBerikut = Time.time + JedaCekSorot;
+                var cam = Camera.main;
+                if (_senter != null && _senter.Nyala && cam != null
+                    && TersorotSenter(cam.transform.position, cam.transform.forward, transform.position, JarakSorot, SudutSorot))
+                    _akhirPanik = Time.time + DurasiPanik;
+            }
+            _panik = Mathf.MoveTowards(_panik, Time.time < _akhirPanik ? 1f : 0f, Time.deltaTime * LajuPanik);
+            _waktu += Time.deltaTime * Mathf.Lerp(1f, PengaliLajuPanik, _panik);
+            Vector3 p = HitungPosisi(pusatOrbit + Vector3.up * (NaikPanik * _panik), radiusOrbit * Mathf.Lerp(1f, PengaliRadiusPanik, _panik), tinggiGelombang, kecepatanSudut, faseAwal, _waktu);
             Vector3 arah = p - _posSebelum;
             transform.position = p;
             if (arah.sqrMagnitude > 1e-6f)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(arah.normalized, Vector3.up), Time.deltaTime * 8f);
             _posSebelum = p;
+            if (_klip != null) _klip.speed = Mathf.Lerp(1f, PengaliLajuPanik * 0.6f, _panik);
             if (_sayapKiri != null && _sayapKanan != null)
             {
-                float kepak = Mathf.Sin(Time.time * 15f + faseAwal) * 38f;
+                float kepak = Mathf.Sin(_waktu * 15f + faseAwal) * 38f;
                 _sayapKiri.localRotation = Quaternion.Euler(0f, 0f, kepak);
                 _sayapKanan.localRotation = Quaternion.Euler(0f, 0f, -kepak);
             }
