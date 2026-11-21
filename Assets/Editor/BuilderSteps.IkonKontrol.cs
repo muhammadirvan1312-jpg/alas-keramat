@@ -126,6 +126,13 @@ namespace AlasKeramat.EditorTools
                     joy = 1;
                 }
             }
+            // Penanda bulat benda interaktif (di belakang tombol, di atas dunia).
+            var lamaP = kanvas.Find("PenandaInteraksi"); if (lamaP != null) Object.DestroyImmediate(lamaP.gameObject);
+            var cincinP = AssetDatabase.LoadAssetAtPath<Sprite>(FolderIkon + "/ui_cincin.png");
+            var gp = UIGambar(kanvas.gameObject, "PenandaInteraksi", cincinP, new Vector2(46f, 46f), new Vector2(0.5f, 0.5f), Vector2.zero);
+            gp.transform.SetSiblingIndex(1);
+            var ip = gp.GetComponent<Image>(); ip.color = new Color(1f, 0.95f, 0.8f, 0f); ip.raycastTarget = false; ip.enabled = false;
+            var pi = gp.AddComponent<AlasKeramat.UI.PenandaInteraksi>(); pi.Pasang(ip); EditorUtility.SetDirty(pi);
             Catat("Ikon kontrol: " + JumlahIkonTerpasang + " tombol HUD pakai ikon, joystick profesional " + (joy == 1 ? "terpasang" : "tidak ditemukan"));
         }
     }

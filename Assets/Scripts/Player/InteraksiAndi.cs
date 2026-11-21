@@ -16,6 +16,9 @@ namespace AlasKeramat.Player
 
         AndiFPSController _ctrl;
         IInteractable _target;
+        // Titik pusat benda yang sedang ditunjuk (untuk penanda bulat di layar).
+        public Vector3 PosisiTarget { get; private set; }
+        public bool AdaBenda { get { return _target != null; } }
         bool _air, _bangun;
         IInteractable _ditahan;
         float _lamaTahan;
@@ -50,7 +53,7 @@ namespace AlasKeramat.Player
             if (Physics.SphereCast(cam.position, Radius, cam.forward, out hit, Jarak, _mask, QueryTriggerInteraction.Collide))
             {
                 var t = hit.collider.GetComponentInParent<IInteractable>();
-                if (t != null && t.CanInteract(gameObject)) _target = t;
+                if (t != null && t.CanInteract(gameObject)) { _target = t; PosisiTarget = hit.collider.bounds.center; }
             }
             if (_target == null)
             {
@@ -64,7 +67,7 @@ namespace AlasKeramat.Player
                     float d = ke.magnitude;
                     if (d > Jarak || d < 0.05f) continue;
                     float sud = Vector3.Angle(cam.forward, ke / d);
-                    if (sud < terbaik) { terbaik = sud; _target = t; }
+                    if (sud < terbaik) { terbaik = sud; _target = t; PosisiTarget = _overlapBuf[i].bounds.center; }
                 }
             }
             if (_target == null) _air = CariAir(cam.position, cam.forward);
