@@ -223,6 +223,9 @@ namespace AlasKeramat.EditorTools
             float[,] posRawa = { { 378f, -312f, 40f }, { 392f, -304f, 130f }, { 384f, -326f, -35f } };
             for (int i = 0; i < posRawa.GetLength(0); i++)
                 Taruh("KemahRawa_" + i, rawaMesh, new[] { kayu, bilik }, posRawa[i, 0], posRawa[i, 1], posRawa[i, 2], Vector3.one, true);
+            var jRawaMesh = Simpan(ProcBangunan.JembatanPapanRawa());
+            Taruh("JembatanRawa_0", jRawaMesh, new[] { kayu, bilik }, 385f, -308f, 62f, Vector3.one, true);
+            Taruh("JembatanRawa_1", jRawaMesh, new[] { kayu, bilik }, 372f, -320f, 152f, Vector3.one, true);
 
             Taruh("MonolitWatuIreng_0", Simpan(ProcBangunan.MonolitWatuIreng()), new[] { gelap, batu }, -420f, 460f, 25f, Vector3.one, true);
             for (int i = 0; i < 6; i++)

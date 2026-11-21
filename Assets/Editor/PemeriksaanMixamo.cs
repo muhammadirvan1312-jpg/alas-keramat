@@ -199,6 +199,15 @@ namespace AlasKeramat.EditorTools
                 && !AlasKeramat.AI.AnimasiMixamo.BolehTampilModelMixamo(AlasKeramat.AI.ProceduralAnimator.Mode.Galeri)
                 && AlasKeramat.Core.URPAtmosphereAndWeather.DurasiGuncangGuruh(0.4f) > 0.15f
                 && AlasKeramat.Core.URPAtmosphereAndWeather.DurasiGuncangGuruh(2.0f) == 0f);
+            var menu22 = Object.FindFirstObjectByType<AlasKeramat.UI.MenuScreens>(FindObjectsInactive.Include);
+            cek("SOTF v22: pengaturan mode tantangan Sengsara/Pantang Mundur & jembatan papan Kemah Rawa",
+                AlasKeramat.UI.MenuScreens.LabelModeTantangan(true, true).Contains("SENGSARA")
+                && AlasKeramat.UI.MenuScreens.LabelModeTantangan(false, false) == "STANDAR"
+                && menu22 != null
+                && menu22.transform.Find("PanelPengaturan/HalamanAtur3/PilihanNyaman13") != null
+                && menu22.transform.Find("PanelPengaturan/HalamanAtur3/PilihanNyaman14") != null
+                && AlasKeramat.Core.ProcBangunan.JembatanPapanRawa().vertexCount > 40
+                && GameObject.Find("JembatanRawa_0") != null && GameObject.Find("JembatanRawa_1") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

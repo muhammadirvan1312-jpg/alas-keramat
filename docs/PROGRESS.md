@@ -237,3 +237,11 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `AnimasiMixamo` mengaktifkan model Mixamo `Remy` untuk Kang Deden sejak awal pembukaan game saat duduk terhuyung di ekor heli (`BolehTampilModelMixamo` untuk `Mode.DudukTerhuyung` dengan klip `Sitting_Idle`/`Kneeling_Idle`).
   - `NusantaraFoto` menajamkan ketepatan kontur medan saat audit visual (`heightmapPixelError = 7`, `basemapDistance = 420`).
   - `URPAtmosphereAndWeather` menambahkan efek guncangan kamera saat petir menyambar dekat selama hujan badai (`DurasiGuncangGuruh`).
+- Gelombang 22 SOTF (`imp-sotf-v3`):
+  - `MenuScreens` / `MenuScreens.Kenyamanan` & `BuilderSteps.PengaturanNyaman` menyambungkan tombol UI **Mode Sengsara** (`ak_sengsara`, `PilihanNyaman13`) dan **Mode Pantang Mundur** (`ak_pantang`, `PilihanNyaman14`) di tab Pengaturan Permainan beserta persistensi `MuatPengaturan`/`SimpanPengaturan`, label status (`LabelModeTantangan`), pengali laju vital Pantang Mundur, dan penghapusan slot simpan saat gugur di `AndiVitalsAndSanity.Mati()`.
+  - `ProcBangunan.JembatanPapanRawa` dan 2 jembatan papan rawa bertiang bambu (`JembatanRawa_0..1`) menghubungkan kompleks Kemah Rawa ke daratan kering.
+
+### Audit Visual PR #46 (Rubrik 19 §7, 22 Nov 2026)
+- Perangkat uji pengguna: **Entry-level RAM 4 GB** -> default preset **`Rendah` 30 FPS**. Peta jalan visual tersimpan di `docs/CATATAN_VISUAL_ANTIGRAVITY.md`.
+- Baseline PR #46 (`imp-sotf-v2` `611e4ee` -> merge `main` `6d45a2f`, 6 foto dunia + 3 foto HUD, 0% pink):
+  - Cahaya & bayangan: **7.0** | Atmosfer & kedalaman: **7.0** | Material: **7.5** | Vegetasi: **7.5** | Komposisi & siluet: **7.0** | Warna & grading: **7.0** | **Karakter: 5.5** *(alasan: pada foto PR #46 Deden duduk masih MakeHuman gelap - diperbaiki di Gelombang 21 - dan kulit/rambut Mixamo belum memakai shader/tint Indonesia)* | Rasa takut (malam): **6.0** | Artefak: **8.5** *(catatan foto HUD: tombol/joystick/minimap masih kotak polos karena bug importer Sprite Unity 6)*. **Rata-rata: 7.0 / 10**.

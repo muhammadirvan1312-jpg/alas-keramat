@@ -167,7 +167,7 @@ namespace AlasKeramat.Player
             // Haus, istirahat, gizi
             float pHaus = (k.sprint ? 1.2f : 1f) * (kemarau && k.jam >= 10f && k.jam < 15f ? 1.4f : 1f) * (Tidur ? PengaliTidur : 1f) * (SuhuTubuh > SuhuKepanasan ? 1.8f : 1f);
             if (k.cuaca == WeatherState.KabutAsap) pHaus *= 1.2f;
-            float pKesulitan = (AI.EnemyDirector.Kesulitan == Difficulty.Damai ? 0.7f : AI.EnemyDirector.Kesulitan == Difficulty.Sulit ? 1.25f : 1f) * PengaliModeSengsara(ModeSengsara);
+            float pKesulitan = (AI.EnemyDirector.Kesulitan == Difficulty.Damai ? 0.7f : AI.EnemyDirector.Kesulitan == Difficulty.Sulit ? 1.25f : 1f) * PengaliModeSengsara(ModeSengsara || ModePantangMundur);
             Hydration = Mathf.Max(0f, Hydration - LajuHaus * pHaus * pKesulitan * dt);
             Rest = Tidur ? Mathf.Min(Maks, Rest + 1.5f * dt) : Mathf.Max(0f, Rest - LajuIstirahat * pKesulitan * dt);
             TickGizi(k.sprint, dt * pKesulitan);
@@ -267,7 +267,8 @@ namespace AlasKeramat.Player
         {
             if (_tMati > 0f) return;
             Health = 0f; _tMati = RespawnDetik;
-            GameEvents.RaiseToast(ModePantangMundur ? "Pantang Mundur: Andi tumbang di Alas Keramat..." : "Andi pingsan...");
+            if (ModePantangMundur) SaveSystem.HapusSlot(SaveSystem.SlotAktif);
+            GameEvents.RaiseToast(ModePantangMundur ? "Pantang Mundur: Andi tumbang! Simpanan dihapus..." : "Andi pingsan...");
             var h = OnMati; if (h != null) h();
         }
 

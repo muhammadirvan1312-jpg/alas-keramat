@@ -243,6 +243,7 @@ namespace AlasKeramat.UI
             SaveSystem.SlotAktif = Mathf.Clamp(PlayerPrefs.GetInt(PrefSlot, 1), 1, 3);
             TerrorDirector.Setelan = (PenjadwalTeror.Intensitas)Mathf.Clamp(PlayerPrefs.GetInt(PrefHoror, (int)PenjadwalTeror.Intensitas.Normal), 0, 2);
             TerrorDirector.Headset = PlayerPrefs.GetInt(PrefHeadset, 1) != 0;
+            MuatModeTantangan();
         }
 
         public void SimpanPengaturan()
@@ -267,6 +268,8 @@ namespace AlasKeramat.UI
             PlayerPrefs.SetInt(PrefSlot, SaveSystem.SlotAktif);
             PlayerPrefs.SetInt(PrefHoror, (int)TerrorDirector.Setelan);
             PlayerPrefs.SetInt(PrefHeadset, TerrorDirector.Headset ? 1 : 0);
+            PlayerPrefs.SetInt(PrefSengsara, AndiVitalsAndSanity.ModeSengsara ? 1 : 0);
+            PlayerPrefs.SetInt(PrefPantang, AndiVitalsAndSanity.ModePantangMundur ? 1 : 0);
             PlayerPrefs.Save();
         }
 
@@ -370,7 +373,8 @@ namespace AlasKeramat.UI
                 "  |  Ukuran Tombol: " + (SkalaTombol * 100f).ToString("0") + "%\n" +
                 "Volume Master: " + (VolMaster * 100f).ToString("0") + "%  |  Headset: " + (TerrorDirector.Headset ? "AKTIF" : "MATI") +
                 "  |  Getar: " + (Getar ? "AKTIF" : "MATI") + "  |  Imersif: " + (ModeImersif ? "YA" : "TIDAK") + "\n" +
-                "Tingkat Gore: " + GoreSystem.Tingkat + "  |  Intensitas Horor: " + TerrorDirector.Setelan + "  |  Kesulitan: " + Kesulitan;
+                "Tingkat Gore: " + GoreSystem.Tingkat + "  |  Intensitas Horor: " + TerrorDirector.Setelan + "  |  Kesulitan: " + Kesulitan +
+                "  |  Tantangan: " + LabelModeTantangan(AndiVitalsAndSanity.ModeSengsara, AndiVitalsAndSanity.ModePantangMundur);
         }
 
         // ---------- Aksi Tombol Menu & Jeda ----------

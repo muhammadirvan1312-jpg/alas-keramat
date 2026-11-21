@@ -25,6 +25,8 @@ namespace AlasKeramat.Player
         public float LukaKaki { get; private set; }
         public StatusEffect Status { get; private set; }
         public static bool ModeSengsara, ModePantangMundur;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetModeTantangan() { ModeSengsara = false; ModePantangMundur = false; }
         public static float PengaliModeSengsara(bool aktif) { return aktif ? 1.45f : 1f; }
 
         float _diare, _racun, _bisa;

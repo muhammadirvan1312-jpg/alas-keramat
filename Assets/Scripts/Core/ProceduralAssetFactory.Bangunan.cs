@@ -592,5 +592,24 @@ namespace AlasKeramat.Core
             }
             return b.Jadi("MonolitWatuIreng");
         }
+
+        // Jembatan papan kayu rendah sepanjang 14 m di atas genangan rawa + tiang pancang & tali pegangan. 0 kayu, 1 bilik/bambu.
+        public static Mesh JembatanPapanRawa()
+        {
+            var b = new B(2);
+            for (int s = -1; s <= 1; s += 2)
+                b.Kotak(0, new Vector3(s * 0.58f, 0.36f, 0f), new Vector3(0.14f, 0.14f, 14f), Quaternion.identity, 2f);
+            for (int i = 0; i < 16; i++)
+            {
+                float z = -6.5f + i * 0.87f;
+                b.Kotak(0, new Vector3(0f, 0.46f, z), new Vector3(1.55f, 0.06f, 0.65f), Quaternion.Euler(0f, (i % 3 - 1) * 2.5f, 0f), 1f);
+            }
+            for (int r = -2; r <= 2; r++)
+                for (int s = -1; s <= 1; s += 2)
+                    b.Silinder(1, new Vector3(s * 0.72f, -0.8f, r * 3.1f), 0.08f, 0.07f, 2.05f, 6, Quaternion.identity, 1f);
+            for (int s = -1; s <= 1; s += 2)
+                b.Kotak(1, new Vector3(s * 0.72f, 1.15f, 0f), new Vector3(0.06f, 0.06f, 12.6f), Quaternion.identity, 2f);
+            return b.Jadi("JembatanPapanRawa");
+        }
     }
 }

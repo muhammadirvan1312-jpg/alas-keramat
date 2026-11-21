@@ -8,7 +8,42 @@ namespace AlasKeramat.UI
     public partial class MenuScreens
     {
         public const string PrefJedaPanel = "ak_jeda_panel", PrefGoyangan = "ak_goyangan_tempur";
+        public const string PrefSengsara = "ak_sengsara", PrefPantang = "ak_pantang";
         public bool Goyangan { get; private set; }
+
+        public static string LabelModeTantangan(bool sengsara, bool pantang)
+        {
+            if (sengsara && pantang) return "SENGSARA + PANTANG MUNDUR";
+            if (sengsara) return "SENGSARA";
+            if (pantang) return "PANTANG MUNDUR";
+            return "STANDAR";
+        }
+
+        public void MuatModeTantangan()
+        {
+            AndiVitalsAndSanity.ModeSengsara = PlayerPrefs.GetInt(PrefSengsara, 0) == 1;
+            AndiVitalsAndSanity.ModePantangMundur = PlayerPrefs.GetInt(PrefPantang, 0) == 1;
+        }
+
+        public void ToggleModeSengsara()
+        {
+            AndiVitalsAndSanity.ModeSengsara = !AndiVitalsAndSanity.ModeSengsara;
+            PlayerPrefs.SetInt(PrefSengsara, AndiVitalsAndSanity.ModeSengsara ? 1 : 0);
+            PlayerPrefs.Save();
+            SegarkanTeksPengaturan();
+            BunyiKlik();
+            GameEvents.RaiseToast("Mode Tantangan: " + LabelModeTantangan(AndiVitalsAndSanity.ModeSengsara, AndiVitalsAndSanity.ModePantangMundur));
+        }
+
+        public void ToggleModePantangMundur()
+        {
+            AndiVitalsAndSanity.ModePantangMundur = !AndiVitalsAndSanity.ModePantangMundur;
+            PlayerPrefs.SetInt(PrefPantang, AndiVitalsAndSanity.ModePantangMundur ? 1 : 0);
+            PlayerPrefs.Save();
+            SegarkanTeksPengaturan();
+            BunyiKlik();
+            GameEvents.RaiseToast("Mode Tantangan: " + LabelModeTantangan(AndiVitalsAndSanity.ModeSengsara, AndiVitalsAndSanity.ModePantangMundur));
+        }
         [SerializeField] GameObject[] halamanAtur = new GameObject[0];
         [SerializeField] Slider[] penggeserAtur = new Slider[0];
         [SerializeField] Text[] nilaiAtur = new Text[0];
@@ -41,7 +76,9 @@ namespace AlasKeramat.UI
                 "GRAFIS: " + Preset, "TARGET: " + TargetFps + " FPS",
                 "HEADSET: " + (TerrorDirector.Headset ? "AKTIF" : "MATI"),
                 "GORE: " + GoreSystem.Tingkat, "HOROR: " + TerrorDirector.Setelan,
-                "KESULITAN: " + Kesulitan, "SEMBUNYIKAN VITAL: " + (ModeImersif ? "YA" : "TIDAK")
+                "KESULITAN: " + Kesulitan, "SEMBUNYIKAN VITAL: " + (ModeImersif ? "YA" : "TIDAK"),
+                "MODE SENGSARA: " + (AndiVitalsAndSanity.ModeSengsara ? "AKTIF" : "MATI"),
+                "PANTANG MUNDUR: " + (AndiVitalsAndSanity.ModePantangMundur ? "AKTIF" : "MATI")
             };
             for (int i = 0; i < pilihanNyaman.Length && i < label.Length; i++) if (pilihanNyaman[i] != null) pilihanNyaman[i].text = label[i];
         }
