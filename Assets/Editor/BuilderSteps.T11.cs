@@ -86,7 +86,7 @@ namespace AlasKeramat.EditorTools
             pJeda.SetActive(false);
 
             // 3. Panel Pengaturan (09 §4.4, 11 §7.2)
-            var pAtur = PanelGelap(akar, "PanelPengaturan", new Vector2(0.08f, 0.06f), new Vector2(0.92f, 0.94f), new Color(0.05f, 0.06f, 0.06f, 0.95f));
+            var pAtur = PanelGelap(akar, "PanelPengaturan", new Vector2(0f, 0f), new Vector2(1f, 1f), new Color(0.04f, 0.05f, 0.05f, 0.97f));
             Text infoAtur;
             BangunPengaturanNyaman(pAtur, menu, font, out infoAtur);
             pAtur.SetActive(false);

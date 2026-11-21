@@ -166,6 +166,7 @@ namespace AlasKeramat.EditorTools
             var imp = AssetImporter.GetAtPath(path) as TextureImporter;
             if (imp == null) throw new Exception("importer tekstur tidak ada: " + path);
             imp.textureType = normal ? TextureImporterType.NormalMap : sprite ? TextureImporterType.Sprite : TextureImporterType.Default;
+            if (sprite) imp.spriteImportMode = SpriteImportMode.Single;
             imp.mipmapEnabled = !sprite;
             imp.streamingMipmaps = !sprite; imp.anisoLevel = sprite ? 1 : 8;
             imp.wrapMode = sprite ? TextureWrapMode.Clamp : TextureWrapMode.Repeat;

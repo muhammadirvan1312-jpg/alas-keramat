@@ -224,6 +224,13 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.AI.WildAnimalAI.PredatorTakutApi(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, true, 6f, 1f)
                 && !AlasKeramat.AI.WildAnimalAI.PredatorTakutApi(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, false, 6f, 1f)
                 && !AlasKeramat.AI.WildAnimalAI.PredatorTakutApi(AlasKeramat.Core.ResepHewan.JenisHewan.Rusa, true, 5f, 1f));
+            cek("Visual V1: tur foto diperluas (>= 12 shot audit) & seluruh sprite HUD berjenis Sprite",
+                NusantaraFoto.JumlahFotoAudit >= 12 && NusantaraFoto.ShotAktif.Length >= 12
+                && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_lingkaran.png") != null
+                && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_cincin.png") != null
+                && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_joy_basis.png") != null
+                && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_joy_kenop.png") != null
+                && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_vinyet_luka.png") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

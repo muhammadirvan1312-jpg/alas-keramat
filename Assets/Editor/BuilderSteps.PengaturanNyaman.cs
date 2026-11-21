@@ -74,8 +74,9 @@ namespace AlasKeramat.EditorTools
             var isi = UIStretch(areaIsi, "Isi", new Vector2(0f, 0f), new Vector2(0f, 1f));
             var gIsi = isi.AddComponent<Image>(); GayakanTombol(gIsi, ProcTex.Hex("#E0B33A"), null); gIsi.color = ProcTex.Hex("#E0B33A"); gIsi.raycastTarget = false;
             var area = UIStretch(fondasi, "AreaKenop", new Vector2(0.05f, 0), new Vector2(0.95f, 1));
-            var kenop = UIGambar(area, "Kenop", null, new Vector2(58, 58), new Vector2(0.5f, 0.5f), Vector2.zero);
+            var kenop = UIGambar(area, "Kenop", null, new Vector2(56, 56), new Vector2(0.5f, 0.5f), Vector2.zero);
             var gk = kenop.GetComponent<Image>(); var sk = SpriteLingkaran(); if (sk != null) gk.sprite = sk;
+            gk.preserveAspect = true;
             gk.color = ProcTex.Hex("#F2CE5A");
             var s = fondasi.AddComponent<Slider>(); s.minValue = min; s.maxValue = max; s.wholeNumbers = max > 10;
             s.targetGraphic = gk; s.handleRect = (RectTransform)kenop.transform; s.fillRect = (RectTransform)isi.transform;
