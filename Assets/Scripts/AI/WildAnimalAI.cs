@@ -18,6 +18,11 @@ namespace AlasKeramat.AI
 
         public JH Jenis { get { return jenis; } }
         public KeadaanHewan State { get; private set; }
+        public float KecepatanKini { get; private set; }
+        public float KecepatanMaks { get { return ResepHewan.Ambil(jenis).kecepatan; } }
+        ModelHewanAsli _modelAsli;
+        bool _cekModel;
+        bool PakaiModel() { if (!_cekModel) { _cekModel = true; _modelAsli = GetComponent<ModelHewanAsli>(); } return _modelAsli != null && _modelAsli.Aktif; }
         public bool IsAlive { get { return State != KeadaanHewan.Mati; } }
         public float HoldDuration { get { return 0f; } }
 
@@ -71,7 +76,7 @@ namespace AlasKeramat.AI
 
         void Update()
         {
-            if (State == KeadaanHewan.Mati) { Guling(); return; }
+            if (State == KeadaanHewan.Mati) { KecepatanKini = 0f; if (!PakaiModel()) Guling(); return; }
             float dt = Time.deltaTime;
             _tState -= dt;
             if (_andi == null) _andi = GameServices.Get<AndiFPSController>();
@@ -128,6 +133,8 @@ namespace AlasKeramat.AI
                     break;
             }
             Gerak(kec, dt);
+            KecepatanKini = kec;
+            if (PakaiModel()) return;
             if (_andi == null || (_andi.transform.position - transform.position).sqrMagnitude <= 3025f || (Time.frameCount & 1) == 0)
                 Animasi(kec, dt);
         }

@@ -38,6 +38,16 @@ namespace AlasKeramat.EditorTools
             cek("Mixamo: peta model karakter (Genderuwo=Warrok, Wanita=Zombiegirl, Sekte=Nightshade)", NusantaraMasterBuilder.ModelUntuk("BossGenderuwo") == "Warrok"
                 && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiWanita") == "Zombiegirl" && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiSekte") == "Nightshade" && NusantaraMasterBuilder.ModelUntuk("Musuh_KiRogo") == null
                 && AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(1.8f, 1.8f) == 1f && AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(3f, 1f) == 2.5f);
+            cek("Hewan asli: peta model & pilihan klip", NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Rusa) == "rusa"
+                && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau) == null
+                && AlasKeramat.AI.ModelHewanAsli.PilihKlip(0f, 5f, "i", "w", "r") == "i" && AlasKeramat.AI.ModelHewanAsli.PilihKlip(1f, 5f, "i", "w", "r") == "w" && AlasKeramat.AI.ModelHewanAsli.PilihKlip(5f, 5f, "i", "w", "r") == "r"
+                && AlasKeramat.AI.ModelHewanAsli.IndeksBahan("Eyes", "Head", null) == -1 && AlasKeramat.AI.ModelHewanAsli.IndeksBahan("Body", "head", new[] { "body", "head" }) == 1);
+            if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
+            {
+                int nh = 0;
+                foreach (var w in Object.FindObjectsByType<AlasKeramat.AI.WildAnimalAI>(FindObjectsInactive.Include, FindObjectsSortMode.None)) if (w.GetComponent<AlasKeramat.AI.ModelHewanAsli>() != null) nh++;
+                cek("Hewan asli: templat memakai model FBX (" + nh + ")", nh >= 3);
+            }
             if (AssetDatabase.IsValidFolder(ImporKarakterMixamo.Folder))
             {
                 int pakai = 0;

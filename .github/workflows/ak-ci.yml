@@ -97,6 +97,7 @@ jobs:
             mkdir -p Assets/Mixamo && cp /tmp/ak-aset/Mixamo/*.fbx Assets/Mixamo/
             echo "[AK] Mixamo: $(ls Assets/Mixamo/*.fbx | wc -l) klip"
             if [ -d /tmp/ak-aset/Karakter ]; then mkdir -p Assets/MixamoKarakter && cp /tmp/ak-aset/Karakter/*.fbx Assets/MixamoKarakter/; echo "[AK] Karakter Mixamo: $(ls Assets/MixamoKarakter/*.fbx | wc -l)"; fi
+            if [ -d /tmp/ak-aset/Hewan ]; then mkdir -p Assets/HewanAsli && cp /tmp/ak-aset/Hewan/* Assets/HewanAsli/; echo "[AK] Hewan asli: $(ls Assets/HewanAsli/*.fbx | wc -l) model"; fi
           else
             echo "[AK] Gagal mengambil repo aset, animasi Mixamo dilewati"
           fi
@@ -198,6 +199,8 @@ jobs:
             !Assets/Mixamo.meta
             !Assets/MixamoKarakter
             !Assets/MixamoKarakter.meta
+            !Assets/HewanAsli
+            !Assets/HewanAsli.meta
           retention-days: 2
 
       - name: Susun laporan CI (selalu)
@@ -316,6 +319,7 @@ jobs:
             mkdir -p Assets/Mixamo && cp /tmp/ak-aset/Mixamo/*.fbx Assets/Mixamo/
             echo "[AK] Mixamo: $(ls Assets/Mixamo/*.fbx | wc -l) klip"
             if [ -d /tmp/ak-aset/Karakter ]; then mkdir -p Assets/MixamoKarakter && cp /tmp/ak-aset/Karakter/*.fbx Assets/MixamoKarakter/; echo "[AK] Karakter Mixamo: $(ls Assets/MixamoKarakter/*.fbx | wc -l)"; fi
+            if [ -d /tmp/ak-aset/Hewan ]; then mkdir -p Assets/HewanAsli && cp /tmp/ak-aset/Hewan/* Assets/HewanAsli/; echo "[AK] Hewan asli: $(ls Assets/HewanAsli/*.fbx | wc -l) model"; fi
           else
             echo "[AK] Gagal mengambil repo aset, animasi Mixamo dilewati"
           fi
