@@ -14,7 +14,7 @@ namespace AlasKeramat.EditorTools
         {
             { S.KlipKenaDaging, "impact_punch_heavy_000" }, { S.KlipParry, "impact_metal_heavy_000" }, { S.KlipTubuhJatuh, "impact_soft_heavy_000" },
             { S.KlipTebang, "chop" }, { S.KlipAmbilKayu, "impact_wood_medium_000" }, { S.KlipAmbilItem, "handle_small_leather" },
-            { S.KlipTebasBasah, "knife_slice" }, { S.KlipKetukan, "impact_wood_heavy_000" }, { S.KlipKerikil, "impact_generic_light_000" },
+            { S.KlipTebasBasah, "knife_slice" }, { S.KlipKetukan, "impact_wood_heavy_000" }, { S.KlipKerikil, "impact_generic_light_000" }, { S.KlipUIKlik, "click_001" },
         };
 
         static void LangkahAudioKenney()
@@ -27,6 +27,7 @@ namespace AlasKeramat.EditorTools
             for (int i = 0; i < PetaKenney.GetLength(0); i++)
             {
                 string path = FolderKenney + "/" + PetaKenney[i, 1] + ".ogg";
+                if (!File.Exists(path)) path = FolderKenney + "/" + PetaKenney[i, 1] + ".wav";
                 if (!File.Exists(path)) { hilang++; continue; }
                 var imp = AssetImporter.GetAtPath(path) as AudioImporter;
                 if (imp == null) { hilang++; continue; }

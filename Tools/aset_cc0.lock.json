@@ -1083,6 +1083,16 @@
       "slot": "Audio",
       "size": 13615,
       "sha256": "9851a69d0c613e13bceef08060ecc4148f098ef487927cbebe270d642398a3b3"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Calinou/kenney-interface-sounds/4596a49eaf5a533948d49a47467f606bcdea70ff/addons/kenney_interface_sounds/click_001.wav",
+      "path": "CC0/Audio/kenney/click_001.wav",
+      "license": "CC0-1.0",
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "author": "Kenney (kenney.nl), mirror Calinou/kenney-interface-sounds",
+      "slot": "Audio",
+      "size": 10190,
+      "sha256": "ea67c9d78750e5a356bf53ef8c2063b52cc3ccdae6ae8afeec87f97f79ae692d"
     }
   ]
 }

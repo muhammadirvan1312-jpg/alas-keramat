@@ -335,9 +335,9 @@ namespace AlasKeramat.EditorTools
             pb.SetActive(false); pj.SetActive(false);
             EditorUtility.SetDirty(layar);
 
-            // Tombol JURNAL di HUD (kanan di bawah TAS/BUKU).
+            // Tombol JURNAL di HUD (bar atas, kanan PETA).
             var tj = TombolPanel(kanvas.gameObject, "TombolJurnal", "JURNAL", font, Vector2.zero, new Vector2(116f, 58f), coklat, out tx);
-            var trt = tj.GetComponent<RectTransform>(); trt.anchorMin = trt.anchorMax = new Vector2(1f, 1f); trt.anchoredPosition = new Vector2(-74f, -482f);
+            var trt = tj.GetComponent<RectTransform>(); trt.anchorMin = trt.anchorMax = new Vector2(0.5f, 1f); trt.anchoredPosition = new Vector2(300f, -45f); trt.sizeDelta = new Vector2(130f, 62f); // bar atas, sebaris JEDA/PETA (tidak menabrak JONGKOK)
             tx.fontSize = 22;
             UnityEventTools.AddPersistentListener(tj.onClick, layar.BukaJurnal);
             akar.transform.SetAsLastSibling();
