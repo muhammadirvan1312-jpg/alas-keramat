@@ -12,7 +12,11 @@ namespace AlasKeramat.Core
         public AudioClip AmbilRekaman(string nama)
         {
             AudioClip c;
-            return _peta.TryGetValue(nama, out c) ? c : null;
+            if (_peta.TryGetValue(nama, out c)) return c;
+            // Sebelum Awake (Editor/self-test) peta masih kosong: cari langsung di bank terpanggang.
+            if (clipNames != null && clips != null)
+                for (int i = 0; i < clipNames.Length && i < clips.Length; i++) if (clipNames[i] == nama) return clips[i];
+            return null;
         }
     }
 }
