@@ -106,6 +106,7 @@ namespace AlasKeramat.AI
         void LateUpdate()
         {
             if (!_siap) return;
+            if (_model != null && !_pa.enabled) { MatiModel(); return; }
             if (_model != null) TampilModel(_pa.ModeAktif == ProceduralAnimator.Mode.Normal);
             if (_pa.ModeAktif != ProceduralAnimator.Mode.Normal) return;
             if (_kamera == null) { var c = Camera.main; if (c != null) _kamera = c.transform; }

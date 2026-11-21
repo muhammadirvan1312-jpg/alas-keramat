@@ -65,6 +65,24 @@ namespace AlasKeramat.AI
             foreach (var r in _lama) if (r != null) r.forceRenderingOff = tampil;
         }
 
+        bool _mati;
+        // Animator prosedural dimatikan saat musuh tewas: model Mixamo memutar klip roboh sekali lalu diam di tanah.
+        void MatiModel()
+        {
+            if (_mati) { KunciPinggul(); return; }
+            _mati = true;
+            string k = PilihKlipMati(_anim.GetClip("Zombie_Dying") != null, _anim.GetClip("Dying") != null, peran);
+            if (k.Length == 0) return;
+            var st = _anim[k]; st.wrapMode = WrapMode.ClampForever; st.speed = 1f;
+            _anim.CrossFade(k, 0.15f); _kini = k;
+        }
+
+        public static string PilihKlipMati(bool adaZombie, bool adaBiasa, Peran p)
+        {
+            if (p == Peran.Raksasa || p == Peran.Sekte) return adaZombie ? "Zombie_Dying" : adaBiasa ? "Dying" : "";
+            return adaBiasa ? "Dying" : adaZombie ? "Zombie_Dying" : "";
+        }
+
         // Klip Mixamo bukan "in place": kunci geser horizontal pinggul agar posisi tetap dikendalikan AI.
         void KunciPinggul()
         {
