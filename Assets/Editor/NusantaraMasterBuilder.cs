@@ -97,6 +97,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7z4. Cookie senter", 0.9897f, LangkahCookieSenter);
                 Langkah("7z3. Partikel alam", 0.9895f, LangkahPartikelAlam);
                 Langkah("7z5. Indikator luka", 0.9898f, LangkahIndikatorLuka);
+                Langkah("7z6. Ikon kontrol & joystick", 0.9899f, LangkahIkonKontrol);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }
