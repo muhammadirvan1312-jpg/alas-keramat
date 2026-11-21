@@ -1,15 +1,9 @@
 # LAPORAN CI
-- Commit: 9a86f6caf90afb103138f5f153f9130f386a73ac
+- Commit: 84e2bdc2ce201d18ca30a1ddeaa7d30b85b4b7d9
 - Hasil aset visual: success
 - Hasil langkah Unity: failure
-- Waktu: 2026-11-21T10:05:53Z
+- Waktu: 2026-11-21T12:23:36Z
 
-[LULUS] pengaturan pemain
-[LULUS] builder
-[GAGAL] self-test: RunAll melaporkan gagal
-[LEWAT] foto: dijalankan di job CI terpisah (FotoSaja)
-[LULUS] build APK
+Ringkasan dari NusantaraCI tidak ada (kemungkinan error kompilasi sebelum kode berjalan).
 
 ## Baris error yang ditemukan
-[Error] [AK][GAGAL] self-test: [GAGAL] Audio: musik jelajah siang/malam terpasang
-[Error] [AK][GAGAL] self-test: System.Exception: RunAll melaporkan gagal
