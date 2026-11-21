@@ -147,6 +147,12 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Building.ApiUnggun.LajuAsapMasakan(0, true) == 0f
                 && AlasKeramat.Core.ProcBangunan.TotemPerbatasanSekte().vertexCount > 40
                 && GameObject.Find("TotemBatas_0") != null);
+            cek("SOTF v13: kurva & percikan zipline, semburan gali cangkul, pusaran debu Heli SAR & paku 3D altar",
+                AlasKeramat.Core.JangkarZipline.HitungTitikTaliZipline(Vector3.zero, Vector3.forward * 10f, 0.5f, 1.15f).y < -1.0f
+                && AlasKeramat.Core.TanahGali.JumlahPartikelGali(true) > AlasKeramat.Core.TanahGali.JumlahPartikelGali(false)
+                && AlasKeramat.Player.TitikLumpur.JumlahPercikanLumpur() >= 10
+                && AlasKeramat.AI.HeliSAR.LajuDebuHeliSAR(5f) > AlasKeramat.AI.HeliSAR.LajuDebuHeliSAR(25f)
+                && AlasKeramat.AI.RitualAltar.LajuPartikelSegelAltar(3, true) > AlasKeramat.AI.RitualAltar.LajuPartikelSegelAltar(1, false));
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

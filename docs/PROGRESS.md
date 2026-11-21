@@ -203,3 +203,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `BossGenderuwo` kini memancarkan cahaya aura merah-bara & partikel abu panas (`AuraBossGenderuwo` / `HitungIntensitasAuraBoss`) yang makin menyala ganas saat memasuki Fase 2 dan Fase 3.
   - `ApiUnggun` mengepulkan uap/asap masakan (`AsapMasakTusuk` / `LajuAsapMasakan`) ketika daging atau ikan sedang dipanggang di atas tusukan api unggun.
   - `ProcBangunan.TotemPerbatasanSekte` dan 6 totem peringatan wilayah sekte (`TotemBatas_0..5`) dipasang di pintu masuk Desa Mati, Kampung Sukamaju, Pabrik Gula, dan Kawah Beringin.
+- Gelombang 13 SOTF (`imp-sotf-v3`):
+  - `JangkarZipline` melengkungkan tali zipline dengan kurva lendutan alami (`SegmenTali` / `HitungTitikTaliZipline`) dan memancarkan percikan api gesekan katrol (`PercikanZipline`) + guncangan kamera saat mendarat.
+  - `TanahGali` memancarkan semburan tanah dan bunga api logam saat cangkul mengenai palka baja (`PancarTanahGali` / `JumlahPartikelGali`), dan `TitikLumpur` memancarkan cipratan lumpur saat Andi melakukan kamuflase (`JumlahPercikanLumpur`).
+  - `HeliSAR` menampilkan pusaran debu baling-baling (`DebuBalingHeli` / `LajuDebuHeliSAR`) dan lampu sorot pendaratan putih, sementara `RitualAltar` menampilkan 3 model 3D Paku Keramat bercahaya (`PakuAltar_0..2`) serta partikel segel emas (`PartikelSegelAltar` / `LajuPartikelSegelAltar`).

@@ -24,6 +24,53 @@ namespace AlasKeramat.AI
         ItemID _terakhir;
         int _tampil = -1, _kSpawn;
         bool _pengaliAktif;
+        Transform[] _pakuAltar;
+        ParticleSystem _partikelSegel;
+
+        public static float LajuPartikelSegelAltar(int tertancap, bool siege)
+        {
+            if (tertancap <= 0) return 0f;
+            return siege ? 28f : tertancap * 6f;
+        }
+
+        void PerbaruiVisualPakuDanSegel(int tertancap)
+        {
+            if (_pakuAltar == null)
+            {
+                _pakuAltar = new Transform[3];
+                var mEmas = SafeMaterialFactory.CreatePBR("M_PakuKeramatAltar", new Color(0.95f, 0.78f, 0.25f), 0.85f, 0.82f, null, null, new Color(2.4f, 1.7f, 0.3f));
+                for (int i = 0; i < 3; i++)
+                {
+                    var pk = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                    Destroy(pk.GetComponent<Collider>());
+                    pk.name = "PakuAltar_" + i;
+                    pk.transform.SetParent(transform, false);
+                    pk.transform.localPosition = new Vector3((i - 1) * 0.55f, 1.08f, 0f);
+                    pk.transform.localScale = new Vector3(0.06f, 0.22f, 0.06f);
+                    pk.GetComponent<MeshRenderer>().sharedMaterial = mEmas;
+                    _pakuAltar[i] = pk.transform;
+                }
+                var sg = new GameObject("PartikelSegelAltar");
+                sg.transform.SetParent(transform, false);
+                sg.transform.localPosition = new Vector3(0f, 1.15f, 0f);
+                _partikelSegel = sg.AddComponent<ParticleSystem>();
+                var pm = _partikelSegel.main; pm.loop = true; pm.startLifetime = 1.4f; pm.startSpeed = 0.85f; pm.startSize = 0.065f;
+                pm.maxParticles = 36; pm.gravityModifier = -0.25f; pm.simulationSpace = ParticleSystemSimulationSpace.World;
+                pm.startColor = new Color(1f, 0.84f, 0.28f, 0.9f);
+                var psh = _partikelSegel.shape; psh.shapeType = ParticleSystemShapeType.Box; psh.scale = new Vector3(1.4f, 0.1f, 0.5f);
+                var ppr = sg.GetComponent<ParticleSystemRenderer>();
+                ppr.sharedMaterial = mEmas; ppr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+            for (int i = 0; i < 3; i++)
+                if (_pakuAltar[i] != null) _pakuAltar[i].gameObject.SetActive(i < tertancap);
+            if (_partikelSegel != null)
+            {
+                float laju = LajuPartikelSegelAltar(tertancap, SiegeBerlangsung);
+                var em = _partikelSegel.emission; em.rateOverTime = laju;
+                if (laju > 0f && !_partikelSegel.isPlaying) _partikelSegel.Play();
+                else if (laju <= 0f && _partikelSegel.isPlaying) _partikelSegel.Stop();
+            }
+        }
 
         public void Pasang(Light[] l, GameObject lore, GameObject emas, GameObject suar, GameObject bayangan) { lubang = l; ukiranLore = lore; cahayaEmas = emas; suarHijau = suar; bayanganKiRogo = bayangan; }
         QuestManager Q { get { return GameServices.Get<QuestManager>(); } }
@@ -62,6 +109,7 @@ namespace AlasKeramat.AI
             for (int i = 0; i < lubang.Length; i++) if (lubang[i] != null) lubang[i].enabled = i < q.Progres.tertancap;
             if (ukiranLore != null) ukiranLore.SetActive(q.Progres.tertancap >= 1);
             if (suarHijau != null) suarHijau.SetActive(q.Progres.siegeSelesai && q.Progres.ending == 0);
+            PerbaruiVisualPakuDanSegel(q.Progres.tertancap);
         }
 
         IEnumerator Siege()
