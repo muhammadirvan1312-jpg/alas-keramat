@@ -100,6 +100,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7z6. Ikon kontrol & joystick", 0.9899f, LangkahIkonKontrol);
                 Langkah("7z7. Hewan model asli", 0.99f, LangkahHewanAsli);
                 Langkah("7z8. Props desa CC0 & lampu minyak", 0.991f, LangkahPropDesa);
+                Langkah("7z9. Ekspansi besar SOTF (props 2K, biota, perangkap & HUD)", 0.992f, LangkahEkspansiSOTF);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

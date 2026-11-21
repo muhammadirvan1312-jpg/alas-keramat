@@ -321,7 +321,15 @@ PROPS=[('wooden_crate_01','PetiKayuScan',0.95,'w',700,None),('barrel_03','DrumSc
        ('metal_jerrycan','JerikenScan',0.46,'h',420,None),('old_tyre','BanBekasScan',0.62,'w',420,None),
        ('pot_enamel_01','PanciScan',0.28,'w',420,None),('wooden_ladder','TanggaScan',1.9,'h',600,None),
        ('painted_wooden_bench','BangkuScan',1.25,'w',400,None),('wooden_axe','KapakScan',0.66,'h',300,None),
-       ('vintage_oil_lamp','LampuMinyakScan',0.34,'h',500,'vintage_oil_lamp')]
+       ('vintage_oil_lamp','LampuMinyakScan',0.34,'h',500,'vintage_oil_lamp'),
+       ('ammo_box','PetiPeluruScan',0.38,'w',420,None),('medical_box','KotakMedisScan',0.36,'w',420,None),
+       ('metal_tool_chest','KotakPerkakasScan',0.52,'w',520,None),('barrel_stove','TungkuDrumScan',0.95,'h',560,None),
+       ('brass_diya_lantern','PelitaKuninganScan',0.28,'h',440,None),('brass_pot_01','BejanaKuninganScan',0.38,'w',460,None),
+       ('antique_ceramic_vase_01','GuciAntikScan',0.48,'h',460,None),('WoodenTable_03','MejaKayuScan',1.35,'w',460,None),
+       ('WoodenChair_01','KursiKayuScan',0.86,'h',460,None),('Shelf_01','RakKayuScan',1.45,'h',460,None),
+       ('cardboard_box_01','KardusLogistikScan',0.46,'w',320,None),('cement_bag','KarungSemenScan',0.58,'w',360,None),
+       ('brass_vase_02','KendiKuninganScan',0.42,'h',440,None),('brass_pan_01','WajanKuninganScan',0.34,'w',380,None),
+       ('carved_wooden_plate','PiringKayuScan',0.30,'w',320,None)]
 for name,out,size,axis,limit,only in PROPS:
     bpy.ops.wm.read_factory_settings(use_empty=True)
     path=ROOT/'Assets/ThirdParty/CC0/Model'/f'{name}.fbx.source'

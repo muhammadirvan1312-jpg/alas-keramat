@@ -13,7 +13,9 @@ namespace AlasKeramat.EditorTools
             {"tanah","TanahHutan"},{"rumput","LumutHutan"},{"batu","Batu"},{"kayu","Kayu"},
             {"kulit_kayu","KulitKayu"},{"pasir","Pasir"},{"lumpur","Lumpur"},{"daun","Serasah"},
             {"beton","Beton"},{"logam_karat","Karat"},{"palem","Palem"},{"kain","Kain"},{"batu_gua","BatuGua"},{"bilik","BilikBambu"},
-            {"genteng","AtapGenteng"},{"genteng_lumut","AtapLumut"}
+            {"genteng","AtapGenteng"},{"genteng_lumut","AtapLumut"},
+            {"beton_bunker","BetonBunker"},{"batu_candi","BatuCandi"},{"kayu_lapuk","KayuLapuk"},{"karat_pabrik","KaratPabrik"},
+            {"tanah_rawa","TanahRawa"},{"kerikil_sungai","KerikilSungai"},{"jalan_batu_desa","JalanBatuDesa"},{"karang_kapur","KarangKapur"}
         };
         static Texture2D BacaFoto(string slot,string peta)
         {
