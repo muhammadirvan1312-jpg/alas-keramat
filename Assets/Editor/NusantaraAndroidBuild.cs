@@ -44,7 +44,8 @@ namespace AlasKeramat.EditorTools
                 PlayerSettings.SetIl2CppCompilerConfiguration(NamedBuildTarget.Android, Il2CppCompilerConfiguration.Release);
                 PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
             }
-            PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.Android, true);
+            PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.Android, false);
+            PlayerSettings.SetGraphicsAPIs(BuildTarget.Android, new[] { GraphicsDeviceType.OpenGLES3 }); // DIAG: paksa OpenGL ES 3 (tanpa Vulkan)
             AssetDatabase.SaveAssets();
         }
 
