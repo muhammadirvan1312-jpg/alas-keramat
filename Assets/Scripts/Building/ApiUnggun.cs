@@ -21,8 +21,42 @@ namespace AlasKeramat.Building
         readonly ItemID[] _masak = new ItemID[Tusuk];
         readonly float[] _t = new float[Tusuk];
         float _badai, _tKemenyan;
-        ParticleSystem _asapKemenyan;
+        ParticleSystem _asapKemenyan, _asapMasak;
         URPAtmosphereAndWeather _atmos;
+
+        public static float LajuAsapMasakan(int jumlahTusukTerisi, bool menyala)
+        {
+            if (!menyala || jumlahTusukTerisi <= 0) return 0f;
+            return 3f + jumlahTusukTerisi * 2.5f;
+        }
+
+        void PerbaruiAsapMasakan()
+        {
+            int terisi = 0;
+            for (int i = 0; i < Tusuk; i++) if (_masak[i] != ItemID.None) terisi++;
+            float laju = LajuAsapMasakan(terisi, Menyala);
+            if (laju > 0f)
+            {
+                if (_asapMasak == null)
+                {
+                    var go = new GameObject("AsapMasakTusuk");
+                    go.transform.SetParent(transform, false);
+                    go.transform.localPosition = new Vector3(0f, 0.56f, 0.32f);
+                    _asapMasak = go.AddComponent<ParticleSystem>();
+                    var m = _asapMasak.main;
+                    m.loop = true; m.startLifetime = 1.35f; m.startSpeed = 0.42f; m.startSize = 0.13f;
+                    m.maxParticles = 22; m.gravityModifier = -0.07f; m.simulationSpace = ParticleSystemSimulationSpace.World;
+                    m.startColor = new Color(0.88f, 0.84f, 0.76f, 0.34f);
+                    var sh = _asapMasak.shape; sh.shapeType = ParticleSystemShapeType.Box; sh.scale = new Vector3(0.55f, 0.05f, 0.15f);
+                    var pr = go.GetComponent<ParticleSystemRenderer>();
+                    pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_AsapMasakTusuk", new Color(0.88f, 0.84f, 0.76f, 0.32f), 0f, 0.1f, null, null, null, SurfaceMode.Transparent);
+                    pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+                var em = _asapMasak.emission; em.rateOverTime = laju;
+                if (!_asapMasak.isPlaying) _asapMasak.Play();
+            }
+            else if (_asapMasak != null && _asapMasak.isPlaying) _asapMasak.Stop();
+        }
 
         public static float LajuAsapKemenyan(float sisaWaktu, bool menyala)
         {
@@ -146,6 +180,7 @@ namespace AlasKeramat.Building
             float dt = Time.deltaTime;
             SuaraKretek();
             PerbaruiAsapKemenyan(dt);
+            PerbaruiAsapMasakan();
             if (Menyala) PastikanVisualApi();
             if (_nyalaRoot != null)
             {

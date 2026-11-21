@@ -140,6 +140,13 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Player.CombatAndLeftHandController.HitungIntensitasKilatLaras(AlasKeramat.Player.CombatAndLeftHandController.JenisJarak.Hitscan, 0.05f) > 1f
                 && AlasKeramat.Core.WorldEventScheduler.JumlahBagianPetiTerdampar() == 4
                 && AlasKeramat.Building.BagianStruktur.JumlahPartikelRuntuh(AlasKeramat.Building.BagianStruktur.Tipe.FondasiBatu, true) == 18);
+            cek("SOTF v12: aura bara fase Boss Genderuwo, asap panggangan api unggun & totem perbatasan sekte",
+                AlasKeramat.AI.BossGenderuwo.HitungIntensitasAuraBoss(3, AlasKeramat.AI.BossGenderuwo.AksiBoss.Kejar) > AlasKeramat.AI.BossGenderuwo.HitungIntensitasAuraBoss(1, AlasKeramat.AI.BossGenderuwo.AksiBoss.Kejar)
+                && AlasKeramat.AI.BossGenderuwo.HitungIntensitasAuraBoss(3, AlasKeramat.AI.BossGenderuwo.AksiBoss.Mati) == 0f
+                && AlasKeramat.Building.ApiUnggun.LajuAsapMasakan(2, true) > 5f
+                && AlasKeramat.Building.ApiUnggun.LajuAsapMasakan(0, true) == 0f
+                && AlasKeramat.Core.ProcBangunan.TotemPerbatasanSekte().vertexCount > 40
+                && GameObject.Find("TotemBatas_0") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

@@ -199,3 +199,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `AndiFPSController` menambahkan ayunan ombak & kemiringan pitch/roll saat mengemudikan `RakitBambu` (`HitungAyunOmbakRakit`), jejak buih air di buritan rakit (`HitungLajuBuihRakit`), tiang layar rakit, serta gelembung udara di depan kamera saat menyelam (`HitungLajuGelembungSelam`).
   - `ProyektilAK` memasang jejak partikel api, kabut racun hijau, dan suar merah bercahaya pada proyektil terbang (`PunyaJejakProyektil`), sedangkan `CombatAndLeftHandController` menambahkan kilat api moncong senjata (`KilatLarasFP` / `HitungIntensitasKilatLaras`) saat menembakkan bedil, pistol, senapan, dan pistol suar.
   - `WorldEventScheduler` membangun visual 3D peti kayu logistik berpita oranye (`BuatVisualPetiTerdampar`) dan ransel ekspedisi berpatok tanda pengenal (`BuatVisualRanselEkspedisi`), serta `BagianStruktur` memancarkan partikel serpihan kayu/debu batu saat bangunan runtuh (`JumlahPartikelRuntuh`).
+- Gelombang 12 SOTF (`imp-sotf-v3`):
+  - `BossGenderuwo` kini memancarkan cahaya aura merah-bara & partikel abu panas (`AuraBossGenderuwo` / `HitungIntensitasAuraBoss`) yang makin menyala ganas saat memasuki Fase 2 dan Fase 3.
+  - `ApiUnggun` mengepulkan uap/asap masakan (`AsapMasakTusuk` / `LajuAsapMasakan`) ketika daging atau ikan sedang dipanggang di atas tusukan api unggun.
+  - `ProcBangunan.TotemPerbatasanSekte` dan 6 totem peringatan wilayah sekte (`TotemBatas_0..5`) dipasang di pintu masuk Desa Mati, Kampung Sukamaju, Pabrik Gula, dan Kawah Beringin.

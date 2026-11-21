@@ -518,5 +518,20 @@ namespace AlasKeramat.Core
             b.Silinder(1, new Vector3(0f, 2.14f, 0.40f), 0.07f, 0.05f, 0.18f, 6, Quaternion.identity, 1f);
             return b.Jadi("RambuPetunjukKayu");
         }
+
+        // Totem perbatasan wilayah Sekte: tumpukan batu dasar, tiang kayu utama, 2 tombak bambu menyilang, palang tanduk & topeng tengkorak. 0 kayu, 1 batu/tulang.
+        public static Mesh TotemPerbatasanSekte()
+        {
+            var b = new B(2);
+            b.Silinder(1, new Vector3(0f, 0f, 0f), 0.52f, 0.38f, 0.42f, 8, Quaternion.identity, 1f);
+            b.Silinder(0, new Vector3(0f, 0.35f, 0f), 0.12f, 0.09f, 3.1f, 8, Quaternion.identity, 1.5f);
+            b.Kotak(0, new Vector3(0f, 1.75f, 0.06f), new Vector3(0.10f, 2.4f, 0.08f), Quaternion.Euler(0f, 0f, 32f), 1.5f);
+            b.Kotak(0, new Vector3(0f, 1.75f, -0.06f), new Vector3(0.10f, 2.4f, 0.08f), Quaternion.Euler(0f, 0f, -32f), 1.5f);
+            b.Kotak(0, new Vector3(0f, 2.55f, 0f), new Vector3(1.45f, 0.12f, 0.12f), Quaternion.identity, 1f);
+            b.Kotak(1, new Vector3(0f, 2.95f, 0.10f), new Vector3(0.38f, 0.46f, 0.32f), Quaternion.identity, 1f);
+            b.Kotak(1, new Vector3(-0.55f, 2.30f, 0f), new Vector3(0.18f, 0.36f, 0.18f), Quaternion.identity, 1f);
+            b.Kotak(1, new Vector3( 0.55f, 2.30f, 0f), new Vector3(0.18f, 0.36f, 0.18f), Quaternion.identity, 1f);
+            return b.Jadi("TotemPerbatasanSekte");
+        }
     }
 }

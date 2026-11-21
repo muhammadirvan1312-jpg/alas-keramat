@@ -203,6 +203,11 @@ namespace AlasKeramat.EditorTools
             float[,] posR = { { 35f, -410f, 35f }, { 238f, -285f, 110f }, { 485f, 185f, 215f }, { -160f, -840f, 15f } };
             for (int i = 0; i < posR.GetLength(0); i++)
                 Taruh("RambuHutan_" + i, rambuMesh, new[] { kayu, batu }, posR[i, 0], posR[i, 1], posR[i, 2], Vector3.one, true);
+
+            var totemMesh = Simpan(ProcBangunan.TotemPerbatasanSekte());
+            float[,] posTotem = { { 495f, 145f, 210f }, { 595f, 272f, 30f }, { 542f, 540f, 225f }, { 690f, 660f, 45f }, { 605f, -445f, 195f }, { -26f, -32f, 160f } };
+            for (int i = 0; i < posTotem.GetLength(0); i++)
+                Taruh("TotemBatas_" + i, totemMesh, new[] { kayu, batu }, posTotem[i, 0], posTotem[i, 1], posTotem[i, 2], Vector3.one, true);
         }
 
         static Texture2D Tex(string nama) { return AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + nama + ".png"); }
