@@ -1,0 +1,62 @@
+{
+  "commit": "2321ef0cd7c1512a24209e203b27e2cae67450e1",
+  "passed": true,
+  "photos": [
+    {
+      "shot": "g3_01_deden_wajah",
+      "width": 960,
+      "height": 540,
+      "p95": 0.443,
+      "variation": 0.1473,
+      "pink": 0.0,
+      "sha256": "46a735b1bacff03784a5e77e667c173c2462e268c3343c2fed49d28ed4745a4c"
+    },
+    {
+      "shot": "g3_02_ningsih_wajah",
+      "width": 960,
+      "height": 540,
+      "p95": 0.5079,
+      "variation": 0.1757,
+      "pink": 0.0,
+      "sha256": "2b4aeea913c17da6545fb4641bb103ace451c8a8e644a822bb88bf869d03e5e1"
+    },
+    {
+      "shot": "g3_03_hutan_malam",
+      "width": 960,
+      "height": 540,
+      "p95": 0.1755,
+      "variation": 0.0662,
+      "pink": 0.0,
+      "sha256": "43327a65f5e7668f553cf11a90bb30e572dccd995bb3517142c55d915c65c0b9"
+    },
+    {
+      "shot": "g3_04_lantai_hutan",
+      "width": 960,
+      "height": 540,
+      "p95": 0.2526,
+      "variation": 0.0777,
+      "pink": 0.0,
+      "sha256": "1c05b29fb50347c288d5fd698a4cba564fdd61ce8bbc7b5eccc851b836e7cecc"
+    },
+    {
+      "shot": "t10_01_gua_lumut",
+      "width": 960,
+      "height": 540,
+      "p95": 0.2814,
+      "variation": 0.0986,
+      "pink": 0.0,
+      "sha256": "a794c1cf0441aa591497e3501febf1170be7dc375ad97be52beb0cf02f9bdf2e"
+    },
+    {
+      "shot": "t10_02_kubah_akar_boss",
+      "width": 960,
+      "height": 540,
+      "p95": 0.3074,
+      "variation": 0.1043,
+      "pink": 0.0,
+      "sha256": "250e30e49e630ec4fa48c29ce5f5ab38970675b0a59592bbd2f376c6c2172af5"
+    }
+  ],
+  "errors": [],
+  "note": "Pemeriksaan teknis gambar; kualitas seni dan kesetaraan visual belum dinilai"
+}
