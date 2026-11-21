@@ -225,3 +225,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - `PetaSurveiUI` memperluas daftar penanda navigasi pulau menjadi **13 lokasi utama** (termasuk Kampung, Pabrik Gula, Mercusuar, Makam Tua, Kemah Rawa, dan Watu Ireng).
   - `HUDVital` menampilkan status kondisi tubuh dan taktis secara langsung di layar (`FormatStatusTambahanHUD`: `SEMAK`, `LUKA KAKI`, `LUKA LENGAN`, `LUKA KEPALA`, `BISA ULAR`, `DIARE`, `KERACUNAN`).
   - `KehidupanAlam` menambahkan variasi ukuran burung pemangsa & rangkong berbentang sayap lebar (`SkalaBentangBurung`) di atas kanopi hutan.
+- Gelombang 19 SOTF (`imp-sotf-v3`):
+  - `LayarSinema` dan `BuilderSteps.Ending` menambahkan **Ending C ("Pewaris Perjanjian" — 3 ending v5)** beserta tombol pilihan takdir ke-3 dan hadiah `KerisPusaka` + `ZirahEmas` di Mode Sandbox.
+  - `BuilderSteps.Gua2` menambahkan **Kapsul Eksperimen Rendra (`KapsulRendra_R2`)** dan `MejaRendra_R2` (`TandaPengenalRendra`, `PatungKayuDewi`) di ruang laboratorium bunker UG2 R2.
+  - `WadahItem` dan `BuilderSteps.Landmark` menambahkan interaksi **`PERIKSA`** (`PasangPeriksa`) pada **12 objek cerita lingkungan (`ObjekPeriksa_0..11`)** di seluruh zona utama pulau yang memutar monolog investigasi Andi dan memulihkan kewarasan.

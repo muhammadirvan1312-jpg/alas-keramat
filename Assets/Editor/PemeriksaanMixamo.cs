@@ -182,6 +182,10 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.UI.PetaSurveiUI.IndeksLokasiTerdekat(new Vector2(-322f, 182f), 60f) >= 0
                 && AlasKeramat.UI.HUDVital.FormatStatusTambahanHUD(false, false, false, 0f, 0f, 30f, true).Contains("SEMAK")
                 && AlasKeramat.AI.KehidupanAlam.SkalaBentangBurung(0) > AlasKeramat.AI.KehidupanAlam.SkalaBentangBurung(1));
+            cek("SOTF v19: Ending C ketiga, kapsul Rendra UG2 R2 & 12 objek cerita PERIKSA",
+                AlasKeramat.UI.LayarSinema.TeksEnding(3, true).Contains("Pewaris Perjanjian")
+                && GameObject.Find("KapsulRendra_R2") != null
+                && GameObject.Find("ObjekPeriksa_0") != null && GameObject.Find("ObjekPeriksa_11") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

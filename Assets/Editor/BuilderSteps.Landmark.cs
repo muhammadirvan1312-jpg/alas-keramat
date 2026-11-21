@@ -227,6 +227,38 @@ namespace AlasKeramat.EditorTools
             Taruh("MonolitWatuIreng_0", Simpan(ProcBangunan.MonolitWatuIreng()), new[] { gelap, batu }, -420f, 460f, 25f, Vector3.one, true);
             for (int i = 0; i < 6; i++)
                 Taruh("KampungWatuIreng_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(700 + i, 6.2f, 5.0f, 0.8f, 0.55f)), new[] { i % 2 == 0 ? bilik : kayu, ijuk }, -440f + (i % 3) * 18f, 438f + (i / 3) * 22f, i * 55f, Vector3.one, true);
+
+            string[,] dataPeriksa =
+            {
+                { "Kotak Hitam Heli", "10", "-445", "Andi: (Jarum altimeter membeku tepat saat kabut merah menyelimuti rotor.)" },
+                { "Tungku Dapur Desa", "558", "220", "Andi: (Nasi di periuk ini sudah mengering... warga pergi tergesa-gesa saat senja.)" },
+                { "Mainan Kayu Anak", "574", "568", "Andi: (Kuda-kudaan kayu yang ditinggal di teras Kampung Sukamaju.)" },
+                { "Buku Giling Pabrik", "645", "-512", "Andi: (Catatan administratur kolonial berhenti pada malam gerhana tahun 1928.)" },
+                { "Teropong Mercusuar", "-188", "-872", "Andi: (Kaca lensanya retak menghadap ke arah Beringin Agung di tengah pulau.)" },
+                { "Prasasti Nisan Tua", "-318", "182", "Andi: (Aksara Jawa kuno: 'Siapa mencabut pasak bumi, menanggung napas hutan'.)" },
+                { "Radio Kemah Rawa", "380", "-310", "Andi: (Frekuensi darurat tim survei pendahulu... hanya tersisa desis statis.)" },
+                { "Meja Sesaji Watu Ireng", "-418", "458", "Andi: (Bekas kemenyan dan bunga kantil yang belum lama dibakar di kaki monolit.)" },
+                { "Akar Banir Beringin", "4", "-8", "Andi: (Getaran halus merambat dari bawah akar raksasa ini.)" },
+                { "Tambatan Perahu", "-132", "-865", "Andi: (Tali tambang diputus paksa dengan golok dari arah dermaga.)" },
+                { "Pahat Batu Lembah", "252", "-274", "Andi: (Tanda peringatan Sekte dipahat di bibir mulut gua sungai.)" },
+                { "Peta Meja Ekspedisi", "18", "-435", "Andi: (Lingkaran merah menandai tiga kompleks bawah tanah di pulau ini.)" }
+            };
+            for (int i = 0; i < dataPeriksa.GetLength(0); i++)
+            {
+                float px = float.Parse(dataPeriksa[i, 1], System.Globalization.CultureInfo.InvariantCulture);
+                float pz = float.Parse(dataPeriksa[i, 2], System.Globalization.CultureInfo.InvariantCulture);
+                float py = Mathf.Max(0f, WorldTerrainGenerator.SampleHeight(px, pz));
+                var g = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                g.name = "ObjekPeriksa_" + i;
+                g.transform.SetParent(_induk.transform, false);
+                g.transform.position = new Vector3(px, py + 0.25f, pz);
+                g.transform.localScale = new Vector3(0.45f, 0.35f, 0.45f);
+                g.layer = GameLayers.Interactable; g.tag = GameTags.Interactable;
+                g.GetComponent<MeshRenderer>().sharedMaterial = i % 2 == 0 ? kayu : batu;
+                var w = g.AddComponent<AlasKeramat.Inventory.WadahItem>();
+                w.PasangPeriksa(dataPeriksa[i, 0], dataPeriksa[i, 3]);
+                EditorUtility.SetDirty(w);
+            }
         }
 
         static Texture2D Tex(string nama) { return AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + nama + ".png"); }

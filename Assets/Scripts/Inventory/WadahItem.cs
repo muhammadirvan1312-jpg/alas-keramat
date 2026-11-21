@@ -15,6 +15,13 @@ namespace AlasKeramat.Inventory
         [SerializeField] int lore;            // 0 = tanpa lore
         [SerializeField] bool hilangSetelahDiambil;
         [SerializeField] Transform tutup;
+        [SerializeField] string pesanPeriksa = "";
+
+        public string PesanPeriksa { get { return pesanPeriksa; } }
+        public void PasangPeriksa(string nama, string pesan)
+        {
+            namaTampil = nama; item = new ItemID[0]; jumlah = new int[0]; lore = 0; hilangSetelahDiambil = false; tutup = null; pesanPeriksa = pesan ?? "";
+        }
 
         public string KunciSimpan = "";
         bool _kosong, _dibuka;
@@ -40,11 +47,27 @@ namespace AlasKeramat.Inventory
             namaTampil = nama; item = isi; jumlah = n; lore = loreId; hilangSetelahDiambil = hilang; tutup = tutupKoper;
         }
 
-        public string GetPromptText(GameObject actor) { if (lore > 0 && (item == null || item.Length == 0)) return "BACA " + namaTampil.ToUpperInvariant(); return hilangSetelahDiambil ? "AMBIL " + namaTampil.ToUpperInvariant() : "BUKA " + namaTampil.ToUpperInvariant(); }
-        public bool CanInteract(GameObject actor) { return !_kosong; }
+        public string GetPromptText(GameObject actor)
+        {
+            if (!string.IsNullOrEmpty(pesanPeriksa) && (item == null || item.Length == 0) && lore == 0) return "PERIKSA " + namaTampil.ToUpperInvariant();
+            if (lore > 0 && (item == null || item.Length == 0)) return "BACA " + namaTampil.ToUpperInvariant();
+            return hilangSetelahDiambil ? "AMBIL " + namaTampil.ToUpperInvariant() : "BUKA " + namaTampil.ToUpperInvariant();
+        }
+        public bool CanInteract(GameObject actor) { return !_kosong || !string.IsNullOrEmpty(pesanPeriksa); }
 
         public void Interact(GameObject actor)
         {
+            if (!string.IsNullOrEmpty(pesanPeriksa) && (item == null || item.Length == 0) && lore == 0)
+            {
+                if (!_dibuka)
+                {
+                    _dibuka = true;
+                    var v = GameServices.Get<AlasKeramat.Player.AndiVitalsAndSanity>();
+                    if (v != null) v.UbahSanity(2f);
+                }
+                GameEvents.RaiseSubtitle(pesanPeriksa);
+                return;
+            }
             if (_kosong) return;
             var inv = GameServices.Get<TikarPandan3DInventory>();
             if (inv == null) { Debug.LogError("[AK][WadahItem] inventaris tidak ada"); return; }

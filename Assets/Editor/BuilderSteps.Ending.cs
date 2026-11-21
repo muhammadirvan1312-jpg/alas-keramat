@@ -56,12 +56,15 @@ namespace AlasKeramat.EditorTools
             var pilihan = UIStretch(akar, "PanelPilihan", new Vector2(0.15f, 0.25f), new Vector2(0.85f, 0.8f));
             var jp = BuatTeks(pilihan, "Judul", "PILIHAN TAKDIR", font, 54, new Vector2(0.5f, 1f), new Vector2(0f, -50f), new Vector2(1200f, 80f));
             jp.color = ProcTex.Hex("#F2C14E"); jp.gameObject.AddComponent<Outline>();
-            var a = TombolPanel(pilihan, "TombolPulang", "NAIK HELIKOPTER & PULANG", font, new Vector2(0f, 330f), new Vector2(1100f, 120f), ProcTex.Hex("#2F5D3A"), out tx);
-            tx.fontSize = 36;
-            UnityEventTools.AddPersistentListener(a.onClick, sinema.PilihA);
-            var b = TombolPanel(pilihan, "TombolMenjaga", "AMBIL RANSEL & TETAP MENJAGA ALAS KERAMAT", font, new Vector2(0f, 150f), new Vector2(1100f, 120f), ProcTex.Hex("#6A2A18"), out tx);
+            var a = TombolPanel(pilihan, "TombolPulang", "NAIK HELIKOPTER & PULANG", font, new Vector2(0f, 360f), new Vector2(1100f, 105f), ProcTex.Hex("#2F5D3A"), out tx);
             tx.fontSize = 34;
+            UnityEventTools.AddPersistentListener(a.onClick, sinema.PilihA);
+            var b = TombolPanel(pilihan, "TombolMenjaga", "AMBIL RANSEL & TETAP MENJAGA ALAS KERAMAT", font, new Vector2(0f, 225f), new Vector2(1100f, 105f), ProcTex.Hex("#6A2A18"), out tx);
+            tx.fontSize = 32;
             UnityEventTools.AddPersistentListener(b.onClick, sinema.PilihB);
+            var c = TombolPanel(pilihan, "TombolWarisan", "SATUKAN KERIS & JADI PEWARIS PERJANJIAN", font, new Vector2(0f, 90f), new Vector2(1100f, 105f), ProcTex.Hex("#5B4514"), out tx);
+            tx.fontSize = 32;
+            UnityEventTools.AddPersistentListener(c.onClick, sinema.PilihC);
             pilihan.SetActive(false);
 
             var stat = UIStretch(akar, "PanelStatistik", new Vector2(0.27f, 0.1f), new Vector2(0.73f, 0.9f));

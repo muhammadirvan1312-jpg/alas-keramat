@@ -81,7 +81,7 @@ namespace AlasKeramat.Core
         public void TandaiBossKalah() { if (Progres.bossKalah) return; Progres.bossKalah = true; Periksa(); }
         public void TandaiTertancap(int n) { Progres.tertancap = Mathf.Clamp(n, 0, 3); Periksa(); }
         public void TandaiSiegeSelesai() { if (Progres.siegeSelesai) return; Progres.siegeSelesai = true; Periksa(); }
-        public void TandaiEnding(int e) { Progres.ending = Mathf.Clamp(e, 1, 2); Periksa(); }
+        public void TandaiEnding(int e) { Progres.ending = Mathf.Clamp(e, 1, 3); Periksa(); }
         public int LoreMask { get { return Progres.lore; } }
     }
 }
