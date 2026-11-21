@@ -48,10 +48,14 @@ namespace AlasKeramat.EditorTools
                     pos.Add(new Vector3(x, h + TinggiEmitter, z));
                     jenis.Add(k[rng.Next(k.Length)]);
                 }
-            // Titik khusus 21 §5: pabrik (rantai), balai kampung (radio statis), Alas Wingit (gamelan dari tanah).
+            // Titik khusus 21 §5: pabrik (rantai), balai kampung (radio statis), Alas Wingit (gamelan), heli (radio darurat), beringin (gamelan), pantai (kepak), desa (ayam).
             Khusus(pos, jenis, 700f, -540f, Rantai, 6, 25f, rng);
             Khusus(pos, jenis, 630f, 600f, Radio, 2, 8f, rng);
             Khusus(pos, jenis, -760f, -40f, Gamelan, 8, 120f, rng);
+            Khusus(pos, jenis, 8f, -448f, Radio, 3, 14f, rng);
+            Khusus(pos, jenis, 0f, -12f, Gamelan, 6, 35f, rng);
+            Khusus(pos, jenis, -190f, -876f, Kepak, 5, 30f, rng);
+            Khusus(pos, jenis, 555f, 205f, Ayam, 4, 28f, rng);
 
             var go = Anak(_sistem, "AmbienceDirector");
             var dir = go.AddComponent<AmbienceDirector>();

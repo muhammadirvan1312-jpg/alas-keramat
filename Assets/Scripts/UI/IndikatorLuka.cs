@@ -13,8 +13,16 @@ namespace AlasKeramat.UI
         float _tV, _aV, _tA;
         Vector3 _sumber;
         bool _gagal;
+        AlasKeramat.Player.ReaksiAndi _reaksi;
 
         public void Pasang(Image v, Image a) { vinyet = v; arah = a; }
+
+        public static float AlfaDenyutKondisi(bool berdarah, bool terbakar, float waktu)
+        {
+            if (terbakar) return 0.22f + 0.12f * Mathf.Sin(waktu * 9.5f);
+            if (berdarah) return 0.14f + 0.08f * (0.5f + 0.5f * Mathf.Sin(waktu * 4.8f));
+            return 0f;
+        }
 
         public static float AlfaUntuk(float damage) { return Mathf.Clamp(0.18f + damage / 45f, 0f, AlfaMaks); }
 
@@ -43,7 +51,13 @@ namespace AlasKeramat.UI
             {
                 float dt = Time.unscaledDeltaTime;
                 _tV = Mathf.Max(0f, _tV - dt); _tA = Mathf.Max(0f, _tA - dt);
-                var cv = vinyet.color; cv.a = _aV * (_tV / LamaVinyet); vinyet.color = cv; vinyet.enabled = cv.a > 0.002f;
+                if (_reaksi == null) _reaksi = GameServices.Get<AlasKeramat.Player.ReaksiAndi>();
+                bool bakar = _reaksi != null && _reaksi.Terbakar;
+                bool darah = _reaksi != null && _reaksi.Berdarah;
+                float aKondisi = AlfaDenyutKondisi(darah, bakar, Time.unscaledTime);
+                float aHit = _tV > 0f ? _aV * (_tV / LamaVinyet) : 0f;
+                var cv = bakar ? new Color(0.85f, 0.24f, 0.04f, Mathf.Max(aHit, aKondisi)) : new Color(0.62f, 0.02f, 0.02f, Mathf.Max(aHit, aKondisi));
+                vinyet.color = cv; vinyet.enabled = cv.a > 0.002f;
                 var ca = arah.color; ca.a = 0.85f * Mathf.Clamp01(_tA / LamaArah * 1.5f); arah.color = ca; arah.enabled = ca.a > 0.002f;
                 if (arah.enabled)
                 {

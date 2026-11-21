@@ -107,6 +107,12 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Core.PartikelAlam.LajuUapNapas(22f, AlasKeramat.Core.WeatherState.Cerah, false) > 0f
                 && AlasKeramat.Core.PartikelAlam.LajuUapNapas(12f, AlasKeramat.Core.WeatherState.Cerah, false) == 0f
                 && GameObject.Find("JeramSungai_0_0") != null);
+            cek("SOTF v8: denyut vinyet pendarahan/bakar, bara obor/kompor bangunan & emitter ambien landmark",
+                AlasKeramat.UI.IndikatorLuka.AlfaDenyutKondisi(true, false, 1f) > 0.1f
+                && AlasKeramat.UI.IndikatorLuka.AlfaDenyutKondisi(false, true, 1f) > 0.1f
+                && AlasKeramat.UI.IndikatorLuka.AlfaDenyutKondisi(false, false, 1f) == 0f
+                && AlasKeramat.Building.FungsiBangunan.PunyaBaraBangunan(AlasKeramat.Core.BlueprintID.OborTengkorak, 10f)
+                && !AlasKeramat.Building.FungsiBangunan.PunyaBaraBangunan(AlasKeramat.Core.BlueprintID.OborTengkorak, 0f));
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

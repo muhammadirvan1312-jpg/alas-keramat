@@ -183,3 +183,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - Medan pulau (`BuilderSteps.Dunia.cs`) ditingkatkan ketajaman jarak pandangnya (`heightmapPixelError = 7`, `basemapDistance = 220`) dan ditambah partikel buih jeram putih (`JeramSungai_*`) di titik aliran sungai yang menurun curam.
   - Satwa pemangsa malam (`WildAnimalAI` / `MataPemangsa`) kini memantulkan pendar mata kuning-oranye di kegelapan malam atau gua; hantu (`HantuAI` / `AuraHantu`) memancarkan aura mistis/bara sesuai jenisnya.
   - `PartikelAlam` menambahkan uap napas dingin (`UapNapasDingin` / `LajuUapNapas`) saat malam hari, badai, kabut pagi, atau berada di gua bawah tanah.
+- Gelombang 8 SOTF (`imp-sotf-v3`):
+  - `IndikatorLuka` kini berdenyut merah/oranye di tepi layar saat Andi mengalami pendarahan atau terbakar (`AlfaDenyutKondisi`).
+  - Tekstur kabut hutan & berkas sinar god rays (`BuilderSteps.G3.cs`) dinaikkan ke `256px`; `BuilderSteps.Ambien.cs` menambah emitter suara statis radio darurat di heli jatuh, gema gamelan di Beringin/Gapura, burung pantai di Mercusuar, dan suara ayam di Desa Mati.
+  - `FungsiBangunan` menambahkan partikel bara api yang naik saat `OborTengkorak`, `LampuMinyak`, `PatungNgeri`, dan `KomporBatu` dinyalakan (`PunyaBaraBangunan`).
