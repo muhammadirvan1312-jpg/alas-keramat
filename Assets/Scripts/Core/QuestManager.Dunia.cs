@@ -7,6 +7,8 @@ namespace AlasKeramat.Core
     // T10: bendera gerbang dari dunia (lore, item, Ningsih, posisi Andi, gua, boss, altar).
     public partial class QuestManager
     {
+        // Jangkauan "di mana pun di pulau" (dunia 2x2 km) untuk cek kemenyan global misi sampingan Arwah Tersesat.
+        const float RadiusSeluruhPulau = 3000f;
         public const float TrustM06 = 31f, JarakLihatNingsih = 50f, ZUtaraJurang = 662f;
         NingsihVirginiaAI _ningsih;
         AndiFPSController _andi;
@@ -65,11 +67,11 @@ namespace AlasKeramat.Core
                 if (inv != null && !inv.Punya(ItemID.TandaPengenalRendra)) inv.Tambah(ItemID.TandaPengenalRendra, 1);
                 GameEvents.RaiseToast("Misi Sampingan Selesai: Jejak Rendra");
             }
-            if (!Progres.sampingan[2] && ZonaPenangkal.AdaKemenyan(Vector3.zero) == false && HantuAI.Semua.Count > 0)
+            if (!Progres.sampingan[2] && ZonaPenangkal.AdaKemenyan(Vector3.zero, RadiusSeluruhPulau) == false && HantuAI.Semua.Count > 0)
             {
                 foreach (var h in HantuAI.Semua) if (!h.IsAlive) { Progres.sampingan[2] = true; if (vital != null) vital.UbahSanity(15f); GameEvents.RaiseToast("Misi Sampingan Selesai: Arwah Tersesat"); break; }
             }
-            if (!Progres.sampingan[3] && _andi != null && ZonaPenangkal.AdaKemenyan(_andi.transform.position))
+            if (!Progres.sampingan[3] && _andi != null && ZonaPenangkal.AdaKemenyan(_andi.transform.position, AlasKeramat.AI.HantuAI.RadiusKemenyan))
             {
                 Progres.sampingan[3] = true;
                 if (vital != null) vital.UbahSanity(10f);
