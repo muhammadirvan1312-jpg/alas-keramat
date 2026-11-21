@@ -92,7 +92,6 @@ namespace AlasKeramat.Core
         }
 
         Color _filter = Color.white, _targetFilter = Color.white;
-        AlasKeramat.Player.AndiFPSController _andi;
         public static Vector4 Target(float jam, WeatherState cuaca)
         {
             Vector4 siang = new Vector4(0.32f, 3f, 3f, 0.16f);
