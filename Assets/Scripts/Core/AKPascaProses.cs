@@ -32,6 +32,20 @@ namespace AlasKeramat.Core
             _skrg = Target(TimeOfDayClock.JamMulai, WeatherState.Cerah);
         }
 
+        AlasKeramat.Player.AndiVitalsAndSanity _vital;
+        float _kritis;
+        public const float AmbangKritis = 0.35f;
+        // 0 saat HP >= 35%, naik ke 1 saat HP mendekati 0.
+        public static float Kritis01(float hp01) { return Mathf.Clamp01(1f - hp01 / AmbangKritis); }
+        // HP kritis: warna memudar, tepi layar menggelap dan berdenyut pelan seperti detak jantung.
+        public static Vector4 EfekKritis(Vector4 v, float k, float waktu)
+        {
+            if (k <= 0f) return v;
+            float denyut = 0.5f + 0.5f * Mathf.Sin(waktu * 5.2f);
+            v.y -= 55f * k; v.w = Mathf.Min(0.6f, v.w + k * (0.16f + 0.08f * denyut)); v.x -= 0.15f * k;
+            return v;
+        }
+
         // x eksposur (EV), y saturasi, z suhu WB, w intensitas vignette.
         public static Vector4 TargetGua { get { return new Vector4(1.28f,-2f,-3f,0.20f); } }
         public static Vector4 Target(float jam, WeatherState cuaca)
@@ -72,9 +86,13 @@ namespace AlasKeramat.Core
                 _target = URPAtmosphereAndWeather.DalamRuangan ? TargetGua : Target(_jam != null ? _jam.Jam : TimeOfDayClock.JamMulai, _atmos != null ? _atmos.Cuaca : WeatherState.Cerah);
             }
             _skrg = Vector4.Lerp(_skrg, _target, Time.deltaTime * Lerp);
-            if (_ca != null) { _ca.postExposure.value = _skrg.x; _ca.saturation.value = _skrg.y; }
-            if (_wb != null) _wb.temperature.value = _skrg.z;
-            if (_vig != null) _vig.intensity.value = _skrg.w;
+            if (_vital == null) _vital = GameServices.Get<AlasKeramat.Player.AndiVitalsAndSanity>();
+            float hp = _vital != null ? _vital.Health / AlasKeramat.Player.AndiVitalsAndSanity.Maks : 1f;
+            _kritis = Mathf.MoveTowards(_kritis, Kritis01(hp), Time.deltaTime * 0.8f);
+            var o = EfekKritis(_skrg, _kritis, Time.time);
+            if (_ca != null) { _ca.postExposure.value = o.x; _ca.saturation.value = o.y; }
+            if (_wb != null) _wb.temperature.value = o.z;
+            if (_vig != null) _vig.intensity.value = o.w;
         }
     }
 }

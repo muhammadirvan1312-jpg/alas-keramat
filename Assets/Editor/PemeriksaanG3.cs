@@ -22,6 +22,8 @@ namespace AlasKeramat.EditorTools
                 foreach(var matrix in group.matriks)detail &= group.bounds.Contains((Vector3)matrix.GetColumn(3));
             }
             cek("Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance",detail);
+            cek("Pasca-proses: HP kritis memudarkan warna & menggelapkan tepi",AKPascaProses.Kritis01(1f)==0f && AKPascaProses.Kritis01(0.1f)>0.6f
+                && AKPascaProses.EfekKritis(new Vector4(0.2f,2f,3f,0.16f),1f,0f).y<-40f && AKPascaProses.EfekKritis(new Vector4(0.2f,2f,3f,0.16f),0f,0f).w==0.16f);
             cek("HUD: indikator luka (vinyet & arah) terpasang, arah kanan positif",Object.FindFirstObjectByType<AlasKeramat.UI.IndikatorLuka>(FindObjectsInactive.Include)!=null
                 && AlasKeramat.UI.IndikatorLuka.SudutArah(Vector3.forward,Vector3.right)>80f && AlasKeramat.UI.IndikatorLuka.AlfaUntuk(100f)<=AlasKeramat.UI.IndikatorLuka.AlfaMaks);
             cek("Senter: cookie terpasang, pusat terang, tepi gelap",AssetDatabase.LoadAssetAtPath<Texture2D>(NusantaraMasterBuilder.PathCookieSenter)!=null
