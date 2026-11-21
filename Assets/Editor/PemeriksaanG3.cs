@@ -22,6 +22,8 @@ namespace AlasKeramat.EditorTools
                 foreach(var matrix in group.matriks)detail &= group.bounds.Contains((Vector3)matrix.GetColumn(3));
             }
             cek("Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance",detail);
+            cek("Langit: HDRI senja terpasang dan memuncak saat maghrib",RenderSettings.skybox!=null && RenderSettings.skybox.HasProperty("_DuskTex") && RenderSettings.skybox.GetTexture("_DuskTex")!=null
+                && AlasKeramat.Core.URPAtmosphereAndWeather.Senja01(18.1f)>0.95f && AlasKeramat.Core.URPAtmosphereAndWeather.Senja01(12f)==0f && AlasKeramat.Core.URPAtmosphereAndWeather.Senja01(0f)==0f);
             bool foto=true;
             foreach(string slot in new[]{"tanah","rumput","batu","kayu","kulit_kayu","pasir","lumpur","beton","logam_karat","kain"})
             {
