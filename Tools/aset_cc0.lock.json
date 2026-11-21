@@ -1126,6 +1126,515 @@
       "map": "ARM",
       "size": 3387390,
       "sha256": "6190b2d2b82af8c6eca9fb00da9c7849462e1bfc4109f8528eb422ae9f3f3f24"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/tree_stump_01/tree_stump_01_1k.fbx",
+      "path": "CC0/Model/tree_stump_01.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/tree_stump_01",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 2871068,
+      "sha256": "754a6b668361456a8ad3405d163735ac7fdd4a75b8e4fe16db777fcfe40f692d"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/tree_stump_01/tree_stump_01_diff_1k.jpg",
+      "path": "CC0/TunggulAsli/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/tree_stump_01",
+      "author": "Poly Haven",
+      "slot": "TunggulAsli",
+      "size": 907451,
+      "sha256": "781ebe420ac4d84f2e44b9e9937a596e3d5d90711d978a1392f8bf3771b5bf31"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/tree_stump_01/tree_stump_01_nor_gl_1k.jpg",
+      "path": "CC0/TunggulAsli/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/tree_stump_01",
+      "author": "Poly Haven",
+      "slot": "TunggulAsli",
+      "size": 1238404,
+      "sha256": "425117514b0386bb6df41cb64a61a624d2596472e05777483d4021b3285e3ceb"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/dry_branches_medium_01/dry_branches_medium_01_1k.fbx",
+      "path": "CC0/Model/dry_branches_medium_01.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/dry_branches_medium_01",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 699532,
+      "sha256": "3e47b10e0710b7736688521d66b3eb09aad14cb2db6179d9758a0fd5716ce639"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dry_branches_medium_01/dry_branches_medium_01_diff_1k.jpg",
+      "path": "CC0/RantingAsli/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/dry_branches_medium_01",
+      "author": "Poly Haven",
+      "slot": "RantingAsli",
+      "size": 778799,
+      "sha256": "1fbaf810a9ca29d2faf0a179834e8dce10cf4854bafe13f63af111030b3ec660"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dry_branches_medium_01/dry_branches_medium_01_nor_gl_1k.jpg",
+      "path": "CC0/RantingAsli/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/dry_branches_medium_01",
+      "author": "Poly Haven",
+      "slot": "RantingAsli",
+      "size": 1170647,
+      "sha256": "62f5205bfec599000bb7a430e003bbada939bc8d7976a7d3ab7709fd5893413c"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/rock_moss_set_02/rock_moss_set_02_1k.fbx",
+      "path": "CC0/Model/rock_moss_set_02.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/rock_moss_set_02",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 2106892,
+      "sha256": "249bf02eb4c521887a47165d0e3279fd895785addb43cfdf9938f921e6884fc3"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_moss_set_02/rock_moss_set_02_diff_1k.jpg",
+      "path": "CC0/BatuLumutAsliB/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/rock_moss_set_02",
+      "author": "Poly Haven",
+      "slot": "BatuLumutAsliB",
+      "size": 194307,
+      "sha256": "91dd2cc77d5198b067d77e5bdb3fa8ee7b8950aeff5aec2c1ccaddb76dcca481"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_moss_set_02/rock_moss_set_02_nor_gl_1k.jpg",
+      "path": "CC0/BatuLumutAsliB/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/rock_moss_set_02",
+      "author": "Poly Haven",
+      "slot": "BatuLumutAsliB",
+      "size": 273527,
+      "sha256": "dd2503789089fb72ef469efd14364d393e769c0de8781a251475cac7e0b6f51d"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/shrub_01/shrub_01_1k.fbx",
+      "path": "CC0/Model/shrub_01.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_01",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 4655340,
+      "sha256": "fcc961e8d9dd45fb807b5bb84dc2bec88f63e1713fb1757762188c8475b96326"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/shrub_01/shrub_01_diff_1k.jpg",
+      "path": "CC0/SemakAsliA/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_01",
+      "author": "Poly Haven",
+      "slot": "SemakAsliA",
+      "size": 502162,
+      "sha256": "fe60e639d694e1807c0a3ae97dd1d5a7e7b3f84e5fc32d0610b868ce48f36331"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/shrub_01/shrub_01_alpha_1k.png",
+      "path": "CC0/SemakAsliA/Alpha.png",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_01",
+      "author": "Poly Haven",
+      "slot": "SemakAsliA",
+      "size": 132597,
+      "sha256": "eb693835205913dfc705a08fb45f3e8d1c338332bd0097e9837773765b421603"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/shrub_01/shrub_01_nor_gl_1k.jpg",
+      "path": "CC0/SemakAsliA/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_01",
+      "author": "Poly Haven",
+      "slot": "SemakAsliA",
+      "size": 746497,
+      "sha256": "076870a39a4e21a364cf94566e6dd1852a29045fdf1f23393637235b19d1c2e8"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/shrub_03/shrub_03_1k.fbx",
+      "path": "CC0/Model/shrub_03.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_03",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 290956,
+      "sha256": "81cf3b341356b2938faec4f7935c0e694b923db1a5bca39660afa6fcfc22dcc7"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/shrub_03/shrub_03_diff_1k.jpg",
+      "path": "CC0/SemakAsliB/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_03",
+      "author": "Poly Haven",
+      "slot": "SemakAsliB",
+      "size": 481841,
+      "sha256": "3cadc7aba46d3aabbd7d6d2b1d04aa32e2a7da0bc87c2d38ef3cb1ee42cb03ec"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/shrub_03/shrub_03_alpha_1k.png",
+      "path": "CC0/SemakAsliB/Alpha.png",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_03",
+      "author": "Poly Haven",
+      "slot": "SemakAsliB",
+      "size": 79069,
+      "sha256": "daef00278879a024fd05216aaa1376067a5f25f1b911d08d9bbdc50fda4a0d66"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/shrub_03/shrub_03_nor_gl_1k.jpg",
+      "path": "CC0/SemakAsliB/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/shrub_03",
+      "author": "Poly Haven",
+      "slot": "SemakAsliB",
+      "size": 504734,
+      "sha256": "ff856bacfce859b8a7555dd9a3b92fbd36b2e775d486be71df485afb4235d6c9"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/island_tree_03/island_tree_03_1k.fbx",
+      "path": "CC0/Model/island_tree_03.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/island_tree_03",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 62536620,
+      "sha256": "32b2a158689fde1df5f55bad89b1eb4f131bacf534fac45155fc1d4c49afba49"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_03/island_tree_03_diff_1k.jpg",
+      "path": "CC0/KulitPohonD/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/island_tree_03",
+      "author": "Poly Haven",
+      "slot": "KulitPohonD",
+      "size": 757828,
+      "sha256": "e7fc1f1e82cd2fb3deee5fb3ca821e8f54b3a6e5ba414a31b87692fbfc12464a"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_03/island_tree_03_nor_gl_1k.jpg",
+      "path": "CC0/KulitPohonD/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/island_tree_03",
+      "author": "Poly Haven",
+      "slot": "KulitPohonD",
+      "size": 1051809,
+      "sha256": "c8d37a704416decd72b43b78b13ef23ffbb9f0df1db6686289784af02aff7db6"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_03/island_tree_03_leaves_diff_1k.jpg",
+      "path": "CC0/DaunAsliD/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/island_tree_03",
+      "author": "Poly Haven",
+      "slot": "DaunAsliD",
+      "size": 191886,
+      "sha256": "f56d762a1507754752abf164cc12acbc1e87ce87fa609ac44b98a1b0037c89d8"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/island_tree_03/island_tree_03_leaves_alpha_1k.png",
+      "path": "CC0/DaunAsliD/Alpha.png",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/island_tree_03",
+      "author": "Poly Haven",
+      "slot": "DaunAsliD",
+      "size": 57438,
+      "sha256": "f4341f147988dbe6b58d9ca841a8f0e4bcff25bc40d05f9877da82006d489c39"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_03/island_tree_03_leaves_nor_gl_1k.jpg",
+      "path": "CC0/DaunAsliD/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/island_tree_03",
+      "author": "Poly Haven",
+      "slot": "DaunAsliD",
+      "size": 379443,
+      "sha256": "07ba461c0c95da4e49a42981766bdb6191d4c3c4d815796c082266dcc3cecdb8"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/heartbeat_slow_0.wav",
+      "path": "CC0/Audio/oga/jantung.wav",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/heartbeat-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 635216,
+      "sha256": "ce5d2bbe4c9e2a8843fc76419070b9e88f71b2aa4ba7226a5f50a6b45d13be60"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/breathing%20tired.ogg",
+      "path": "CC0/Audio/oga/napas_lelah.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/breathing-tired",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 46106,
+      "sha256": "ee7b1e1f6308fa93fa6e56bfcb38e58578d97ff2eb0eb7cf515025ef082dcdac"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/horrorbreathing.ogg",
+      "path": "CC0/Audio/oga/napas_horor.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/horror-breathing",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 60880,
+      "sha256": "d533585cfcf7635a1cd6143d4aa7a970bc3036ab2b005c8f64d6eb457c9557ac"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/Wind.ogg",
+      "path": "CC0/Audio/oga/angin.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/wind",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 59861,
+      "sha256": "ff4f8a48b824e88ef3a53c5bc726e1da2b9593d84ac1bd6048b4ed6ddd4bad69"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/22%20Magnum.wav",
+      "path": "CC0/Audio/oga/tembak.wav",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/gunshots",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 830924,
+      "sha256": "132a491a1e52c30042cac867ff461fc895c1a31b5420dfff24f5af0f2185d5cc"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/monster-snarls.ogg",
+      "path": "CC0/Audio/oga/geram.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/monster-snarls",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 195986,
+      "sha256": "7401193d0cc5eb193379cf326c8868d6823a284ebc32ffaa298c1a94d2e25994"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/monster-snarl-attack.ogg",
+      "path": "CC0/Audio/oga/teriak.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/monster-snarls",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 185872,
+      "sha256": "34bf1ceef265725abf00ab3263bbbb492792e126bb1619addd4a5d3ad123347f"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/monster-snarl-5.ogg",
+      "path": "CC0/Audio/oga/jerit_gua.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/monster-snarls",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 201559,
+      "sha256": "aeaf9ab0f25cb8b035a3257913206afd8ba33d47876106291d38dfac7e5c07aa"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/troll-idle-noises.ogg",
+      "path": "CC0/Audio/oga/rintih.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/big-scary-troll-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 291562,
+      "sha256": "67d1e35bca545c9c17618333265deb90ed506d14e5b45ea730ef012695bd682a"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/Juhani%20Junkala%20-%20Post%20Apocalyptic%20Wastelands%20%5BLoop%20Ready%5D.ogg",
+      "path": "CC0/Audio/oga/musik_tegang.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/horror-atmosphere",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 14246543,
+      "sha256": "4145080f1a0ba45c3d1b6988c1d26ec3529ee8d8196eb3fa0045b49c86dd20ad"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/Dark_Rainy_Night%28ambience%29.ogg",
+      "path": "CC0/Audio/oga/hujan_malam.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/rain-and-thunders",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 6770906,
+      "sha256": "115c233f9f8bc793f12723030aaae6cfda923e565c32a8e54bb274b2a8199ee1"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/CrEEP.ogg",
+      "path": "CC0/Audio/oga/musik_seram.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/creepy",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 5083744,
+      "sha256": "819f03df9383a41538bfe101d792de9a5dd5ae3c69423d8c3c67fbb6c7afb894"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/cricket.ogg",
+      "path": "CC0/Audio/oga/jangkrik.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/birdcricketfrog-and-mosquito-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 6249,
+      "sha256": "0482f96fd06790654200c475bfdd49c5fb83536d9c2d5d807363e375be18dd35"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/frog.ogg",
+      "path": "CC0/Audio/oga/katak.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/birdcricketfrog-and-mosquito-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 5185,
+      "sha256": "1b19b6b33d15d1ea3911210be2fa9571b0452c7a00643a41380b78edbce71272"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/birdNight.ogg",
+      "path": "CC0/Audio/oga/burung_malam.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/birdcricketfrog-and-mosquito-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 10326,
+      "sha256": "f41e276e967a2617dc90e12e445ea76c5397eae7bc1751ba272189b2c0b91696"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/bird.ogg",
+      "path": "CC0/Audio/oga/burung_pagi.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/birdcricketfrog-and-mosquito-sounds",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 8956,
+      "sha256": "261c5ac5f9fe649ed30202b91d3f84ffc62f28db7ee047dbd3171b057dcc59a2"
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/fire-1.ogg",
+      "path": "CC0/Audio/oga/api.ogg",
+      "license": "CC0-1.0",
+      "source": "https://opengameart.org/content/fire-crackling",
+      "author": "OpenGameArt",
+      "slot": "Audio",
+      "size": 22784,
+      "sha256": "f922929805bc6afdf0a35727fa3998033db544c1b6f62ed3aeab94341ed6ddeb"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/qwantani_dusk_2_puresky_2k.hdr",
+      "path": "CC0/Langit/LangitSenja.hdr",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/qwantani_dusk_2_puresky",
+      "author": "Poly Haven",
+      "slot": "Langit",
+      "size": 4612798,
+      "sha256": "440d1b5d29c79bea0985a13777642df6829e80399602a9d5f39bc20203ae6d1b"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/leaves_forest_ground/leaves_forest_ground_diff_2k.jpg",
+      "path": "CC0/Serasah/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/leaves_forest_ground",
+      "author": "Poly Haven",
+      "slot": "Serasah",
+      "map": "Albedo",
+      "size": 4253470,
+      "sha256": "bda0ffc30570af7c067a3d6922cb1c7f31ada4fcece24b8f2cc4c5dde742e22c"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/leaves_forest_ground/leaves_forest_ground_nor_gl_2k.jpg",
+      "path": "CC0/Serasah/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/leaves_forest_ground",
+      "author": "Poly Haven",
+      "slot": "Serasah",
+      "map": "Normal",
+      "size": 5273836,
+      "sha256": "2713002b4a75b8b47b983c75d3f388d79f0775f305ca14884eae6a277b8f48bd"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/leaves_forest_ground/leaves_forest_ground_arm_2k.jpg",
+      "path": "CC0/Serasah/ARM.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/leaves_forest_ground",
+      "author": "Poly Haven",
+      "slot": "Serasah",
+      "map": "ARM",
+      "size": 3601680,
+      "sha256": "95a3652c4af181225d90f9c22f6bc1e8401073f41cf8ae42c7f929802ce64f5f"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/mud_forest/mud_forest_diff_2k.jpg",
+      "path": "CC0/TanahHutan/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/mud_forest",
+      "author": "Poly Haven",
+      "slot": "TanahHutan",
+      "map": "Albedo",
+      "size": 3683329,
+      "sha256": "6726cf9ad9b1be9bf284c629dd95d732527b18fc92be06ae9093a96a68f77628"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/mud_forest/mud_forest_nor_gl_2k.jpg",
+      "path": "CC0/TanahHutan/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/mud_forest",
+      "author": "Poly Haven",
+      "slot": "TanahHutan",
+      "map": "Normal",
+      "size": 5909919,
+      "sha256": "8d0ad08c4d0df9aabd2fc42ef34e0d34010d9a63eb472eed214be6fad5bc2d4e"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/mud_forest/mud_forest_arm_2k.jpg",
+      "path": "CC0/TanahHutan/ARM.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/mud_forest",
+      "author": "Poly Haven",
+      "slot": "TanahHutan",
+      "map": "ARM",
+      "size": 3326167,
+      "sha256": "909f709f75601721689f019afe2e1127d7a2fadb90711bba70fd365037003f94"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forest_leaves_02/forest_leaves_02_diffuse_2k.jpg",
+      "path": "CC0/LumutHutan/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/forest_leaves_02",
+      "author": "Poly Haven",
+      "slot": "LumutHutan",
+      "map": "Albedo",
+      "size": 1668009,
+      "sha256": "9c38b2b151a0415457a6914966422cfca5a546c94674442e5395e0b1e908a196"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forest_leaves_02/forest_leaves_02_nor_gl_2k.jpg",
+      "path": "CC0/LumutHutan/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/forest_leaves_02",
+      "author": "Poly Haven",
+      "slot": "LumutHutan",
+      "map": "Normal",
+      "size": 2323898,
+      "sha256": "af0346114834c347a8d6a138f6ea16a97b0bec8d6e4db32c24f1c7e482163235"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forest_leaves_02/forest_leaves_02_arm_2k.jpg",
+      "path": "CC0/LumutHutan/ARM.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/forest_leaves_02",
+      "author": "Poly Haven",
+      "slot": "LumutHutan",
+      "map": "ARM",
+      "size": 1066850,
+      "sha256": "d8423b522d86285e26036d27fc51f4db7b8c6716b1558deb4575b288e14c28b7"
     }
   ]
 }

@@ -13,6 +13,9 @@ namespace AlasKeramat.EditorTools
             {"tanah","LantaiHutan"},{"rumput","Rumput"},{"batu","Batu"},{"kayu","Kayu"},
             {"kulit_kayu","KulitKayu"},{"pasir","Pasir"},{"lumpur","Lumpur"},{"daun","LantaiHutan"},
             {"beton","Beton"},{"logam_karat","Karat"},{"palem","Palem"},{"kain","Kain"},{"batu_gua","BatuGua"}
+            {"tanah","TanahHutan"},{"rumput","LumutHutan"},{"batu","Batu"},{"kayu","Kayu"},
+            {"kulit_kayu","KulitKayu"},{"pasir","Pasir"},{"lumpur","Lumpur"},{"daun","Serasah"},
+            {"beton","Beton"},{"logam_karat","Karat"},{"palem","Palem"},{"kain","Kain"}
         };
         static Texture2D BacaFoto(string slot,string peta)
         {
@@ -42,10 +45,10 @@ namespace AlasKeramat.EditorTools
                     for(int p=0;p<apx.Length;p++)
                     {
                         Color c=apx[p];
-                        if(nama=="rumput") c=new Color(c.r*0.44f,c.g*0.56f,c.b*0.32f,1f);
-                        else if(nama=="daun") c=new Color(c.r*0.56f,c.g*0.54f,c.b*0.40f,1f);
+                        if(nama=="rumput") c=new Color(c.r*0.66f,c.g*0.72f,c.b*0.54f,1f);
+                        else if(nama=="daun") c=new Color(c.r*0.62f,c.g*0.58f,c.b*0.48f,1f);
                         else if(nama=="batu") c=new Color(c.r*0.72f,c.g*0.73f,c.b*0.74f,1f);
-                        else c=new Color(c.r*0.54f,c.g*0.47f,c.b*0.37f,1f);
+                        else c=new Color(c.r*0.86f,c.g*0.80f,c.b*0.74f,1f);
                         apx[p]=c;
                     }
                     var graded=new Texture2D(a.width,a.height,TextureFormat.RGBA32,true);
