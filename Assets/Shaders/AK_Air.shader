@@ -169,6 +169,8 @@ Shader "AlasKeramat/Air"
             float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS);
             Light sun = GetMainLight(shadowCoord, i.positionWS, half4(1,1,1,1));
             half3 color = LightingPhysicallyBased(brdf, sun, n, view);
+            half glint = pow(saturate(dot(reflect(-sun.direction, n), view)), 96.0h) * (1.0h - foam);
+            color += sun.color * (glint * 1.35h * sun.distanceAttenuation * sun.shadowAttenuation);
             #if defined(_ADDITIONAL_LIGHTS)
             #if USE_FORWARD_PLUS
             [loop] for (uint lightIndex = 0; lightIndex < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); lightIndex++)

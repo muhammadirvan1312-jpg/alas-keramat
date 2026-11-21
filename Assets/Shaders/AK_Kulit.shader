@@ -142,6 +142,8 @@ Shader "AlasKeramat/Kulit"
             half4 mask=SAMPLE_TEXTURE2D(_MaskMap,sampler_MaskMap,i.uv);
             half wet=_AK_Basah*saturate(d.normalWS.y*0.7+0.4);
             half rootAO = saturate(d.positionWS.y * 0.35h + 0.55h);
+            half lumut = smoothstep(0.55h, 0.88h, d.normalWS.y) * (0.20h + 0.14h * sin(d.positionWS.x * 0.65h + d.positionWS.z * 0.55h)) * (1.0h - _Metallic);
+            s.albedo = lerp(s.albedo, half3(0.14h, 0.22h, 0.10h), saturate(lumut));
             s.albedo *= (1.0h - wet * 0.2h) * lerp(0.84h, 1.0h, rootAO);
             s.smoothness = saturate(lerp(_Smoothness,mask.a,_PakaiMask)+wet*0.35);
             s.occlusion = lerp(1,mask.g,_PakaiMask) * rootAO;

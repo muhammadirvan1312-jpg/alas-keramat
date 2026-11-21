@@ -103,6 +103,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7z9. Ekspansi besar SOTF (props 2K, biota, perangkap & HUD)", 0.992f, LangkahEkspansiSOTF);
                 Langkah("7z10. Ekspansi Dunia 2 (24 model 4K, jemuran, air hujan, bubu, suar, musim & sekte)", 0.994f, LangkahEkspansiDunia2);
                 Langkah("7z11. Fitur Baru SOTF (Zipline, Perahu Dayung, Rumah Pohon, Sarang, Boss Buto Ijo & Suar)", 0.996f, LangkahFiturBaruSOTF);
+                Langkah("7z12. Overhaul Visual & Mega-Landmark (Air Terjun, Candi, Jembatan Gantung, Kapal, Pendopo)", 0.998f, LangkahOverhaulVisualDunia);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }
