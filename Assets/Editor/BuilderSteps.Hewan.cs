@@ -195,6 +195,23 @@ namespace AlasKeramat.EditorTools
             var g = new GameObject(nama); g.transform.SetParent(induk.transform, false); g.layer = GameLayers.Interactable;
             BagianVis(g, tipe, pos, skala, m);
             if (m2 != null) BagianVis(g, nama == "Sarang" ? PrimitiveType.Sphere : nama.StartsWith("Jamur") ? PrimitiveType.Sphere : PrimitiveType.Cube, pos2, skala2, m2);
+            if (nama.StartsWith("Jamur") && m2 != null)
+            {
+                BagianVis(g, PrimitiveType.Cylinder, new Vector3(0.06f, 0.035f, 0.04f), new Vector3(0.022f, 0.035f, 0.022f), m);
+                BagianVis(g, PrimitiveType.Sphere, new Vector3(0.06f, 0.075f, 0.04f), new Vector3(0.09f, 0.03f, 0.09f), m2);
+                BagianVis(g, PrimitiveType.Cylinder, new Vector3(-0.05f, 0.03f, -0.04f), new Vector3(0.018f, 0.03f, 0.018f), m);
+                BagianVis(g, PrimitiveType.Sphere, new Vector3(-0.05f, 0.062f, -0.04f), new Vector3(0.075f, 0.026f, 0.075f), m2);
+            }
+            else if (nama == "Sirih")
+            {
+                BagianVis(g, PrimitiveType.Cube, new Vector3(0.07f, 0.18f, 0.04f), new Vector3(0.16f, 0.03f, 0.18f), m);
+                BagianVis(g, PrimitiveType.Cube, new Vector3(-0.06f, 0.21f, -0.05f), new Vector3(0.15f, 0.03f, 0.16f), m);
+            }
+            else if (nama == "Sarang" && m2 != null)
+            {
+                BagianVis(g, PrimitiveType.Sphere, new Vector3(-0.05f, 0.1f, 0.03f), skala2 * 0.94f, m2);
+                BagianVis(g, PrimitiveType.Sphere, new Vector3(0.01f, 0.1f, -0.05f), skala2 * 0.90f, m2);
+            }
         }
 
         static void BagianVis(GameObject induk, PrimitiveType tipe, Vector3 pos, Vector3 skala, Material m)

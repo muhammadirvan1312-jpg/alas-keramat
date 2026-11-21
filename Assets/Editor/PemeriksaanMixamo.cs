@@ -37,8 +37,17 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.Cerah) == 0f && synth != null && synth.GetComponent<AlasKeramat.Core.SuaraHujan>() != null);
             cek("Mixamo: peta model karakter (Deden=Remy, Ningsih=Peasant_Girl, KiRogo=Peasant_Man, Genderuwo=Warrok)", NusantaraMasterBuilder.ModelUntuk("BossGenderuwo") == "Warrok"
                 && NusantaraMasterBuilder.ModelUntuk("Deden") == "Remy" && NusantaraMasterBuilder.ModelUntuk("Ningsih") == "Peasant_Girl" && NusantaraMasterBuilder.ModelUntuk("KiRogo") == "Peasant_Man"
-                && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiWanita") == "Zombiegirl" && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiSekte") == "Nightshade" && NusantaraMasterBuilder.ModelUntuk("Musuh_KiRogo") == null
+                && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiWanita") == "Zombiegirl" && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiSekte") == "Nightshade" && NusantaraMasterBuilder.ModelUntuk("Hantu_Kuntilanak") == "Zombiegirl"
+                && NusantaraMasterBuilder.ModelUntuk("Hantu_GenderuwoHutan") == "Warrok" && NusantaraMasterBuilder.ModelUntuk("Musuh_KiRogo") == null
                 && AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(1.8f, 1.8f) == 1f && AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(3f, 1f) == 2.5f);
+            cek("Visual V2: material kulit Indonesia, rambut, LookAt/klip monster & bayangan kontak preset Rendah",
+                AlasKeramat.AI.AnimasiMixamo.BolehTampilModelMixamo(AlasKeramat.AI.ProceduralAnimator.Mode.DudukTerhuyung)
+                && AlasKeramat.AI.AnimasiMixamo.AdalahMaterialKulit("Body_Skin")
+                && !AlasKeramat.AI.AnimasiMixamo.AdalahMaterialKulit("Hair_Mat")
+                && AlasKeramat.AI.AnimasiMixamo.AdalahMaterialRambut("Peasant_Hair")
+                && AlasKeramat.AI.AnimasiMixamo.WarnaKulitIndonesia(AlasKeramat.AI.AnimasiMixamo.Peran.Pria, false).r > 0.7f
+                && AlasKeramat.AI.AnimasiMixamo.KlipSerangUntuk(AlasKeramat.AI.AnimasiMixamo.Peran.Raksasa, true, true) == "Zombie_Attack"
+                && AlasKeramat.AI.AnimasiMixamo.PerluBayanganKontak(ShadowQuality.Disable, 35f));
             cek("Hewan asli: peta model & pilihan klip", NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Rusa) == "rusa"
                 && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau) == "harimau"
                 && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.BabiHutan) == "babi_hutan"
@@ -64,6 +73,193 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Player.CombatAndLeftHandController.HitungAyunFP(1.5f, 4f, true, false) != Quaternion.identity
                 && AlasKeramat.AI.WildAnimalAI.KlipSuaraHewan(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, out pSw) == AlasKeramat.Core.ProceduralAudioSynth.KlipTeriakSekte
                 && GameObject.Find("SumurDesa_1") != null && GameObject.Find("PerahuNelayan_0") != null);
+            cek("SOTF v3: suar mercusuar malam, tarik busur FP & mesin pabrik gula",
+                AlasKeramat.Core.SuarMercusuar.AktifPadaJam(21f, AlasKeramat.Core.WeatherState.Cerah)
+                && !AlasKeramat.Core.SuarMercusuar.AktifPadaJam(12f, AlasKeramat.Core.WeatherState.Cerah)
+                && AlasKeramat.Player.CombatAndLeftHandController.TarikBusur01(true, 0.5f, 1.0f) == 0.5f
+                && AlasKeramat.Player.CombatAndLeftHandController.TarikBusur01(false, 0.5f, 1.0f) == 0f
+                && Object.FindFirstObjectByType<AlasKeramat.Core.SuarMercusuar>() != null
+                && GameObject.Find("MesinPabrik_0") != null && GameObject.Find("LoriTebu_0") != null);
+            cek("SOTF v4: senter taktis, lentera companion malam, suara sungai/pantai & gapura keramat",
+                AlasKeramat.Player.SenterAndi.HarusMenyala(21f, false, false)
+                && !AlasKeramat.Player.SenterAndi.HarusMenyala(12f, false, false)
+                && !AlasKeramat.Player.SenterAndi.HarusMenyala(21f, false, true)
+                && AlasKeramat.AI.CompanionDasar.HitungIntensitasLampuTeman(22f, false, 1f) > 1f
+                && AlasKeramat.AI.CompanionDasar.HitungIntensitasLampuTeman(12f, false, 1f) == 0f
+                && AlasKeramat.Core.SuaraAirDunia.HitungVolumeAir(4f, 10f, false) > 0.3f
+                && AlasKeramat.Core.SuaraAirDunia.HitungVolumeAir(200f, 30f, false) == 0f
+                && GameObject.Find("GapuraKeramat_0") != null
+                && AlasKeramat.Core.ProcBangunan.GapuraBatuKeramat().vertexCount > 40);
+            cek("SOTF v5: percikan parry, cipratan hujan/langkah & jembatan/dermaga/tenda",
+                AlasKeramat.Player.CombatAndLeftHandController.JumlahPercikanParry(true, false) == 22
+                && AlasKeramat.Player.CombatAndLeftHandController.JumlahPercikanParry(false, false) == 0
+                && AlasKeramat.Core.URPAtmosphereAndWeather.LajuPercikanHujan(1f, false) > 100f
+                && AlasKeramat.Core.URPAtmosphereAndWeather.LajuPercikanHujan(1f, true) == 0f
+                && AlasKeramat.Player.FoleyAndi.JumlahPartikelLangkah(AlasKeramat.Core.SurfaceType.Air, 0.8f) > 0
+                && AlasKeramat.Core.ProcBangunan.JembatanKayu().vertexCount > 60
+                && AlasKeramat.Core.ProcBangunan.DermagaPantai().vertexCount > 40
+                && AlasKeramat.Core.ProcBangunan.TendaEkspedisi().vertexCount > 30
+                && GameObject.Find("JembatanSungai_0") != null && GameObject.Find("DermagaPantai_0") != null && GameObject.Find("TendaEkspedisi_0") != null);
+            cek("SOTF v6: obor patroli sekte malam, aberasi kromatik pasca-proses, crosshair bidik/kena & menara pantau",
+                AlasKeramat.AI.NusantaraEnemyAndMutantAI.HitungIntensitasOborSekte(AlasKeramat.Core.EnemyArchetype.AbdiSekte, true, 22f, false, 1f) > 1f
+                && AlasKeramat.AI.NusantaraEnemyAndMutantAI.HitungIntensitasOborSekte(AlasKeramat.Core.EnemyArchetype.AbdiSekte, true, 12f, false, 1f) == 0f
+                && AlasKeramat.Core.AKPascaProses.HitungAberasiKromatik(0.8f, 0.2f) > AlasKeramat.Core.AKPascaProses.HitungAberasiKromatik(0f, 1f)
+                && AlasKeramat.UI.TouchControls.SkalaCrosshair(false, 1f, 0f) < 1f
+                && AlasKeramat.UI.TouchControls.SkalaCrosshair(false, 0f, 0.1f) > 1.5f
+                && AlasKeramat.Core.ProcBangunan.MenaraPantauKayu().vertexCount > 60
+                && GameObject.Find("MenaraPantau_0") != null);
+            cek("SOTF v7: jeram sungai berbuih, mata pemangsa malam, aura hantu & uap napas dingin",
+                AlasKeramat.AI.WildAnimalAI.PunyaMataPemangsa(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, true, 22f, false)
+                && !AlasKeramat.AI.WildAnimalAI.PunyaMataPemangsa(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, true, 12f, false)
+                && !AlasKeramat.AI.WildAnimalAI.PunyaMataPemangsa(AlasKeramat.Core.ResepHewan.JenisHewan.Rusa, true, 22f, false)
+                && AlasKeramat.AI.HantuAI.WarnaAuraHantu(AlasKeramat.Core.EnemyArchetype.Banaspati).r > 0.8f
+                && AlasKeramat.Core.PartikelAlam.LajuUapNapas(22f, AlasKeramat.Core.WeatherState.Cerah, false) > 0f
+                && AlasKeramat.Core.PartikelAlam.LajuUapNapas(12f, AlasKeramat.Core.WeatherState.Cerah, false) == 0f
+                && GameObject.Find("JeramSungai_0_0") != null);
+            cek("SOTF v8: denyut vinyet pendarahan/bakar, bara obor/kompor bangunan & emitter ambien landmark",
+                AlasKeramat.UI.IndikatorLuka.AlfaDenyutKondisi(true, false, 1f) > 0.1f
+                && AlasKeramat.UI.IndikatorLuka.AlfaDenyutKondisi(false, true, 1f) > 0.1f
+                && AlasKeramat.UI.IndikatorLuka.AlfaDenyutKondisi(false, false, 1f) == 0f
+                && AlasKeramat.Building.FungsiBangunan.PunyaBaraBangunan(AlasKeramat.Core.BlueprintID.OborTengkorak, 10f)
+                && !AlasKeramat.Building.FungsiBangunan.PunyaBaraBangunan(AlasKeramat.Core.BlueprintID.OborTengkorak, 0f));
+            cek("SOTF v9: model 3D tikar berlapis, takikan & timpaan pohon, basuh senjata/isi botol sungai & uap panci masak",
+                AlasKeramat.Inventory.TikarPanggung.JumlahBagianModelItem(AlasKeramat.Core.ItemID.GolokPusaka) >= 3
+                && AlasKeramat.Inventory.TikarPanggung.HitungRotasiInspeksi(true, 1.5f) != Quaternion.identity
+                && AlasKeramat.Inventory.TikarPanggung.HitungRotasiInspeksi(false, 1.5f) == Quaternion.identity
+                && AlasKeramat.Building.DirectionalTree.KedalamanTakik01(30f, 120f) > 0.4f
+                && AlasKeramat.Building.PohonRebah.HitungDamageTimpaan(AlasKeramat.Core.ProcPohon.Jenis.Jati, 75f) >= 60f
+                && AlasKeramat.Building.PohonRebah.HitungDamageTimpaan(AlasKeramat.Core.ProcPohon.Jenis.Jati, 15f) == 0f
+                && AlasKeramat.Building.PanciMasak.ProgresMasak01(20f) == 0.5f);
+            cek("SOTF v10: alat/senjata 3D companion, asap kemenyan sakral, permukaan air penampung & rambu petunjuk hutan",
+                AlasKeramat.AI.KangDedenKelvinAI.HarusTampilAlatDeden(AlasKeramat.Core.CompanionOrder.AmbilKayu, true, false)
+                && !AlasKeramat.AI.KangDedenKelvinAI.HarusTampilAlatDeden(AlasKeramat.Core.CompanionOrder.Istirahat, true, false)
+                && AlasKeramat.AI.NingsihVirginiaAI.JenisSenjataVisualNingsih(true, false, false) == 1
+                && AlasKeramat.AI.NingsihVirginiaAI.JenisSenjataVisualNingsih(true, true, true) == 3
+                && AlasKeramat.Building.ApiUnggun.LajuAsapKemenyan(45f, true) > 5f
+                && AlasKeramat.Building.ApiUnggun.LajuAsapKemenyan(0f, true) == 0f
+                && AlasKeramat.Building.FungsiBangunan.TinggiAirPenampung01(4) == 0.5f
+                && AlasKeramat.Core.ProcBangunan.RambuPetunjukKayu().vertexCount > 30
+                && GameObject.Find("RambuHutan_0") != null);
+            cek("SOTF v11: ayun ombak & buih rakit, jejak proyektil & kilat laras, peti/ransel dunia & serpihan runtuh",
+                AlasKeramat.Player.AndiFPSController.HitungAyunOmbakRakit(1.2f, 0.8f, 45f) != Quaternion.identity
+                && AlasKeramat.Player.AndiFPSController.HitungLajuBuihRakit(2.0f) > 5f
+                && AlasKeramat.Player.AndiFPSController.HitungLajuGelembungSelam(true, 0.5f) > 5f
+                && AlasKeramat.AI.ProyektilAK.PunyaJejakProyektil(AlasKeramat.Core.ItemID.PanahApi)
+                && !AlasKeramat.AI.ProyektilAK.PunyaJejakProyektil(AlasKeramat.Core.ItemID.AnakPanah)
+                && AlasKeramat.Player.CombatAndLeftHandController.HitungIntensitasKilatLaras(AlasKeramat.Player.CombatAndLeftHandController.JenisJarak.Hitscan, 0.05f) > 1f
+                && AlasKeramat.Core.WorldEventScheduler.JumlahBagianPetiTerdampar() == 4
+                && AlasKeramat.Building.BagianStruktur.JumlahPartikelRuntuh(AlasKeramat.Building.BagianStruktur.Tipe.FondasiBatu, true) == 18);
+            cek("SOTF v12: aura bara fase Boss Genderuwo, asap panggangan api unggun & totem perbatasan sekte",
+                AlasKeramat.AI.BossGenderuwo.HitungIntensitasAuraBoss(3, AlasKeramat.AI.BossGenderuwo.AksiBoss.Kejar) > AlasKeramat.AI.BossGenderuwo.HitungIntensitasAuraBoss(1, AlasKeramat.AI.BossGenderuwo.AksiBoss.Kejar)
+                && AlasKeramat.AI.BossGenderuwo.HitungIntensitasAuraBoss(3, AlasKeramat.AI.BossGenderuwo.AksiBoss.Mati) == 0f
+                && AlasKeramat.Building.ApiUnggun.LajuAsapMasakan(2, true) > 5f
+                && AlasKeramat.Building.ApiUnggun.LajuAsapMasakan(0, true) == 0f
+                && AlasKeramat.Core.ProcBangunan.TotemPerbatasanSekte().vertexCount > 40
+                && GameObject.Find("TotemBatas_0") != null);
+            cek("SOTF v13: kurva & percikan zipline, semburan gali cangkul, pusaran debu Heli SAR & paku 3D altar",
+                AlasKeramat.Core.JangkarZipline.HitungTitikTaliZipline(Vector3.zero, Vector3.forward * 10f, 0.5f, 1.15f).y < -1.0f
+                && AlasKeramat.Core.TanahGali.JumlahPartikelGali(true) > AlasKeramat.Core.TanahGali.JumlahPartikelGali(false)
+                && AlasKeramat.Player.TitikLumpur.JumlahPercikanLumpur() >= 10
+                && AlasKeramat.AI.HeliSAR.LajuDebuHeliSAR(5f) > AlasKeramat.AI.HeliSAR.LajuDebuHeliSAR(25f)
+                && AlasKeramat.AI.RitualAltar.LajuPartikelSegelAltar(3, true) > AlasKeramat.AI.RitualAltar.LajuPartikelSegelAltar(1, false));
+            cek("SOTF v14: tumbuh tanaman kebun 3D, tangkapan bubu/jerat, percikan batu asah & pos pengintai sekte",
+                AlasKeramat.Building.FungsiBangunan.SkalaTanamanKebun(4) > AlasKeramat.Building.FungsiBangunan.SkalaTanamanKebun(0)
+                && AlasKeramat.Building.FungsiBangunan.JumlahPercikanAsah() >= 15
+                && AlasKeramat.Core.ProcBangunan.PosPengintaiSekte().vertexCount > 40
+                && GameObject.Find("PosSekte_0") != null);
+            cek("SOTF v15: Makam Tua/Kemah Rawa/Watu Ireng, stealth semak hutan & kejadian dunia W02-W10",
+                AlasKeramat.Core.ProcBangunan.NisanMakamTua().vertexCount > 30
+                && AlasKeramat.Core.ProcBangunan.KemahRawaPanggung().vertexCount > 40
+                && AlasKeramat.Core.ProcBangunan.MonolitWatuIreng().vertexCount > 40
+                && GameObject.Find("MakamTua_0") != null && GameObject.Find("KemahRawa_0") != null && GameObject.Find("MonolitWatuIreng_0") != null
+                && AlasKeramat.Building.VegetationManager.CekJarakSemak(Vector3.zero, Vector3.right * 1.2f, 1.75f)
+                && AlasKeramat.Core.WorldEventScheduler.KodeKejadianCuacaDanMalam(AlasKeramat.Core.WeatherState.HujanBadai, 12f, 2) == 2
+                && AlasKeramat.Core.WorldEventScheduler.KodeKejadianCuacaDanMalam(AlasKeramat.Core.WeatherState.Cerah, 22.5f, 3) == 7);
+            cek("SOTF v16: luka per bagian tubuh Andi, singkirkan mayat sekte & misi sampingan S01-S04",
+                AlasKeramat.Player.AndiVitalsAndSanity.PengaliKecepatanLuka(30f) < 1f
+                && AlasKeramat.Player.AndiVitalsAndSanity.PengaliKecepatanLuka(0f) == 1f
+                && AlasKeramat.Player.AndiVitalsAndSanity.PengaliBiayaStaminaLuka(25f) > 1f
+                && AlasKeramat.AI.NusantaraEnemyAndMutantAI.BisaSingkirkanMayat(true, false)
+                && !AlasKeramat.AI.NusantaraEnemyAndMutantAI.BisaSingkirkanMayat(true, true)
+                && AlasKeramat.Core.QuestManager.TeksMisiSampingan(0, false).Length > 10);
+            cek("SOTF v17: katalog penuh 37 kejadian teror, mekanik curi Tuyul & sergapan Hantu Air",
+                AlasKeramat.Core.TerrorDirector.Katalog().Count == 37
+                && AlasKeramat.AI.HantuAI.PengaliLajuHantuAir(true) > 1.5f
+                && AlasKeramat.AI.HantuAI.PengaliLajuHantuAir(false) == 1f);
+            cek("SOTF v18: 13 lokasi Peta Survei, indikator HUD luka/semak & burung rangkong/elang kanopi",
+                AlasKeramat.UI.PetaSurveiUI.NamaLokasi.Length == 13
+                && AlasKeramat.UI.PetaSurveiUI.IndeksLokasiTerdekat(new Vector2(-322f, 182f), 60f) >= 0
+                && AlasKeramat.UI.HUDVital.FormatStatusTambahanHUD(false, false, false, 0f, 0f, 30f, true).Contains("SEMAK")
+                && AlasKeramat.AI.KehidupanAlam.SkalaBentangBurung(0) > AlasKeramat.AI.KehidupanAlam.SkalaBentangBurung(1));
+            cek("SOTF v19: Ending C ketiga, kapsul Rendra UG2 R2 & 12 objek cerita PERIKSA",
+                AlasKeramat.UI.LayarSinema.TeksEnding(3, true).Contains("Pewaris Perjanjian")
+                && GameObject.Find("KapsulRendra_R2") != null
+                && GameObject.Find("ObjekPeriksa_0") != null && GameObject.Find("ObjekPeriksa_11") != null);
+            cek("SOTF v20: mode tantangan Sengsara, blip companion Radar GPS & tekuk kamera mendarat",
+                AlasKeramat.Player.AndiVitalsAndSanity.PengaliModeSengsara(true) > 1.3f
+                && AlasKeramat.Player.AndiVitalsAndSanity.PengaliModeSengsara(false) == 1f
+                && AlasKeramat.UI.RadarGPS.TampilBlipTeman(true, true, true)
+                && !AlasKeramat.UI.RadarGPS.TampilBlipTeman(false, true, true)
+                && AlasKeramat.Player.AndiFPSController.HitungTekukMendarat(2.5f) > 0.08f
+                && AlasKeramat.Player.AndiFPSController.HitungTekukMendarat(0.1f) == 0f);
+            cek("SOTF v21: Mixamo Deden duduk sejak awal heli & guncangan guruh petir dekat",
+                AlasKeramat.AI.AnimasiMixamo.BolehTampilModelMixamo(AlasKeramat.AI.ProceduralAnimator.Mode.DudukTerhuyung)
+                && AlasKeramat.AI.AnimasiMixamo.BolehTampilModelMixamo(AlasKeramat.AI.ProceduralAnimator.Mode.Normal)
+                && !AlasKeramat.AI.AnimasiMixamo.BolehTampilModelMixamo(AlasKeramat.AI.ProceduralAnimator.Mode.Galeri)
+                && AlasKeramat.Core.URPAtmosphereAndWeather.DurasiGuncangGuruh(0.4f) > 0.15f
+                && AlasKeramat.Core.URPAtmosphereAndWeather.DurasiGuncangGuruh(2.0f) == 0f);
+            var menu22 = Object.FindFirstObjectByType<AlasKeramat.UI.MenuScreens>(FindObjectsInactive.Include);
+            cek("SOTF v22: pengaturan mode tantangan Sengsara/Pantang Mundur & jembatan papan Kemah Rawa",
+                AlasKeramat.UI.MenuScreens.LabelModeTantangan(true, true).Contains("SENGSARA")
+                && AlasKeramat.UI.MenuScreens.LabelModeTantangan(false, false) == "STANDAR"
+                && menu22 != null
+                && menu22.transform.Find("PanelPengaturan/HalamanAtur3/PilihanNyaman13") != null
+                && menu22.transform.Find("PanelPengaturan/HalamanAtur3/PilihanNyaman14") != null
+                && AlasKeramat.Core.ProcBangunan.JembatanPapanRawa().vertexCount > 40
+                && GameObject.Find("JembatanRawa_0") != null && GameObject.Find("JembatanRawa_1") != null);
+            cek("SOTF v23: senter kedip hantu, bara obor, pasca-proses selam/hipotermia, jejak pusaka & predator takut api",
+                AlasKeramat.Player.SenterAndi.PengaliKedipHantu(4f, 1.0f) < 0.85f
+                && AlasKeramat.Player.SenterAndi.PengaliKedipHantu(25f, 1.0f) == 1f
+                && AlasKeramat.Player.TanganKiri.LajuBaraObor(true, 4f) > AlasKeramat.Player.TanganKiri.LajuBaraObor(true, 0f)
+                && AlasKeramat.Player.TanganKiri.LajuBaraObor(false, 4f) == 0f
+                && AlasKeramat.Core.AKPascaProses.FaktorHipotermia01(34.5f) > 0.8f
+                && AlasKeramat.Core.AKPascaProses.FaktorHipotermia01(36.8f) == 0f
+                && AlasKeramat.Core.AKPascaProses.EfekLingkunganTubuh(Vector4.zero, 1f, 0f).z < -20f
+                && AlasKeramat.Core.AKPascaProses.WarnaFilterTubuh(1f, 0f).b > AlasKeramat.Core.AKPascaProses.WarnaFilterTubuh(1f, 0f).r
+                && AlasKeramat.Player.CombatAndLeftHandController.AdalahSenjataPusaka(AlasKeramat.Core.ItemID.GolokApiPusaka)
+                && AlasKeramat.Player.CombatAndLeftHandController.AdalahSenjataPusaka(AlasKeramat.Core.ItemID.KerisPusaka)
+                && !AlasKeramat.Player.CombatAndLeftHandController.AdalahSenjataPusaka(AlasKeramat.Core.ItemID.KapakBatu)
+                && AlasKeramat.Player.CombatAndLeftHandController.LebarJejakSenjata(AlasKeramat.Core.ItemID.GolokApiPusaka) > AlasKeramat.Player.CombatAndLeftHandController.LebarJejakSenjata(AlasKeramat.Core.ItemID.KapakBatu)
+                && AlasKeramat.AI.WildAnimalAI.PredatorTakutApi(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, true, 6f, 1f)
+                && !AlasKeramat.AI.WildAnimalAI.PredatorTakutApi(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, false, 6f, 1f)
+                && !AlasKeramat.AI.WildAnimalAI.PredatorTakutApi(AlasKeramat.Core.ResepHewan.JenisHewan.Rusa, true, 5f, 1f));
+            cek("Visual V1: tur foto diperluas (>= 12 shot audit) & seluruh sprite HUD berjenis Sprite",
+                NusantaraFoto.JumlahFotoAudit >= 12 && NusantaraFoto.ShotAktif.Length >= 12
+                && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_lingkaran.png") != null
+                && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_cincin.png") != null
+                && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_joy_basis.png") != null
+                && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_joy_kenop.png") != null
+                && AssetDatabase.LoadAssetAtPath<Sprite>(NusantaraMasterBuilder.FolderIkon + "/ui_vinyet_luka.png") != null);
+            float ki;
+            cek("V3 Cahaya & RAM 4GB: SinarTajuk, debu senter, kilau mata malam, batas EV, anggaran mipmap",
+                Shader.Find("AlasKeramat/SinarTajuk") != null
+                && AlasKeramat.Core.PartikelAlam.LajuDebuSenter(AlasKeramat.Core.WeatherState.Cerah, true) > 0f
+                && AlasKeramat.Core.PartikelAlam.LajuDebuSenter(AlasKeramat.Core.WeatherState.HujanBadai, true) == 0f
+                && AlasKeramat.AI.WildAnimalAI.MataMenyalaDiSenter(true, 22f, true, new Vector3(0f, 0f, 10f), Vector3.zero, Vector3.forward, out ki) && ki > 0.5f
+                && !AlasKeramat.AI.WildAnimalAI.MataMenyalaDiSenter(true, 12f, true, new Vector3(0f, 0f, 10f), Vector3.zero, Vector3.forward, out ki)
+                && AlasKeramat.UI.MenuScreens.AnggaranMemoriPreset(AlasKeramat.UI.PresetGrafis.Rendah) <= 250f
+                && AlasKeramat.UI.MenuScreens.AnggaranMemoriPreset(AlasKeramat.UI.PresetGrafis.Ultra) >= 1000f
+                && AlasKeramat.Core.AKPascaProses.Target(22f, AlasKeramat.Core.WeatherState.HujanBadai).x >= -1.2f);
+            cek("V4 Dunia & Vegetasi: scale-fade serasah & jarak tarik per preset",
+                AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(70f, 80f) > 0.99f
+                && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(76f, 80f) > 0.1f && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(76f, 80f) < 0.9f
+                && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(80f, 80f) == 0f
+                && AlasKeramat.UI.MenuScreens.JarakSerasahPreset(AlasKeramat.UI.PresetGrafis.Rendah) < AlasKeramat.UI.MenuScreens.JarakSerasahPreset(AlasKeramat.UI.PresetGrafis.Ultra));
+            var fcGua = AlasKeramat.Core.AKPascaProses.FilterBioma(AlasKeramat.Core.Biome.BawahTanah, AlasKeramat.Core.WeatherState.Cerah, 12f);
+            cek("V5 Langit, Air & VFX: shader langit/air & filter bioma gua",
+                Shader.Find("AlasKeramat/Langit") != null
+                && Shader.Find("AlasKeramat/Air") != null
+                && fcGua.b > fcGua.r);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

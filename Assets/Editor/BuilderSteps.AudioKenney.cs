@@ -79,6 +79,7 @@ namespace AlasKeramat.EditorTools
                 nOga++;
             }
             if (synth.GetComponent<SuaraHujan>() == null) synth.gameObject.AddComponent<SuaraHujan>();
+            if (synth.GetComponent<SuaraAirDunia>() == null) synth.gameObject.AddComponent<SuaraAirDunia>();
             if (synth.GetComponent<AlasKeramat.AI.MusikJelajah>() == null) synth.gameObject.AddComponent<AlasKeramat.AI.MusikJelajah>();
             synth.AssignBakedClips(nama.ToArray(), klip.ToArray());
             EditorUtility.SetDirty(synth);

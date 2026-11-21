@@ -31,10 +31,13 @@ namespace AlasKeramat.EditorTools
             var hitam = SimpanMat(SafeMaterialFactory.CreatePBR("M_GelapGua", Color.black, 0f, 0f));
             var ijuk = SimpanMat(SafeMaterialFactory.CreatePBR("M_AtapIjuk", ProcTex.Hex("#3A2E22"), 0f, 0.1f, Tex("kulit_kayu")));
 
-            // Zona 5: Beringin Agung (28 m) + altar.
+            // Zona 5: Beringin Agung (28 m) + altar + dua gapura candi bentar keramat.
             var beringin = ProcPohon.Buat(ProcPohon.Jenis.BeringinKecil, 7, false);
             Taruh("BeringinAgung", Simpan(beringin), new[] { AmbilMat("M_KulitPohon"), AmbilMat("M_DaunPohon") }, 0f, 0f, 0f, new Vector3(2.6f, 2.2f, 2.6f), false);
             Taruh("Altar", Simpan(ProcBangunan.Altar()), new[] { batu }, 0f, -18f, 180f, Vector3.one, true);
+            var gapuraMesh = Simpan(ProcBangunan.GapuraBatuKeramat());
+            Taruh("GapuraKeramat_0", gapuraMesh, new[] { batu, hitam }, 0f, -24f, 0f, Vector3.one, true);
+            Taruh("GapuraKeramat_1", gapuraMesh, new[] { batu, hitam }, 0f, 16f, 180f, Vector3.one, true);
 
             // Zona 1: heli rusak (yaw 35, roll 18) + bara turbin & asap kecelakaan.
             var heli = Taruh("HeliRusak", Simpan(ProcBangunan.HeliRusak()), new[] { putih, oranye, gelap }, 8f, -448f, 35f, Vector3.one, true);
@@ -106,8 +109,9 @@ namespace AlasKeramat.EditorTools
                 Taruh("RumahKampung_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(300 + i, 6.5f, 5f, 0.6f, 0.15f)), new[] { i % 3 == 1 ? bilik : kayu, seng }, x, z, baris % 2 == 0 ? 180f : 0f, Vector3.one, true);
             }
 
-            // Zona 7: Mercusuar.
-            Taruh("Mercusuar", Simpan(ProcBangunan.Mercusuar()), new[] { putih, merah, gelap }, -190f, -876f, 0f, Vector3.one, true);
+            // Zona 7: Mercusuar + kepala suar berputar malam/badai.
+            var mercu = Taruh("Mercusuar", Simpan(ProcBangunan.Mercusuar()), new[] { putih, merah, gelap }, -190f, -876f, 0f, Vector3.one, true);
+            PasangKepalaSuar(mercu);
 
             // Zona 9: Pabrik Gula Sinar Tebu.
             Taruh("Cerobong", Simpan(ProcBangunan.GedungPabrik(9, 0, 0, 0, true)), new[] { bata, seng, kayu }, 700f, -540f, 0f, Vector3.one, true);
@@ -118,11 +122,33 @@ namespace AlasKeramat.EditorTools
             // Mulut gua: UG1 lembah bambu (menghadap timur ke sungai), UG3 celah kuil.
             Taruh("CaveEntrance_1", Simpan(ProcBangunan.MulutGua(1, 9f)), new[] { batu, hitam }, 256f, -276f, 90f, Vector3.one, true);
             Taruh("CaveEntrance_3", Simpan(ProcBangunan.MulutGua(3, 12f)), new[] { batu, hitam }, 0f, 694f, 180f, Vector3.one, true);
-            DandanDesaDanPantai(kayu, batu, seng, hitam, bilik);
-            Catat("Landmark: " + JumlahLandmark + " objek (Beringin Agung, heli, 6 rumah desa + interior, 22 rumah kampung, sumur, gerobak, perahu karam, mercusuar, pabrik gula, 2 mulut gua, altar)");
+            DandanDesaDanPantai(kayu, batu, seng, hitam, bilik, gelap);
+            Catat("Landmark: " + JumlahLandmark + " objek (Beringin Agung, heli, 6 rumah desa + interior, 22 rumah kampung, sumur, gerobak, perahu karam, mercusuar + suar, pabrik gula + mesin/lori, 2 mulut gua, altar)");
         }
 
-        static void DandanDesaDanPantai(Material kayu, Material batu, Material seng, Material hitam, Material bilik)
+        static void PasangKepalaSuar(GameObject mercu)
+        {
+            if (mercu == null) return;
+            var kepala = Anak(mercu, "KepalaSuar");
+            kepala.transform.localPosition = new Vector3(0f, 23.6f, 0f);
+            var l = kepala.AddComponent<Light>();
+            l.type = LightType.Spot; l.spotAngle = 34f; l.range = 140f; l.intensity = 24f;
+            l.color = new Color(1f, 0.90f, 0.65f); l.shadows = LightShadows.None;
+            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.name = "BerkasSuar"; Object.DestroyImmediate(quad.GetComponent<Collider>());
+            quad.transform.SetParent(kepala.transform, false);
+            quad.transform.localPosition = new Vector3(0f, 0f, 18f);
+            quad.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            quad.transform.localScale = new Vector3(36f, 4.5f, 1f);
+            var mr = quad.GetComponent<MeshRenderer>();
+            mr.sharedMaterial = SimpanMat(SafeMaterialFactory.CreatePBR("M_BerkasSuar", new Color(1f, 0.92f, 0.72f, 0.22f), 0f, 0.1f, null, null, new Color(2.4f, 2.0f, 1.3f), SurfaceMode.Transparent));
+            mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; mr.receiveShadows = false;
+            var suar = kepala.AddComponent<SuarMercusuar>();
+            suar.Pasang(l, mr);
+            EditorUtility.SetDirty(suar);
+        }
+
+        static void DandanDesaDanPantai(Material kayu, Material batu, Material seng, Material hitam, Material bilik, Material gelap)
         {
             var sumurMesh = Simpan(ProcBangunan.SumurDesa());
             Taruh("SumurDesa_1", sumurMesh, new[] { batu, hitam }, 548f, 208f, 25f, Vector3.one, true);
@@ -139,6 +165,102 @@ namespace AlasKeramat.EditorTools
             {
                 var pr = Taruh("PerahuNelayan_" + i, perahuMesh, new[] { kayu, bilik }, posP[i, 0], posP[i, 1], posP[i, 2], Vector3.one, true);
                 pr.transform.rotation = Quaternion.Euler(4f, posP[i, 2], (i % 2 == 0 ? 12f : -10f));
+            }
+
+            var mesinMesh = Simpan(ProcBangunan.MesinPabrikGula());
+            Taruh("MesinPabrik_0", mesinMesh, new[] { gelap, seng }, 640f, -520f, 10f, Vector3.one, true);
+            Taruh("MesinPabrik_1", mesinMesh, new[] { gelap, seng }, 647f, -518f, 190f, Vector3.one, true);
+
+            var loriMesh = Simpan(ProcBangunan.LoriTebu());
+            float[,] posL = { { 658f, -502f, 32f }, { 672f, -488f, 32f }, { 682f, -478f, 120f } };
+            for (int i = 0; i < posL.GetLength(0); i++)
+                Taruh("LoriTebu_" + i, loriMesh, new[] { seng, kayu }, posL[i, 0], posL[i, 1], posL[i, 2], Vector3.one, true);
+
+            var jembatanMesh = Simpan(ProcBangunan.JembatanKayu());
+            float[,] posJ = { { 330f, -370f, 85f }, { 437f, 220f, 66f } };
+            for (int i = 0; i < posJ.GetLength(0); i++)
+            {
+                var jb = Taruh("JembatanSungai_" + i, jembatanMesh, new[] { kayu }, posJ[i, 0], posJ[i, 1], posJ[i, 2], Vector3.one, true);
+                float? wl = WorldTerrainGenerator.GetWaterLevelAt(posJ[i, 0], posJ[i, 1]);
+                float yJ = (wl ?? WorldTerrainGenerator.SampleHeight(posJ[i, 0], posJ[i, 1])) + 1.15f;
+                jb.transform.position = new Vector3(posJ[i, 0], yJ, posJ[i, 1]);
+            }
+
+            var dermaga = Taruh("DermagaPantai_0", Simpan(ProcBangunan.DermagaPantai()), new[] { kayu }, -130f, -868f, 180f, Vector3.one, true);
+            dermaga.transform.position = new Vector3(-130f, 1.1f, -868f);
+
+            var tendaMesh = Simpan(ProcBangunan.TendaEkspedisi());
+            float[,] posT = { { 20f, -436f, 210f }, { -6f, -456f, 45f }, { -518f, 258f, 130f } };
+            for (int i = 0; i < posT.GetLength(0); i++)
+                Taruh("TendaEkspedisi_" + i, tendaMesh, new[] { bilik, kayu }, posT[i, 0], posT[i, 1], posT[i, 2], Vector3.one, true);
+
+            var menaraMesh = Simpan(ProcBangunan.MenaraPantauKayu());
+            float[,] posM = { { 512f, 165f, 140f }, { 548f, 548f, 220f }, { 612f, -505f, 45f } };
+            for (int i = 0; i < posM.GetLength(0); i++)
+                Taruh("MenaraPantau_" + i, menaraMesh, new[] { kayu, seng }, posM[i, 0], posM[i, 1], posM[i, 2], Vector3.one, true);
+
+            var rambuMesh = Simpan(ProcBangunan.RambuPetunjukKayu());
+            float[,] posR = { { 35f, -410f, 35f }, { 238f, -285f, 110f }, { 485f, 185f, 215f }, { -160f, -840f, 15f } };
+            for (int i = 0; i < posR.GetLength(0); i++)
+                Taruh("RambuHutan_" + i, rambuMesh, new[] { kayu, batu }, posR[i, 0], posR[i, 1], posR[i, 2], Vector3.one, true);
+
+            var totemMesh = Simpan(ProcBangunan.TotemPerbatasanSekte());
+            float[,] posTotem = { { 495f, 145f, 210f }, { 595f, 272f, 30f }, { 542f, 540f, 225f }, { 690f, 660f, 45f }, { 605f, -445f, 195f }, { -26f, -32f, 160f } };
+            for (int i = 0; i < posTotem.GetLength(0); i++)
+                Taruh("TotemBatas_" + i, totemMesh, new[] { kayu, batu }, posTotem[i, 0], posTotem[i, 1], posTotem[i, 2], Vector3.one, true);
+
+            var posMesh = Simpan(ProcBangunan.PosPengintaiSekte());
+            float[,] posSekte = { { 470f, 120f, 220f }, { 520f, 495f, 200f }, { 580f, -415f, 185f }, { 215f, -255f, 115f } };
+            for (int i = 0; i < posSekte.GetLength(0); i++)
+                Taruh("PosSekte_" + i, posMesh, new[] { kayu, bilik }, posSekte[i, 0], posSekte[i, 1], posSekte[i, 2], Vector3.one, true);
+
+            // 3 zona landmark cerita v3: Kompleks Makam Tua, Kemah Rawa & Kampung Watu Ireng.
+            var nisanMesh = Simpan(ProcBangunan.NisanMakamTua());
+            for (int i = 0; i < 8; i++)
+                Taruh("MakamTua_" + i, nisanMesh, new[] { batu, gelap }, -320f + (i % 4) * 5.2f, 180f + (i / 4) * 6.5f, 12f + (i % 3) * 4f, Vector3.one, true);
+
+            var rawaMesh = Simpan(ProcBangunan.KemahRawaPanggung());
+            float[,] posRawa = { { 378f, -312f, 40f }, { 392f, -304f, 130f }, { 384f, -326f, -35f } };
+            for (int i = 0; i < posRawa.GetLength(0); i++)
+                Taruh("KemahRawa_" + i, rawaMesh, new[] { kayu, bilik }, posRawa[i, 0], posRawa[i, 1], posRawa[i, 2], Vector3.one, true);
+            var jRawaMesh = Simpan(ProcBangunan.JembatanPapanRawa());
+            Taruh("JembatanRawa_0", jRawaMesh, new[] { kayu, bilik }, 385f, -308f, 62f, Vector3.one, true);
+            Taruh("JembatanRawa_1", jRawaMesh, new[] { kayu, bilik }, 372f, -320f, 152f, Vector3.one, true);
+
+            Taruh("MonolitWatuIreng_0", Simpan(ProcBangunan.MonolitWatuIreng()), new[] { gelap, batu }, -420f, 460f, 25f, Vector3.one, true);
+            for (int i = 0; i < 6; i++)
+                Taruh("KampungWatuIreng_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(700 + i, 6.2f, 5.0f, 0.8f, 0.55f)), new[] { i % 2 == 0 ? bilik : kayu, ijuk }, -440f + (i % 3) * 18f, 438f + (i / 3) * 22f, i * 55f, Vector3.one, true);
+
+            string[,] dataPeriksa =
+            {
+                { "Kotak Hitam Heli", "10", "-445", "Andi: (Jarum altimeter membeku tepat saat kabut merah menyelimuti rotor.)" },
+                { "Tungku Dapur Desa", "558", "220", "Andi: (Nasi di periuk ini sudah mengering... warga pergi tergesa-gesa saat senja.)" },
+                { "Mainan Kayu Anak", "574", "568", "Andi: (Kuda-kudaan kayu yang ditinggal di teras Kampung Sukamaju.)" },
+                { "Buku Giling Pabrik", "645", "-512", "Andi: (Catatan administratur kolonial berhenti pada malam gerhana tahun 1928.)" },
+                { "Teropong Mercusuar", "-188", "-872", "Andi: (Kaca lensanya retak menghadap ke arah Beringin Agung di tengah pulau.)" },
+                { "Prasasti Nisan Tua", "-318", "182", "Andi: (Aksara Jawa kuno: 'Siapa mencabut pasak bumi, menanggung napas hutan'.)" },
+                { "Radio Kemah Rawa", "380", "-310", "Andi: (Frekuensi darurat tim survei pendahulu... hanya tersisa desis statis.)" },
+                { "Meja Sesaji Watu Ireng", "-418", "458", "Andi: (Bekas kemenyan dan bunga kantil yang belum lama dibakar di kaki monolit.)" },
+                { "Akar Banir Beringin", "4", "-8", "Andi: (Getaran halus merambat dari bawah akar raksasa ini.)" },
+                { "Tambatan Perahu", "-132", "-865", "Andi: (Tali tambang diputus paksa dengan golok dari arah dermaga.)" },
+                { "Pahat Batu Lembah", "252", "-274", "Andi: (Tanda peringatan Sekte dipahat di bibir mulut gua sungai.)" },
+                { "Peta Meja Ekspedisi", "18", "-435", "Andi: (Lingkaran merah menandai tiga kompleks bawah tanah di pulau ini.)" }
+            };
+            for (int i = 0; i < dataPeriksa.GetLength(0); i++)
+            {
+                float px = float.Parse(dataPeriksa[i, 1], System.Globalization.CultureInfo.InvariantCulture);
+                float pz = float.Parse(dataPeriksa[i, 2], System.Globalization.CultureInfo.InvariantCulture);
+                float py = Mathf.Max(0f, WorldTerrainGenerator.SampleHeight(px, pz));
+                var g = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                g.name = "ObjekPeriksa_" + i;
+                g.transform.SetParent(_induk.transform, false);
+                g.transform.position = new Vector3(px, py + 0.25f, pz);
+                g.transform.localScale = new Vector3(0.45f, 0.35f, 0.45f);
+                g.layer = GameLayers.Interactable; g.tag = GameTags.Interactable;
+                g.GetComponent<MeshRenderer>().sharedMaterial = i % 2 == 0 ? kayu : batu;
+                var w = g.AddComponent<AlasKeramat.Inventory.WadahItem>();
+                w.PasangPeriksa(dataPeriksa[i, 0], dataPeriksa[i, 3]);
+                EditorUtility.SetDirty(w);
             }
         }
 

@@ -31,6 +31,25 @@ namespace AlasKeramat.UI
         AndiFPSController _andi;
         bool _adaJoy;
         TombolTahan _tombolSerang;
+        float _tKenaCrosshair;
+        bool _kenaBerat;
+        CombatAndLeftHandController _tempur;
+
+        public static float SkalaCrosshair(bool adaTargetInteraksi, float tarikBusur01, float sisaKena)
+        {
+            if (sisaKena > 0f) return 1.85f;
+            if (tarikBusur01 > 0.01f) return Mathf.Lerp(1.35f, 0.65f, tarikBusur01);
+            return adaTargetInteraksi ? 1.45f : 1.0f;
+        }
+
+        void SaatKenaMelee(bool berat) { _tKenaCrosshair = 0.18f; _kenaBerat = berat; }
+        void SaatKenaJarak() { _tKenaCrosshair = 0.18f; _kenaBerat = false; }
+
+        void OnEnable()
+        {
+            CombatAndLeftHandController.OnKena += SaatKenaMelee;
+            CombatAndLeftHandController.OnKenaJarak += SaatKenaJarak;
+        }
 
         public void Pasang(ZonaJoystick j, ZonaGeser g) { joystick = j; geser = g; }
         public void PasangPanggul(GameObject lempar, GameObject mode) { tombolLempar = lempar; tombolMode = mode; }
@@ -70,11 +89,18 @@ namespace AlasKeramat.UI
             if(tempur!=null)tempur.HentikanAksiPanel();
             _adaJoy = false;
         }
-        void OnDisable() { HentikanInput(); }
+        void OnDisable()
+        {
+            CombatAndLeftHandController.OnKena -= SaatKenaMelee;
+            CombatAndLeftHandController.OnKenaJarak -= SaatKenaJarak;
+            HentikanInput();
+        }
         void OnApplicationFocus(bool fokus) { if (!fokus) HentikanInput(); }
 
         void PerbaruiTangan()
         {
+            if (_tKenaCrosshair > 0f) _tKenaCrosshair = Mathf.Max(0f, _tKenaCrosshair - Time.unscaledDeltaTime);
+            if (_tempur == null) _tempur = GameServices.Get<CombatAndLeftHandController>();
             if (_interaksi == null) _interaksi = GameServices.Get<InteraksiAndi>();
             if (_kiri == null) _kiri = GameServices.Get<TanganKiri>();
             if (_interaksi != null && labelTangan != null && _interaksi.Prompt != _promptTampil)
@@ -87,8 +113,11 @@ namespace AlasKeramat.UI
             if (promptBanner != null && promptBanner.activeSelf != ada) promptBanner.SetActive(ada);
             if (crosshairDot != null)
             {
-                crosshairDot.color = ada ? new Color(0.95f, 0.76f, 0.31f, 0.98f) : new Color(0.96f, 0.95f, 0.92f, 0.78f);
-                crosshairDot.rectTransform.localScale = ada ? Vector3.one * 1.45f : Vector3.one;
+                float tarik01 = _tempur != null ? _tempur.TarikBusurAktif01 : 0f;
+                crosshairDot.color = _tKenaCrosshair > 0f
+                    ? (_kenaBerat ? new Color(1f, 0.28f, 0.22f, 1f) : new Color(1f, 0.86f, 0.35f, 1f))
+                    : (ada ? new Color(0.95f, 0.76f, 0.31f, 0.98f) : new Color(0.96f, 0.95f, 0.92f, 0.78f));
+                crosshairDot.rectTransform.localScale = Vector3.one * SkalaCrosshair(ada, tarik01, _tKenaCrosshair);
             }
             if (tombolTangan != null)
             {

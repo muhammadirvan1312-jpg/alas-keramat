@@ -56,7 +56,7 @@ namespace AlasKeramat.EditorTools
             var hasil = new TerrainLayer[LapisTerrain.Length];
             for (int i = 0; i < LapisTerrain.Length; i++)
             {
-                float ubin = i == L_Batu ? 5.2f : i == L_Pasir ? 4.2f : i == L_Daun ? 2.8f : i == L_Rumput ? 2.6f : 2.6f;
+                float ubin = i == L_Batu ? 12.5f : i == L_Pasir ? 9.5f : i == L_Daun ? 6.8f : i == L_Rumput ? 7.2f : 6.4f;
                 var tl = new TerrainLayer
                 {
                     diffuseTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + ".png"),
@@ -104,8 +104,8 @@ namespace AlasKeramat.EditorTools
             var t = go.GetComponent<Terrain>();
             t.materialTemplate = mat;
             t.drawInstanced = true;
-            t.heightmapPixelError = 10f;
-            t.basemapDistance = 120f;
+            t.heightmapPixelError = 7f;
+            t.basemapDistance = 220f;
             t.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             return t;
         }
@@ -202,6 +202,20 @@ namespace AlasKeramat.EditorTools
         {
             var mat = AirAK("M_Sungai", ProcTex.Hex("#3D6B4E50"), ProcTex.Hex("#10261CE6"), 0.6f, new Vector2(1f, 0f));
             if (mat == null) mat = MatAir("M_Sungai", ProcTex.Hex("#2E4A3ECC"), 0.88f);
+            var pSh = Shader.Find("Universal Render Pipeline/Particles/Unlit");
+            Material mJeram = pSh != null ? new Material(pSh) { name = "M_BuihJeram" }
+                : SafeMaterialFactory.CreatePBR("M_BuihJeram", new Color(0.92f, 0.96f, 1f, 0.45f), 0f, 0.2f, null, null, null, SurfaceMode.Transparent);
+            if (pSh != null)
+            {
+                SafeMaterialFactory.SetF(mJeram, "_Surface", 1f);
+                SafeMaterialFactory.SetF(mJeram, "_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                SafeMaterialFactory.SetF(mJeram, "_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                SafeMaterialFactory.SetF(mJeram, "_ZWrite", 0f);
+                mJeram.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); mJeram.renderQueue = 3000;
+                SafeMaterialFactory.SetC(mJeram, "_BaseColor", new Color(0.92f, 0.96f, 1f, 0.42f));
+            }
+            AssetDatabase.CreateAsset(mJeram, FolderMat + "/M_BuihJeram.mat");
+            mJeram = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_BuihJeram.mat");
             for (int s = 0; s < WorldTerrainGenerator.SemuaSungai.Length; s++)
             {
                 var titik = WorldTerrainGenerator.SemuaSungai[s];
@@ -238,6 +252,25 @@ namespace AlasKeramat.EditorTools
                 var mrs = go.AddComponent<MeshRenderer>();
                 mrs.sharedMaterial = mat;
                 mrs.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                for (int i = 0; i < titik.Length - 1; i++)
+                {
+                    var a = titik[i]; var b = titik[i + 1];
+                    if (a.wl - b.wl < 1.2f) continue;
+                    var jp = new GameObject("JeramSungai_" + s + "_" + i);
+                    jp.transform.SetParent(go.transform, false);
+                    jp.transform.position = new Vector3((a.x + b.x) * 0.5f * WorldTerrainGenerator.SkalaXZ,
+                        (a.wl + b.wl) * 0.5f * WorldTerrainGenerator.SkalaTinggi + 0.15f,
+                        (a.z + b.z) * 0.5f * WorldTerrainGenerator.SkalaXZ);
+                    var ps = jp.AddComponent<ParticleSystem>();
+                    var pm = ps.main;
+                    pm.loop = true; pm.startLifetime = 0.75f; pm.startSpeed = 1.6f; pm.startSize = 0.85f;
+                    pm.maxParticles = 56; pm.gravityModifier = 0.25f; pm.startColor = new Color(0.90f, 0.96f, 1f, 0.42f);
+                    var em = ps.emission; em.rateOverTime = 22f;
+                    var sh = ps.shape; sh.shapeType = ParticleSystemShapeType.Box;
+                    sh.scale = new Vector3(Mathf.Max(3f, a.w * 0.8f), 0.25f, 3.2f);
+                    var pr = jp.GetComponent<ParticleSystemRenderer>();
+                    pr.sharedMaterial = mJeram; pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
             }
         }
     }

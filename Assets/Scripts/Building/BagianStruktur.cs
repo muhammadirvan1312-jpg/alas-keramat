@@ -37,6 +37,32 @@ namespace AlasKeramat.Building
 
         public static float HPAwal(Tipe t) { return t >= Tipe.FondasiBatu ? 500f : t == Tipe.Papan ? HPPapan : t == Tipe.PagarRuncing ? HPRuncing : t == Tipe.BambuTanam ? HPRuncingBambu : HPGelondong; }
 
+        public static int JumlahPartikelRuntuh(Tipe jenis, bool batu)
+        {
+            return batu ? 18 : jenis == Tipe.Papan ? 10 : 14;
+        }
+
+        void PancarSerpihanRuntuh()
+        {
+            if (!Application.isPlaying) return;
+            var go = new GameObject("SerpihanRuntuh");
+            go.transform.position = transform.position + Vector3.up * 0.4f;
+            var ps = go.AddComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var m = ps.main;
+            m.playOnAwake = false; m.loop = false; m.startLifetime = 0.65f; m.startSpeed = 2.8f;
+            m.startSize = Batu ? 0.08f : 0.06f; m.gravityModifier = 1.4f;
+            m.simulationSpace = ParticleSystemSimulationSpace.World;
+            Color w = Batu ? new Color(0.52f, 0.50f, 0.48f) : new Color(0.56f, 0.40f, 0.22f);
+            m.startColor = w;
+            var sh = ps.shape; sh.shapeType = ParticleSystemShapeType.Sphere; sh.radius = 0.35f;
+            var pr = go.GetComponent<ParticleSystemRenderer>();
+            pr.sharedMaterial = SafeMaterialFactory.GetCached(Batu ? "M_DebuRuntuhBatu" : "M_SerpihRuntuhKayu", w, 0f, 0.2f);
+            pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            ps.Emit(JumlahPartikelRuntuh(Jenis, Batu));
+            Destroy(go, 1.2f);
+        }
+
         public void Hubungkan(BagianStruktur lain)
         {
             if (lain == null || lain == this) return;
@@ -58,6 +84,7 @@ namespace AlasKeramat.Building
         {
             if (_runtuh) return;
             _runtuh = true;
+            PancarSerpihanRuntuh();
             var tetangga = new List<BagianStruktur>(Tetangga);
             foreach (var t in tetangga) if (t != null) t.Tetangga.Remove(this);
             Tetangga.Clear();

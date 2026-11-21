@@ -38,6 +38,8 @@ namespace AlasKeramat.Player
         bool _berat, _sudahKena;
         int _mask;
         Quaternion _restPivot = Quaternion.identity;
+        Vector3 _posPivot0 = new Vector3(0.28f, -0.32f, 0.5f);
+        ParticleSystem _serpih;
 
         float _tajam;
         public void Asah() { if (_aktif.id == ItemID.None) { GameEvents.RaiseToast("Pegang golok atau kapak"); return; } _tajam=300f; GameEvents.RaiseToast("Senjata diasah: daya tebas +10% selama 5 menit"); }
@@ -64,7 +66,7 @@ namespace AlasKeramat.Player
             GameServices.Register(this);
             _ctrl = GetComponent<AndiFPSController>();
             _mask = (1 << GameLayers.Tree) | (1 << GameLayers.Enemy) | (1 << GameLayers.LogPhysics) | (1 << GameLayers.Structure) | 1; // layer 0 = Default
-            if (pivotFP != null) _restPivot = pivotFP.localRotation;
+            if (pivotFP != null) { _restPivot = pivotFP.localRotation; _posPivot0 = pivotFP.localPosition; }
         }
 
         public static Senjata Terbaik(System.Func<ItemID, bool> punya)
@@ -104,6 +106,7 @@ namespace AlasKeramat.Player
         public void HentikanAksiPanel()
         {
             BatalkanTebas(); TangkisLepas(); _tParry=-1f; _tElak=0f; _t=-1f;
+            MatikanJejak();
             if (_ctrl != null) _ctrl.GuncangKamera(0f);
             if(_adaKembalikan) { _aktif=_kembalikan; _adaKembalikan=false; }
         }
@@ -129,12 +132,15 @@ namespace AlasKeramat.Player
 #endif
             if (_t < 0f)
             {
+                MatikanJejak();
                 if (pivotFP != null)
                 {
                     float kec = _ctrl != null ? _ctrl.KecepatanDatar : 0f;
                     bool lari = _ctrl != null && _ctrl.SedangLari;
+                    float tarik01 = (_iJarak >= 0 && _menarik && _tTekan >= 0f) ? TarikBusur01(true, Time.unscaledTime - _tTekan, TabelJarak[_iJarak].tarikMaks) : 0f;
                     Quaternion targetRot = _restPivot * HitungAyunFP(Time.time, kec, lari, _blok);
                     pivotFP.localRotation = Quaternion.Slerp(pivotFP.localRotation, targetRot, Time.deltaTime * (_blok ? 14f : 10f));
+                    pivotFP.localPosition = Vector3.Lerp(pivotFP.localPosition, Vector3.Lerp(_posPivot0, new Vector3(0.08f, -0.22f, 0.38f), tarik01), Time.deltaTime * 12f);
                 }
                 return;
             }
@@ -152,6 +158,29 @@ namespace AlasKeramat.Player
             if (_t >= dur) _t = -1f;
         }
 
+        void PancarSerpih(Vector3 titik, Vector3 normal)
+        {
+            if (_serpih == null)
+            {
+                var go = new GameObject("SerpihKayu");
+                _serpih = go.AddComponent<ParticleSystem>();
+                _serpih.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                var main = _serpih.main;
+                main.loop = false; main.playOnAwake = false; main.simulationSpace = ParticleSystemSimulationSpace.World;
+                main.startLifetime = 0.45f; main.startSpeed = new ParticleSystem.MinMaxCurve(1.4f, 3.0f);
+                main.startSize = new ParticleSystem.MinMaxCurve(0.025f, 0.045f); main.gravityModifier = 0.9f;
+                main.maxParticles = 40;
+                main.startColor = new ParticleSystem.MinMaxGradient(new Color(0.58f, 0.42f, 0.24f), new Color(0.40f, 0.28f, 0.14f));
+                var sh = _serpih.shape; sh.shapeType = ParticleSystemShapeType.Cone; sh.angle = 36f; sh.radius = 0.08f;
+                var pr = go.GetComponent<ParticleSystemRenderer>();
+                pr.sharedMaterial = SafeMaterialFactory.GetCached("M_SerpihKayu", new Color(0.55f, 0.38f, 0.20f), 0f, 0.2f);
+                pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+            _serpih.transform.position = titik;
+            _serpih.transform.rotation = normal.sqrMagnitude > 0.01f ? Quaternion.LookRotation(normal) : Quaternion.identity;
+            _serpih.Emit(10);
+        }
+
         void Kenai()
         {
             var cam = _ctrl != null ? _ctrl.Kamera : null;
@@ -159,13 +188,13 @@ namespace AlasKeramat.Player
             RaycastHit hit;
             if (!Physics.SphereCast(cam.position, RadiusSapuan, cam.forward, out hit, _aktif.jangkau + 0.95f, _mask, QueryTriggerInteraction.Ignore)) return;
             var kayu = hit.collider.GetComponent<KayuFisik>();
-            if (kayu != null && _aktif.id != ItemID.None) { kayu.Pukul(); return; }
+            if (kayu != null && _aktif.id != ItemID.None) { PancarSerpih(hit.point, hit.normal); kayu.Pukul(); return; }
             var bagian = hit.collider.GetComponentInParent<BagianStruktur>();
             var builder=GameServices.Get<ShoulderLogAndFreeformBuilder>();
-            if(builder!=null && builder.ModeCelah && _aktif.id!=ItemID.None && PotongCelah.Pukul(bagian,hit.point,builder.ModeAktif==ShoulderLogAndFreeformBuilder.ModeBangun.CelahPintu))return;
-            if (bagian != null && bagian.Jenis == BagianStruktur.Tipe.Tiang && hit.point.y > bagian.Puncak.y - 0.5f && _aktif.id != ItemID.None) { ShoulderLogAndFreeformBuilder.Serut(bagian); return; }
+            if(builder!=null && builder.ModeCelah && _aktif.id!=ItemID.None && PotongCelah.Pukul(bagian,hit.point,builder.ModeAktif==ShoulderLogAndFreeformBuilder.ModeBangun.CelahPintu)) { PancarSerpih(hit.point, hit.normal); return; }
+            if (bagian != null && bagian.Jenis == BagianStruktur.Tipe.Tiang && hit.point.y > bagian.Puncak.y - 0.5f && _aktif.id != ItemID.None) { PancarSerpih(hit.point, hit.normal); ShoulderLogAndFreeformBuilder.Serut(bagian); return; }
             var pohon = hit.collider.GetComponentInParent<DirectionalTree>();
-            if (pohon != null) { pohon.Pukul(transform.position, _aktif.tebang * (_berat ? PengaliTebangBerat : 1f)); AlasKeramat.AI.MeterSuara.Pancar(hit.point, AlasKeramat.AI.MeterSuara.Tebang); return; }
+            if (pohon != null) { PancarSerpih(hit.point, hit.normal); pohon.Pukul(transform.position, _aktif.tebang * (_berat ? PengaliTebangBerat : 1f)); AlasKeramat.AI.MeterSuara.Pancar(hit.point, AlasKeramat.AI.MeterSuara.Tebang); return; }
             var target = hit.collider.GetComponentInParent<IDamageable>();
             if (target != null && !ReferenceEquals(target, GetComponent<IDamageable>()))
                 KenaiTarget(target, hit, cam, _tajam > 0f ? 1.1f : 1f);

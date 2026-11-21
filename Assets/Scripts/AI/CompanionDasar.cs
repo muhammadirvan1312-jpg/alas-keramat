@@ -33,6 +33,45 @@ namespace AlasKeramat.AI
         Vector3 _tujuanJalur;
         List<Vector3> _jalur = new List<Vector3>(), _jalurBaru = new List<Vector3>();
         System.Action<bool> _cbJalur;
+        Light _lampuTeman;
+
+        public static float HitungIntensitasLampuTeman(float jam, bool bawahTanah, float waktu)
+        {
+            bool gelap = bawahTanah || jam >= 18.0f || jam <= 5.8f;
+            if (!gelap) return 0f;
+            float kedip = 0.92f + 0.08f * Mathf.Sin(waktu * 7.3f) + 0.05f * Mathf.Cos(waktu * 13.1f);
+            return (bawahTanah ? 2.4f : 1.85f) * kedip;
+        }
+
+        void PastikanLampuTeman()
+        {
+            if (_lampuTeman != null) return;
+            var go = new GameObject("LampuTeman");
+            go.transform.SetParent(transform, false);
+            go.transform.localPosition = new Vector3(0.28f, 1.35f, 0.25f);
+            _lampuTeman = go.AddComponent<Light>();
+            _lampuTeman.type = LightType.Point;
+            _lampuTeman.color = new Color(1f, 0.68f, 0.34f);
+            _lampuTeman.range = 11.5f;
+            _lampuTeman.shadows = LightShadows.None;
+            _lampuTeman.enabled = false;
+        }
+
+        protected virtual void LateUpdate()
+        {
+            if (!IsAlive) { if (_lampuTeman != null) _lampuTeman.enabled = false; return; }
+            AmbilLayanan();
+            float jam = _jam != null ? _jam.Jam : 12f;
+            bool bawah = WorldTerrainGenerator.DiBawahTanah(transform.position.y);
+            float intLampu = HitungIntensitasLampuTeman(jam, bawah, Time.time);
+            if (intLampu > 0.01f)
+            {
+                PastikanLampuTeman();
+                _lampuTeman.enabled = true;
+                _lampuTeman.intensity = intLampu;
+            }
+            else if (_lampuTeman != null) _lampuTeman.enabled = false;
+        }
 
         protected virtual void Awake()
         {

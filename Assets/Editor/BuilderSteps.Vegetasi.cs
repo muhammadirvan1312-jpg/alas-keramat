@@ -88,6 +88,10 @@ namespace AlasKeramat.EditorTools
             var matPalem = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangPalem", ProcTex.Hex("#7A7466"), 0f, 0.2f, palem != null ? palem : kulit, palemN != null ? palemN : kulitN), ShaderKulit, 0.035f, 0f));
             var matBambu = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_Bambu", ProcTex.Hex("#3B5822"), 0f, 0.3f, AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu.png"), AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu_n.png")), ShaderKulit, 0.05f, 0f));
             var matHangus = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangHangus", ProcTex.Hex("#2A2420"), 0f, 0.1f, kulit, kulitN), ShaderKulit, 0.01f, 0f));
+            if (matDaun.HasProperty("_VariasiWarna")) matDaun.SetFloat("_VariasiWarna", 0.24f);
+            if (matKulit.HasProperty("_VariasiWarna")) matKulit.SetFloat("_VariasiWarna", 0.16f);
+            if (matPalem.HasProperty("_VariasiWarna")) matPalem.SetFloat("_VariasiWarna", 0.14f);
+            if (matBambu.HasProperty("_VariasiWarna")) matBambu.SetFloat("_VariasiWarna", 0.18f);
 
             var data = ScriptableObject.CreateInstance<VegetationData>();
             var jenisList = new List<VegetationData.JenisVeg>();

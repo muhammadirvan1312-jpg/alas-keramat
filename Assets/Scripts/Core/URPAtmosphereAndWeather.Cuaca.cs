@@ -12,9 +12,21 @@ namespace AlasKeramat.Core
         [SerializeField] Light kilat;
 
         WeatherState _cuaca = WeatherState.Cerah, _cuacaLama = WeatherState.Cerah;
-        float _transisi = 1f, _jamCekBerikut = 11f, _kilatBerikut = 10f, _kilatSisa, _guruhTunda = -1f;
-        ParticleSystem _hujan;
+        float _transisi = 1f, _jamCekBerikut = 11f, _kilatBerikut = 10f, _kilatSisa, _guruhTunda = -1f, _jarakKilatKm = 2f;
+        bool _kilatNyala;
+
+        public static float DurasiGuncangGuruh(float jarakKm)
+        {
+            return jarakKm <= 1.2f ? Mathf.Lerp(0.32f, 0.08f, Mathf.Clamp01(jarakKm / 1.2f)) : 0f;
+        }
+        ParticleSystem _hujan, _percikanHujan;
         Dsp.Rng _rng = new Dsp.Rng(20261117u);
+
+        public static float LajuPercikanHujan(float intensitasHujan, bool bawahTanah)
+        {
+            if (bawahTanah || intensitasHujan <= 0.02f) return 0f;
+            return 420f * intensitasHujan;
+        }
 
         public WeatherState Cuaca { get { return _cuaca; } }
         public static Season MusimHari(int hari) { return ((hari - 1) / HariPerMusim) % 2 == 0 ? Season.Kemarau : Season.Penghujan; }
@@ -101,13 +113,26 @@ namespace AlasKeramat.Core
         void PerbaruiHujan()
         {
             float i = IntensitasHujan();
-            if (i <= 0.01f) { if (_hujan != null && _hujan.isPlaying) _hujan.Stop(); return; }
+            if (i <= 0.01f)
+            {
+                if (_hujan != null && _hujan.isPlaying) _hujan.Stop();
+                if (_percikanHujan != null && _percikanHujan.isPlaying) _percikanHujan.Stop();
+                return;
+            }
             if (_hujan == null) BuatHujan();
             if (_hujan == null) return;
             var cam = Camera.main;
             if (cam != null) _hujan.transform.position = cam.transform.position + Vector3.up * 12f;
             var em = _hujan.emission; em.rateOverTime = 4500f * i;
             if (!_hujan.isPlaying) _hujan.Play();
+            if (_percikanHujan != null && cam != null)
+            {
+                Vector3 cp = cam.transform.position;
+                _percikanHujan.transform.position = new Vector3(cp.x, WorldTerrainGenerator.SampleHeight(cp.x, cp.z) + 0.12f, cp.z);
+                var emP = _percikanHujan.emission;
+                emP.rateOverTime = LajuPercikanHujan(i, WorldTerrainGenerator.DiBawahTanah(cp.y));
+                if (!_percikanHujan.isPlaying) _percikanHujan.Play();
+            }
         }
 
         void BuatHujan()
@@ -126,6 +151,18 @@ namespace AlasKeramat.Core
             var r = go.GetComponent<ParticleSystemRenderer>();
             r.renderMode = ParticleSystemRenderMode.Stretch; r.velocityScale = 0.05f; r.lengthScale = 1f;
             r.sharedMaterial = materialHujan;
+
+            var gPercik = new GameObject("PercikanHujanTanah");
+            gPercik.transform.SetParent(transform, false);
+            _percikanHujan = gPercik.AddComponent<ParticleSystem>();
+            _percikanHujan.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var mp = _percikanHujan.main;
+            mp.loop = true; mp.startLifetime = 0.28f; mp.startSpeed = 1.6f; mp.startSize = 0.12f;
+            mp.maxParticles = 600; mp.simulationSpace = ParticleSystemSimulationSpace.World; mp.gravityModifier = 0.8f;
+            mp.startColor = new Color(0.82f, 0.88f, 0.94f, 0.38f);
+            var sp = _percikanHujan.shape; sp.shapeType = ParticleSystemShapeType.Box; sp.scale = new Vector3(24f, 0.2f, 24f);
+            var pr = gPercik.GetComponent<ParticleSystemRenderer>();
+            pr.sharedMaterial = materialHujan; pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
         void PerbaruiKilat()
@@ -134,8 +171,12 @@ namespace AlasKeramat.Core
             if (_kilatSisa > 0f)
             {
                 _kilatSisa -= Time.deltaTime;
+                bool hidup = _kilatSisa > 0f;
                 kilat.intensity = _kilatSisa > 0.08f ? 3.5f : (_kilatSisa > 0.05f ? 0.2f : 2.4f);
-                kilat.enabled = _kilatSisa > 0f;
+                kilat.enabled = hidup;
+                if (skybox != null && hidup) SafeMaterialFactory.SetF(skybox, "_Exposure", _kilatSisa > 0.08f ? 1.55f : 0.9f);
+                if (!hidup && _kilatNyala) { _kilatNyala = false; if (_jam != null) Terapkan(_jam.Jam); }
+                else if (hidup) _kilatNyala = true;
             }
             if (_guruhTunda > 0f)
             {
@@ -144,6 +185,9 @@ namespace AlasKeramat.Core
                 {
                     var synth = GameServices.Get<ProceduralAudioSynth>();
                     if (synth != null) synth.Play(ProceduralAudioSynth.KlipGuruh, null, AudioCategory.Ambien, _rng.Range(0.6f, 1f), _rng.Range(0.85f, 1.1f), 1);
+                    float guncang = DurasiGuncangGuruh(_jarakKilatKm);
+                    var andi = guncang > 0f ? GameServices.Get<AlasKeramat.Player.AndiFPSController>() : null;
+                    if (andi != null && !WorldTerrainGenerator.DiBawahTanah(andi.transform.position.y)) andi.GuncangKamera(guncang);
                 }
             }
             if (_cuaca != WeatherState.HujanBadai || _transisi < 0.8f) return;
@@ -152,8 +196,8 @@ namespace AlasKeramat.Core
             _kilatBerikut = _rng.Range(8f, 25f);
             _kilatSisa = 0.18f;
             kilat.transform.rotation = Quaternion.Euler(_rng.Range(30f, 70f), _rng.Range(0f, 360f), 0f);
-            float jarakKm = _rng.Range(0.3f, 3f);
-            _guruhTunda = jarakKm * 1000f / 340f;
+            _jarakKilatKm = _rng.Range(0.3f, 3f);
+            _guruhTunda = _jarakKilatKm * 1000f / 340f;
         }
     }
 }

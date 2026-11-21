@@ -162,3 +162,113 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - Tangan & senjata orang-pertama (`BuilderSteps.Tebang.cs`, `BuilderSteps.Jarak.cs`, `CombatAndLeftHandController.cs`) ditambah jam tangan taktis menyala, jari menggenggam, lilitan kulit, bilah baja `FP_BajaTajam`, cahaya bara `GolokApiPusaka`, detail busur/tombak/senapan/ketapel, serta ayunan napas/jalan/lari `HitungAyunFP`.
   - `PartikelAlam` ditambah kunang-kunang malam di hutan dan spora bercahaya konstan di dalam gua (`KunangMalam`, `LajuKunang`).
   - `BuilderSteps.AudioKenney.cs` dan `WildAnimalAI.cs` memperluas 4 rekaman CC0 Kenney (`impact_punch_medium_000`, `creak_1`, `metal_click`, `door_open_1`) serta suara 3D satwa saat waspada, menyerang, dan terluka (`KlipSuaraHewan`).
+- Gelombang 3 SOTF (`imp-sotf-v3`):
+  - `BangunanBlueprint` kini memakai material PBR berserat kayu/batu (`BahanBP`) di semua 26 cetak biru survival; `ApiUnggun` ditambah lidah api berkedip + partikel bara api 3D saat menyala.
+  - `TanganKiri` menampilkan lengan, telapak tangan, dan jari menggenggam obor bambu berikut lidah api; `CombatAndLeftHandController` menambah animasi tarik busur ke tengah bidikan (`TarikBusur01`) serta partikel serpihan kayu (`PancarSerpih`) saat menebang pohon/kayu/struktur.
+  - `Mercusuar` kini memiliki `SuarMercusuar` berputar saat malam/badai/kabut, dan halaman Pabrik Gula diisi ketel uap/penggiling (`MesinPabrik_0..1`) + rel & gerobak lori tebu (`LoriTebu_0..2`).
+- Gelombang 4 SOTF (`imp-sotf-v3`):
+  - `SenterAndi` dilengkapi bodi senter taktis 3D, lensa bercahaya, berkas sinar volumetrik (`BerkasSenter`), serta fungsi `ToggleSenter()`.
+  - `CompanionDasar` menambahkan lentera malam hangat (`LampuTeman` / `HitungIntensitasLampuTeman`) saat malam atau di dalam gua sehingga Deden dan Ningsih menerangi sekitar bersama pemain.
+  - `SuaraAirDunia` memutar gemericik sungai dan deburan ombak pantai yang volumenya mengikuti jarak terdekat ke aliran sungai/garis pantai.
+  - Shader `AK_Kulit.shader` & `AK_Daun.shader` diperhalus dengan root AO dan pantulan basah Fresnel saat hujan; `ProcBangunan.GapuraBatuKeramat` dan dua gapura candi bentar + tungku sesaji dipasang mengapit Altar & Beringin Agung.
+- Gelombang 5 SOTF (`imp-sotf-v3`):
+  - `CombatAndLeftHandController` memancarkan percikan api logam saat berhasil parry & blok serangan (`PercikanParry` / `JumlahPercikanParry`).
+  - `URPAtmosphereAndWeather` menambahkan cipratan hujan di permukaan tanah sekitar pemain (`PercikanHujanTanah` / `LajuPercikanHujan`) dan `FoleyAndi` memancarkan cipratan air/debu saat berlari, melompat mendarat, atau berenang.
+  - Infrastruktur pulau diperkaya dengan 2 jembatan kayu penyeberangan sungai (`JembatanSungai_0..1`), dermaga nelayan pantai (`DermagaPantai_0`), serta 3 tenda ekspedisi darurat (`TendaEkspedisi_0..2`) di dekat lokasi jatuh heli & bukit utara.
+- Gelombang 6 SOTF (`imp-sotf-v3`):
+  - Anggota sekte yang berpatroli di malam hari atau di dalam gua kini membawa obor api berkedip (`OborSekte` / `HitungIntensitasOborSekte`) sehingga pergerakan musuh di hutan gelap terlihat seperti *Sons of the Forest*.
+  - Pasca-proses URP (`AKPascaProses` & `BuilderSteps.Pasca.cs`) ditambah *Film Grain* sinematik dan *Chromatic Aberration* dinamis saat darah kritis atau kewarasan merosot (`HitungAberasiKromatik`).
+  - `TouchControls` menambahkan umpan balik crosshair dinamis (mengecil presisi saat menarik busur & berkedip besar merah/kuning saat mengenai musuh), plus 3 menara pantau kayu beratap (`MenaraPantau_0..2`) di desa, kampung, & pabrik gula.
+- Gelombang 7 SOTF (`imp-sotf-v3`):
+  - Medan pulau (`BuilderSteps.Dunia.cs`) ditingkatkan ketajaman jarak pandangnya (`heightmapPixelError = 7`, `basemapDistance = 220`) dan ditambah partikel buih jeram putih (`JeramSungai_*`) di titik aliran sungai yang menurun curam.
+  - Satwa pemangsa malam (`WildAnimalAI` / `MataPemangsa`) kini memantulkan pendar mata kuning-oranye di kegelapan malam atau gua; hantu (`HantuAI` / `AuraHantu`) memancarkan aura mistis/bara sesuai jenisnya.
+  - `PartikelAlam` menambahkan uap napas dingin (`UapNapasDingin` / `LajuUapNapas`) saat malam hari, badai, kabut pagi, atau berada di gua bawah tanah.
+- Gelombang 8 SOTF (`imp-sotf-v3`):
+  - `IndikatorLuka` kini berdenyut merah/oranye di tepi layar saat Andi mengalami pendarahan atau terbakar (`AlfaDenyutKondisi`).
+  - Tekstur kabut hutan & berkas sinar god rays (`BuilderSteps.G3.cs`) dinaikkan ke `256px`; `BuilderSteps.Ambien.cs` menambah emitter suara statis radio darurat di heli jatuh, gema gamelan di Beringin/Gapura, burung pantai di Mercusuar, dan suara ayam di Desa Mati.
+  - `FungsiBangunan` menambahkan partikel bara api yang naik saat `OborTengkorak`, `LampuMinyak`, `PatungNgeri`, dan `KomporBatu` dinyalakan (`PunyaBaraBangunan`).
+- Gelombang 9 SOTF (`imp-sotf-v3`):
+  - `TikarPanggung` mengganti balok/bola polos dengan model 3D berlapis (gagang kayu + pelindung kuningan + bilah baja/api/emas, busur + tali, anak panah berbulu, zirah berlapis, alat & makanan) serta rotasi inspeksi 3D saat dipilih di lingkaran rakit (`HitungRotasiInspeksi`).
+  - `DirectionalTree` menampilkan coakan takikan kayu 3D (`Takik_0..3` / `KedalamanTakik01`) sesuai kuadran tebangan, dan `PohonRebah` memberikan damage timpaan pohon tumbang (`HitungDamageTimpaan`, 60-220 damage + guncang kamera) ke musuh/hewan di bawahnya.
+  - `InteraksiAndi` & `CombatAndLeftHandController` otomatis membasuh darah di senjata (`BasuhDarahSenjata`) dan mengisi botol kosong (`IsiBotolDiSungai`) saat minum di sungai; `PanciMasak` menampilkan kuah sup yang berubah warna & partikel uap panas (`ProgresMasak01`), serta `BuilderSteps.Hewan` memperkaya visual rumpun jamur, daun sirih berlapis, dan sarang 3 telur.
+- Gelombang 10 SOTF (`imp-sotf-v3`):
+  - `KangDedenKelvinAI` menampilkan golok/alat kerja 3D (`AlatKerjaDeden` / `HarusTampilAlatDeden`) saat bekerja atau bertarung, dan `NingsihVirginiaAI` menampilkan busur bambu, pistol suar, atau pistol PT 3D (`SenjataTanganNingsih` / `JenisSenjataVisualNingsih`) sesuai persenjataannya.
+  - `ApiUnggun` memancarkan kepulan asap kemenyan putih-keemasan (`AsapKemenyan` / `LajuAsapKemenyan`) selama 60 detik saat pemain membakar kemenyan penangkal hantu.
+  - `FungsiBangunan` menampilkan permukaan air 3D yang naik mengikuti isi `PenampungHujan` (`TinggiAirPenampung01`) dan ayunan angin pada `JemuranIkan`; ditambah 4 rambu kayu penunjuk jalur ekspedisi (`RambuHutan_0..3` / `ProcBangunan.RambuPetunjukKayu`) di persimpangan hutan.
+- Gelombang 11 SOTF (`imp-sotf-v3`):
+  - `AndiFPSController` menambahkan ayunan ombak & kemiringan pitch/roll saat mengemudikan `RakitBambu` (`HitungAyunOmbakRakit`), jejak buih air di buritan rakit (`HitungLajuBuihRakit`), tiang layar rakit, serta gelembung udara di depan kamera saat menyelam (`HitungLajuGelembungSelam`).
+  - `ProyektilAK` memasang jejak partikel api, kabut racun hijau, dan suar merah bercahaya pada proyektil terbang (`PunyaJejakProyektil`), sedangkan `CombatAndLeftHandController` menambahkan kilat api moncong senjata (`KilatLarasFP` / `HitungIntensitasKilatLaras`) saat menembakkan bedil, pistol, senapan, dan pistol suar.
+  - `WorldEventScheduler` membangun visual 3D peti kayu logistik berpita oranye (`BuatVisualPetiTerdampar`) dan ransel ekspedisi berpatok tanda pengenal (`BuatVisualRanselEkspedisi`), serta `BagianStruktur` memancarkan partikel serpihan kayu/debu batu saat bangunan runtuh (`JumlahPartikelRuntuh`).
+- Gelombang 12 SOTF (`imp-sotf-v3`):
+  - `BossGenderuwo` kini memancarkan cahaya aura merah-bara & partikel abu panas (`AuraBossGenderuwo` / `HitungIntensitasAuraBoss`) yang makin menyala ganas saat memasuki Fase 2 dan Fase 3.
+  - `ApiUnggun` mengepulkan uap/asap masakan (`AsapMasakTusuk` / `LajuAsapMasakan`) ketika daging atau ikan sedang dipanggang di atas tusukan api unggun.
+  - `ProcBangunan.TotemPerbatasanSekte` dan 6 totem peringatan wilayah sekte (`TotemBatas_0..5`) dipasang di pintu masuk Desa Mati, Kampung Sukamaju, Pabrik Gula, dan Kawah Beringin.
+- Gelombang 13 SOTF (`imp-sotf-v3`):
+  - `JangkarZipline` melengkungkan tali zipline dengan kurva lendutan alami (`SegmenTali` / `HitungTitikTaliZipline`) dan memancarkan percikan api gesekan katrol (`PercikanZipline`) + guncangan kamera saat mendarat.
+  - `TanahGali` memancarkan semburan tanah dan bunga api logam saat cangkul mengenai palka baja (`PancarTanahGali` / `JumlahPartikelGali`), dan `TitikLumpur` memancarkan cipratan lumpur saat Andi melakukan kamuflase (`JumlahPercikanLumpur`).
+  - `HeliSAR` menampilkan pusaran debu baling-baling (`DebuBalingHeli` / `LajuDebuHeliSAR`) dan lampu sorot pendaratan putih, sementara `RitualAltar` menampilkan 3 model 3D Paku Keramat bercahaya (`PakuAltar_0..2`) serta partikel segel emas (`PartikelSegelAltar` / `LajuPartikelSegelAltar`).
+- Gelombang 14 SOTF (`imp-sotf-v3`):
+  - `FungsiBangunan` membuat tanaman di `KebunTanam` tumbuh secara visual mengikuti `SkalaTanamanKebun(Stok)`, memunculkan hasil tangkapan 3D (`HasilTangkap3D`) di `BubuIkan` & `JeratHewan`, serta memancarkan percikan bunga api logam (`PancarPercikanAsah` / `JumlahPercikanAsah`) saat mengasah senjata di `BatuAsah` dan `MejaKerja`.
+  - `ProcBangunan.PosPengintaiSekte` dan 4 pos pengintai berbarikade bambu runcing (`PosSekte_0..3`) dipasang menjaga jalur strategis menuju Desa Mati, Kampung Sukamaju, Pabrik Gula, dan Lembah Bambu.
+- Gelombang 15 SOTF (`imp-sotf-v3`):
+  - 3 zona landmark baru dibangun di pulau (`BuilderSteps.Landmark` & `ProcBangunan`): **Kompleks Makam Tua** (`MakamTua_0..7`), **Kemah Rawa Panggung** (`KemahRawa_0..2`), dan **Kampung Watu Ireng** beserta **Monolit Watu Ireng** (`MonolitWatuIreng_0`, `KampungWatuIreng_1..6`).
+  - Sistem *stealth* semak hutan aktif: `VegetationManager.DiDalamSemak` mendeteksi posisi Andi di dalam semak (`TersembunyiDiSemak`) saat jongkok dan menyambungkannya ke persepsi Sekte (`FaktorSemak = 0.35f`).
+  - `WorldEventScheduler` mengaktifkan kejadian dunia dinamis **W02–W04 & W07–W10** (badai menumbangkan pohon, petir memicu kebakaran sawit, banjir menghanyutkan kayu sungai, prosesi obor malam, bentrokan Sekte vs satwa, serta kawanan monyet hutan).
+- Gelombang 16 SOTF (`imp-sotf-v3`):
+  - `AndiVitalsAndSanity` menambahkan sistem **Luka Per Bagian Tubuh** (`LukaKepala`, `LukaLengan`, `LukaKaki` sesuai `24 §5`): jatuh menyebabkan kaki terkilir (`PengaliKecepatanLuka = 0.78f`), benturan berat melukai lengan (`PengaliBiayaStaminaLuka = 1.25f`) atau kepala, dan sembuh dengan `PerbanKain`, `JamuHerbal`, `KunyitObat`, `DaunSirih`, atau tidur (`ObatiLukaTubuh`).
+  - `NusantaraEnemyAndMutantAI` menambahkan aksi **`SINGKIRKAN MAYAT`** (`BisaSingkirkanMayat`) setelah mayat digeledah agar patroli Sekte tidak curiga (membakar menjadi `Arang` dengan `KorekGas` atau menyembunyikan mayat ke semak).
+  - `QuestManager` melengkapi pelacakan dan hadiah **4 Misi Sampingan S01–S04** (*Kenangan Dewi*, *Mencari Rendra*, *Arwah Tersesat*, *Persembahan Kemenyan*).
+- Gelombang 17 SOTF (`imp-sotf-v3`):
+  - `TerrorDirector` melengkapi seluruh **37 katalog kejadian horor `E01–E37`** (`13 §3`), termasuk kejadian gua/air/kesurupan (`E15–E17`, `E19–E20`, `E25–E26`, `E28–E29`, `E31`, `E36–E37`).
+  - `HantuAI` mengaktifkan mekanik folklor nyata: **Tuyul** mencuri barang dari tas dan menjatuhkannya saat disorot cahaya (`PilihBarangCurianTuyul`), **Hantu Air** melesat 1,65x di air dan menguras stamina (`PengaliLajuHantuAir`), serta **Genderuwo Hutan** mengguncang kamera & menggerus kewarasan saat menghantam.
+- Gelombang 18 SOTF (`imp-sotf-v3`):
+  - `PetaSurveiUI` memperluas daftar penanda navigasi pulau menjadi **13 lokasi utama** (termasuk Kampung, Pabrik Gula, Mercusuar, Makam Tua, Kemah Rawa, dan Watu Ireng).
+  - `HUDVital` menampilkan status kondisi tubuh dan taktis secara langsung di layar (`FormatStatusTambahanHUD`: `SEMAK`, `LUKA KAKI`, `LUKA LENGAN`, `LUKA KEPALA`, `BISA ULAR`, `DIARE`, `KERACUNAN`).
+  - `KehidupanAlam` menambahkan variasi ukuran burung pemangsa & rangkong berbentang sayap lebar (`SkalaBentangBurung`) di atas kanopi hutan.
+- Gelombang 19 SOTF (`imp-sotf-v3`):
+  - `LayarSinema` dan `BuilderSteps.Ending` menambahkan **Ending C ("Pewaris Perjanjian" — 3 ending v5)** beserta tombol pilihan takdir ke-3 dan hadiah `KerisPusaka` + `ZirahEmas` di Mode Sandbox.
+  - `BuilderSteps.Gua2` menambahkan **Kapsul Eksperimen Rendra (`KapsulRendra_R2`)** dan `MejaRendra_R2` (`TandaPengenalRendra`, `PatungKayuDewi`) di ruang laboratorium bunker UG2 R2.
+  - `WadahItem` dan `BuilderSteps.Landmark` menambahkan interaksi **`PERIKSA`** (`PasangPeriksa`) pada **12 objek cerita lingkungan (`ObjekPeriksa_0..11`)** di seluruh zona utama pulau yang memutar monolog investigasi Andi dan memulihkan kewarasan.
+- Gelombang 20 SOTF (`imp-sotf-v3`):
+  - `AndiVitalsAndSanity` menambahkan dukungan **Mode Sengsara & Mode Pantang Mundur (`24 §10`)** (`PengaliModeSengsara = 1.45f`).
+  - `RadarGPS` menampilkan penanda posisi dinamis (`BlipDeden` biru muda & `BlipNingsih` merah muda keemasan / `TampilBlipTeman`) secara langsung di radar ketika GPS aktif.
+  - `AndiFPSController` menambahkan efek redaman tekuk lutut kamera saat mendarat dari lompatan atau ketinggian (`HitungTekukMendarat`) sehingga gerak orang-pertama terasa berbobot nyata.
+- Gelombang 21 SOTF (`imp-sotf-v3`):
+  - `AnimasiMixamo` mengaktifkan model Mixamo `Remy` untuk Kang Deden sejak awal pembukaan game saat duduk terhuyung di ekor heli (`BolehTampilModelMixamo` untuk `Mode.DudukTerhuyung` dengan klip `Sitting_Idle`/`Kneeling_Idle`).
+  - `NusantaraFoto` menajamkan ketepatan kontur medan saat audit visual (`heightmapPixelError = 7`, `basemapDistance = 420`).
+  - `URPAtmosphereAndWeather` menambahkan efek guncangan kamera saat petir menyambar dekat selama hujan badai (`DurasiGuncangGuruh`).
+- Gelombang 22 SOTF (`imp-sotf-v3`):
+  - `MenuScreens` / `MenuScreens.Kenyamanan` & `BuilderSteps.PengaturanNyaman` menyambungkan tombol UI **Mode Sengsara** (`ak_sengsara`, `PilihanNyaman13`) dan **Mode Pantang Mundur** (`ak_pantang`, `PilihanNyaman14`) di tab Pengaturan Permainan beserta persistensi `MuatPengaturan`/`SimpanPengaturan`, label status (`LabelModeTantangan`), pengali laju vital Pantang Mundur, dan penghapusan slot simpan saat gugur di `AndiVitalsAndSanity.Mati()`.
+  - `ProcBangunan.JembatanPapanRawa` dan 2 jembatan papan rawa bertiang bambu (`JembatanRawa_0..1`) menghubungkan kompleks Kemah Rawa ke daratan kering.
+- Gelombang 23 SOTF (`imp-sotf-v3`):
+  - `SenterAndi` menambahkan efek kedip horor saat hantu mendekat dalam radius 18 m (`PengaliKedipHantu` memodulasi intensitas dan berkas senter tanpa GC).
+  - `TanganKiri` memancarkan partikel bara api obor orang-pertama (`BaraOborFP` / `LajuBaraObor`) yang naik mengikuti kecepatan gerak Andi.
+  - `AKPascaProses` menambahkan grading & vignette bawah air saat `Menyelam` serta filter dingin beku & aberasi kromatik saat `SuhuTubuh` turun ke `Kedinginan`/`Hipotermia` (`FaktorHipotermia01`, `EfekLingkunganTubuh`, `WarnaFilterTubuh`).
+  - `CombatAndLeftHandController.Jejak` membedakan jejak ayunan, material emisif, ujung bilah tertinggi, dan percikan partikel khusus senjata pusaka (`GolokApiPusaka`, `KerisPusaka`, `GolokPusaka` via `AdalahSenjataPusaka`).
+  - `WildAnimalAI` membuat satwa pemangsa takut dan kabur menjauhi obor menyala, `GolokApiPusaka`, `ApiUnggun`, dan `OborTengkorak` (`PredatorTakutApi` / `CekApiSekitar`).
+
+### Audit Visual PR #46 (Rubrik 19 §7, 22 Nov 2026)
+- Perangkat uji pengguna: **Entry-level RAM 4 GB** -> default preset **`Rendah` 30 FPS**. Peta jalan visual tersimpan di `docs/CATATAN_VISUAL_ANTIGRAVITY.md`.
+- Baseline PR #46 (`imp-sotf-v2` `611e4ee` -> merge `main` `6d45a2f`, 6 foto dunia + 3 foto HUD, 0% pink):
+  - Cahaya & bayangan: **7.0** | Atmosfer & kedalaman: **7.0** | Material: **7.5** | Vegetasi: **7.5** | Komposisi & siluet: **7.0** | Warna & grading: **7.0** | **Karakter: 5.5** *(alasan: pada foto PR #46 Deden duduk masih MakeHuman gelap - diperbaiki di Gelombang 21 - dan kulit/rambut Mixamo belum memakai shader/tint Indonesia)* | Rasa takut (malam): **6.0** | Artefak: **8.5** *(catatan foto HUD: tombol/joystick/minimap masih kotak polos karena bug importer Sprite Unity 6)*. **Rata-rata: 7.0 / 10**.
+- **Visual V1 (`vis-v1-foto-hud`, 22 Nov 2026)**:
+  - Perbaikan HUD Unity 6: `SpriteImportMode.Single` di `BuilderSteps.Aset.cs`, `BuilderSteps.IkonKontrol.cs`, `BuilderSteps.Luka.cs`; kenop slider bulat (`preserveAspect`) di `BuilderSteps.PengaturanNyaman.cs`; latar penuh `PanelPengaturan` di `BuilderSteps.T11.cs`.
+  - Alat ukur V1: `NusantaraFoto.cs` diperluas ke 12 shot audit (`v1_01..v1_06` money shot termasuk malam senter) + close-up 0,85 m `v1_wajah_deden`/`ningsih`/`kirogo` (mempreview prefab Mixamo bila tersedia) + `v1_hewan_barisan`; `UjiMainOtomatis.cs` + `Tools/cek_uji_main.py` merekam 5 frame bot (`jalan`, `tebas`, `luka_kritis`, `tas`, `peta`) & merakit `bot_uji_main.gif`; `Tools/cek_foto.py` ikut mengaudit `v1_*.png`.
+- **Visual V2 (`vis-v2-karakter`, 22 Nov 2026)**:
+  - `AnimasiMixamo.Karakter.cs` & `BuilderSteps.Mixamo.cs`: konversi material kulit karakter utama Mixamo ke shader `AlasKeramat/KulitManusia` dengan tint sawo matang Indonesia, rambut hitam alpha-clip tanpa pantulan plastik, dan pakaian bernuansa tanah redup; LookAt kepala + angguk halus di `mixamorig:Head`; `BayanganKontak` ringan saat bayangan real-time mati (preset Rendah HP 4 GB); Deden tampil Mixamo sejak duduk awal heli.
+  - `BuilderSteps.Mixamo.cs` & `AnimasiMixamo.cs`: perluas Mixamo ke prefab `Hantu_Kuntilanak` (`Zombiegirl` bergaun putih kusam), `Hantu_GenderuwoHutan` (`Warrok` bermata menyala malam), dan `Hantu_Penyerupa` (`Peasant_Girl`), serta utamakan klip `Zombie_Attack` untuk serang Raksasa/Sekte.
+- V3 Cahaya, Atmosfer Malam & Optimalisasi RAM 4 GB (`vis-v3-cahaya-4gb`):
+  - Shader aditif baru `AlasKeramat/SinarTajuk` (`AK_SinarTajuk.shader`) dengan shimmer berkas cahaya matahari tanpa tiling serta guard `_AK_MatikanDepth` pada `SinarTajuk` & `AK_Berkabut`.
+  - Ambient hutan siang & malam (`URPAtmosphereAndWeather`) diangkat agar bayangan hutan tidak crushed black, ditambah pantulan tanah (`TerapkanProbeAmbien` 3-arah), batas EV malam `-1,2` (`AKPascaProses`), dan kabut tanah lebih pekat di bioma lembab (`AtmosferHutan`).
+  - Senter Andi lebih lebar & hangat (`54 deg`, `30 m`, `3.6`), partikel debu cahaya aktif di sorotan senter malam (`PartikelAlam.LajuDebuSenter`), dan kilau mata predator/nokturnal saat tersorot senter (`WildAnimalAI.MataMenyalaDiSenter`).
+  - Efisiensi HP RAM 4 GB: tekstur dunia & satwa memakai `ASTC_6x6` (`BuilderSteps.Aset`, `AKTexturePostprocessor`, `ImporHewanAsli`) dengan `streamingMipmaps = true` serta anggaran streaming mipmap per preset (`MenuScreens.AnggaranMemoriPreset`, default `220 MB` di `Rendah`). Static check lulus (0 masalah); build Unity/foto CI menunggu PR.
+- V4 Vegetasi, Anti-Tiling & Gua (`vis-v4-dunia-vegetasi`):
+  - `BuilderSteps.Dunia.cs` memperbesar `tileSize` lapisan tanah (`6,4-12,5 m`) agar lereng bukit tidak berpola repetitif.
+  - `SerasahHutan.cs` menambah `JarakTarik` dinamis per preset (`42/62/86/105 m` via `MenuScreens.JarakSerasahPreset` & `PengawasPerforma`) dengan smooth scale-fade `8 m` terluar (`FaktorSkalaJarak`) agar prop lantai tidak meletup muncul tiba-tiba.
+  - `AK_Kulit.shader` menambah `_VariasiWarna` per posisi pohon (selaras `AK_Daun.shader`), dipadukan dengan nilai variasi lebih natural di `BuilderSteps.Vegetasi.cs`.
+  - Gua UG1 & Kubah Akar Boss UG3 (`BuilderSteps.Gua.cs`, `BuilderSteps.Gua3.cs`): mengganti terpal/ransel oranye menyolok dengan kanvas lapuk alami, meredupkan lampu kamp R2, menambah kilap basah lantai boss & memperbanyak gugus batu/akar arena. Static check lulus (0 masalah); verifikasi Unity/foto CI menunggu PR.
+- V5 Langit, Air & VFX Atmosfer (`vis-v5-langit-air-vfx`):
+  - `AK_Langit.shader` kini merender awan prosedural bergerak berlapis mengikuti cahaya matahari/senja/malam, piringan bulan + halo di sisi berlawanan matahari, serta bintang berkelip di malam hari.
+  - `AK_Air.shader` menambah fallback buih tepi untuk preset tanpa depth texture (`_AK_MatikanDepth`, RAM 4 GB) dan kilau kaustik air dangkal.
+  - `BuilderSteps.Pasca.cs` menaikkan ambang Bloom ke `1,10` agar pantulan rumput/pasir biasa tidak berpendar; `AKPascaProses.cs` menambah `FilterBioma` dinamis per bioma, cuaca badai, dan jam.
+  - Efek visual tanpa alokasi GC: kilatan langit saat petir (`URPAtmosphereAndWeather.Cuaca`), percikan air langkah & berenang (`FoleyAndi` via `GoreSystem.PercikPartikel`), dan kepulan abu gelap saat hantu diusir (`HantuAI`). Static check lulus (0 masalah); verifikasi Unity/foto CI menunggu PR.

@@ -45,13 +45,43 @@ namespace AlasKeramat.Core
                 if (!Progres.ningsihTerlihat && _andi != null && _ningsih.Tampak && Vector3.Distance(_andi.transform.position, _ningsih.transform.position) <= JarakLihatNingsih) Progres.ningsihTerlihat = true;
             }
             if (!Progres.sisiUtara && _andi != null && !WorldTerrainGenerator.DiBawahTanah(_andi.transform.position.y) && _andi.transform.position.z >= ZUtaraJurang) Progres.sisiUtara = true;
+            PeriksaMisiSampingan();
+        }
+
+        void PeriksaMisiSampingan()
+        {
+            if (Progres.sampingan == null || Progres.sampingan.Length < 4) Progres.sampingan = new bool[4];
+            var inv = GameServices.Get<TikarPandan3DInventory>();
+            var vital = GameServices.Get<AndiVitalsAndSanity>();
+            if (!Progres.sampingan[0] && AdaLore(Progres, 6) && Progres.trust31)
+            {
+                Progres.sampingan[0] = true;
+                if (vital != null) vital.UbahSanity(15f);
+                GameEvents.RaiseToast("Misi Sampingan Selesai: Kenangan Dewi");
+            }
+            if (!Progres.sampingan[1] && (Progres.keluarBunker || (inv != null && inv.Punya(ItemID.TandaPengenalRendra))))
+            {
+                Progres.sampingan[1] = true;
+                if (inv != null && !inv.Punya(ItemID.TandaPengenalRendra)) inv.Tambah(ItemID.TandaPengenalRendra, 1);
+                GameEvents.RaiseToast("Misi Sampingan Selesai: Jejak Rendra");
+            }
+            if (!Progres.sampingan[2] && ZonaPenangkal.AdaKemenyan(Vector3.zero) == false && HantuAI.Semua.Count > 0)
+            {
+                foreach (var h in HantuAI.Semua) if (!h.IsAlive) { Progres.sampingan[2] = true; if (vital != null) vital.UbahSanity(15f); GameEvents.RaiseToast("Misi Sampingan Selesai: Arwah Tersesat"); break; }
+            }
+            if (!Progres.sampingan[3] && _andi != null && ZonaPenangkal.AdaKemenyan(_andi.transform.position))
+            {
+                Progres.sampingan[3] = true;
+                if (vital != null) vital.UbahSanity(10f);
+                GameEvents.RaiseToast("Misi Sampingan Selesai: Persembahan Kemenyan");
+            }
         }
 
         public void TandaiKeluarBunker() { if (Progres.keluarBunker) return; Progres.keluarBunker = true; Periksa(); }
         public void TandaiBossKalah() { if (Progres.bossKalah) return; Progres.bossKalah = true; Periksa(); }
         public void TandaiTertancap(int n) { Progres.tertancap = Mathf.Clamp(n, 0, 3); Periksa(); }
         public void TandaiSiegeSelesai() { if (Progres.siegeSelesai) return; Progres.siegeSelesai = true; Periksa(); }
-        public void TandaiEnding(int e) { Progres.ending = Mathf.Clamp(e, 1, 2); Periksa(); }
+        public void TandaiEnding(int e) { Progres.ending = Mathf.Clamp(e, 1, 3); Periksa(); }
         public int LoreMask { get { return Progres.lore; } }
     }
 }

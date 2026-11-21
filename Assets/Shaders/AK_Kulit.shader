@@ -11,6 +11,7 @@ Shader "AlasKeramat/Kulit"
         _Metallic ("Metalik", Range(0,1)) = 0
         _MaskMap ("AO dan roughness",2D)="white"{}
         _PakaiMask ("Mask aktif",Range(0,1))=0
+        _VariasiWarna ("Variasi tiap pohon", Range(0,0.4)) = 0.14
     }
     SubShader
     {
@@ -27,7 +28,7 @@ Shader "AlasKeramat/Kulit"
             float4 _BaseMap_ST;
             half4 _BaseColor;
             float _Smoothness, _Goyang;
-            float _BumpScale, _Metallic, _PakaiMask;
+            float _BumpScale, _Metallic, _PakaiMask, _VariasiWarna;
         CBUFFER_END
         // Global, sengaja bukan Properties/UnityPerMaterial.
         float4 _AK_AnginArah;
@@ -81,6 +82,8 @@ Shader "AlasKeramat/Kulit"
             o.tangentWS = half4(SafeNormalize(t), v.tangentOS.w * GetOddNegativeScale());
             o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
             o.color = v.color;
+            float hash = frac(sin(dot(pivot.xz, float2(12.9898, 78.233))) * 43758.5453);
+            o.color.rgb *= lerp(half3(1,1,1), half3(0.86 + hash * 0.28, 0.88 + hash * 0.22, 0.84 + hash * 0.24), _VariasiWarna / 0.4);
 
             o.fogLight = half4(ComputeFogFactor(o.positionCS.z), VertexLighting(p, n));
             return o;
@@ -138,11 +141,15 @@ Shader "AlasKeramat/Kulit"
             s.metallic = _Metallic;
             half4 mask=SAMPLE_TEXTURE2D(_MaskMap,sampler_MaskMap,i.uv);
             half wet=_AK_Basah*saturate(d.normalWS.y*0.7+0.4);
-            s.albedo*=1-wet*0.2;
+            half rootAO = saturate(d.positionWS.y * 0.35h + 0.55h);
+            s.albedo *= (1.0h - wet * 0.2h) * lerp(0.84h, 1.0h, rootAO);
             s.smoothness = saturate(lerp(_Smoothness,mask.a,_PakaiMask)+wet*0.35);
-            s.occlusion = lerp(1,mask.g,_PakaiMask);
+            s.occlusion = lerp(1,mask.g,_PakaiMask) * rootAO;
             s.normalTS = half3(0,0,1);
             half4 lit = UniversalFragmentPBR(d, s);
+            Light sun = GetMainLight(d.shadowCoord, d.positionWS, half4(1,1,1,1));
+            half rimBasah = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3.0h) * wet * 0.18h;
+            lit.rgb += sun.color * (rimBasah * sun.distanceAttenuation);
 
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;

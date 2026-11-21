@@ -54,6 +54,22 @@ namespace AlasKeramat.Core
         public static bool BolehMayat(GoreLevel g) { return g != GoreLevel.Mati; }
         public static Color WarnaKering(float umur, float lajuHujan) { return Color.Lerp(BasahMerah, KeringMerah, Mathf.Clamp01(umur * lajuHujan / LamaKering)); }
 
+        // Percikan non-darah (air/kabut/abu hantu) memakai pool partikel yang sama tanpa alokasi.
+        public void PercikPartikel(Vector3 titik, Color warna, int jumlah = 8, float ukuran = 0.05f, float kecepatan = 1.8f, float lama = 0.6f)
+        {
+            if (partikel == null || jumlah <= 0) return;
+            var ep = new ParticleSystem.EmitParams();
+            for (int i = 0; i < jumlah; i++)
+            {
+                ep.position = titik + Random.insideUnitSphere * 0.25f;
+                ep.velocity = (Vector3.up * 0.8f + Random.insideUnitSphere) * kecepatan;
+                ep.startSize = ukuran * Random.Range(0.75f, 1.35f);
+                ep.startColor = warna;
+                ep.startLifetime = lama * Random.Range(0.7f, 1.25f);
+                partikel.Emit(ep, 1);
+            }
+        }
+
         // ---------- Darah ----------
         // Semburan di titik kena: arah pukulan + gravitasi; hantu/mutan darah hitam; Gore Mati = debu.
         public void Semburan(Vector3 titik, Vector3 arah, float damage, bool hitam, bool berat)

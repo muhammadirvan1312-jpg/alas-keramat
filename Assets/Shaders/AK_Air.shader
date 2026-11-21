@@ -146,11 +146,13 @@ Shader "AlasKeramat/Air"
             half ring = 0.72h + 0.28h * sin(depth * 14.0 - _Time.y * 3.2);
             half depthFoam = smoothstep(0.22, 0.68, noise + edge * 0.48) * edge * ring * _KuatBuih;
             depthFoam *= _GunakanDepth * (1.0h - saturate(_AK_MatikanDepth));
+            half noDepthFoam = saturate(_AK_MatikanDepth) * smoothstep(0.54, 0.86, noise) * _KuatBuih * 0.48h;
             half tepiUV = 1.0h - saturate(min(i.uv.x, 1.0 - i.uv.x) / 0.14);
             half bankFoam = smoothstep(0.26, 0.72, noise + tepiUV * 0.52) * tepiUV * _KuatBuih * 0.85h;
             half crestFoam = smoothstep(0.62, 0.86, noise) * _KuatBuih * 0.55h;
-            half foam = saturate(max(depthFoam, max(bankFoam, crestFoam)));
-            half3 albedo = lerp(water.rgb, _WarnaBuih.rgb, foam);
+            half foam = saturate(max(max(depthFoam, noDepthFoam), max(bankFoam, crestFoam)));
+            half kaustik = pow(saturate(noise * 1.12h), 3.0h) * (1.0h - absorption) * (1.0h - foam) * 0.20h;
+            half3 albedo = lerp(water.rgb + half3(kaustik, kaustik * 0.96h, kaustik * 0.82h), _WarnaBuih.rgb, foam);
             half opacity = saturate(lerp(water.a, _WarnaBuih.a, foam));
             // Fresnel air (IOR 1.333), refleksi dipertahankan pada sudut mendatar.
             const half F0 = 0.0204h;

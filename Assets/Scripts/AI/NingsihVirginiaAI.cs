@@ -33,6 +33,62 @@ namespace AlasKeramat.AI
         int _hadiahHari = -1, _hariKabur = -1, _hariBertemu = -1;
         bool _hadiahDiterima, _bertemuHariIni;
         Vector3 _titikTunggu;
+        Transform _senjataTangan;
+        int _jenisVisualAktif = -1;
+
+        public static int JenisSenjataVisualNingsih(bool punyaBusur, bool punyaSuar, bool punyaPistol)
+        {
+            return punyaPistol ? 3 : punyaSuar ? 2 : punyaBusur ? 1 : 0;
+        }
+
+        void PerbaruiSenjataTangan()
+        {
+            int jenis = (!Tampak || !IsAlive) ? 0 : JenisSenjataVisualNingsih(PunyaBusur, PunyaSuar, PunyaPistol);
+            if (jenis != _jenisVisualAktif)
+            {
+                _jenisVisualAktif = jenis;
+                if (_senjataTangan != null) { Destroy(_senjataTangan.gameObject); _senjataTangan = null; }
+                if (jenis > 0)
+                {
+                    var go = new GameObject("SenjataTanganNingsih");
+                    go.transform.SetParent(transform, false);
+                    go.transform.localPosition = new Vector3(0.28f, 1.04f, 0.25f);
+                    var mKayu = SafeMaterialFactory.GetCached("M_BusurNingsih", new Color(0.46f, 0.34f, 0.18f), 0f, 0.3f);
+                    var mLogam = SafeMaterialFactory.GetCached("M_LogamNingsih", jenis == 2 ? new Color(0.88f, 0.38f, 0.14f) : new Color(0.32f, 0.35f, 0.38f), 0.75f, 0.72f);
+                    if (jenis == 1)
+                    {
+                        var busur = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                        Destroy(busur.GetComponent<Collider>());
+                        busur.transform.SetParent(go.transform, false);
+                        busur.transform.localScale = new Vector3(0.024f, 0.42f, 0.024f);
+                        busur.GetComponent<MeshRenderer>().sharedMaterial = mKayu;
+                        var tali = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                        Destroy(tali.GetComponent<Collider>());
+                        tali.transform.SetParent(go.transform, false);
+                        tali.transform.localPosition = new Vector3(0f, 0f, -0.06f);
+                        tali.transform.localScale = new Vector3(0.006f, 0.40f, 0.006f);
+                        tali.GetComponent<MeshRenderer>().sharedMaterial = SafeMaterialFactory.GetCached("M_TaliNingsih", new Color(0.88f, 0.86f, 0.80f), 0f, 0.2f);
+                    }
+                    else
+                    {
+                        var laras = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        Destroy(laras.GetComponent<Collider>());
+                        laras.transform.SetParent(go.transform, false);
+                        laras.transform.localPosition = new Vector3(0f, 0.03f, 0.08f);
+                        laras.transform.localScale = new Vector3(0.034f, 0.042f, 0.18f);
+                        laras.GetComponent<MeshRenderer>().sharedMaterial = mLogam;
+                        var gagang = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        Destroy(gagang.GetComponent<Collider>());
+                        gagang.transform.SetParent(go.transform, false);
+                        gagang.transform.localPosition = new Vector3(0f, -0.03f, 0f);
+                        gagang.transform.localRotation = Quaternion.Euler(18f, 0f, 0f);
+                        gagang.transform.localScale = new Vector3(0.03f, 0.085f, 0.04f);
+                        gagang.GetComponent<MeshRenderer>().sharedMaterial = mKayu;
+                    }
+                    _senjataTangan = go.transform;
+                }
+            }
+        }
 
         protected override void Awake()
         {
@@ -62,6 +118,7 @@ namespace AlasKeramat.AI
         void Tick(float dt)
         {
             AmbilLayanan();
+            PerbaruiSenjataTangan();
             if (_combat == null) _combat = GameServices.Get<CombatAndLeftHandController>();
             if (_vital == null) _vital = GameServices.Get<AndiVitalsAndSanity>();
             if (Gugur || _andi == null) return;

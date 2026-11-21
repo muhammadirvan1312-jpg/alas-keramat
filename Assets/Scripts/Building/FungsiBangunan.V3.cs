@@ -35,6 +35,60 @@ namespace AlasKeramat.Building
         readonly Collider[] _temanGerbang=new Collider[8];
         double _jamProduksi=-1;
         AndiFPSController _duduk;
+        Transform _tangkapVis;
+
+        public static float SkalaTanamanKebun(int stok) { return Mathf.Lerp(0.38f, 1.08f, Mathf.Clamp01(stok / 4f)); }
+        public static int JumlahPercikanAsah() { return 18; }
+
+        void PancarPercikanAsah()
+        {
+            if (!Application.isPlaying) return;
+            var go = new GameObject("PercikanAsah");
+            go.transform.position = transform.position + Vector3.up * 0.7f;
+            var ps = go.AddComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var m = ps.main; m.playOnAwake = false; m.loop = false; m.startLifetime = 0.3f; m.startSpeed = 4.2f; m.startSize = 0.035f; m.gravityModifier = 1.4f;
+            m.startColor = new Color(1f, 0.85f, 0.35f);
+            var pr = go.GetComponent<ParticleSystemRenderer>();
+            pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_PercikAsah", new Color(1f, 0.85f, 0.35f), 0f, 0.8f, null, null, new Color(3.4f, 2f, 0.45f));
+            pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            ps.Emit(JumlahPercikanAsah());
+            Destroy(go, 0.9f);
+        }
+
+        void PerbaruiVisualV3()
+        {
+            if (Jenis == BlueprintID.KebunTanam)
+            {
+                float s = SkalaTanamanKebun(Stok);
+                Transform r = transform.parent;
+                if (r != null)
+                    for (int i = 0; i < r.childCount; i++)
+                    {
+                        var ch = r.GetChild(i);
+                        if (ch != transform && ch.GetComponent<MeshFilter>() != null && ch.localPosition.y > 0.45f)
+                            ch.localScale = new Vector3(0.45f, 0.38f, 0.45f) * s;
+                    }
+            }
+            else if (Jenis == BlueprintID.BubuIkan || Jenis == BlueprintID.JeratHewan)
+            {
+                bool ada = Stok > 0;
+                if (ada && _tangkapVis == null)
+                {
+                    var g = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                    Destroy(g.GetComponent<Collider>());
+                    g.name = "HasilTangkap3D";
+                    g.transform.SetParent(transform, false);
+                    g.transform.localPosition = new Vector3(0f, 0.25f, 0f);
+                    g.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                    g.transform.localScale = new Vector3(0.22f, 0.28f, 0.16f);
+                    Color w = Jenis == BlueprintID.BubuIkan ? new Color(0.42f, 0.56f, 0.64f) : new Color(0.68f, 0.32f, 0.28f);
+                    g.GetComponent<MeshRenderer>().sharedMaterial = SafeMaterialFactory.GetCached("M_Tangkap_" + (int)Jenis, w, 0f, 0.4f);
+                    _tangkapVis = g.transform;
+                }
+                if (_tangkapVis != null && _tangkapVis.gameObject.activeSelf != ada) _tangkapVis.gameObject.SetActive(ada);
+            }
+        }
         [System.Serializable] class IsiBangunanT6
         {
             public int stok; public bool siap, terbuka, minyakAwal; public float nyala, tAir; public double jamProduksi;
@@ -91,6 +145,7 @@ namespace AlasKeramat.Building
             var v=GameServices.Get<AndiVitalsAndSanity>();
             if(Jenis==BlueprintID.LampuMinyak && NyalaSisa>0f && v!=null && (v.transform.position-transform.position).sqrMagnitude<100f)v.UbahSanity(0.1f*dt);
             if(_duduk!=null && _duduk.Duduk && (_duduk.transform.position-transform.position).sqrMagnitude<4f && v!=null)v.IstirahatDuduk(dt);
+            PerbaruiVisualV3();
         }
         string PromptV3(GameObject actor)
         {
@@ -135,7 +190,7 @@ namespace AlasKeramat.Building
                     if(inv!=null && inv.Kurangi(ItemID.Damar,1))NyalaSisa=LamaMinyak; break;
                 case BlueprintID.MangkukKepiting: GameEvents.RaiseToast("Kepiting menjaga isi kemah dari Tuyul"); break;
                 case BlueprintID.BatuAsah:
-                    var c=GameServices.Get<CombatAndLeftHandController>(); if(c!=null)c.Asah(); break;
+                    var c=GameServices.Get<CombatAndLeftHandController>(); if(c!=null)c.Asah(); PancarPercikanAsah(); break;
                 case BlueprintID.RumahPohon:
                     var b=GetComponentInParent<IdentitasBangunan>(); if(ctrl!=null && b!=null)ctrl.Teleport(b.transform.TransformPoint(new Vector3(0f,4.2f,1f))); break;
                 case BlueprintID.PerangkapPunji:Siap=true;break;
@@ -152,6 +207,7 @@ namespace AlasKeramat.Building
                     break;
                 case BlueprintID.MejaKerja:
                     var cm=GameServices.Get<CombatAndLeftHandController>(); if(cm!=null)cm.Asah();
+                    PancarPercikanAsah();
                     var vk=GameServices.Get<AndiVitalsAndSanity>(); if(vk!=null)vk.UbahSanity(10f);
                     break;
                 case BlueprintID.KomporBatu:

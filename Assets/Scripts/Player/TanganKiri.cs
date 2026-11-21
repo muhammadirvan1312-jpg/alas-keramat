@@ -17,6 +17,43 @@ namespace AlasKeramat.Player
         TikarPandan3DInventory _inv;
         Transform _oborModel, _apiVisual;
         AndiFPSController _ctrl;
+        ParticleSystem _baraObor;
+
+        public static float LajuBaraObor(bool menyala, float kecepatanDatar)
+        {
+            if (!menyala) return 0f;
+            return Mathf.Clamp(6f + Mathf.Max(0f, kecepatanDatar) * 2.2f, 6f, 20f);
+        }
+
+        void PerbaruiBaraObor()
+        {
+            if (OborMenyala && _apiVisual != null)
+            {
+                if (_baraObor == null)
+                {
+                    var go = new GameObject("BaraOborFP");
+                    go.layer = GameLayers.Player;
+                    go.transform.SetParent(_apiVisual, false);
+                    go.transform.localPosition = new Vector3(0f, 0.04f, 0f);
+                    _baraObor = go.AddComponent<ParticleSystem>();
+                    var m = _baraObor.main;
+                    m.loop = true; m.simulationSpace = ParticleSystemSimulationSpace.World;
+                    m.startLifetime = new ParticleSystem.MinMaxCurve(0.45f, 0.85f);
+                    m.startSpeed = new ParticleSystem.MinMaxCurve(0.35f, 0.85f);
+                    m.startSize = new ParticleSystem.MinMaxCurve(0.012f, 0.026f);
+                    m.gravityModifier = -0.22f; m.maxParticles = 24;
+                    m.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.78f, 0.25f, 0.95f), new Color(1f, 0.36f, 0.08f, 0.80f));
+                    var sh = _baraObor.shape; sh.shapeType = ParticleSystemShapeType.Sphere; sh.radius = 0.035f;
+                    var pr = go.GetComponent<ParticleSystemRenderer>();
+                    pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_BaraOborFP", new Color(1f, 0.58f, 0.16f), 0f, 0.2f, null, null, new Color(3.4f, 1.35f, 0.25f));
+                    pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; pr.receiveShadows = false;
+                }
+                var em = _baraObor.emission;
+                em.rateOverTime = LajuBaraObor(true, _ctrl != null ? _ctrl.KecepatanDatar : 0f);
+                if (!_baraObor.isPlaying) _baraObor.Play();
+            }
+            else if (_baraObor != null && _baraObor.isPlaying) _baraObor.Stop();
+        }
 
         public void Pasang(Light l) { lampu = l; }
 
@@ -44,10 +81,22 @@ namespace AlasKeramat.Player
             akar.localPosition = PosisiObor;
             akar.localRotation = Quaternion.Euler(24f, 6f, -12f);
             akar.gameObject.layer = GameLayers.Player;
-            Bagian(akar, PrimitiveType.Cylinder, new Vector3(0f, 0.08f, 0f), new Vector3(0.032f, 0.18f, 0.032f), SafeMaterialFactory.GetCached("FP_Bambu", new Color(0.42f, 0.34f, 0.16f), 0f, 0.25f));
+            var lenganMat = SafeMaterialFactory.GetCached("FP_LenganKiri", new Color(0.23f, 0.29f, 0.20f), 0f, 0.35f);
+            var kulitMat = SafeMaterialFactory.GetCached("FP_KulitKiri", new Color(0.72f, 0.53f, 0.39f), 0f, 0.32f);
+            Bagian(akar, PrimitiveType.Cylinder, new Vector3(-0.03f, -0.22f, -0.09f), new Vector3(0.084f, 0.13f, 0.084f), lenganMat).transform.localRotation = Quaternion.Euler(26f, 0f, -18f);
+            Bagian(akar, PrimitiveType.Cylinder, new Vector3(-0.01f, -0.05f, -0.03f), new Vector3(0.068f, 0.10f, 0.068f), kulitMat).transform.localRotation = Quaternion.Euler(14f, 0f, -10f);
+            Bagian(akar, PrimitiveType.Sphere, new Vector3(0f, 0.03f, 0f), new Vector3(0.072f, 0.078f, 0.072f), kulitMat);
+            for (int f = 0; f < 4; f++)
+                Bagian(akar, PrimitiveType.Capsule, new Vector3(-0.025f, 0.02f + f * 0.016f, 0.026f), new Vector3(0.018f, 0.032f, 0.018f), kulitMat).transform.localRotation = Quaternion.Euler(0f, 0f, 74f);
+
+            var bambuMat = SafeMaterialFactory.GetCached("FP_Bambu", new Color(0.42f, 0.34f, 0.16f), 0f, 0.25f);
+            Bagian(akar, PrimitiveType.Cylinder, new Vector3(0f, 0.08f, 0f), new Vector3(0.032f, 0.18f, 0.032f), bambuMat);
+            Bagian(akar, PrimitiveType.Cylinder, new Vector3(0f, 0.12f, 0f), new Vector3(0.038f, 0.009f, 0.038f), SafeMaterialFactory.GetCached("FP_RuasBambu", new Color(0.28f, 0.22f, 0.11f), 0f, 0.2f));
             Bagian(akar, PrimitiveType.Cylinder, new Vector3(0f, 0.24f, 0f), new Vector3(0.044f, 0.055f, 0.044f), SafeMaterialFactory.GetCached("FP_KainMinyak", new Color(0.18f, 0.11f, 0.07f), 0f, 0.15f));
             var baraMat = SafeMaterialFactory.CreatePBR("FP_Bara", new Color(1f, 0.45f, 0.1f), 0f, 0.2f, null, null, new Color(3.2f, 1.1f, 0.25f));
             var bara = Bagian(akar, PrimitiveType.Sphere, new Vector3(0f, 0.30f, 0f), new Vector3(0.052f, 0.068f, 0.052f), baraMat);
+            Bagian(bara.transform, PrimitiveType.Capsule, new Vector3(-0.2f, 0.45f, 0f), new Vector3(0.55f, 0.75f, 0.55f), baraMat);
+            Bagian(bara.transform, PrimitiveType.Capsule, new Vector3(0.2f, 0.40f, 0.15f), new Vector3(0.50f, 0.70f, 0.50f), baraMat);
             _apiVisual = bara.transform;
             _oborModel = akar;
         }
@@ -66,6 +115,7 @@ namespace AlasKeramat.Player
         void SetVisualObor(bool aktif)
         {
             if (_oborModel != null && _oborModel.gameObject.activeSelf != aktif) _oborModel.gameObject.SetActive(aktif);
+            if (!aktif && _baraObor != null && _baraObor.isPlaying) _baraObor.Stop();
         }
 
         public bool BisaObor()
@@ -90,6 +140,7 @@ namespace AlasKeramat.Player
         void Update()
         {
             if (!OborMenyala || lampu == null) return;
+            PerbaruiBaraObor();
             float n = Mathf.PerlinNoise(Time.time * LajuKedip, 0.37f);
             lampu.intensity = IntensitasObor * (1f - KedipObor + KedipObor * 2f * n);
             if (_apiVisual != null) _apiVisual.localScale = new Vector3(0.048f, 0.062f + n * 0.025f, 0.048f);

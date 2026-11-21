@@ -23,7 +23,22 @@ namespace AlasKeramat.UI
         Color[] _warnaAsli;
         readonly float[] _tampil = { 1f, 1f, 1f, 1f, 1f };
         AndiVitalsAndSanity _v;
+        AndiFPSController _ctrl;
         int _suhuTampil = -1, _basahTampil = -1;
+        string _statusTampil = "";
+
+        public static string FormatStatusTambahanHUD(bool diare, bool keracunan, bool bisaUlar, float lukaKepala, float lukaLengan, float lukaKaki, bool diSemak)
+        {
+            string s = "";
+            if (diSemak) s += "  |  SEMAK";
+            if (lukaKaki > 0f) s += "  |  LUKA KAKI";
+            if (lukaLengan > 0f) s += "  |  LUKA LENGAN";
+            if (lukaKepala > 0f) s += "  |  LUKA KEPALA";
+            if (bisaUlar) s += "  |  BISA ULAR";
+            if (diare) s += "  |  DIARE";
+            if (keracunan) s += "  |  KERACUNAN";
+            return s;
+        }
 
         public void PasangZirah(Image[] k) { kotakZirah = k; }
 
@@ -63,11 +78,13 @@ namespace AlasKeramat.UI
             PerbaruiZirah();
             if (labelSuhu != null)
             {
+                if (_ctrl == null) _ctrl = GameServices.Get<AndiFPSController>();
                 int suhu = Mathf.RoundToInt(_v.SuhuTubuh * 10f), basah = Mathf.RoundToInt(_v.Wetness);
-                if (suhu != _suhuTampil || basah != _basahTampil)
+                string ekstra = FormatStatusTambahanHUD(_v.Diare, (_v.Status & StatusEffect.Keracunan) != 0, (_v.Status & StatusEffect.Racun) != 0, _v.LukaKepala, _v.LukaLengan, _v.LukaKaki, _ctrl != null && _ctrl.TersembunyiDiSemak);
+                if (suhu != _suhuTampil || basah != _basahTampil || ekstra != _statusTampil)
                 {
-                    _suhuTampil = suhu; _basahTampil = basah;
-                    labelSuhu.text = "Suhu " + (suhu / 10) + "," + (suhu % 10) + " C  |  Basah " + basah + "%" + (_v.Diare ? "  |  DIARE" : "") + ((_v.Status & StatusEffect.Keracunan) != 0 ? "  |  KERACUNAN" : "");
+                    _suhuTampil = suhu; _basahTampil = basah; _statusTampil = ekstra;
+                    labelSuhu.text = "Suhu " + (suhu / 10) + "," + (suhu % 10) + " C  |  Basah " + basah + "%" + ekstra;
                 }
             }
         }

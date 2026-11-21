@@ -63,6 +63,54 @@ namespace AlasKeramat.AI
         List<Vector3> _jalur = new List<Vector3>(), _jalurBaru = new List<Vector3>();
         System.Action<bool> _cbJalur;
         readonly List<ItemStack> _jarahan = new List<ItemStack>();
+        Light _oborSekte;
+        GameObject _baraOborSekte;
+
+        public static float HitungIntensitasOborSekte(EnemyArchetype j, bool hidup, float jam, bool bawahTanah, float waktu)
+        {
+            if (!hidup || !StatMusuh.Sekte(j)) return 0f;
+            if (!bawahTanah && jam > 5.8f && jam < 18.0f) return 0f;
+            float kedip = 0.88f + 0.12f * Mathf.Sin(waktu * 8.1f + (int)j);
+            return (bawahTanah ? 2.1f : 1.75f) * kedip;
+        }
+
+        void PerbaruiOborSekte()
+        {
+            bool aktif = IsAlive && _keadaan != KeadaanSekte.Menyerah;
+            float jam = _jam != null ? _jam.Jam : 12f;
+            bool bawah = WorldTerrainGenerator.DiBawahTanah(transform.position.y);
+            float intObor = HitungIntensitasOborSekte(jenis, aktif, jam, bawah, Time.time);
+            if (intObor > 0.01f)
+            {
+                if (_oborSekte == null)
+                {
+                    var go = new GameObject("OborSekte");
+                    go.transform.SetParent(transform, false);
+                    go.transform.localPosition = new Vector3(0.32f, 1.35f, 0.36f);
+                    _oborSekte = go.AddComponent<Light>();
+                    _oborSekte.type = LightType.Point;
+                    _oborSekte.range = 10.5f;
+                    _oborSekte.color = new Color(1f, 0.56f, 0.22f);
+                    _oborSekte.shadows = LightShadows.None;
+                    _baraOborSekte = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    _baraOborSekte.name = "BaraOborSekte";
+                    var col = _baraOborSekte.GetComponent<Collider>(); if (col != null) Destroy(col);
+                    _baraOborSekte.transform.SetParent(go.transform, false);
+                    _baraOborSekte.transform.localScale = new Vector3(0.08f, 0.12f, 0.08f);
+                    var mr = _baraOborSekte.GetComponent<MeshRenderer>();
+                    mr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_BaraOborSekte", new Color(1f, 0.48f, 0.12f), 0f, 0.2f, null, null, new Color(3.4f, 1.3f, 0.28f));
+                    mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+                _oborSekte.enabled = true;
+                _oborSekte.intensity = intObor;
+                if (_baraOborSekte != null) _baraOborSekte.SetActive(true);
+            }
+            else if (_oborSekte != null)
+            {
+                _oborSekte.enabled = false;
+                if (_baraOborSekte != null) _baraOborSekte.SetActive(false);
+            }
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetStatis() { Semua.Clear(); }
@@ -127,6 +175,7 @@ namespace AlasKeramat.AI
                 if (_keadaan == KeadaanSekte.Patroli || _keadaan == KeadaanSekte.Selidik || _keadaan == KeadaanSekte.Mengintai || _keadaan == KeadaanSekte.Serang) CobaSeret();
             }
             TickLingkungan(dt);
+            PerbaruiOborSekte();
             TickBakarMusuh(dt);
             if (_keadaan == KeadaanSekte.Mati) return;
             if (_tGoyah > 0f)
@@ -184,7 +233,7 @@ namespace AlasKeramat.AI
             {
                 bool kerucut = DalamKerucut(transform.forward, kepala - mata);
                 bool halang = kerucut && Terhalang(mata, kepala) && Terhalang(mata, pinggul);
-                f = FaktorTerlihat(kerucut, halang, _andi.Jongkok, false, malam, cahaya, badai);
+                f = FaktorTerlihat(kerucut, halang, _andi.Jongkok, _andi.TersembunyiDiSemak, malam, cahaya, badai);
                 if (Tertidur()) f *= FaktorTidur;
                 if (_reaksiAndi == null) _reaksiAndi = GameServices.Get<ReaksiAndi>();
                 if (_reaksiAndi != null && _reaksiAndi.Berlumpur) f *= ReaksiAndi.FaktorLumpur; // kamuflase lumpur 17 §2.4
@@ -392,6 +441,7 @@ namespace AlasKeramat.AI
             _jarahan.Clear();
             for (int i = 0; i < _d.drop.Length; i++) if (Random.value < _d.peluang[i]) _jarahan.Add(new ItemStack { id = _d.drop[i], count = _d.jumlah[i] });
             Ubah(KeadaanSekte.Mati);
+            PerbaruiOborSekte();
             if (_cc != null) _cc.enabled = false;
             if (_anim != null) { _anim.Pose = ProceduralAnimator.PoseTempur.Tidak; _anim.enabled = false; }
             if (Abu()) { Suara(ProceduralAudioSynth.KlipAbu, 1f); if (StatMusuh.Sekte(jenis)) _jarahan.Add(new ItemStack { id = ItemID.TopengSekte, count = 1 }); }
