@@ -66,7 +66,7 @@ namespace AlasKeramat.AI
         }
 
         bool _mati;
-        // Animator prosedural dimatikan saat musuh tewas: model Mixamo memutar klip roboh sekali lalu diam di tanah.
+        // Penggerak prosedural dimatikan saat musuh tewas: model Mixamo memutar klip roboh sekali lalu diam di tanah.
         void MatiModel()
         {
             if (_mati) { KunciPinggul(); return; }
