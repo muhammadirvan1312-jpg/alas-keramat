@@ -22,6 +22,8 @@ namespace AlasKeramat.EditorTools
                 foreach(var matrix in group.matriks)detail &= group.bounds.Contains((Vector3)matrix.GetColumn(3));
             }
             cek("Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance",detail);
+            cek("Senter: cookie terpasang, pusat terang, tepi gelap",AssetDatabase.LoadAssetAtPath<Texture2D>(NusantaraMasterBuilder.PathCookieSenter)!=null
+                && NusantaraMasterBuilder.NilaiCookie(0f,0f,0.5f)>0.9f && NusantaraMasterBuilder.NilaiCookie(0.99f,0f,0.5f)<0.1f);
             float rd,rb,rdM,rbM,rdH,rbH;
             PartikelAlam.Laju(10f,WeatherState.Cerah,true,out rd,out rb);PartikelAlam.Laju(22f,WeatherState.Cerah,true,out rdM,out rbM);PartikelAlam.Laju(10f,WeatherState.HujanBadai,true,out rdH,out rbH);
             cek("Partikel alam: daun & debu siang cerah, mati malam & hujan, terpasang",rd>0f && rb>0f && rdM==0f && rbM==0f && rdH==0f && rbH==0f && Object.FindFirstObjectByType<PartikelAlam>()!=null);
