@@ -41,6 +41,8 @@ namespace AlasKeramat.EditorTools
             new Shot("v1_04_pantai_badai", new Vector3(-110f, 7f, -810f), new Vector3(-185f, 14f, -870f), 16.2f, 62f, (int)WeatherState.HujanBadai),
             new Shot("v1_05_malam_senter", new Vector3(55f, 1.65f, -342f), new Vector3(62f, 1.2f, -328f), 22.0f, 62f),
             new Shot("v1_06_sekte_desa", new Vector3(533f, 1.7f, 190f), new Vector3(540f, 1.1f, 200f), 10f, 58f),
+            new Shot("c3_01_props_desa_siang", new Vector3(553f, 1.7f, 213f), new Vector3(564f, 0.9f, 224f), 10.5f, 62f),
+            new Shot("c3_02_lampu_minyak_malam", new Vector3(553f, 1.7f, 213f), new Vector3(564f, 0.9f, 224f), 21f, 62f),
             new Shot("t7_02_pocong_kuntilanak_malam", new Vector3(-59.6f, 1.38f, -305.6f), new Vector3(-59.5f, 1.25f, -298.8f), 21.5f, 62f),
             new Shot("t7_01_sekte_ritual_desa", new Vector3(533f, 1.7f, 190f), new Vector3(540f, 1.0f, 200f), 10f, 60f),
             new Shot("t4_01_galeri_karakter", new Vector3(56f, 1.7f, -386f), new Vector3(56f, 1.1f, -376f), 10f, 75f),

@@ -176,9 +176,10 @@ def split_by_spatial_gaps(obj):
             if out:return out
     return [obj]
 
-def write_prop(path,objects,limit,target_size,cluster=1,pick=0,sink=0.0,size_axis='h',split_rocks=False):
+def write_prop(path,objects,limit,target_size,cluster=1,pick=0,sink=0.0,size_axis='h',split_rocks=False,whole=False):
     valid=sorted([o for o in objects if o.data and len(o.data.polygons)>=4],key=lambda o:o.name)
     if not valid:valid=list(objects)
+    if whole:split_rocks=False;cluster=1;pick=0
     if split_rocks and len(valid)==1:
         bpy.ops.object.select_all(action='DESELECT');valid[0].select_set(True);bpy.context.view_layer.objects.active=valid[0]
         bpy.ops.object.mode_set(mode='EDIT')
@@ -186,12 +187,15 @@ def write_prop(path,objects,limit,target_size,cluster=1,pick=0,sink=0.0,size_axi
         bpy.ops.mesh.separate(type='LOOSE')
         bpy.ops.object.mode_set(mode='OBJECT')
         valid=sorted([o for o in bpy.data.objects if o.type=='MESH' and len(o.data.polygons)>=12],key=lambda o:len(o.data.polygons),reverse=True)
-    elif len(valid)==1 and (cluster>1 or pick>0):
+    elif len(valid)==1 and (cluster>1 or pick>0) and not whole:
         valid=split_by_spatial_gaps(valid[0])
     if cluster>1 and len(valid)==1:cluster=1
 
     # Mode 'whole' jika cluster==1 dan beberapa sub-bagian bertumpukan pada benda tunggal; jika terpisah jarak -> ambil varian pick.
-    if len(valid)>1 and cluster==1:
+    if whole:
+        # Props buatan (peti, ember, tangga): semua bagian digabung sebagai satu benda utuh.
+        chosen=[(valid,0.0,0.0,0.0)]
+    elif len(valid)>1 and cluster==1:
         b0=prop_bounds(valid[0]);b1=prop_bounds(valid[1])
         c0=((b0[0]+b0[1])*0.5,(b0[2]+b0[3])*0.5);c1=((b1[0]+b1[1])*0.5,(b1[2]+b1[3])*0.5)
         span=max(b0[1]-b0[0],b0[3]-b0[2],0.01)
@@ -309,3 +313,19 @@ for name in ['island_tree_01','fern_02','island_tree_02','grass_medium_01','gras
     elif name=='rock_moss_set_02':
         write_prop(OUT/'BatuLumutC.bytes',objects,420,1.25,cluster=1,pick=0,sink=0.07,size_axis='w',split_rocks=True)
         write_prop(OUT/'BatuLumutD.bytes',objects,360,0.75,cluster=1,pick=1,sink=0.05,size_axis='w',split_rocks=True)
+
+# Props desa CC0 (Poly Haven): nama mesh, ukuran nyata (m), sumbu ukur, batas segitiga, filter nama objek.
+PROPS=[('wooden_crate_01','PetiKayuScan',0.95,'w',700,None),('barrel_03','DrumScan',0.92,'h',520,None),
+       ('wicker_basket_01','BakulScan',0.46,'w',200,None),('wooden_bucket_01','EmberKayuScan',0.36,'h',480,None),
+       ('ceramic_pot','PeriukScan',0.62,'w',520,None),('wooden_stool_01','DingklikScan',0.42,'h',520,None),
+       ('metal_jerrycan','JerikenScan',0.46,'h',420,None),('old_tyre','BanBekasScan',0.62,'w',420,None),
+       ('pot_enamel_01','PanciScan',0.28,'w',420,None),('wooden_ladder','TanggaScan',1.9,'h',600,None),
+       ('painted_wooden_bench','BangkuScan',1.25,'w',400,None),('wooden_axe','KapakScan',0.66,'h',300,None),
+       ('vintage_oil_lamp','LampuMinyakScan',0.34,'h',500,'vintage_oil_lamp')]
+for name,out,size,axis,limit,only in PROPS:
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+    path=ROOT/'Assets/ThirdParty/CC0/Model'/f'{name}.fbx.source'
+    if not path.exists():raise RuntimeError('Aset prop hilang: '+str(path))
+    bpy.ops.import_scene.fbx(filepath=str(path))
+    objects=[o for o in bpy.data.objects if o.type=='MESH' and (only is None or o.name==only)]
+    write_prop(OUT/(out+'.bytes'),objects,limit,size,size_axis=axis,whole=True)
