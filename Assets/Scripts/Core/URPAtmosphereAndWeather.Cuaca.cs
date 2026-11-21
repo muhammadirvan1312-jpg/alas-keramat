@@ -13,6 +13,7 @@ namespace AlasKeramat.Core
 
         WeatherState _cuaca = WeatherState.Cerah, _cuacaLama = WeatherState.Cerah;
         float _transisi = 1f, _jamCekBerikut = 11f, _kilatBerikut = 10f, _kilatSisa, _guruhTunda = -1f;
+        bool _kilatNyala;
         ParticleSystem _hujan;
         Dsp.Rng _rng = new Dsp.Rng(20261117u);
 
@@ -134,8 +135,12 @@ namespace AlasKeramat.Core
             if (_kilatSisa > 0f)
             {
                 _kilatSisa -= Time.deltaTime;
+                bool hidup = _kilatSisa > 0f;
                 kilat.intensity = _kilatSisa > 0.08f ? 3.5f : (_kilatSisa > 0.05f ? 0.2f : 2.4f);
-                kilat.enabled = _kilatSisa > 0f;
+                kilat.enabled = hidup;
+                if (skybox != null && hidup) SafeMaterialFactory.SetF(skybox, "_Exposure", _kilatSisa > 0.08f ? 1.55f : 0.9f);
+                if (!hidup && _kilatNyala) { _kilatNyala = false; if (_jam != null) Terapkan(_jam.Jam); }
+                else if (hidup) _kilatNyala = true;
             }
             if (_guruhTunda > 0f)
             {

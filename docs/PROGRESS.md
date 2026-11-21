@@ -162,3 +162,8 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - Tangan & senjata orang-pertama (`BuilderSteps.Tebang.cs`, `BuilderSteps.Jarak.cs`, `CombatAndLeftHandController.cs`) ditambah jam tangan taktis menyala, jari menggenggam, lilitan kulit, bilah baja `FP_BajaTajam`, cahaya bara `GolokApiPusaka`, detail busur/tombak/senapan/ketapel, serta ayunan napas/jalan/lari `HitungAyunFP`.
   - `PartikelAlam` ditambah kunang-kunang malam di hutan dan spora bercahaya konstan di dalam gua (`KunangMalam`, `LajuKunang`).
   - `BuilderSteps.AudioKenney.cs` dan `WildAnimalAI.cs` memperluas 4 rekaman CC0 Kenney (`impact_punch_medium_000`, `creak_1`, `metal_click`, `door_open_1`) serta suara 3D satwa saat waspada, menyerang, dan terluka (`KlipSuaraHewan`).
+- V5 Langit, Air & VFX Atmosfer (`vis-v5-langit-air-vfx`):
+  - `AK_Langit.shader` kini merender awan prosedural bergerak berlapis mengikuti cahaya matahari/senja/malam, piringan bulan + halo di sisi berlawanan matahari, serta bintang berkelip di malam hari.
+  - `AK_Air.shader` menambah fallback buih tepi untuk preset tanpa depth texture (`_AK_MatikanDepth`, RAM 4 GB) dan kilau kaustik air dangkal.
+  - `BuilderSteps.Pasca.cs` menaikkan ambang Bloom ke `1,10` agar pantulan rumput/pasir biasa tidak berpendar; `AKPascaProses.cs` menambah `FilterBioma` dinamis per bioma, cuaca badai, dan jam.
+  - Efek visual tanpa alokasi GC: kilatan langit saat petir (`URPAtmosphereAndWeather.Cuaca`), percikan air langkah & berenang (`FoleyAndi` via `GoreSystem.PercikPartikel`), dan kepulan abu gelap saat hantu diusir (`HantuAI`). Static check lulus (0 masalah); verifikasi Unity/foto CI menunggu PR.

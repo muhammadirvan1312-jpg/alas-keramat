@@ -48,6 +48,22 @@ namespace AlasKeramat.Core
 
         // x eksposur (EV), y saturasi, z suhu WB, w intensitas vignette.
         public static Vector4 TargetGua { get { return new Vector4(1.28f,-2f,-3f,0.20f); } }
+
+        // Pewarnaan halus per bioma/cuaca (menggantikan LUT 3D tanpa shader/fitur kustom).
+        public static Color FilterBioma(Biome b, WeatherState w, float jam)
+        {
+            Color dasar = Color.white;
+            if (b == Biome.BawahTanah) dasar = new Color(0.86f, 0.96f, 0.98f);
+            else if (b == WorldTerrainGenerator.RawaBakau) dasar = new Color(0.88f, 0.95f, 0.86f);
+            else if (jam >= 17.2f && jam < 19.0f) dasar = new Color(1.0f, 0.93f, 0.86f);
+            else if (jam >= 4.5f && jam < 7.0f) dasar = new Color(0.92f, 0.95f, 1.0f);
+            if (w == WeatherState.HujanBadai) dasar = Color.Lerp(dasar, new Color(0.84f, 0.90f, 0.98f), 0.55f);
+            else if (w == WeatherState.KabutDarah) dasar = Color.Lerp(dasar, new Color(1.0f, 0.72f, 0.68f), 0.5f);
+            return dasar;
+        }
+
+        Color _filter = Color.white, _targetFilter = Color.white;
+        AlasKeramat.Player.AndiFPSController _andi;
         public static Vector4 Target(float jam, WeatherState cuaca)
         {
             Vector4 siang = new Vector4(0.28f, 2f, 3f, 0.16f);
@@ -83,14 +99,20 @@ namespace AlasKeramat.Core
                 _t = 0f;
                 if (_jam == null) _jam = GameServices.Get<TimeOfDayClock>();
                 if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
-                _target = URPAtmosphereAndWeather.DalamRuangan ? TargetGua : Target(_jam != null ? _jam.Jam : TimeOfDayClock.JamMulai, _atmos != null ? _atmos.Cuaca : WeatherState.Cerah);
+                if (_andi == null) _andi = GameServices.Get<AlasKeramat.Player.AndiFPSController>();
+                float jv = _jam != null ? _jam.Jam : TimeOfDayClock.JamMulai;
+                var wv = _atmos != null ? _atmos.Cuaca : WeatherState.Cerah;
+                _target = URPAtmosphereAndWeather.DalamRuangan ? TargetGua : Target(jv, wv);
+                Biome bio = URPAtmosphereAndWeather.DalamRuangan ? Biome.BawahTanah : (_andi != null ? WorldTerrainGenerator.GetBiome(_andi.transform.position.x, _andi.transform.position.z) : Biome.HutanCampuran);
+                _targetFilter = FilterBioma(bio, wv, jv);
             }
             _skrg = Vector4.Lerp(_skrg, _target, Time.deltaTime * Lerp);
+            _filter = Color.Lerp(_filter, _targetFilter, Time.deltaTime * Lerp);
             if (_vital == null) _vital = GameServices.Get<AlasKeramat.Player.AndiVitalsAndSanity>();
             float hp = _vital != null ? _vital.Health / AlasKeramat.Player.AndiVitalsAndSanity.Maks : 1f;
             _kritis = Mathf.MoveTowards(_kritis, Kritis01(hp), Time.deltaTime * 0.8f);
             var o = EfekKritis(_skrg, _kritis, Time.time);
-            if (_ca != null) { _ca.postExposure.value = o.x; _ca.saturation.value = o.y; }
+            if (_ca != null) { _ca.postExposure.value = o.x; _ca.saturation.value = o.y; _ca.colorFilter.value = _filter; }
             if (_wb != null) _wb.temperature.value = o.z;
             if (_vig != null) _vig.intensity.value = o.w;
         }

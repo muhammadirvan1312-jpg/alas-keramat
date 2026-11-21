@@ -13,6 +13,7 @@ namespace AlasKeramat.Player
         AndiFPSController _ctrl;
         AndiVitalsAndSanity _v;
         ProceduralAudioSynth _synth;
+        GoreSystem _gore;
         float _jarak, _tNapas, _tJantung, _sejakLangkah;
         int _var;
         bool _diTanahLalu = true;
@@ -52,7 +53,7 @@ namespace AlasKeramat.Player
             else if (_ctrl.Berenang)
             {
                 _jarak += d.magnitude;
-                if (_jarak >= 1.4f) { _jarak = 0f; Mainkan(ProceduralAudioSynth.NamaLangkah(SurfaceType.Air, _var++), p, 0.5f); }
+                if (_jarak >= 1.4f) { _jarak = 0f; Mainkan(ProceduralAudioSynth.NamaLangkah(SurfaceType.Air, _var++), p, 0.5f); PercikAir(p + Vector3.up * 0.2f); }
             }
             if (d.sqrMagnitude < 0.0001f) _jarak = 0f;
             _diTanahLalu = _ctrl.DiTanah;
@@ -74,6 +75,13 @@ namespace AlasKeramat.Player
             float? wl = WorldTerrainGenerator.GetWaterLevelAt(p.x, p.z);
             var s = Permukaan(WorldTerrainGenerator.GetBiome(p.x, p.z), wl.HasValue && wl.Value > p.y, struktur);
             Mainkan(ProceduralAudioSynth.NamaLangkah(s, _var++), p, vol);
+            if (s == SurfaceType.Air) PercikAir(p);
+        }
+
+        void PercikAir(Vector3 p)
+        {
+            if (_gore == null) _gore = GameServices.Get<GoreSystem>();
+            if (_gore != null) _gore.PercikPartikel(p + Vector3.up * 0.08f, new Color(0.75f, 0.88f, 0.96f, 0.62f), 6, 0.045f, 1.4f, 0.45f);
         }
 
         void Mainkan(string nama, Vector3 p, float vol) { _synth.Play(nama, null, AudioCategory.Efek, vol, Random.Range(0.96f, 1.04f), 2); }

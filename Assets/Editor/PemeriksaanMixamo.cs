@@ -64,6 +64,11 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Player.CombatAndLeftHandController.HitungAyunFP(1.5f, 4f, true, false) != Quaternion.identity
                 && AlasKeramat.AI.WildAnimalAI.KlipSuaraHewan(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, out pSw) == AlasKeramat.Core.ProceduralAudioSynth.KlipTeriakSekte
                 && GameObject.Find("SumurDesa_1") != null && GameObject.Find("PerahuNelayan_0") != null);
+            var fcGua = AlasKeramat.Core.AKPascaProses.FilterBioma(AlasKeramat.Core.Biome.BawahTanah, AlasKeramat.Core.WeatherState.Cerah, 12f);
+            cek("V5 Langit, Air & VFX: shader langit/air & filter bioma gua",
+                Shader.Find("AlasKeramat/Langit") != null
+                && Shader.Find("AlasKeramat/Air") != null
+                && fcGua.b > fcGua.r);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;
