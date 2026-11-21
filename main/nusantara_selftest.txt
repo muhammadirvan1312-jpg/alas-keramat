@@ -1,11 +1,11 @@
 [LULUS] Builder pertama tanpa langkah gagal
 [LULUS] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (4844 = 4844)
+[LULUS] Idempoten: jumlah objek sama (4863 = 4863)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
 [LULUS] Tekstur >= 10 (47)
-[LULUS] Material >= 5 (227)
+[LULUS] Material >= 5 (233)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
 [LULUS] WAV >= 8 (62)
@@ -120,7 +120,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 268 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 209 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -210,12 +210,19 @@
 [LULUS] Audio: rekaman CC0 OpenGameArt terpasang (22/22)
 [LULUS] Audio: musik jelajah siang/malam terpasang
 [LULUS] Audio: suara hujan ikut cuaca
+[LULUS] Mixamo: peta model karakter (Genderuwo=Warrok, Wanita=Zombiegirl, Sekte=Nightshade)
+[LULUS] Hewan asli: peta model & pilihan klip
+[LULUS] Hewan asli: templat memakai model FBX (5)
+[LULUS] Mixamo: prefab musuh memakai model karakter asli (5)
 [LULUS] Mixamo: bank animasi ada (>= 40 klip)
 [LULUS] Mixamo: semua klip legacy (H1)
 [LULUS] Mixamo: proksi berkerangka mixamorig tanpa renderer
 [LULUS] Mixamo: klip wajib tersedia 
 [LULUS] Mixamo: retarget terpasang di Deden/Ningsih
 [LULUS] Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance
+[LULUS] Pasca-proses: HP kritis memudarkan warna & menggelapkan tepi
+[LULUS] HUD: tombol pakai ikon (15)
+[LULUS] HUD: indikator luka (vinyet & arah) terpasang, arah kanan positif
 [LULUS] Senter: cookie terpasang, pusat terang, tepi gelap
 [LULUS] Partikel alam: percikan hujan di tanah ikut intensitas
 [LULUS] Partikel alam: daun & debu siang cerah, mati malam & hujan, terpasang

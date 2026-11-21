@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-21 16:59:45
+Laporan Builder Alas Keramat - 2026-11-21 18:00:45
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -88,7 +88,7 @@ Laporan Builder Alas Keramat - 2026-11-21 16:59:45
 [LULUS] 7x. Menu, pengaturan & debug T11
   - Peta Survei: kontur, sungai, legenda lokasi, posisi GPS & tujuan ketuk
 [LULUS] 7y. Peta survei & navigasi
-  - Mixamo: 55 klip mocap, retarget dipasang ke 9 karakter/prefab
+  - Mixamo: 55 klip mocap, retarget dipasang ke 9 karakter/prefab, 6 memakai model karakter Mixamo asli
 [LULUS] 7z. Animasi mocap Mixamo
   - Kenney CC0: 10 + OpenGameArt CC0: 22 rekaman (musik tegang, hujan, monster, napas, jantung, tembakan)
 [LULUS] 7z2. Rekaman CC0 Kenney
@@ -96,8 +96,14 @@ Laporan Builder Alas Keramat - 2026-11-21 16:59:45
 [LULUS] 7z4. Cookie senter
   - Partikel alam: daun gugur di hutan siang, debu berkilau saat cerah
 [LULUS] 7z3. Partikel alam
+  - Indikator luka: vinyet merah + busur arah serangan di HUD; jejak ayunan senjata di 1 pengendali
+[LULUS] 7z5. Indikator luka
+  - Ikon kontrol: 15 tombol HUD pakai ikon, joystick profesional terpasang
+[LULUS] 7z6. Ikon kontrol & joystick
+  - Hewan asli: 5 templat hewan memakai model FBX CC0 beranimasi (ayam, rusa, kancil, ular)
+[LULUS] 7z7. Hewan model asli
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4844
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 4863
 [LULUS] 9. Simpan scene
-Durasi: 1037.1 detik
+Durasi: 796.6 detik
 HASIL: SEMUA LANGKAH LULUS
