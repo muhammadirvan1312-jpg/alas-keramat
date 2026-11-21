@@ -179,3 +179,7 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - Anggota sekte yang berpatroli di malam hari atau di dalam gua kini membawa obor api berkedip (`OborSekte` / `HitungIntensitasOborSekte`) sehingga pergerakan musuh di hutan gelap terlihat seperti *Sons of the Forest*.
   - Pasca-proses URP (`AKPascaProses` & `BuilderSteps.Pasca.cs`) ditambah *Film Grain* sinematik dan *Chromatic Aberration* dinamis saat darah kritis atau kewarasan merosot (`HitungAberasiKromatik`).
   - `TouchControls` menambahkan umpan balik crosshair dinamis (mengecil presisi saat menarik busur & berkedip besar merah/kuning saat mengenai musuh), plus 3 menara pantau kayu beratap (`MenaraPantau_0..2`) di desa, kampung, & pabrik gula.
+- Gelombang 7 SOTF (`imp-sotf-v3`):
+  - Medan pulau (`BuilderSteps.Dunia.cs`) ditingkatkan ketajaman jarak pandangnya (`heightmapPixelError = 7`, `basemapDistance = 220`) dan ditambah partikel buih jeram putih (`JeramSungai_*`) di titik aliran sungai yang menurun curam.
+  - Satwa pemangsa malam (`WildAnimalAI` / `MataPemangsa`) kini memantulkan pendar mata kuning-oranye di kegelapan malam atau gua; hantu (`HantuAI` / `AuraHantu`) memancarkan aura mistis/bara sesuai jenisnya.
+  - `PartikelAlam` menambahkan uap napas dingin (`UapNapasDingin` / `LajuUapNapas`) saat malam hari, badai, kabut pagi, atau berada di gua bawah tanah.

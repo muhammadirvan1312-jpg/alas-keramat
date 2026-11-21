@@ -30,6 +30,45 @@ namespace AlasKeramat.AI
         Quaternion[] _rest;
         AndiFPSController _andi;
         bool _diambil;
+        GameObject _mataPemangsa;
+        TimeOfDayClock _jamDunia;
+
+        public static bool PunyaMataPemangsa(JH j, bool hidup, float jam, bool bawahTanah)
+        {
+            if (!hidup) return false;
+            bool gelap = bawahTanah || jam >= 18.0f || jam <= 5.8f;
+            if (!gelap) return false;
+            return j == JH.Harimau || j == JH.BabiHutan || j == JH.Buaya || j == JH.Anjing || j == JH.Kucing || j == JH.UlarKobra;
+        }
+
+        void PerbaruiMataPemangsa()
+        {
+            if (_jamDunia == null) _jamDunia = GameServices.Get<TimeOfDayClock>();
+            bool nyala = PunyaMataPemangsa(jenis, IsAlive, _jamDunia != null ? _jamDunia.Jam : 12f, WorldTerrainGenerator.DiBawahTanah(transform.position.y));
+            if (nyala)
+            {
+                if (_mataPemangsa == null)
+                {
+                    _mataPemangsa = new GameObject("MataPemangsa");
+                    _mataPemangsa.transform.SetParent(transform, false);
+                    _mataPemangsa.transform.localPosition = new Vector3(0f, 0.52f, 0.46f);
+                    var mMata = SafeMaterialFactory.CreatePBR("M_MataPemangsa", new Color(1f, 0.78f, 0.18f), 0f, 0.9f, null, null, new Color(4.2f, 2.8f, 0.45f));
+                    for (int s = -1; s <= 1; s += 2)
+                    {
+                        var m = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                        m.name = s < 0 ? "MataKiri" : "MataKanan";
+                        var col = m.GetComponent<Collider>(); if (col != null) Destroy(col);
+                        m.transform.SetParent(_mataPemangsa.transform, false);
+                        m.transform.localPosition = new Vector3(s * 0.065f, 0f, 0f);
+                        m.transform.localScale = Vector3.one * 0.032f;
+                        var mr = m.GetComponent<MeshRenderer>();
+                        mr.sharedMaterial = mMata; mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                    }
+                }
+                if (!_mataPemangsa.activeSelf) _mataPemangsa.SetActive(true);
+            }
+            else if (_mataPemangsa != null && _mataPemangsa.activeSelf) _mataPemangsa.SetActive(false);
+        }
 
         public void Pasang(JH j, Transform[] t) { jenis = j; tulang = t; }
 
@@ -76,7 +115,8 @@ namespace AlasKeramat.AI
 
         void Update()
         {
-            if (State == KeadaanHewan.Mati) { KecepatanKini = 0f; if (!PakaiModel()) Guling(); return; }
+            if (State == KeadaanHewan.Mati) { KecepatanKini = 0f; if (_mataPemangsa != null && _mataPemangsa.activeSelf) _mataPemangsa.SetActive(false); if (!PakaiModel()) Guling(); return; }
+            PerbaruiMataPemangsa();
             float dt = Time.deltaTime;
             _tState -= dt;
             if (_andi == null) _andi = GameServices.Get<AndiFPSController>();

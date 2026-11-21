@@ -99,6 +99,14 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.UI.TouchControls.SkalaCrosshair(false, 0f, 0.1f) > 1.5f
                 && AlasKeramat.Core.ProcBangunan.MenaraPantauKayu().vertexCount > 60
                 && GameObject.Find("MenaraPantau_0") != null);
+            cek("SOTF v7: jeram sungai berbuih, mata pemangsa malam, aura hantu & uap napas dingin",
+                AlasKeramat.AI.WildAnimalAI.PunyaMataPemangsa(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, true, 22f, false)
+                && !AlasKeramat.AI.WildAnimalAI.PunyaMataPemangsa(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, true, 12f, false)
+                && !AlasKeramat.AI.WildAnimalAI.PunyaMataPemangsa(AlasKeramat.Core.ResepHewan.JenisHewan.Rusa, true, 22f, false)
+                && AlasKeramat.AI.HantuAI.WarnaAuraHantu(AlasKeramat.Core.EnemyArchetype.Banaspati).r > 0.8f
+                && AlasKeramat.Core.PartikelAlam.LajuUapNapas(22f, AlasKeramat.Core.WeatherState.Cerah, false) > 0f
+                && AlasKeramat.Core.PartikelAlam.LajuUapNapas(12f, AlasKeramat.Core.WeatherState.Cerah, false) == 0f
+                && GameObject.Find("JeramSungai_0_0") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;
