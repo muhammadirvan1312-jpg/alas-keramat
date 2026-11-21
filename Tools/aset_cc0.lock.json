@@ -1093,6 +1093,96 @@
       "slot": "Audio",
       "size": 10190,
       "sha256": "ea67c9d78750e5a356bf53ef8c2063b52cc3ccdae6ae8afeec87f97f79ae692d"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/tree_stump_01/tree_stump_01_1k.fbx",
+      "path": "CC0/Model/tree_stump_01.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/tree_stump_01",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 2871068,
+      "sha256": "754a6b668361456a8ad3405d163735ac7fdd4a75b8e4fe16db777fcfe40f692d"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/tree_stump_01/tree_stump_01_diff_1k.jpg",
+      "path": "CC0/TunggulAsli/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/tree_stump_01",
+      "author": "Poly Haven",
+      "slot": "TunggulAsli",
+      "size": 907451,
+      "sha256": "781ebe420ac4d84f2e44b9e9937a596e3d5d90711d978a1392f8bf3771b5bf31"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/tree_stump_01/tree_stump_01_nor_gl_1k.jpg",
+      "path": "CC0/TunggulAsli/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/tree_stump_01",
+      "author": "Poly Haven",
+      "slot": "TunggulAsli",
+      "size": 1238404,
+      "sha256": "425117514b0386bb6df41cb64a61a624d2596472e05777483d4021b3285e3ceb"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/dry_branches_medium_01/dry_branches_medium_01_1k.fbx",
+      "path": "CC0/Model/dry_branches_medium_01.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/dry_branches_medium_01",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 699532,
+      "sha256": "3e47b10e0710b7736688521d66b3eb09aad14cb2db6179d9758a0fd5716ce639"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dry_branches_medium_01/dry_branches_medium_01_diff_1k.jpg",
+      "path": "CC0/RantingAsli/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/dry_branches_medium_01",
+      "author": "Poly Haven",
+      "slot": "RantingAsli",
+      "size": 778799,
+      "sha256": "1fbaf810a9ca29d2faf0a179834e8dce10cf4854bafe13f63af111030b3ec660"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dry_branches_medium_01/dry_branches_medium_01_nor_gl_1k.jpg",
+      "path": "CC0/RantingAsli/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/dry_branches_medium_01",
+      "author": "Poly Haven",
+      "slot": "RantingAsli",
+      "size": 1170647,
+      "sha256": "62f5205bfec599000bb7a430e003bbada939bc8d7976a7d3ab7709fd5893413c"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/rock_moss_set_02/rock_moss_set_02_1k.fbx",
+      "path": "CC0/Model/rock_moss_set_02.fbx.source",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/rock_moss_set_02",
+      "author": "Poly Haven",
+      "slot": "Model",
+      "size": 2106892,
+      "sha256": "249bf02eb4c521887a47165d0e3279fd895785addb43cfdf9938f921e6884fc3"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_moss_set_02/rock_moss_set_02_diff_1k.jpg",
+      "path": "CC0/BatuLumutAsliB/Albedo.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/rock_moss_set_02",
+      "author": "Poly Haven",
+      "slot": "BatuLumutAsliB",
+      "size": 194307,
+      "sha256": "91dd2cc77d5198b067d77e5bdb3fa8ee7b8950aeff5aec2c1ccaddb76dcca481"
+    },
+    {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_moss_set_02/rock_moss_set_02_nor_gl_1k.jpg",
+      "path": "CC0/BatuLumutAsliB/Normal.jpg",
+      "license": "CC0-1.0",
+      "source": "https://polyhaven.com/a/rock_moss_set_02",
+      "author": "Poly Haven",
+      "slot": "BatuLumutAsliB",
+      "size": 273527,
+      "sha256": "dd2503789089fb72ef469efd14364d393e769c0de8781a251475cac7e0b6f51d"
     }
   ]
 }
