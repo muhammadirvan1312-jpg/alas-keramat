@@ -319,9 +319,11 @@ namespace AlasKeramat.EditorTools
                     }
                 }
             }
-            if(batuBesar.Count>0)
+            for(int a=0;a<batuBesar.Count;a+=AlasKeramat.Building.VegetationManager.MaksRender)
             {
-                var ab=batuBesar.ToArray();var bb=new Bounds((Vector3)ab[0].GetColumn(3),Vector3.one*8f);
+                int cnt=Mathf.Min(AlasKeramat.Building.VegetationManager.MaksRender,batuBesar.Count-a);
+                var ab=batuBesar.GetRange(a,cnt).ToArray();
+                var bb=new Bounds((Vector3)ab[0].GetColumn(3),Vector3.one*8f);
                 for(int k=1;k<ab.Length;k++)bb.Encapsulate(new Bounds((Vector3)ab[k].GetColumn(3),Vector3.one*8f));
                 hasil.Add(new SerasahHutan.KelompokSerasah { mesh=mBesar,material=matBesar,bounds=bb,matriks=ab });total+=ab.Length;
             }

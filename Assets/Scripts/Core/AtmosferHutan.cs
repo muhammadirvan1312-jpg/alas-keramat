@@ -27,7 +27,7 @@ namespace AlasKeramat.Core
                 :jam<=15.0f?0.72f:Mathf.Lerp(0.72f,1f,Mathf.InverseLerp(15.0f,16.4f,jam))*(1f-Mathf.InverseLerp(16.6f,17.8f,jam));
             if(w==WeatherState.KabutPagi)k*=1.15f;
             else if(w==WeatherState.Gerimis)k*=0.45f;
-            else if(w==WeatherState.Mendung)k*=0.55f;
+            else if(w==WeatherState.Berawan)k*=0.55f;
             return Mathf.Clamp01(k);
         }
         public void Terapkan(Camera cam,float jam,WeatherState w)
