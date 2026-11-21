@@ -92,6 +92,10 @@ namespace AlasKeramat.AI
                 if (_andi == null) return;
                 if (jenis == EnemyArchetype.Kuntilanak) TickKuntilanak(dt);
                 else if (jenis == EnemyArchetype.Banaspati) TickBanaspati(dt);
+                else if (jenis == EnemyArchetype.Kuyang) TickKuyang(dt);
+                else if (jenis == EnemyArchetype.Tuyul) TickTuyul(dt);
+                else if (jenis == EnemyArchetype.HantuAir || jenis == EnemyArchetype.GenderuwoHutan) TickPemburuMalam(dt);
+                else if (jenis == EnemyArchetype.Penyerupa) TickPenyerupa(dt);
                 else TickPocong(dt);
             }
             catch (System.Exception e)
@@ -121,6 +125,7 @@ namespace AlasKeramat.AI
         public void TakeDamage(DamageInfo info)
         {
             if (!IsAlive || info.amount <= 0f || _fase == FaseHantu.Hilang) return;
+            if (jenis == EnemyArchetype.Tuyul) { Ubah(FaseHantu.Hilang); TampakSemua(false); GameEvents.RaiseToast("Tuyul kabur menghilang dalam gelap"); return; } // 14 §1: tanpa gore
             Ambil();
             bool rentan = _fase == FaseHantu.Pulih || _fase == FaseHantu.Terjungkal;
             var senjata = _combat != null ? _combat.Aktif.id : ItemID.None;
@@ -207,7 +212,7 @@ namespace AlasKeramat.AI
 
         public static string NamaTampil(EnemyArchetype j)
         {
-            switch (j) { case EnemyArchetype.PocongHutan: case EnemyArchetype.PocongGua: return "Pocong"; case EnemyArchetype.Kuntilanak: return "Kuntilanak"; case EnemyArchetype.Banaspati: return "Banaspati"; default: return j.ToString(); }
+            switch (j) { case EnemyArchetype.PocongHutan: case EnemyArchetype.PocongGua: return "Pocong"; case EnemyArchetype.Kuntilanak: return "Kuntilanak"; case EnemyArchetype.Banaspati: return "Banaspati"; case EnemyArchetype.Kuyang: return "Kuyang"; case EnemyArchetype.Tuyul: return "Tuyul"; case EnemyArchetype.GenderuwoHutan: return "Genderuwo Hutan"; case EnemyArchetype.HantuAir: return "Hantu Air"; case EnemyArchetype.Penyerupa: return "Penyerupa"; default: return j.ToString(); }
         }
 
         // Larut jadi kabut/abu 2,5 s lalu nonaktif (kembali malam berikutnya lewat EnemyDirector).

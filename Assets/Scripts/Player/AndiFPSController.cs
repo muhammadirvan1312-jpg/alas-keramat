@@ -6,6 +6,7 @@ namespace AlasKeramat.Player
     // T3a: gerak orang pertama Andi (09 §3): jalan/lari/jongkok/lompat, coyote time, berenang & menyelam dasar,
     // damage jatuh lewat IDamageable di objek yang sama, kamera pitch/yaw + head bob. Input dari TouchControls atau keyboard/mouse.
     [RequireComponent(typeof(CharacterController))]
+    [DefaultExecutionOrder(200)]
     public partial class AndiFPSController : MonoBehaviour
     {
         public const float JalanMaks = 3.4f, Sprint = 6.2f, JongkokMaks = 1.8f, Renang = 2.2f, RenangCepat = 3.2f;
@@ -13,8 +14,14 @@ namespace AlasKeramat.Player
         public const float VLompat = 4.8f, Gravitasi = 18f, Coyote = 0.12f;
         public const float TinggiKapsul = 1.8f, TinggiJongkok = 1.1f, Radius = 0.32f, BatasLereng = 42f, LangkahTangga = 0.35f;
         public const float MataBerdiri = 1.65f, MataJongkok = 0.95f, PitchMaks = 80f;
-        public const float SensH = 0.12f, SensV = 0.10f, SensMouse = 2.2f;
+        public const float SensH = 0.36f, SensV = 0.26f, SensMouse = 2.2f;
         public const float BobV = 0.035f, BobL = 0.02f, FrekBob = 1.9f;
+        // Rasa kecepatan: FOV melebar halus saat lari (maks +7 derajat), kembali saat jalan/diam.
+        public const float FovLari = 7f, LajuFov = 5f;
+        public static float FovDasar = 70f;
+        float _fovTambah;
+        Camera _cam;
+        public static float TambahFov(bool lari, float laju01) { return lari ? FovLari * Mathf.Clamp01(laju01) : 0f; }
         public const float AirMinRenang = 1.3f, MataDiBawahAir = 0.25f, NapasNormal = 25f, PitchSelam = -25f, Apung = 2.5f;
         public const float JatuhAman = 6f, JatuhMati = 18f, DamagePerMeter = 7f;
         const float JoyMati = 0.2f, JoyPenuh = 0.95f, LerpTinggi = 8f, LajuNapasPulih = 5f;
@@ -25,7 +32,10 @@ namespace AlasKeramat.Player
         public Vector2 InputLihatPx;    // piksel layar yang diakumulasi sejak frame lalu
         public bool MintaLari;
         public bool LariDiblokir;
-        public float PengaliKecepatan = 1f; // diset pemanggul kayu (07 §4)   // diset AndiVitalsAndSanity saat stamina habis
+        public float PengaliKecepatan = 1f;
+        public float PengaliSensitivitas = 1f;
+        public bool BalikY;
+        public bool PakaiHeadBob; // Opsional; bawaan tanpa goyangan untuk kenyamanan layar sentuh.
         public event System.Action OnLompat;
         public bool Jongkok { get; private set; }
         public bool Berenang { get; private set; }
@@ -37,18 +47,51 @@ namespace AlasKeramat.Player
         public float NapasMaks = NapasNormal;
         public float TinggiJatuhTerakhir { get; private set; }
         public Transform Kamera { get { return kamera; } }
+        float _lihatManual = -10f, _akhirGuncang, _lamaGuncang;
+        public bool SedangMembidikManual { get { return Time.unscaledTime - _lihatManual < 0.2f; } }
+        public bool GoyanganTempur = true;
+        public void LihatManual(Vector2 delta)
+        {
+            if (delta.sqrMagnitude <= 0.0001f) return;
+            _lihatManual = Time.unscaledTime; InputLihatPx += delta;
+        }
+        public void GuncangKamera(float lama)
+        {
+            if (lama <= 0f) { _akhirGuncang = 0f; return; }
+            if (!GoyanganTempur || lama <= 0f) return;
+            _lamaGuncang = Mathf.Max(lama, 0.01f); _akhirGuncang = Time.unscaledTime + lama;
+        }
 
         CharacterController _cc;
         Vector3 _vDatar;
+        Vector2 _lihatLalu;
         float _vy, _yaw, _pitch, _sejakTanah, _faseBob, _mata = MataBerdiri, _puncakY;
         bool _mintaLompat, _diUdara;
-#if ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
         bool _keyboardGerak;
 #endif
 
         public void Pasang(Transform cam) { kamera = cam; }
+        public void HentikanInputGerak()
+        {
+            InputGerak = Vector2.zero; InputLihatPx = Vector2.zero; _lihatLalu = Vector2.zero; MintaLari = false;
+            _mintaLompat = false; _vDatar = Vector3.zero; SedangLari = false;
+        }
         public void Lompat() { _mintaLompat = true; }
-        public void ToggleJongkok() { Jongkok = !Jongkok; }
+        public void ToggleJongkok()
+        {
+            if (Jongkok && !BisaBerdiri()) { GameEvents.RaiseToast("Ruang di atas kepala terlalu sempit"); return; }
+            Jongkok = !Jongkok;
+        }
+        public bool BisaBerdiri()
+        {
+            Vector3 kaki = transform.position;
+            int mask = (1 << GameLayers.Ground) | (1 << GameLayers.Structure) | 1;
+            return !Physics.CheckCapsule(kaki + Vector3.up * (TinggiJongkok - Radius),
+                kaki + Vector3.up * (TinggiKapsul - Radius), Radius - 0.02f, mask, QueryTriggerInteraction.Ignore);
+        }
+        public static float VertikalSetelahTabrakan(float kecepatan, CollisionFlags flags)
+        { return kecepatan > 0f && (flags & CollisionFlags.Above) != 0 ? 0f : kecepatan; }
 
         public static float KecepatanTarget(float magnitudo, bool lari, bool jongkok)
         {
@@ -57,6 +100,8 @@ namespace AlasKeramat.Player
             if (lari) return Sprint;
             return JalanMaks * Mathf.Clamp01((magnitudo - JoyMati) / (JoyPenuh - JoyMati));
         }
+
+        public static Vector2 ArahGerak(Vector2 input) { return input.sqrMagnitude>0.000001f?input.normalized:Vector2.zero; }
 
         void Awake()
         {
@@ -71,7 +116,12 @@ namespace AlasKeramat.Player
         {
             try
             {
-                BacaKeyboardMouse();
+                if (Time.timeScale <= 0f) { HentikanInputGerak(); return; }
+                if (AlasKeramat.UI.PengunciInput.Terblokir)
+                {
+                    HentikanInputGerak();
+                }
+                else BacaKeyboardMouse();
                 if (!GerakKendaraan(Time.deltaTime)) Gerak(Time.deltaTime);
             }
             catch (System.Exception e) { Debug.LogError("[AK][AndiFPSController] " + e.Message); }
@@ -79,25 +129,45 @@ namespace AlasKeramat.Player
 
         void LateUpdate()
         {
-            if (kamera == null) return;
-            _yaw += InputLihatPx.x * SensH;
-            _pitch = Mathf.Clamp(_pitch - InputLihatPx.y * SensV, -PitchMaks, PitchMaks);
+            if (kamera == null || AlasKeramat.UI.PengunciInput.Terblokir) { InputLihatPx = Vector2.zero; _lihatLalu = Vector2.zero; _akhirGuncang = 0f; return; }
+            Vector2 mentah = InputLihatPx;
+            Vector2 halus = Vector2.Lerp(mentah, _lihatLalu, 0.22f);
+            _lihatLalu = mentah;
+            float kecGeser = halus.magnitude;
+            float kurva = kecGeser > 6f ? 1f + Mathf.Clamp01((kecGeser - 6f) / 40f) * 0.85f : 1f;
+            _yaw += halus.x * kurva * SensH * PengaliSensitivitas;
+            _pitch = Mathf.Clamp(_pitch - halus.y * kurva * SensV * PengaliSensitivitas * (BalikY ? -1f : 1f), -PitchMaks, PitchMaks);
             InputLihatPx = Vector2.zero;
             transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
             float targetMata = Jongkok ? MataJongkok : MataBerdiri;
             _mata = Mathf.Lerp(_mata, targetMata, Time.deltaTime * LerpTinggi);
             float laju = DiTanah && !Berenang ? KecepatanDatar / JalanMaks : 0f;
             _faseBob += Time.deltaTime * FrekBob * Mathf.PI * 2f * Mathf.Max(0.0001f, laju);
-            float bobV = Mathf.Sin(_faseBob * 2f) * BobV * Mathf.Clamp01(laju);
-            float bobL = Mathf.Sin(_faseBob) * BobL * Mathf.Clamp01(laju);
+            float fBob = PakaiHeadBob ? 1f : 0f;
+            float bobV = Mathf.Sin(_faseBob * 2f) * BobV * Mathf.Clamp01(laju) * fBob;
+            float bobL = Mathf.Sin(_faseBob) * BobL * Mathf.Clamp01(laju) * fBob;
             kamera.localPosition = new Vector3(bobL, _mata + bobV, 0f);
-            kamera.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
+            float sisa = GoyanganTempur ? Mathf.Clamp01((_akhirGuncang - Time.unscaledTime) / Mathf.Max(_lamaGuncang, 0.01f)) : 0f;
+            float guncang = Mathf.Sin(Time.unscaledTime * 95f) * 0.6f * sisa;
+            kamera.localRotation = Quaternion.Euler(_pitch + guncang, guncang * 0.45f, 0f);
+            if (_cam == null) _cam = kamera.GetComponent<Camera>();
+            if (_cam != null)
+            {
+                // Hanya menyentuh FOV saat efek aktif, agar kamera foto/sinema tetap memakai FOV-nya sendiri.
+                float target = TambahFov(SedangLari, laju);
+                if (target > 0f || _fovTambah > 0.01f)
+                {
+                    _fovTambah = Mathf.Lerp(_fovTambah, target, Time.deltaTime * LajuFov);
+                    if (_fovTambah <= 0.01f) _fovTambah = 0f;
+                    _cam.fieldOfView = FovDasar + _fovTambah;
+                }
+            }
         }
 
         // H3: keyboard/mouse hanya untuk uji di Editor/PC, di dalam ENABLE_LEGACY_INPUT_MANAGER.
         void BacaKeyboardMouse()
         {
-#if ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
             float x = (Input.GetKey(KeyCode.D) ? 1f : 0f) - (Input.GetKey(KeyCode.A) ? 1f : 0f);
             float y = (Input.GetKey(KeyCode.W) ? 1f : 0f) - (Input.GetKey(KeyCode.S) ? 1f : 0f);
             if (x != 0f || y != 0f || _keyboardGerak) { InputGerak = Vector2.ClampMagnitude(new Vector2(x, y), 1f); MintaLari = Input.GetKey(KeyCode.LeftShift); }
@@ -105,7 +175,7 @@ namespace AlasKeramat.Player
             if (Input.GetKeyDown(KeyCode.Space)) Lompat();
             if (Input.GetKeyDown(KeyCode.C)) ToggleJongkok();
             if (Input.GetMouseButton(1))
-                InputLihatPx += new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * SensMouse / SensH;
+                LihatManual(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * SensMouse / SensH);
 #endif
         }
 
@@ -119,9 +189,9 @@ namespace AlasKeramat.Player
             if (Berenang && Jongkok) Jongkok = false;
 
             float mag = Mathf.Clamp01(InputGerak.magnitude);
-            SedangLari = MintaLari && !LariDiblokir && !Jongkok && InputGerak.y > 0.5f && mag >= JoyPenuh;
+            SedangLari = MintaLari && !LariDiblokir && !Jongkok && InputGerak.y > 0.45f && mag >= 0.68f;
             float target = Berenang ? (mag < JoyMati ? 0f : (SedangLari ? RenangCepat : Renang)) : KecepatanTarget(mag, SedangLari, Jongkok);
-            Vector2 arah = mag > 0.001f ? InputGerak / Mathf.Max(mag, 1f) : Vector2.zero;
+            Vector2 arah = ArahGerak(InputGerak);
             float faktor = arah.y < 0f ? FaktorMundur : (Mathf.Abs(arah.x) > Mathf.Abs(arah.y) ? FaktorSamping : 1f);
             Vector3 lokal = new Vector3(arah.x, 0f, arah.y);
             if (lokal.sqrMagnitude > 1f) lokal.Normalize();
@@ -155,6 +225,7 @@ namespace AlasKeramat.Player
             if (!Mathf.Approximately(_cc.height, tinggi)) { _cc.height = tinggi; _cc.center = new Vector3(0f, tinggi * 0.5f, 0f); }
 
             var flags = _cc.Move((_vDatar + Vector3.up * _vy) * dt);
+            _vy = VertikalSetelahTabrakan(_vy, flags);
             bool tanahBaru = (flags & CollisionFlags.Below) != 0;
             CekJatuh(tanahBaru);
             DiTanah = tanahBaru;

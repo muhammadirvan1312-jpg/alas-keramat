@@ -38,18 +38,19 @@ namespace AlasKeramat.EditorTools
             viewport.AddComponent<RectMask2D>();
             var scroll = viewport.AddComponent<ScrollRect>(); scroll.horizontal = false;
             var konten = UIStretch(viewport, "IsiDaftar", new Vector2(0f, 1f), new Vector2(1f, 1f));
-            var kontenRt=(RectTransform)konten.transform; kontenRt.pivot=new Vector2(0.5f,1f); kontenRt.sizeDelta=new Vector2(0f,1450f);
+            var kontenRt=(RectTransform)konten.transform; kontenRt.pivot=new Vector2(0.5f,1f); kontenRt.sizeDelta=new Vector2(0f,1850f);
             scroll.viewport=(RectTransform)viewport.transform; scroll.content=kontenRt;
             Text tx;
+            var semuaBp = GuidebookBlueprintsAndCooking.AmbilSemua();
             for (int k = 0; k < GuidebookBlueprintsAndCooking.Kategori.Length; k++)
             {
                 string kat = GuidebookBlueprintsAndCooking.Kategori[k];
                 var h = BuatTeks(konten, "Kat" + k, kat.ToUpperInvariant(), font, 28, new Vector2(0f, 1f), new Vector2(150f + k * 300f, -110f), new Vector2(290f, 40f));
                 h.color = ProcTex.Hex("#E6D7B0");
                 int baris = 0;
-                for (int i = 0; i < GuidebookBlueprintsAndCooking.Tabel.Length; i++)
+                for (int i = 0; i < semuaBp.Length; i++)
                 {
-                    var d = GuidebookBlueprintsAndCooking.Tabel[i];
+                    var d = semuaBp[i];
                     if (d.category != kat) continue;
                     string biaya = "";
                     foreach (var c in d.cost) biaya += (biaya.Length > 0 ? ", " : "") + c.count + " " + ItemDatabase.Get(c.id).displayName;

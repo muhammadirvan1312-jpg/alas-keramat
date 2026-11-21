@@ -5,19 +5,23 @@ namespace AlasKeramat.Player
 {
     // T7a (06 §1 & §3): TANGKIS = ketuk parry (0,25 s; Keris 0,35 s), tahan >= 0,4 s = blok (melee -60%, stamina 1,5 x damage),
     // ketuk ganda = simpan/keluarkan senjata. Parry berhasil membuka Tebasan Berat Penghabisan 2 s (x2,5).
-    // Umpan balik: hit-stop 0,05 s (berat), guncang kamera, tanda kena di crosshair, aim assist melee 3 m / 25 derajat / 90 derajat per detik.
+    // Umpan balik: hit-stop 0,05 s (berat), guncang kamera, tanda kena di crosshair, aim assist melee 3 m / 25 derajat dengan bantuan lembut yang tidak melawan geseran jari.
     public partial class CombatAndLeftHandController
     {
         public const float JendelaParry = 0.25f, JendelaParryKeris = 0.35f, AmbangBlok = 0.4f, KetukGanda = 0.3f;
         public const float ReduksiBlok = 0.6f, StaminaBlokPerDamage = 1.5f, KerucutTangkis = 70f;
         public const float LamaPenghabisan = 2f, PengaliPenghabisan = 2.5f;
         public const float HitStop = 0.05f, SkalaHitStop = 0.05f, GuncangBerat = 0.15f, GuncangRingan = 0.06f, LamaTandaKena = 0.15f;
-        public const float AssistJarak = 3f, AssistKerucut = 25f, AssistLaju = 90f;
+        public const float AssistJarak = 4.2f, AssistKerucut = 44f, AssistLaju = 180f;
 
         public static event System.Action<bool> OnKena; // true = berat/penghabisan
 
-        float _tParry = -1f, _tTahan = -1f, _tPenghabisan, _tKetukLalu = -10f, _guncang, _tHitStop;
+        float _tParry = -1f, _tTahan = -1f, _tPenghabisan, _tKetukLalu = -10f, _darahSenjata;
         bool _blok, _tersimpan, _pukulanPenghabisan;
+        MaterialPropertyBlock _mpbDarah;
+        Renderer[] _rendererDarah;
+        float _tVisualDarah;
+        public float DarahSenjata { get { return _darahSenjata; } }
 
         public bool Blok { get { return _blok; } }
         public bool ParryAktif { get { return _tParry > 0f; } }
@@ -37,6 +41,7 @@ namespace AlasKeramat.Player
 
         public void TangkisTekan()
         {
+            if(AlasKeramat.UI.PengunciInput.Terblokir)return;
             if (Time.unscaledTime - _tKetukLalu < KetukGanda) { ToggleSimpan(); _tKetukLalu = -10f; _tTahan = -1f; return; }
             _tKetukLalu = Time.unscaledTime;
             if (_tersimpan) return;
@@ -83,6 +88,13 @@ namespace AlasKeramat.Player
 
         void TickTangkis(float dt)
         {
+            if (_darahSenjata > 0f)
+            {
+                bool cuci = _ctrl != null && _ctrl.Berenang;
+                _darahSenjata = cuci ? 0f : Mathf.Max(0f, _darahSenjata - dt / 30f);
+                _tVisualDarah -= dt;
+                if (_tVisualDarah <= 0f || _darahSenjata <= 0f) { _tVisualDarah = 0.1f; TerapkanDarahSenjata(); }
+            }
             if (_tParry > 0f) _tParry -= dt;
             if (_tPenghabisan > 0f) _tPenghabisan -= dt;
             if (_tTahan >= 0f)
@@ -90,37 +102,25 @@ namespace AlasKeramat.Player
                 _tTahan += dt;
                 if (!_blok && _tTahan >= AmbangBlok) _blok = true;
             }
-            if (_tHitStop > 0f)
-            {
-                _tHitStop -= Time.unscaledDeltaTime;
-                if (_tHitStop <= 0f && Mathf.Approximately(Time.timeScale, SkalaHitStop)) Time.timeScale = 1f;
-            }
         }
 
-        void LateUpdate()
-        {
-            if (_guncang <= 0f || _ctrl == null || _ctrl.Kamera == null) return;
-            _guncang = Mathf.Max(0f, _guncang - Time.unscaledDeltaTime);
-            float k = _guncang * 18f;
-            _ctrl.Kamera.localRotation = _ctrl.Kamera.localRotation * Quaternion.Euler(Random.Range(-k, k), Random.Range(-k, k), 0f);
-        }
+        public void Guncang(float lama) { if (_ctrl != null) _ctrl.GuncangKamera(lama); }
 
-        public void Guncang(float lama) { _guncang = Mathf.Max(_guncang, lama); }
-
-        void MulaiHitStop()
-        {
-            if (!Mathf.Approximately(Time.timeScale, 1f)) return;
-            Time.timeScale = SkalaHitStop; _tHitStop = HitStop;
-        }
+        void MulaiHitStop() { JedaDunia.HitStop(HitStop); }
 
         // Aim assist melee selama ancang-ancang: putar yaw menuju musuh terdekat dalam 3 m & kerucut 25 derajat.
+        readonly Collider[] _sasaranAssist = new Collider[64];
         void Assist(float dt)
         {
-            if (_ctrl == null || !AimAssist) return;
-            var cols = Physics.OverlapSphere(transform.position, AssistJarak, 1 << GameLayers.Enemy, QueryTriggerInteraction.Ignore);
+            if (_ctrl == null || !AimAssist || _ctrl.SedangMembidikManual) return;
+            int maskAssist = (1 << GameLayers.Enemy) | 1;
+            int jumlah=Physics.OverlapSphereNonAlloc(transform.position,AssistJarak,_sasaranAssist,maskAssist,QueryTriggerInteraction.Ignore);
+            var cols=_sasaranAssist;
             float terbaik = 999f, yaw = 0f;
-            for (int i = 0; i < cols.Length; i++)
+            for (int i = 0; i < jumlah; i++)
             {
+                if (cols[i] == null) continue;
+                if (cols[i].gameObject.layer != GameLayers.Enemy && cols[i].GetComponentInParent<AlasKeramat.AI.WildAnimalAI>() == null) continue;
                 Vector3 ke = cols[i].bounds.center - transform.position; ke.y = 0f;
                 if (ke.sqrMagnitude < 0.01f) continue;
                 float s = Vector3.SignedAngle(transform.forward, ke, Vector3.up);
@@ -128,7 +128,7 @@ namespace AlasKeramat.Player
             }
             if (terbaik > 900f) return;
             float langkah = Mathf.Clamp(yaw, -AssistLaju * dt, AssistLaju * dt);
-            _ctrl.InputLihatPx.x += langkah / AndiFPSController.SensH;
+            _ctrl.InputLihatPx.x += langkah / (AndiFPSController.SensH * Mathf.Max(0.01f, _ctrl.PengaliSensitivitas));
         }
 
         public static bool AimAssist = true;
@@ -143,10 +143,28 @@ namespace AlasKeramat.Player
             try { target.TakeDamage(new DamageInfo { amount = dmg, type = _aktif.tipe, point = hit.point, direction = cam.forward, source = gameObject, isHeavy = _berat }); }
             finally { _pukulanPenghabisan = false; }
             if (habis) _tPenghabisan = 0f;
+            if (GoreSystem.BolehDarah(GoreSystem.Tingkat)) { _darahSenjata = Mathf.Clamp01(_darahSenjata + (habis ? 0.7f : 0.35f)); TerapkanDarahSenjata(); }
             if (_berat) MulaiHitStop();
             Guncang(_berat ? GuncangBerat : GuncangRingan);
             var h = OnKena; if (h != null) h(_berat || habis);
             AlasKeramat.AI.MeterSuara.Pancar(hit.point, AlasKeramat.AI.MeterSuara.Pertarungan);
+        }
+
+        void TerapkanDarahSenjata()
+        {
+            if (pivotFP == null) return;
+            if (_mpbDarah == null) _mpbDarah = new MaterialPropertyBlock();
+            if (_rendererDarah == null) _rendererDarah = pivotFP.GetComponentsInChildren<Renderer>(true);
+            var rends = _rendererDarah;
+            Color tint = Color.Lerp(Color.white, new Color(0.45f, 0.04f, 0.04f, 1f), _darahSenjata * 0.85f);
+            for (int i = 0; i < rends.Length; i++)
+            {
+                if (rends[i] == null) continue;
+                rends[i].GetPropertyBlock(_mpbDarah);
+                _mpbDarah.SetColor("_BaseColor", tint);
+                _mpbDarah.SetFloat("_Smoothness", Mathf.Lerp(0.35f, 0.92f, _darahSenjata));
+                rends[i].SetPropertyBlock(_mpbDarah);
+            }
         }
     }
 }

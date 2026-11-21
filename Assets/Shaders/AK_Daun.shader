@@ -4,6 +4,8 @@ Shader "AlasKeramat/Daun"
     {
         [MainTexture] _BaseMap ("Tekstur dasar", 2D) = "white" {}
         [MainColor] _BaseColor ("Warna dasar", Color) = (1,1,1,1)
+        [Normal] _BumpMap ("Normal daun", 2D) = "bump" {}
+        _BumpScale ("Detail normal", Range(0,2)) = 0.65
         _Smoothness ("Kehalusan", Range(0,1)) = 0.25
         _Goyang ("Goyang batang", Range(0,0.1)) = 0.025
         _Cutoff ("Ambang alpha", Range(0,1)) = 0.45
@@ -19,17 +21,18 @@ Shader "AlasKeramat/Daun"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
         #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Packing.hlsl"
+        TEXTURE2D(_BumpMap); SAMPLER(sampler_BumpMap);
         TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
         
         CBUFFER_START(UnityPerMaterial)
             float4 _BaseMap_ST;
             half4 _BaseColor;
-            float _Smoothness, _Goyang;
+            float _Smoothness, _Goyang, _BumpScale;
             float _Cutoff, _Kibasan, _Translucency, _VariasiWarna;
         CBUFFER_END
         // Global, sengaja bukan Properties/UnityPerMaterial.
         float4 _AK_AnginArah;
-        float _AK_AnginKuat, _AK_AnginWaktu;
+        float _AK_AnginKuat, _AK_AnginWaktu, _AK_Basah;
         float3 _LightDirection, _LightPosition;
         struct Attributes
         {
@@ -111,7 +114,11 @@ Shader "AlasKeramat/Daun"
         }
         half3 Normal(Varyings i, FRONT_FACE_TYPE face)
         {
-            return NormalizeNormalPerPixel(i.normalWS) * IS_FRONT_VFACE(face, 1.0, -1.0);
+            half3 n=NormalizeNormalPerPixel(i.normalWS);
+            half3 t=SafeNormalize(i.tangentWS.xyz-n*dot(n,i.tangentWS.xyz));
+            half3 b=cross(n,t)*i.tangentWS.w;
+            half3 detail=UnpackNormalScale(SAMPLE_TEXTURE2D(_BumpMap,sampler_BumpMap,i.uv),_BumpScale);
+            return NormalizeNormalPerPixel(TransformTangentToWorld(detail,half3x3(t,b,n))) * IS_FRONT_VFACE(face,1.0,-1.0);
         }
         half4 Frag(Varyings i, FRONT_FACE_TYPE face : FRONT_FACE_SEMANTIC) : SV_Target
         {
@@ -131,18 +138,22 @@ Shader "AlasKeramat/Daun"
             d.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(i.positionCS);
             d.shadowMask = half4(1,1,1,1);
             SurfaceData s = (SurfaceData)0;
-            s.albedo = c.rgb;
+            half ao = saturate(0.55h + 0.45h * i.color.g) * saturate(0.75h + 0.25h * d.normalWS.y);
+            half wet = _AK_Basah * saturate(d.normalWS.y * 0.7h + 0.4h);
+            s.albedo = c.rgb * (0.86h + 0.14h * ao) * (1.0h - wet * 0.14h);
             s.alpha = 1;
             s.metallic = 0;
-            s.smoothness = _Smoothness;
-            s.occlusion = 1;
+            s.smoothness = saturate(_Smoothness * 0.42h + wet * 0.38h);
+            s.occlusion = ao;
             s.normalTS = half3(0,0,1);
             half4 lit = UniversalFragmentPBR(d, s);
             Light sun = GetMainLight(d.shadowCoord, d.positionWS, half4(1,1,1,1));
-            half back = saturate(dot(-d.normalWS, sun.direction));
-            half towardSun = pow(saturate(dot(-d.viewDirectionWS, sun.direction)), 4);
-            lit.rgb += s.albedo * sun.color * (_Translucency * back * (0.25h + 0.75h * towardSun))
-                * sun.distanceAttenuation * sun.shadowAttenuation;
+            half back = saturate(dot(-d.normalWS, sun.direction) * 0.75h + 0.25h);
+            half towardSun = pow(saturate(dot(-d.viewDirectionWS, sun.direction)), 3);
+            half rim = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3) * 0.12h * back;
+            half3 sssTint = s.albedo * half3(0.92h, 1.24h, 0.58h);
+            lit.rgb += sssTint * sun.color * ((_Translucency * 1.18h * back * (0.30h + 0.70h * towardSun) + rim)
+                * sun.distanceAttenuation * sun.shadowAttenuation);
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;
         }
@@ -181,6 +192,7 @@ Shader "AlasKeramat/Daun"
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
             #pragma multi_compile _ _FORWARD_PLUS
+            #pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
             #pragma multi_compile_fog
             ENDHLSL
         }

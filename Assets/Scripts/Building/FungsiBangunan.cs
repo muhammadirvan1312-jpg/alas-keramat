@@ -9,7 +9,7 @@ namespace AlasKeramat.Building
     // perangkap ayun, obor tengkorak, menara (naik/turun), pintu, kentongan, rakit.
     public partial class FungsiBangunan : MonoBehaviour, IInteractable
     {
-        public const int KapRak = 24, KapKereta = 8, MaksAir = 6, SlotJemur = 6;
+        public const int KapRak = 24, KapKereta = 8, MaksAir = 8, SlotJemur = 6;
         public const float DetikPerAir = 10f, LamaJemur = 120f, LamaObor = 240f, DamagePerangkap = 200f, JamBangun = 6f, TidurSiang = 2f;
 
         public BlueprintID Jenis;
@@ -38,10 +38,13 @@ namespace AlasKeramat.Building
             {
                 if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
                 bool hujan = _atmos != null && (_atmos.Cuaca == WeatherState.Gerimis || _atmos.Cuaca == WeatherState.HujanBadai);
-                if (hujan && Stok < MaksAir) { _tAir += dt; if (_tAir >= DetikPerAir) { _tAir = 0f; Stok++; } }
+                var jamAir = GameServices.Get<TimeOfDayClock>();
+                bool embun = jamAir != null && jamAir.Jam >= 5f && jamAir.Jam < 8.5f;
+                float laju = hujan ? (_atmos.Cuaca == WeatherState.HujanBadai ? 2.5f : 1.5f) : (embun ? 0.45f : 0f);
+                if (laju > 0f && Stok < MaksAir) { _tAir += dt * laju; if (_tAir >= DetikPerAir) { _tAir = 0f; Stok++; } }
             }
             if (Jenis == BlueprintID.JemuranIkan) for (int i = 0; i < SlotJemur; i++) if (_jemur[i] != ItemID.None) _tJemur[i] += dt;
-            if ((Jenis == BlueprintID.OborTengkorak || Jenis == BlueprintID.LampuMinyak || Jenis == BlueprintID.PatungNgeri) && NyalaSisa > 0f) NyalaSisa -= dt;
+            if ((Jenis == BlueprintID.OborTengkorak || Jenis == BlueprintID.LampuMinyak || Jenis == BlueprintID.PatungNgeri || Jenis == BlueprintID.KomporBatu) && NyalaSisa > 0f) NyalaSisa -= dt;
             if (Jenis == BlueprintID.OborTengkorak || Jenis == BlueprintID.PatungNgeri) AlasKeramat.AI.ZonaPenangkal.SetObor(this, transform.position, NyalaSisa > 0f); // T7b: penangkal hantu & raid
             if (lampu != null) { lampu.enabled = NyalaSisa > 0f; if (lampu.enabled) lampu.intensity = 1.8f * (0.9f + 0.2f * Mathf.PerlinNoise(Time.time * 7f, 0.5f)); }
             if (pintu != null) pintu.localRotation = Quaternion.Slerp(pintu.localRotation, Quaternion.Euler(0f, Terbuka ? 95f : 0f, 0f), dt * 6f);
@@ -82,8 +85,8 @@ namespace AlasKeramat.Building
                     if (bahu != null && bahu.Bawa == ShoulderLogAndFreeformBuilder.Muatan.Gelondong && Stok < kap) return (Jenis == BlueprintID.RakKayu ? "TARUH DI RAK (" : "MUAT KAYU (") + Stok + "/" + kap + ")";
                     return Stok > 0 ? "AMBIL KAYU (" + Stok + ")" : "";
                 case BlueprintID.PenampungHujan:
-                    if (Stok <= 0) return "";
-                    return inv != null && inv.Punya(ItemID.BotolKosong) ? "ISI BOTOL (" + Stok + ")" : "MINUM AIR HUJAN (" + Stok + ")";
+                    if (Stok <= 0) return "PENAMPUNG HUJAN (0/" + MaksAir + " - TUNGGU HUJAN/EMBUN)";
+                    return inv != null && inv.Punya(ItemID.BotolKosong) ? "ISI BOTOL AIR (" + Stok + "/" + MaksAir + ")" : "MINUM AIR HUJAN (" + Stok + "/" + MaksAir + ")";
                 case BlueprintID.JemuranIkan:
                     for (int i = 0; i < SlotJemur; i++) if (_jemur[i] != ItemID.None && _tJemur[i] >= LamaJemur) return "AMBIL " + ItemDatabase.Get(HasilJemur(_jemur[i])).displayName.ToUpperInvariant();
                     if (Terisi() < SlotJemur && inv != null) { if (inv.Punya(ItemID.IkanMatang)) return "JEMUR IKAN MATANG"; if (inv.Punya(ItemID.DagingMatang)) return "JEMUR DAGING MATANG"; }
@@ -117,8 +120,9 @@ namespace AlasKeramat.Building
                     else if (bahu != null) { bahu.Lepaskan(); Stok++; }
                     return;
                 case BlueprintID.PenampungHujan:
+                    if (Stok <= 0) { GameEvents.RaiseToast("Air belum terkumpul, tunggu hujan atau embun pagi"); return; }
                     if (p.StartsWith("ISI") && inv.Kurangi(ItemID.BotolKosong, 1)) { inv.Tambah(ItemID.BotolAirBersih, 1); Stok--; GameEvents.RaiseToast("Botol terisi air hujan bersih"); }
-                    else { var v = GameServices.Get<AndiVitalsAndSanity>(); if (v != null) v.Minum(25f, false); Stok--; GameEvents.RaiseToast("Air hujan segar"); }
+                    else { var v = GameServices.Get<AndiVitalsAndSanity>(); if (v != null) v.Minum(28f, false); Stok--; GameEvents.RaiseToast("Air hujan segar memulihkan dahaga"); }
                     return;
                 case BlueprintID.JemuranIkan:
                     for (int i = 0; i < SlotJemur; i++)

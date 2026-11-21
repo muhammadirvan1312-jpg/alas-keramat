@@ -19,16 +19,33 @@ namespace AlasKeramat.UI
         [SerializeField] Button tombolRakit, tombolMakan, tombolPakai;
         [SerializeField] Text teksRakit;
 
+        [SerializeField] Text teksHalaman;
+        [SerializeField] Button tombolSenjata;
+        [SerializeField] GameObject panelResep;
+        [SerializeField] Button[] tombolResepDaftar = new Button[0];
+        [SerializeField] int[] idResepDaftar = new int[0];
+        bool _kotor;
+        public void PasangHalaman(Text teks, Button senjata) { teksHalaman=teks; tombolSenjata=senjata; }
+        public void PasangResep(GameObject pResep, Button[] tombol, int[] ids) { panelResep = pResep; tombolResepDaftar = tombol ?? new Button[0]; idResepDaftar = ids ?? new int[0]; }
         TikarPanggung _p;
         TikarPandan3DInventory _inv;
         readonly List<ItemID> _tmp = new List<ItemID>();
 
         public void Pasang(GameObject p, Text j, Text[] l, Button r, Button m, Button z, Text tr) { panel = p; judul = j; label = l; tombolRakit = r; tombolMakan = m; tombolPakai = z; teksRakit = tr; }
 
-        void Awake() { GameServices.Register(this); if (panel != null) panel.SetActive(false); }
+        void Awake() { PengunciInput.Pasang(panel);  GameServices.Register(this); if (panel != null) panel.SetActive(false); }
         void OnEnable() { GameEvents.OnItemChanged += Berubah; }
         void OnDisable() { GameEvents.OnItemChanged -= Berubah; }
-        void Berubah(ItemID id, int n) { if (_p != null && _p.Terbuka) { _p.Segarkan(); Perbarui(); } }
+        void Berubah(ItemID id, int n) { _kotor=true; }
+        void LateUpdate() { if (_kotor && _p != null && _p.Terbuka) { _kotor=false; _p.Segarkan(); Perbarui(); } }
+        public void HalamanSebelum() { if(Siap()) { _p.PindahHalaman(-1); Perbarui(); } }
+        public void HalamanBerikut() { if(Siap()) { _p.PindahHalaman(1); Perbarui(); } }
+        public void TekanSenjata()
+        {
+            if(!Siap())return;
+            var c=GameServices.Get<CombatAndLeftHandController>();
+            if(c!=null && c.PakaiDariTas(Tunggal()))Tutup();
+        }
 
         bool Siap()
         {
@@ -43,7 +60,68 @@ namespace AlasKeramat.UI
             bool buka = !_p.Terbuka;
             _p.Buka(buka);
             if (panel != null) panel.SetActive(buka);
+            if (panelResep != null) panelResep.SetActive(false);
             Perbarui();
+        }
+
+        public void TogglePanelResep()
+        {
+            if (!Siap() || panelResep == null) return;
+            bool aktif = !panelResep.activeSelf;
+            panelResep.SetActive(aktif);
+            if (aktif) SegarkanPanelResep();
+        }
+
+        public void RakitResep(int recipeId)
+        {
+            if (!Siap()) return;
+            var r = RecipeDatabase.Get(recipeId);
+            if (!r.HasValue) return;
+            var rec = r.Value;
+            if (rec.requiredTool != ItemID.None && !_inv.Punya(rec.requiredTool))
+            {
+                GameEvents.RaiseToast("Butuh " + ItemDatabase.Get(rec.requiredTool).displayName);
+                return;
+            }
+            var v = GameServices.Get<AndiVitalsAndSanity>();
+            if (rec.recipeId == 17 && (v == null || !v.DekatApi)) { GameEvents.RaiseToast(ApiResep17); return; }
+            for (int i = 0; i < rec.inputs.Length; i++)
+            {
+                var st = rec.inputs[i];
+                if (!_inv.Punya(st.id, st.count) && st.id == ItemID.KainBatik && _inv.Punya(ItemID.KainKafan, st.count))
+                    rec.inputs[i] = new ItemStack { id = ItemID.KainKafan, count = st.count };
+            }
+            if (TikarPanggung.Rakit(rec, _inv))
+            {
+                StatistikPemain.CatatRakit();
+                GameEvents.RaiseToast("Berhasil merakit " + ItemDatabase.Get(rec.output.id).displayName);
+            }
+            else GameEvents.RaiseToast("Bahan kurang atau tas penuh");
+            _p.Segarkan(); Perbarui(); SegarkanPanelResep();
+        }
+
+        void SegarkanPanelResep()
+        {
+            if (_inv == null || tombolResepDaftar == null) return;
+            for (int i = 0; i < tombolResepDaftar.Length && i < idResepDaftar.Length; i++)
+            {
+                var b = tombolResepDaftar[i];
+                if (b == null) continue;
+                var rec = RecipeDatabase.Get(idResepDaftar[i]);
+                bool bisa = false;
+                if (rec.HasValue)
+                {
+                    bisa = rec.Value.requiredTool == ItemID.None || _inv.Punya(rec.Value.requiredTool);
+                    foreach (var s in rec.Value.inputs)
+                    {
+                        bool cukup = _inv.Punya(s.id, s.count) || (s.id == ItemID.KainBatik && _inv.Punya(ItemID.KainKafan, s.count));
+                        if (!cukup) { bisa = false; break; }
+                    }
+                }
+                b.interactable = bisa;
+                var img = b.GetComponent<Image>();
+                if (img != null) img.color = bisa ? new Color(0.24f, 0.56f, 0.30f, 0.92f) : new Color(0.24f, 0.22f, 0.20f, 0.80f);
+            }
         }
 
         public void Tutup() { if (Siap() && _p.Terbuka) Buka(); }
@@ -60,6 +138,7 @@ namespace AlasKeramat.UI
 
         ItemID Tunggal() { if (_p.JumlahPilihan != 1) return ItemID.None; foreach (var i in _p.Pilihan) return i; return ItemID.None; }
 
+        public static bool BisaPakaiItem(ItemID id,bool berdarah) { return id!=ItemID.None && (ItemDatabase.IsFood(id) || (berdarah && ReaksiAndi.ItemObatDarah(id))); }
         void Perbarui()
         {
             if (!Siap()) return;
@@ -67,8 +146,16 @@ namespace AlasKeramat.UI
             if (tombolRakit != null) tombolRakit.interactable = r.HasValue;
             if (teksRakit != null) teksRakit.text = r.HasValue ? "RAKIT: " + ItemDatabase.Get(r.Value.output.id).displayName.ToUpperInvariant() : "RAKIT";
             var t = _p.Terbuka ? Tunggal() : ItemID.None;
-            if (tombolMakan != null) tombolMakan.interactable = t != ItemID.None && ItemDatabase.IsFood(t);
+            if (tombolMakan != null)
+            {
+                var reaksi=GameServices.Get<ReaksiAndi>();
+                tombolMakan.interactable=BisaPakaiItem(t,reaksi!=null && reaksi.Berdarah);
+                var teks=tombolMakan.GetComponentInChildren<Text>();
+                if(teks!=null)teks.text=ReaksiAndi.ItemObatDarah(t)?"PAKAI OBAT":"MAKAN / MINUM";
+            }
             if (tombolPakai != null) tombolPakai.interactable = t != ItemID.None && AndiVitalsAndSanity.Durabilitas(t) > 0f;
+            if(teksHalaman!=null)teksHalaman.text="HALAMAN "+(_p.Halaman+1)+" / "+_p.JumlahHalaman;
+            if(tombolSenjata!=null)tombolSenjata.interactable=t!=ItemID.None && (CombatAndLeftHandController.IndeksMelee(t)>=0 || CombatAndLeftHandController.IndeksJarak(t)>=0);
             TataLabel();
         }
 

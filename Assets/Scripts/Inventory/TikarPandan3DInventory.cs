@@ -54,12 +54,15 @@ namespace AlasKeramat.Inventory
             try
             {
                 var d = JsonUtility.FromJson<DataSimpan>(json);
+                if (d == null || d.id == null || d.n == null || d.id.Length!=d.n.Length) throw new ArgumentException("Isi inventaris tidak valid");
+                var berubah=new HashSet<ItemID>(_isi.Keys);
                 _isi.Clear();
-                if (d == null || d.id == null || d.n == null) return;
                 for (int i = 0; i < d.id.Length && i < d.n.Length; i++)
                     if (d.n[i] > 0 && ItemDatabase.Has((ItemID)d.id[i])) _isi[(ItemID)d.id[i]] = Mathf.Min(d.n[i], ItemDatabase.MaxCarry((ItemID)d.id[i]));
+                foreach(var id in _isi.Keys)berubah.Add(id);
+                foreach(var id in berubah)GameEvents.RaiseItemChanged(id,Jumlah(id));
             }
-            catch (Exception e) { Debug.LogError("[AK][TikarPandan3DInventory] Data simpan rusak: " + e.Message); }
+            catch (Exception e) { Debug.LogError("[AK][TikarPandan3DInventory] Data simpan rusak: " + e.Message); throw; }
         }
     }
 }

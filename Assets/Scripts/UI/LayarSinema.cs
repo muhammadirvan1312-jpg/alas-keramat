@@ -28,11 +28,14 @@ namespace AlasKeramat.UI
         { hitam = h; teksBesar = besar; teksMerah = merah; teksStat = stat; tombolLewati = lewati; panelPilihan = pilihan; panelStat = pStat; tombolMulaiBaru = mulaiBaru; labelLanjut = lanjut; }
 
         void Awake() { GameServices.Register(this); Bersih(); }
-        void OnDisable() { if (Berjalan) Time.timeScale = 1f; }
+        void OnDisable() { JedaDunia.Atur(GetInstanceID(), false); }
 
         IEnumerator Start()
         {
             yield return null; yield return null; // tunggu layanan & muat
+            while(LayarPeringatan.PerluTampil())yield return null;
+            var menu=GameServices.Get<MenuScreens>();
+            while(menu!=null && !menu.PermainanDimulai)yield return null;
             var q = GameServices.Get<QuestManager>();
             if (q != null && !q.Progres.intro) StartCoroutine(Intro());
         }
@@ -56,7 +59,7 @@ namespace AlasKeramat.UI
         // ---------- 04 §7.1 Intro ----------
         IEnumerator Intro()
         {
-            Berjalan = true; _lewati = false; Time.timeScale = 0f;
+            Berjalan = true; _lewati = false; JedaDunia.Atur(GetInstanceID(), true);
             Gelap(1f);
             Bunyi(ProceduralAudioSynth.KlipPesawat, 0.8f);
             float mulai = Time.unscaledTime;
@@ -77,7 +80,7 @@ namespace AlasKeramat.UI
                 Gelap(1f);
                 yield return Tunggu(3f);
             }
-            Time.timeScale = 1f;
+            JedaDunia.Atur(GetInstanceID(), false);
             if (tombolLewati != null) tombolLewati.SetActive(false);
             if (teksBesar != null) teksBesar.text = ""; if (teksMerah != null) teksMerah.text = "";
             var q = GameServices.Get<QuestManager>(); if (q != null) q.Progres.intro = true;
@@ -104,7 +107,7 @@ namespace AlasKeramat.UI
         public void TampilPilihan()
         {
             if (panelPilihan == null || Berjalan) return;
-            Berjalan = true; Time.timeScale = 0f;
+            Berjalan = true; JedaDunia.Atur(GetInstanceID(), true);
             Gelap(0.6f);
             panelPilihan.SetActive(true);
         }
@@ -130,7 +133,7 @@ namespace AlasKeramat.UI
 
         IEnumerator Ending()
         {
-            Berjalan = true; Time.timeScale = 0f; _lewati = false;
+            Berjalan = true; JedaDunia.Atur(GetInstanceID(), true); _lewati = false;
             for (float t = 0f; t < 1.5f; t += Time.unscaledDeltaTime) { Gelap(Mathf.Lerp(0.6f, 1f, t / 1.5f)); yield return null; }
             Gelap(1f);
             Bunyi(ProceduralAudioSynth.KlipGamelanJauh, 1f);
@@ -152,7 +155,7 @@ namespace AlasKeramat.UI
         public void Lanjut()
         {
             if (panelStat != null) panelStat.SetActive(false);
-            Gelap(0f); Time.timeScale = 1f; Berjalan = false;
+            Gelap(0f); JedaDunia.Atur(GetInstanceID(), false); Berjalan = false;
             var heli = GameServices.Get<HeliSAR>();
             if (heli != null) heli.Terbang();
             if (_ending != 2) return;
@@ -165,7 +168,7 @@ namespace AlasKeramat.UI
 
         public void MulaiBaru()
         {
-            Time.timeScale = 1f;
+            JedaDunia.Atur(GetInstanceID(), false);
             try { if (System.IO.File.Exists(SaveSystem.Path)) System.IO.File.Delete(SaveSystem.Path); }
             catch (System.Exception e) { Debug.LogError("[AK][LayarSinema] Gagal menghapus simpanan: " + e.Message); }
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

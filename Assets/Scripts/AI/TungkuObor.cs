@@ -5,7 +5,7 @@ namespace AlasKeramat.AI
     // Tungku obor merah Kubah Akar (03 §10 UG3 K3). Pada kesulitan Damai menjadi Teka-teki Akar (06 §10): nyalakan I-II-III-IV berurutan.
     public class TungkuObor : MonoBehaviour, IInteractable
     {
-        public const float IntensitasNyala = 2.6f;
+        public const float IntensitasNyala = 50f;
         [SerializeField] Light lampu;
         [SerializeField] GameObject api;
         [SerializeField] int simbol;          // 1-4 = I-IV (teka-teki), 0 = hiasan

@@ -46,6 +46,7 @@ namespace AlasKeramat.EditorTools
             foreach (var f in new[] { FolderTex, FolderIkon, FolderMat, FolderMesh, FolderAudio }) EnsureFolder(f);
             _mat.Clear(); _klip.Clear();
             BuatTekstur(cepat);
+            PanggangFotoPBR();
             BuatIkon(cepat);
             BuatMaterial();
             BuatAudio(cepat);
@@ -110,6 +111,7 @@ namespace AlasKeramat.EditorTools
             var albedo = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + tex + ".png");
             var normal = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + tex + "_n.png");
             var m = SafeMaterialFactory.CreatePBR(nama, warna, metal, halus, albedo, normal, null, mode);
+            MaskPBR(m,tex);
             string p = FolderMat + "/" + nama + ".mat";
             AssetDatabase.DeleteAsset(p);
             AssetDatabase.CreateAsset(m, p);
@@ -147,7 +149,8 @@ namespace AlasKeramat.EditorTools
                 }
                 var c = AssetDatabase.LoadAssetAtPath<AudioClip>(p);
                 if (c == null) throw new Exception("klip gagal diimpor: " + p);
-                _klip[nama] = c;
+                var rekaman=RekamanCC0(nama);
+                _klip[nama] = rekaman!=null?rekaman:c;
             }
             Catat(_klip.Count + " klip WAV");
         }
@@ -164,13 +167,17 @@ namespace AlasKeramat.EditorTools
             if (imp == null) throw new Exception("importer tekstur tidak ada: " + path);
             imp.textureType = normal ? TextureImporterType.NormalMap : sprite ? TextureImporterType.Sprite : TextureImporterType.Default;
             imp.mipmapEnabled = !sprite;
+            imp.streamingMipmaps = !sprite; imp.anisoLevel = sprite ? 1 : 8;
             imp.wrapMode = sprite ? TextureWrapMode.Clamp : TextureWrapMode.Repeat;
             imp.alphaIsTransparency = sprite;
             imp.maxTextureSize = maks;
             var android = imp.GetPlatformTextureSettings("Android");
             android.overridden = true;
-            android.maxTextureSize = maks;
-            android.format = sprite ? TextureImporterFormat.ASTC_4x4 : TextureImporterFormat.ASTC_6x6;
+            bool albedoDunia = !normal && !sprite && !path.EndsWith("_mask.png") && path.StartsWith(FolderTex + "/");
+            android.maxTextureSize = albedoDunia ? maks : Mathf.Min(maks, 1024);
+            android.format = (sprite || path.Contains("/Characters/")) ? TextureImporterFormat.ASTC_4x4 : TextureImporterFormat.ASTC_6x6;
+            // Sprite UI kecil (<=256) tanpa kompresi: tepi bulat & alfa tetap tajam di semua GPU (juga render foto CI).
+            if (sprite && maks <= 256) { android.format = TextureImporterFormat.RGBA32; imp.textureCompression = TextureImporterCompression.Uncompressed; }
             imp.SetPlatformTextureSettings(android);
             imp.SaveAndReimport();
         }

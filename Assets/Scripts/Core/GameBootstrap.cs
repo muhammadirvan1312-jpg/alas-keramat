@@ -10,6 +10,18 @@ namespace AlasKeramat.Core
     {
         public const int TargetFpsDefault = 30;
         public const string PrefFps = "ak_target_fps";
+        bool _kehilanganFokus, _latar;
+
+        void Update() { JedaDunia.Tick(); }
+        void OnApplicationFocus(bool fokus)
+        {
+#if UNITY_EDITOR
+            if (Application.isBatchMode) return;
+#endif
+            _kehilanganFokus = !fokus; JedaDunia.Atur(GetInstanceID(), _kehilanganFokus || _latar);
+        }
+        void OnApplicationPause(bool jeda) { _latar = jeda; JedaDunia.Atur(GetInstanceID(), _kehilanganFokus || _latar); }
+        void OnDisable() { JedaDunia.Atur(GetInstanceID(), false); }
 
         void Awake()
         {
@@ -24,6 +36,7 @@ namespace AlasKeramat.Core
                 if (FindFirstObjectByType<EventSystem>() == null)
                 {
                     var es = new GameObject("EventSystem", typeof(EventSystem));
+                    es.GetComponent<EventSystem>().pixelDragThreshold = 4;
                     AddCorrectInputModule(es);
                     Debug.LogWarning("[AK][GameBootstrap] EventSystem tidak ada di scene, dibuat ulang saat runtime.");
                 }

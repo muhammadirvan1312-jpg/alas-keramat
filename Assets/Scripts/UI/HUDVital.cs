@@ -90,7 +90,9 @@ namespace AlasKeramat.UI
         {
             if (i >= isi.Length || isi[i] == null) return;
             _tampil[i] = Mathf.MoveTowards(_tampil[i], Mathf.Clamp01(target), Time.deltaTime * LajuLerp * Mathf.Max(0.05f, Mathf.Abs(target - _tampil[i])));
-            var s = isi[i].localScale; s.x = _tampil[i]; isi[i].localScale = s;
+            // Isian bulat memakai fillAmount (sudut tidak gepeng); cadangan skala bila gambar bukan tipe Filled.
+            if (i < gambar.Length && gambar[i] != null && gambar[i].type == Image.Type.Filled) gambar[i].fillAmount = _tampil[i];
+            else { var s = isi[i].localScale; s.x = _tampil[i]; isi[i].localScale = s; }
             if (i >= gambar.Length || gambar[i] == null) return;
             bool kritis = _tampil[i] < AmbangKritis;
             if (i == Waras && !kritis) return; // warna kewarasan diatur pendar di Update

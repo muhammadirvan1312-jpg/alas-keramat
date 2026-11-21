@@ -13,8 +13,8 @@ namespace AlasKeramat.EditorTools
     {
         public const string FolderVeg = FolderGen + "/Vegetasi";
         public const string PathVegData = FolderVeg + "/VegetationData.asset";
-        const int Varian = 2, CalonPohonPerHa = 80, CalonSemakPerHa = 160, UkuranSel = 125;
-        const float FaktorSemak = 0.35f, LerengMaksVeg = 35f, JarakGridSawit = 8f;
+        const int Varian = 3, CalonPohonPerHa = 140, CalonSemakPerHa = 560, UkuranSel = 125;
+        const float FaktorSemak = 0.85f, LerengMaksVeg = 42f, JarakGridSawit = 8f;
 
         struct Kepadatan { public J jenis; public float perHa; public Kepadatan(J j, float d) { jenis = j; perHa = d; } }
 
@@ -22,19 +22,19 @@ namespace AlasKeramat.EditorTools
         {
             switch (biome)
             {
-                case (int)Biome.HutanJatiSelatan: return new[] { new Kepadatan(J.Jati, 55), new Kepadatan(J.Mahoni, 10), new Kepadatan(J.Pisang, 6), new Kepadatan(J.Aren, 4) };
-                case (int)Biome.HutanCampuran: return new[] { new Kepadatan(J.Mahoni, 35), new Kepadatan(J.Jati, 20), new Kepadatan(J.Aren, 8), new Kepadatan(J.Pisang, 5), new Kepadatan(J.BeringinKecil, 1) };
-                case (int)Biome.HutanBambu: return new[] { new Kepadatan(J.BambuRumpun, 45), new Kepadatan(J.Pisang, 8) };
-                case (int)Biome.TepiSungai: return new[] { new Kepadatan(J.Kelapa, 6), new Kepadatan(J.BambuRumpun, 10) };
-                case (int)Biome.Pantai: return new[] { new Kepadatan(J.Kelapa, 22) };
+                case (int)Biome.HutanJatiSelatan: return new[] { new Kepadatan(J.Jati, 68), new Kepadatan(J.Mahoni, 32), new Kepadatan(J.Aren, 10), new Kepadatan(J.Pisang, 8), new Kepadatan(J.BeringinKecil, 4) };
+                case (int)Biome.HutanCampuran: return new[] { new Kepadatan(J.Mahoni, 55), new Kepadatan(J.Jati, 40), new Kepadatan(J.Aren, 12), new Kepadatan(J.Pisang, 8), new Kepadatan(J.BeringinKecil, 4) };
+                case (int)Biome.HutanBambu: return new[] { new Kepadatan(J.BambuRumpun, 48), new Kepadatan(J.Mahoni, 14), new Kepadatan(J.Pisang, 10) };
+                case (int)Biome.TepiSungai: return new[] { new Kepadatan(J.Mahoni, 42), new Kepadatan(J.Jati, 34), new Kepadatan(J.BambuRumpun, 18), new Kepadatan(J.Aren, 10), new Kepadatan(J.Pisang, 10), new Kepadatan(J.Kelapa, 6) };
+                case (int)Biome.Pantai: return new[] { new Kepadatan(J.Kelapa, 24) };
                 case (int)Biome.Desa: return new[] { new Kepadatan(J.Kelapa, 8), new Kepadatan(J.Pisang, 10) };
-                case (int)Biome.KawahBeringin: return new[] { new Kepadatan(J.Mahoni, 15) };
-                case (int)Biome.TebingKapur: return new[] { new Kepadatan(J.Jati, 10) };
-                case 11: return new[] { new Kepadatan(J.BeringinKecil, 12), new Kepadatan(J.Aren, 6), new Kepadatan(J.Pisang, 2) };
+                case (int)Biome.KawahBeringin: return new[] { new Kepadatan(J.Mahoni, 28), new Kepadatan(J.Jati, 16) };
+                case (int)Biome.TebingKapur: return new[] { new Kepadatan(J.Jati, 24), new Kepadatan(J.Mahoni, 18) };
+                case 11: return new[] { new Kepadatan(J.BeringinKecil, 14), new Kepadatan(J.Aren, 8), new Kepadatan(J.Pisang, 4) };
                 case 12: return new[] { new Kepadatan(J.Kelapa, 3) };
-                case 13: return new[] { new Kepadatan(J.Jati, 18), new Kepadatan(J.Mahoni, 8) };
+                case 13: return new[] { new Kepadatan(J.Jati, 24), new Kepadatan(J.Mahoni, 14) };
                 case 14: return new[] { new Kepadatan(J.Tebu, 70), new Kepadatan(J.Kelapa, 3) };
-                case 15: return new[] { new Kepadatan(J.Mahoni, 50), new Kepadatan(J.BeringinKecil, 8), new Kepadatan(J.Aren, 10), new Kepadatan(J.Jati, 10) };
+                case 15: return new[] { new Kepadatan(J.Mahoni, 60), new Kepadatan(J.BeringinKecil, 10), new Kepadatan(J.Aren, 12), new Kepadatan(J.Jati, 18) };
                 default: return new Kepadatan[0];
             }
         }
@@ -43,17 +43,17 @@ namespace AlasKeramat.EditorTools
         {
             switch (biome)
             {
-                case (int)Biome.HutanJatiSelatan: return new[] { new Kepadatan(J.Semak, 120), new Kepadatan(J.Pakis, 200) };
-                case (int)Biome.HutanCampuran: return new[] { new Kepadatan(J.Semak, 140), new Kepadatan(J.Pakis, 250) };
-                case (int)Biome.HutanBambu: return new[] { new Kepadatan(J.Semak, 60) };
-                case (int)Biome.TepiSungai: return new[] { new Kepadatan(J.Semak, 80), new Kepadatan(J.Pakis, 40) };
-                case (int)Biome.Pantai: case (int)Biome.Desa: return new[] { new Kepadatan(J.Semak, 30) };
-                case (int)Biome.KawahBeringin: return new[] { new Kepadatan(J.Semak, 50) };
-                case (int)Biome.TebingKapur: return new[] { new Kepadatan(J.Semak, 60) };
-                case 11: return new[] { new Kepadatan(J.Semak, 40), new Kepadatan(J.Pakis, 60) };
-                case 13: return new[] { new Kepadatan(J.Semak, 80), new Kepadatan(J.Pakis, 40) };
-                case 14: return new[] { new Kepadatan(J.Semak, 10) };
-                case 15: return new[] { new Kepadatan(J.Semak, 160), new Kepadatan(J.Pakis, 300) };
+                case (int)Biome.HutanJatiSelatan: return new[] { new Kepadatan(J.Pakis, 340), new Kepadatan(J.Semak, 200) };
+                case (int)Biome.HutanCampuran: return new[] { new Kepadatan(J.Pakis, 360), new Kepadatan(J.Semak, 220) };
+                case (int)Biome.HutanBambu: return new[] { new Kepadatan(J.Semak, 90), new Kepadatan(J.Pakis, 70) };
+                case (int)Biome.TepiSungai: return new[] { new Kepadatan(J.Pakis, 320), new Kepadatan(J.Semak, 200) };
+                case (int)Biome.Pantai: case (int)Biome.Desa: return new[] { new Kepadatan(J.Semak, 40) };
+                case (int)Biome.KawahBeringin: return new[] { new Kepadatan(J.Pakis, 120), new Kepadatan(J.Semak, 80) };
+                case (int)Biome.TebingKapur: return new[] { new Kepadatan(J.Pakis, 90), new Kepadatan(J.Semak, 80) };
+                case 11: return new[] { new Kepadatan(J.Semak, 60), new Kepadatan(J.Pakis, 80) };
+                case 13: return new[] { new Kepadatan(J.Semak, 90), new Kepadatan(J.Pakis, 70) };
+                case 14: return new[] { new Kepadatan(J.Semak, 14) };
+                case 15: return new[] { new Kepadatan(J.Pakis, 360), new Kepadatan(J.Semak, 200) };
                 default: return new Kepadatan[0];
             }
         }
@@ -61,29 +61,32 @@ namespace AlasKeramat.EditorTools
         // Area bebas vegetasi (pad POI v5): x, z, radius.
         static readonly Vector3[] AreaBebas =
         {
-            new Vector3(0f, -440f, 36f), new Vector3(56f, -376f, 24f), new Vector3(0f, -840f, 50f),
+            new Vector3(8f, -448f, 10.5f), new Vector3(56f, -376f, 24f), new Vector3(0f, -840f, 50f),
             new Vector3(0f, 0f, 22f), new Vector3(660f, -500f, 110f), new Vector3(0f, 690f, 14f),
         };
 
         static void LangkahVegetasi()
         {
             EnsureFolder(FolderVeg);
-            var atlas = ProcPohon.AtlasDaun(1024);
+            var atlas = AtlasDaunCampuran();
             string pAtlas = FolderVeg + "/atlas_daun.png";
             SimpanPng(atlas, pAtlas);
             AssetDatabase.Refresh();
             var imp = (TextureImporter)AssetImporter.GetAtPath(pAtlas);
             imp.alphaIsTransparency = true; imp.mipmapEnabled = true; imp.wrapMode = TextureWrapMode.Clamp; imp.maxTextureSize = 1024;
+            imp.mipMapsPreserveCoverage=true;imp.alphaTestReferenceValue=0.5f;imp.filterMode=FilterMode.Trilinear;
             imp.SaveAndReimport();
             var texAtlas = AssetDatabase.LoadAssetAtPath<Texture2D>(pAtlas);
 
             var matDaun = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_DaunPohon", Color.white, 0f, 0.25f, texAtlas, null, null, SurfaceMode.Cutout, 0.5f), ShaderDaun, 0.03f, 0.45f));
             var matDaunHangus = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_DaunHangus", ProcTex.Hex("#3A3028"), 0f, 0.1f, texAtlas, null, null, SurfaceMode.Cutout, 0.5f), ShaderDaun, 0.015f, 0.1f));
             var kulit = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu.png");
-            var kulitN = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kayu_n.png");
-            var matKulit = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_KulitPohon", Color.white, 0f, 0.15f, kulit, kulitN), ShaderKulit, 0.02f, 0f));
-            var matPalem = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangPalem", ProcTex.Hex("#B8AE9C"), 0f, 0.15f, kulit, kulitN), ShaderKulit, 0.035f, 0f));
-            var matBambu = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_Bambu", ProcTex.Hex("#9DA85A"), 0f, 0.35f, AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kayu.png")), ShaderKulit, 0.05f, 0f));
+            var kulitN = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu_n.png");
+            var palem = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/palem.png");
+            var palemN = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/palem_n.png");
+            var matKulit = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_KulitPohon", Color.white, 0f, 0.18f, kulit, kulitN), ShaderKulit, 0.02f, 0f));
+            var matPalem = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangPalem", ProcTex.Hex("#7A7466"), 0f, 0.2f, palem != null ? palem : kulit, palemN != null ? palemN : kulitN), ShaderKulit, 0.035f, 0f));
+            var matBambu = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_Bambu", ProcTex.Hex("#3B5822"), 0f, 0.3f, AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu.png"), AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kulit_kayu_n.png")), ShaderKulit, 0.05f, 0f));
             var matHangus = SimpanMat(KeAK(SafeMaterialFactory.CreatePBR("M_BatangHangus", ProcTex.Hex("#2A2420"), 0f, 0.1f, kulit, kulitN), ShaderKulit, 0.01f, 0f));
 
             var data = ScriptableObject.CreateInstance<VegetationData>();
@@ -100,10 +103,11 @@ namespace AlasKeramat.EditorTools
                     jenisList.Add(new VegetationData.JenisVeg
                     {
                         nama = jj + "_" + v, lod0 = m0, lod1 = m1, kayu = kayu, daun = jj == J.SawitHangus ? matDaunHangus : matDaun,
-                        jarakLod1 = semak ? 30f : 90f, jarakMaks = semak ? 110f : jj == J.Tebu ? 300f : 900f, bayangan = !semak
+                        jarakLod1 = semak ? 20f : 45f, jarakMaks = semak ? 70f : jj == J.Tebu ? 220f : 450f, bayangan = !semak
                     });
                 }
             data.jenis = jenisList.ToArray();
+            PasangMeshScan(data);
             data.sel = TempatkanVegetasi(data.jenis.Length);
             AssetDatabase.CreateAsset(data, PathVegData);
 
@@ -125,7 +129,7 @@ namespace AlasKeramat.EditorTools
             return AssetDatabase.LoadAssetAtPath<Material>(p);
         }
 
-        static bool BolehTanam(float x, float z, out float y)
+        static bool BolehTanam(float x, float z, out float y, bool semak = false)
         {
             y = WorldTerrainGenerator.SampleHeight(x, z);
             if (y < 0.6f) return false;
@@ -134,7 +138,30 @@ namespace AlasKeramat.EditorTools
             for (int i = 0; i < AreaBebas.Length; i++)
             {
                 float dx = x - AreaBebas[i].x, dz = z - AreaBebas[i].y;
-                if (dx * dx + dz * dz < AreaBebas[i].z * AreaBebas[i].z) return false;
+                float r = semak && i == 0 ? 5.8f : semak && i == 1 ? 9.5f : AreaBebas[i].z;
+                if (dx * dx + dz * dz < r * r) return false;
+            }
+            if (semak)
+            {
+                float dhx = x - 8f, dhz = z + 448f;
+                if (dhx * dhx + dhz * dhz < 5.8f * 5.8f) return false; // badan rongsokan heli saja
+            }
+            else
+            {
+                if ((x + 4f) * (x + 4f) + (z + 424f) * (z + 424f) < 16f) return false; // SpawnAndi
+                if ((x - 24f) * (x - 24f) + (z + 440f) * (z + 440f) < 16f) return false; // KangDeden
+                if ((x - 25.2f) * (x - 25.2f) + (z + 437.8f) * (z + 437.8f) < 12.25f) return false; // Kamera Deden
+                if ((x - 200f) * (x - 200f) + (z + 350f) * (z + 350f) < 51.84f) return false; // Ningsih (celah cahaya 7.2 m)
+                if ((x - 198.7f) * (x - 198.7f) + (z + 351.6f) * (z + 351.6f) < 12.25f) return false; // Kamera Ningsih
+                if ((x - 65f) * (x - 65f) + (z + 335f) * (z + 335f) < 36f) return false; // Kamera g3_04_lantai_hutan
+                if ((x - 67.5f) * (x - 67.5f) + (z + 329f) * (z + 329f) < 25f) return false; // Garis pandang g3_04_lantai_hutan
+                if ((x + 60f) * (x + 60f) + (z + 300f) * (z + 300f) < 30.25f) return false; // Diorama Hantu
+                if ((x + 59.6f) * (x + 59.6f) + (z + 305.6f) * (z + 305.6f) < 16f) return false; // Kamera Malam
+                for (int k = 0; k < PosisiKoper.Length; k++)
+                {
+                    float kx = x - PosisiKoper[k].x, kz = z - PosisiKoper[k].z;
+                    if (kx * kx + kz * kz < 9f) return false;
+                }
             }
             return WorldTerrainGenerator.SampleSlopeDeg(x, z) <= LerengMaksVeg;
         }
@@ -203,7 +230,7 @@ namespace AlasKeramat.EditorTools
                 if (tabel.Length == 0) continue;
                 double kum = 0; int pilih = -1;
                 for (int i = 0; i < tabel.Length; i++) { kum += tabel[i].perHa * faktor; if (undian < kum) { pilih = i; break; } }
-                if (pilih < 0 || !BolehTanam(x, z, out y)) continue;
+                if (pilih < 0 || !BolehTanam(x, z, out y, semak)) continue;
                 var jn = tabel[pilih].jenis;
                 float skala = semak ? 0.7f + 0.7f * (float)r.NextDouble() : 0.8f + 0.45f * (float)r.NextDouble();
                 tambah((int)jn * Varian + r.Next(Varian), new Vector3(x, y - (semak ? 0.05f : 0.25f), z), (float)r.NextDouble() * 360f, skala);

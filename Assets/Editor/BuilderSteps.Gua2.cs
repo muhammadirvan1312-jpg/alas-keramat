@@ -81,9 +81,12 @@ namespace AlasKeramat.EditorTools
         // ---------- UG3 Kuil Akar Beringin Hitam ----------
         static GameObject BangunUG3(GameObject induk)
         {
-            var akarMat = MatPolos("M_AkarHitam", "#1A1210");
-            _matUrat = MatEmisi("M_UratMerah", "#3A0806", new Color(0.9f, 0.08f, 0.04f) * 1.2f, false);
-            var k = MulaiKompleks(induk, UndergroundId.UG3_KuilAkar, akarMat, AmbilMat("M_Batu"));
+            var akarMat = SimpanMat(SafeMaterialFactory.CreatePBR("M_AkarHitam", ProcTex.Hex("#9E7C64"), 0f, 0.28f, Tex("kulit_kayu"), Tex("kulit_kayu_n")));
+            MaskPBR(akarMat, "kulit_kayu"); SafeMaterialFactory.SetF(akarMat, "_Smoothness", 0.28f);
+            var batuArena = SimpanMat(SafeMaterialFactory.CreatePBR("M_BatuArena", ProcTex.Hex("#867872"), 0f, 0.36f, Tex("batu"), Tex("batu_n")));
+            MaskPBR(batuArena, "batu"); SafeMaterialFactory.SetF(batuArena, "_Smoothness", 0.36f);
+            _matUrat = MatEmisi("M_UratMerah", "#4A0A06", new Color(1.4f, 0.16f, 0.05f) * 2.2f, false);
+            var k = MulaiKompleks(induk, UndergroundId.UG3_KuilAkar, akarMat, batuArena);
             var k0 = R("K0_CelahAkar", new Vector3(0f, 0f, -70f), new Vector3(6f, 5f, 6f), true);
             var k2 = R("K2_RuangSesaji", new Vector3(-18f, 0f, -15f), new Vector3(12f, 5f, 10f), true);
             var k3 = R("K3_KubahAkar", ArenaUG3, new Vector3(40f, 22f, 40f), true);
@@ -101,10 +104,10 @@ namespace AlasKeramat.EditorTools
             angin.transform.localPosition = new Vector3(0f, 0f, -42.5f);
             var za = angin.AddComponent<ZonaAngin>(); za.Pasang(new Vector3(4.5f, 5f, 15f)); EditorUtility.SetDirty(za);
             Color merah = new Color(1f, 0.25f, 0.12f);
-            Lampu(hias, "Lampu_K0", k0.pos + Vector3.up * 3f, merah, 9f, 0.8f);
-            Lampu(hias, "Lampu_K1", new Vector3(0f, 3f, -28f), merah, 9f, 0.8f);
-            Lampu(hias, "Lampu_K2", k2.pos + Vector3.up * 3f, new Color(1f, 0.85f, 0.4f), 9f, 0.9f);
-            Lampu(hias, "Lampu_K4", k4.pos + Vector3.up * 2.5f, new Color(1f, 0.8f, 0.3f), 8f, 1.2f);
+            Lampu(hias, "Lampu_K0", k0.pos + Vector3.up * 3f, merah, 13f, 1.8f);
+            Lampu(hias, "Lampu_K1", new Vector3(0f, 3f, -28f), merah, 13f, 1.8f);
+            Lampu(hias, "Lampu_K2", k2.pos + Vector3.up * 3f, new Color(1f, 0.85f, 0.4f), 13f, 2.0f);
+            Lampu(hias, "Lampu_K4", k4.pos + Vector3.up * 2.5f, new Color(1f, 0.8f, 0.3f), 12f, 2.2f);
             Wadah(k, "Wasiat_Lore6", "Wasiat Juru Kunci", k2.pos + new Vector3(0f, 0f, 2.5f), new Vector3(0.5f, 0.1f, 0.4f), MatPolos("M_KainKuning", "#C9A227"), new ItemID[0], new int[0], (int)LoreID.L06, false);
 
             // K4 di balik akar yang harus dibakar.
@@ -115,7 +118,9 @@ namespace AlasKeramat.EditorTools
             dinding.transform.localRotation = Quaternion.LookRotation(lorK4[1] - lorK4[0], Vector3.up);
             dinding.layer = GameLayers.Structure;
             var bc = dinding.AddComponent<BoxCollider>(); bc.size = new Vector3(3.2f, 3.6f, 1f); bc.center = Vector3.up * 1.8f;
-            for (int i = 0; i < 6; i++) { var a = Hias(dinding, PrimitiveType.Cylinder, "Akar_" + i, new Vector3(-1.3f + i * 0.52f, 1.8f, 0f), new Vector3(0.35f, 1.9f, 0.35f), akarMat, false); a.transform.localRotation = Quaternion.Euler(0f, 0f, (i - 2.5f) * 8f); }
+            var akMesh = SimpanMeshGua(ProcGua.DindingAkar("DindingAkar_K4", 3.2f, 3.6f, 404));
+            dinding.AddComponent<MeshFilter>().sharedMesh = akMesh;
+            dinding.AddComponent<MeshRenderer>().sharedMaterial = akarMat;
             dinding.AddComponent<AkarBakar>();
             Wadah(k, "PetiEmas", "Peti Emas Majapahit", k4.pos + new Vector3(0f, 0f, 1.5f), new Vector3(1f, 0.6f, 0.7f), MatEmisi("M_EmasKuno", "#B8922E", new Color(0.3f, 0.22f, 0.05f), false),
                 new[] { ItemID.KerisPusaka, ItemID.ZirahEmas }, new[] { 1, 1 }, 0, false);

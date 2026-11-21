@@ -95,6 +95,10 @@ namespace AlasKeramat.Player
             return true;
         }
 
+        Biome _cacheBiome;
+        bool _cacheApi, _cacheAtap, _cacheApiTerang;
+        float _tCacheLingk = -1f;
+
         void Update()
         {
             try
@@ -102,6 +106,15 @@ namespace AlasKeramat.Player
                 if (_jam == null) _jam = GameServices.Get<TimeOfDayClock>();
                 if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
                 if (!IsAlive) { TungguBangkit(Time.deltaTime); return; }
+                _tCacheLingk -= Time.deltaTime;
+                if (_tCacheLingk <= 0f)
+                {
+                    _tCacheLingk = 0.25f;
+                    _cacheApi = Building.ApiUnggun.AdaApiDekat(transform.position, Building.ApiUnggun.JarakHangat);
+                    _cacheAtap = CekAtap();
+                    _cacheApiTerang = Building.ApiUnggun.AdaApiDekat(transform.position, 6f);
+                    _cacheBiome = WorldTerrainGenerator.GetBiome(transform.position.x, transform.position.z);
+                }
                 var k = new Keadaan
                 {
                     jam = _jam != null ? _jam.Jam : TimeOfDayClock.JamMulai,
@@ -111,10 +124,10 @@ namespace AlasKeramat.Player
                     renang = _ctrl != null && _ctrl.Berenang,
                     renangCepat = _ctrl != null && _ctrl.Berenang && _ctrl.SedangLari,
                     napasHabis = _ctrl != null && _ctrl.Berenang && _ctrl.Napas <= 0f,
-                    dekatApi = _dekatApi || Building.ApiUnggun.AdaApiDekat(transform.position, Building.ApiUnggun.JarakHangat),
-                    berteduh = _berteduh || CekAtap(),
-                    cahaya = _dekatApi || Building.ApiUnggun.AdaApiDekat(transform.position, 6f) || (_kiri != null && _kiri.OborMenyala),
-                    biome = WorldTerrainGenerator.GetBiome(transform.position.x, transform.position.z)
+                    dekatApi = _dekatApi || _cacheApi,
+                    berteduh = _berteduh || _cacheAtap,
+                    cahaya = _dekatApi || _cacheApiTerang || (_kiri != null && _kiri.OborMenyala),
+                    biome = _cacheBiome
                 };
                 Tick(k, Time.deltaTime);
                 if (_ctrl != null) _ctrl.LariDiblokir = StaminaHabis || Stamina < 1f;
@@ -149,9 +162,10 @@ namespace AlasKeramat.Player
             // Haus, istirahat, gizi
             float pHaus = (k.sprint ? 1.2f : 1f) * (kemarau && k.jam >= 10f && k.jam < 15f ? 1.4f : 1f) * (Tidur ? PengaliTidur : 1f) * (SuhuTubuh > SuhuKepanasan ? 1.8f : 1f);
             if (k.cuaca == WeatherState.KabutAsap) pHaus *= 1.2f;
-            Hydration = Mathf.Max(0f, Hydration - LajuHaus * pHaus * dt);
-            Rest = Tidur ? Mathf.Min(Maks, Rest + 1.5f * dt) : Mathf.Max(0f, Rest - LajuIstirahat * dt);
-            TickGizi(k.sprint, dt);
+            float pKesulitan = AI.EnemyDirector.Kesulitan == Difficulty.Damai ? 0.7f : AI.EnemyDirector.Kesulitan == Difficulty.Sulit ? 1.25f : 1f;
+            Hydration = Mathf.Max(0f, Hydration - LajuHaus * pHaus * pKesulitan * dt);
+            Rest = Tidur ? Mathf.Min(Maks, Rest + 1.5f * dt) : Mathf.Max(0f, Rest - LajuIstirahat * pKesulitan * dt);
+            TickGizi(k.sprint, dt * pKesulitan);
             TickSuhu(k, dt);
             TickPenyakit(dt);
 
@@ -207,6 +221,8 @@ namespace AlasKeramat.Player
         public void TakeDamage(DamageInfo info)
         {
             if (!IsAlive || info.amount <= 0f) return;
+            float pDmg = AI.EnemyDirector.Kesulitan == Difficulty.Damai ? 0.5f : AI.EnemyDirector.Kesulitan == Difficulty.Sulit ? 1.4f : 1f;
+            info.amount *= pDmg;
             float sisa = Serap(info);
             Health = Mathf.Max(0f, Health - sisa);
             _sejakDamage = 0f;
@@ -249,18 +265,24 @@ namespace AlasKeramat.Player
             var h = OnMati; if (h != null) h();
         }
 
-        // Sementara sampai sistem simpan T6: bangun lagi di titik awal dengan vital setengah.
+        // Pingsan: bangun di titik awal dengan vital setengah dan riwayat jatuh dibersihkan.
         void TungguBangkit(float dt)
         {
             _tMati -= dt;
             if (_tMati > 0f) return;
             _tMati = 0f;
             Health = Maks * 0.5f; Stamina = Maks * 0.5f; Hydration = Mathf.Max(Hydration, 40f); Sanity = Mathf.Max(Sanity, 40f);
-            SetGiziMinimal(40f); SuhuTubuh = SuhuNormal; Wetness = 0f;
-            var cc = GetComponent<CharacterController>();
-            if (cc != null) cc.enabled = false;
-            transform.position = new Vector3(-4f, Mathf.Max(0f, WorldTerrainGenerator.SampleHeight(-4f, -424f)) + 0.3f, -424f);
-            if (cc != null) cc.enabled = true;
+            SetGiziMinimal(40f); BersihkanPenyakit(); SuhuTubuh = SuhuNormal; Wetness = 0f;
+            Vector3 awal = new Vector3(-4f, Mathf.Max(0f, WorldTerrainGenerator.SampleHeight(-4f, -424f)) + 0.3f, -424f);
+            var gerak = GetComponent<AndiFPSController>();
+            if (gerak != null) gerak.Teleport(awal);
+            else
+            {
+                var cc = GetComponent<CharacterController>(); bool aktif = cc != null && cc.enabled;
+                if (cc != null) cc.enabled = false;
+                transform.position = awal;
+                if (cc != null) cc.enabled = aktif;
+            }
             GameEvents.RaiseToast("Kamu tersadar di dekat heli");
         }
 

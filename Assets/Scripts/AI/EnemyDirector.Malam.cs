@@ -16,6 +16,7 @@ namespace AlasKeramat.AI
         public static readonly Vector3 PusatBeringin = Vector3.zero;
 
         [SerializeField] GameObject[] prefabHantu = new GameObject[3]; // Pocong Hutan, Kuntilanak, Banaspati
+        [SerializeField] GameObject[] prefabHantuTambahan = new GameObject[5]; // Kuyang, Tuyul, GenderuwoHutan, HantuAir, Penyerupa
         [SerializeField] GameObject prefabJarahan;
         [SerializeField] GameObject prefabBambu;
 
@@ -35,6 +36,7 @@ namespace AlasKeramat.AI
         bool _kuntiMalamIni;
 
         public void PasangMalam(GameObject[] hantu, GameObject jarahan, GameObject bambu) { prefabHantu = hantu; prefabJarahan = jarahan; prefabBambu = bambu; }
+        public void PasangMalamTambahan(GameObject[] tambahan) { prefabHantuTambahan = tambahan; }
 
         // ---------- Rumus murni (self-test) ----------
         public static bool IsMalamDarah(int malam) { return malam >= HariMalamDarahPertama && (malam - HariMalamDarahPertama) % SelangMalamDarah == 0; }
@@ -123,12 +125,31 @@ namespace AlasKeramat.AI
                 float x = PusatSawit.x + Mathf.Cos(s) * 60f, z = PusatSawit.z + Mathf.Sin(s) * 60f;
                 BuatHantu(2, new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z) + 1.4f, z));
             }
+            Biome bi = WorldTerrainGenerator.GetBiome(a.x, a.z);
+            if (prefabHantuTambahan != null && prefabHantuTambahan.Length >= 4)
+            {
+                Vector3 p;
+                if ((bi == Biome.Desa || BiomaHutan(bi)) && HitungHantu(EnemyArchetype.Kuyang) < 1 && TitikTersembunyi(a, _andi.transform.forward, 55f, Random.Range(-50f, 50f), out p))
+                    BuatHantuPref(prefabHantuTambahan[0], p + Vector3.up * 2.2f);
+                if (HitungHantu(EnemyArchetype.Tuyul) < 1 && !AlasKeramat.Building.FungsiBangunan.MenangkalTuyul(a) && TitikTersembunyi(a, _andi.transform.forward, 28f, Random.Range(-60f, 60f), out p))
+                    BuatHantuPref(prefabHantuTambahan[1], p);
+                if ((bi == WorldTerrainGenerator.AlasWingit || bi == Biome.HutanCampuran) && HitungHantu(EnemyArchetype.GenderuwoHutan) < 1 && TitikTersembunyi(a, _andi.transform.forward, 65f, Random.Range(-45f, 45f), out p))
+                    BuatHantuPref(prefabHantuTambahan[2], p);
+                if ((bi == Biome.TepiSungai || bi == Biome.Pantai) && HitungHantu(EnemyArchetype.HantuAir) < 1 && TitikTersembunyi(a, _andi.transform.forward, 42f, Random.Range(-45f, 45f), out p))
+                    BuatHantuPref(prefabHantuTambahan[3], p);
+            }
         }
 
         HantuAI BuatHantu(int idx, Vector3 pos)
         {
-            if (prefabHantu == null || idx >= prefabHantu.Length || prefabHantu[idx] == null) return null;
-            var go = Instantiate(prefabHantu[idx], pos, Quaternion.Euler(0f, Random.value * 360f, 0f), transform);
+            if (prefabHantu == null || idx >= prefabHantu.Length) return null;
+            return BuatHantuPref(prefabHantu[idx], pos);
+        }
+
+        HantuAI BuatHantuPref(GameObject pref, Vector3 pos)
+        {
+            if (pref == null) return null;
+            var go = Instantiate(pref, pos, Quaternion.Euler(0f, Random.value * 360f, 0f), transform);
             var h = go.GetComponent<HantuAI>();
             if (h == null) { Destroy(go); return null; }
             h.Sarang = pos;

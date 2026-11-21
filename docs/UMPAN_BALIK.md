@@ -7,3 +7,9 @@ Format bebas, contoh:
 - [APK uji 2026-11-20] Wajah Kang Deden aneh saat cutscene.
 
 ## Catatan
+
+- [DALAM PENGERJAAN, 18 Nov 2026] Pengguna sangat tidak puas dengan visual G3. Audit dibuka kembali; belum selesai hanya karena kode lolos CI. Wajib nilai render asli baru sebelum menyatakan kualitas lulus.
+
+- [DALAM PENGERJAAN, 19 Nov 2026] Setelah benar-benar bermain build G3 hasil-92, pemain melaporkan patah-patah, analog/sentuh sulit, visual jauh dari target, audio buruk, peta membingungkan. Audit lima area dibuka pada docs/EVALUASI_UJI_MAIN.md. Belum ditandai selesai tanpa uji HP ulang.
+
+- [DALAM PENGERJAAN, 19 Nov 2026, penegasan] Pengguna meminta review SELURUH permainan yang sudah selesai: frame patah-patah, visual burik, audio tidak jelas, analog/POV dan gameplay menyulitkan. Tujuan penerimaan adalah pemain nyaman. Jangan menyempitkan evaluasi menjadi satu area, menyatakan selesai karena CI hijau, atau menyamakan screenshot statis dengan uji APK.

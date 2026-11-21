@@ -13,16 +13,17 @@ namespace AlasKeramat.EditorTools
     public static partial class NusantaraMasterBuilder
     {
         public const string FolderGore = FolderGen + "/Gore";
-        const int UkuranTeksGore = 256;
+        const int UkuranTeksGore = 512;
 
         static void LangkahGore()
         {
             EnsureFolder(FolderGore);
+            var normDarah = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/lumpur_n.png");
             var percikan = new Material[4];
-            for (int i = 0; i < 4; i++) percikan[i] = MatGore("M_Percikan" + i, TeksPercikan("percikan" + i, 9100 + i * 37), SurfaceMode.Transparent);
-            var genangan = MatGore("M_Genangan", TeksGenangan(), SurfaceMode.Transparent);
-            var luka = MatGore("M_Luka", TeksLuka(), SurfaceMode.Cutout);
-            var tutup = MatGore("M_TutupPotongan", TeksTutup(), SurfaceMode.Opaque);
+            for (int i = 0; i < 4; i++) percikan[i] = MatGore("M_Percikan" + i, TeksPercikan("percikan" + i, 9100 + i * 37), SurfaceMode.Transparent, normDarah);
+            var genangan = MatGore("M_Genangan", TeksGenangan(), SurfaceMode.Transparent, normDarah);
+            var luka = MatGore("M_Luka", TeksLuka(), SurfaceMode.Cutout, normDarah);
+            var tutup = MatGore("M_TutupPotongan", TeksTutup(), SurfaceMode.Opaque, normDarah);
             var meshLuka = new Mesh[8];
             for (int i = 0; i < 8; i++)
             {
@@ -55,11 +56,12 @@ namespace AlasKeramat.EditorTools
             Catat("Gore: 4 percikan, genangan, atlas luka 8, tutup potongan, partikel darah, GoreSystem, peringatan 18+");
         }
 
-        static Material MatGore(string nama, Texture2D tex, SurfaceMode mode)
+        static Material MatGore(string nama, Texture2D tex, SurfaceMode mode, Texture2D norm = null)
         {
             string p = FolderGore + "/" + nama + ".mat";
             AssetDatabase.DeleteAsset(p);
-            var m = SafeMaterialFactory.CreatePBR(nama, Color.white, 0f, 0.85f, tex, null, null, mode, 0.4f);
+            Color? emisi = mode == SurfaceMode.Opaque ? new Color(0.08f, 0.01f, 0.01f) : new Color(0.04f, 0.005f, 0.005f);
+            var m = SafeMaterialFactory.CreatePBR(nama, Color.white, 0.05f, 0.92f, tex, norm, emisi, mode, 0.38f);
             AssetDatabase.CreateAsset(m, p);
             return AssetDatabase.LoadAssetAtPath<Material>(p);
         }
