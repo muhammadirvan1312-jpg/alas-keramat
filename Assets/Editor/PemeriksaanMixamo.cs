@@ -121,6 +121,16 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Building.PohonRebah.HitungDamageTimpaan(AlasKeramat.Core.ProcPohon.Jenis.Jati, 75f) >= 60f
                 && AlasKeramat.Building.PohonRebah.HitungDamageTimpaan(AlasKeramat.Core.ProcPohon.Jenis.Jati, 15f) == 0f
                 && AlasKeramat.Building.PanciMasak.ProgresMasak01(20f) == 0.5f);
+            cek("SOTF v10: alat/senjata 3D companion, asap kemenyan sakral, permukaan air penampung & rambu petunjuk hutan",
+                AlasKeramat.AI.KangDedenKelvinAI.HarusTampilAlatDeden(AlasKeramat.Core.CompanionOrder.AmbilKayu, true, false)
+                && !AlasKeramat.AI.KangDedenKelvinAI.HarusTampilAlatDeden(AlasKeramat.Core.CompanionOrder.Istirahat, true, false)
+                && AlasKeramat.AI.NingsihVirginiaAI.JenisSenjataVisualNingsih(true, false, false) == 1
+                && AlasKeramat.AI.NingsihVirginiaAI.JenisSenjataVisualNingsih(true, true, true) == 3
+                && AlasKeramat.Building.ApiUnggun.LajuAsapKemenyan(45f, true) > 5f
+                && AlasKeramat.Building.ApiUnggun.LajuAsapKemenyan(0f, true) == 0f
+                && AlasKeramat.Building.FungsiBangunan.TinggiAirPenampung01(4) == 0.5f
+                && AlasKeramat.Core.ProcBangunan.RambuPetunjukKayu().vertexCount > 30
+                && GameObject.Find("RambuHutan_0") != null);
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

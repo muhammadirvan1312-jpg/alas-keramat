@@ -505,5 +505,18 @@ namespace AlasKeramat.Core
             }
             return b.Jadi("MenaraPantauKayu");
         }
+
+        // Rambu petunjuk arah jalur ekspedisi: umpak batu, tiang kayu, 2 papan panah bersilang & lengan gantung lentera. 0 kayu, 1 batu/besi.
+        public static Mesh RambuPetunjukKayu()
+        {
+            var b = new B(2);
+            b.Kotak(1, new Vector3(0f, 0.14f, 0f), new Vector3(0.55f, 0.28f, 0.55f), Quaternion.identity, 1f);
+            b.Silinder(0, new Vector3(0f, 0.22f, 0f), 0.09f, 0.08f, 2.35f, 8, Quaternion.identity, 1.5f);
+            b.Kotak(0, new Vector3(0.28f, 2.15f, 0.08f), new Vector3(0.86f, 0.20f, 0.05f), Quaternion.Euler(0f, 18f, 3f), 1f);
+            b.Kotak(0, new Vector3(-0.24f, 1.85f, -0.08f), new Vector3(0.78f, 0.18f, 0.05f), Quaternion.Euler(0f, -35f, -2f), 1f);
+            b.Kotak(0, new Vector3(0f, 2.38f, 0.22f), new Vector3(0.07f, 0.07f, 0.48f), Quaternion.identity, 1f);
+            b.Silinder(1, new Vector3(0f, 2.14f, 0.40f), 0.07f, 0.05f, 0.18f, 6, Quaternion.identity, 1f);
+            return b.Jadi("RambuPetunjukKayu");
+        }
     }
 }
