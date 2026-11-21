@@ -19,8 +19,9 @@ namespace AlasKeramat.Core
         RenderParams[] _rp, _rpNoShadow;
         Vector3[][] _pos;
         int[] _sub;
-        const float UkuranGrid = 32f, MinGrid = -640f, MaxGrid = 448f;
-        const int SisiGrid = 34;
+        // Grid menutup seluruh pulau (-1024..1024): sebaran batu/kayu/tunggul ada di semua hutan, bukan hanya zona awal.
+        const float UkuranGrid = 32f, MinGrid = -1024f, MaxGrid = 1024f;
+        const int SisiGrid = 64;
         int[][] _grid;
         Camera _cam;
         void Awake() { GameServices.Register(this); }
