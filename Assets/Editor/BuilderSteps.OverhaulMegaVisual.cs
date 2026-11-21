@@ -206,7 +206,7 @@ namespace AlasKeramat.EditorTools
                 new Vector2(12f, -438f), new Vector2(46f, -382f), new Vector2(120f, -310f), new Vector2(268f, -218f),
                 new Vector2(314f, -162f), new Vector2(518f, 196f), new Vector2(468f, 178f), new Vector2(0f, -12f),
                 new Vector2(-195f, -236f), new Vector2(-262f, 112f), new Vector2(-390f, 310f), new Vector2(210f, 420f),
-                new Vector2(-160f, 680f), new Vector2(580f, 540f), new Vector2(710f, -120f), new Vector2(-680f, -180f),
+                new Vector2(-120f, 610f), new Vector2(590f, 560f), new Vector2(720f, -140f), new Vector2(-580f, 620f),
                 new Vector2(-520f, -340f), new Vector2(-115f, -858f)
             };
             var listBerkas = new List<MeshRenderer>(posBerkas.Length);

@@ -88,9 +88,16 @@ namespace AlasKeramat.Core
             }
         }
 
+        void PastikanArray()
+        {
+            if (_ditemukan == null || _ditemukan.Length != daftarZona.Length)
+                _ditemukan = new bool[daftarZona.Length];
+        }
+
         [Serializable] struct DataJurnal { public int mask; }
         public string CaptureJson()
         {
+            PastikanArray();
             int mask = 0;
             for (int i = 0; i < _ditemukan.Length && i < 31; i++) if (_ditemukan[i]) mask |= (1 << i);
             return JsonUtility.ToJson(new DataJurnal { mask = mask });
@@ -98,6 +105,7 @@ namespace AlasKeramat.Core
 
         public void RestoreJson(string json)
         {
+            PastikanArray();
             if (string.IsNullOrEmpty(json)) return;
             int mask = JsonUtility.FromJson<DataJurnal>(json).mask;
             _jumlahTemu = 0;

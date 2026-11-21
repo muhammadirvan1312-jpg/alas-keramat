@@ -49,7 +49,7 @@ namespace AlasKeramat.EditorTools
             var daftar = new[]
             {
                 new { nama = "Puncak Menara Pengawas Api", pos = new Vector3(-195f, WorldTerrainGenerator.SampleHeight(-195f, -240f) + 12.4f, -237f) },
-                new { nama = "Pos Gunung Kapur", pos = new Vector3(-676f, WorldTerrainGenerator.SampleHeight(-676f, -176f) + 0.5f, -176f) },
+                new { nama = "Pos Gunung Kapur", pos = new Vector3(-576f, WorldTerrainGenerator.SampleHeight(-576f, 616f) + 0.5f, 616f) },
                 new { nama = "Tebing Air Terjun Rimba", pos = new Vector3(302f, WorldTerrainGenerator.SampleHeight(302f, -148f) + 0.5f, -148f) },
                 new { nama = "Teras Atas Candi Kuno", pos = new Vector3(-260f, WorldTerrainGenerator.SampleHeight(-260f, 122f) + 0.5f, 122f) }
             };
@@ -78,7 +78,7 @@ namespace AlasKeramat.EditorTools
             var spots = new[]
             {
                 new { nama = "Dermaga Barat", x = -520f, z = -360f },
-                new { nama = "Desa Nelayan Timur", x = 708f, z = -132f },
+                new { nama = "Desa Nelayan Timur", x = 764f, z = -140f },
                 new { nama = "Kolam Air Terjun", x = 308f, z = -172f },
                 new { nama = "Tepi Sungai Jembatan", x = 266f, z = -224f },
                 new { nama = "Pantai Bangkai Kapal", x = -104f, z = -846f },
@@ -113,7 +113,7 @@ namespace AlasKeramat.EditorTools
                 new { id = "riset", label = "Peti Ekspedisi Peneliti", x = -388f, z = 308f, tier = 3 },
                 new { id = "megalit", label = "Peti Purbakala Megalit", x = 212f, z = 422f, tier = 3 },
                 new { id = "dermaga", label = "Peti Kargo Dermaga Barat", x = -518f, z = -342f, tier = 2 },
-                new { id = "kapur", label = "Peti Airdrop Gunung Kapur", x = -678f, z = -182f, tier = 3 }
+                new { id = "kapur", label = "Peti Airdrop Gunung Kapur", x = -578f, z = 622f, tier = 3 }
             };
             for (int i = 0; i < lokasi.Length; i++)
             {
@@ -145,7 +145,7 @@ namespace AlasKeramat.EditorTools
                 new { nama = "Kampung Sukamaju", x = 58f, z = -372f },
                 new { nama = "Alun-Alun Desa Mati", x = 518f, z = 196f },
                 new { nama = "Kamp Peneliti", x = -386f, z = 312f },
-                new { nama = "Kuil Bambu Utara", x = -158f, z = 676f }
+                new { nama = "Kuil Bambu Utara", x = -118f, z = 606f }
             };
             for (int i = 0; i < lokasi.Length; i++)
             {
@@ -175,7 +175,7 @@ namespace AlasKeramat.EditorTools
                 new { nama = "Kampung Sukamaju", x = 52f, z = -380f },
                 new { nama = "Desa Mati", x = 514f, z = 202f },
                 new { nama = "Pasar Hantu", x = 472f, z = 176f },
-                new { nama = "Desa Nelayan Timur", x = 706f, z = -118f },
+                new { nama = "Desa Nelayan Timur", x = 716f, z = -138f },
                 new { nama = "Menara Pengawas Api", x = -192f, z = -242f }
             };
             for (int i = 0; i < lokasi.Length; i++)
@@ -203,7 +203,7 @@ namespace AlasKeramat.EditorTools
                 new Vector2(-244f, 84f), new Vector2(-236f, 92f), new Vector2(-260f, 108f), new Vector2(-270f, 120f),
                 new Vector2(204f, 418f), new Vector2(216f, 418f), new Vector2(210f, 428f), new Vector2(210f, 412f),
                 new Vector2(464f, 174f), new Vector2(472f, 182f), new Vector2(512f, 196f), new Vector2(520f, 200f),
-                new Vector2(-198f, -238f), new Vector2(-392f, 306f), new Vector2(-516f, -344f), new Vector2(-156f, 682f)
+                new Vector2(-198f, -238f), new Vector2(-392f, 306f), new Vector2(-516f, -344f), new Vector2(-116f, 614f)
             };
             for (int i = 0; i < pos.Length; i++)
             {
@@ -243,11 +243,11 @@ namespace AlasKeramat.EditorTools
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Bangkai Kapal Pantai", posisiXZ = new Vector2(-115f, -865f), radius = 32f },
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Pabrik Gula Sinar Tebu", posisiXZ = new Vector2(665f, -500f), radius = 44f },
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Rumah Pohon Heli", posisiXZ = new Vector2(46f, -418f), radius = 18f },
-                new JurnalEksplorasiPulau.ZonaTemu { nama = "Desa Nelayan Timur", posisiXZ = new Vector2(710f, -120f), radius = 40f },
-                new JurnalEksplorasiPulau.ZonaTemu { nama = "Pos Gunung Kapur", posisiXZ = new Vector2(-680f, -180f), radius = 38f },
-                new JurnalEksplorasiPulau.ZonaTemu { nama = "Perkebunan Timur Laut", posisiXZ = new Vector2(580f, 540f), radius = 44f },
-                new JurnalEksplorasiPulau.ZonaTemu { nama = "Pulau Karang Selatan", posisiXZ = new Vector2(-420f, -720f), radius = 38f },
-                new JurnalEksplorasiPulau.ZonaTemu { nama = "Kuil Bambu Utara", posisiXZ = new Vector2(-160f, 680f), radius = 36f },
+                new JurnalEksplorasiPulau.ZonaTemu { nama = "Desa Nelayan Timur", posisiXZ = new Vector2(720f, -140f), radius = 40f },
+                new JurnalEksplorasiPulau.ZonaTemu { nama = "Pos Gunung Kapur", posisiXZ = new Vector2(-580f, 620f), radius = 38f },
+                new JurnalEksplorasiPulau.ZonaTemu { nama = "Perkebunan Timur Laut", posisiXZ = new Vector2(590f, 560f), radius = 44f },
+                new JurnalEksplorasiPulau.ZonaTemu { nama = "Pulau Karang Selatan", posisiXZ = new Vector2(-320f, -885f), radius = 38f },
+                new JurnalEksplorasiPulau.ZonaTemu { nama = "Kuil Bambu Utara", posisiXZ = new Vector2(-120f, 610f), radius = 36f },
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Dermaga Tua Barat", posisiXZ = new Vector2(-520f, -340f), radius = 32f },
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Menara Pengawas Api", posisiXZ = new Vector2(-195f, -240f), radius = 28f },
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Pasar Hantu Desa", posisiXZ = new Vector2(468f, 178f), radius = 30f },

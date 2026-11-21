@@ -23,8 +23,9 @@ namespace AlasKeramat.EditorTools
                 && Mathf.Abs(KabutAirTerjunDanOmbak.GeserOmbak(1.0f, 0f)) > 0.5f
                 && atm != null && atm.JumlahLentera >= 8 && atm.JumlahOmbak >= 8);
 
+            var tebing = GameObject.Find("FormasiTebingDanAkar");
             cek("Overhaul Visual: formasi batu tebing & akar raksasa (>= 30)",
-                NusantaraMasterBuilder.JumlahFormasiTebing >= 30);
+                tebing != null && tebing.transform.childCount >= 30);
         }
     }
 }

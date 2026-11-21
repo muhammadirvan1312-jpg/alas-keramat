@@ -20,12 +20,18 @@ namespace AlasKeramat.EditorTools
                 && !ZonaJoystick.SyaratKunciLari(ZonaJoystick.RadiusGerak * 0.8f, 10f)
                 && !ZonaJoystick.SyaratKunciLari(ZonaJoystick.RadiusGerak * 1.5f, 70f));
 
-            cek("Kontrol Android: 3 tombol cepat (Senter/Auto-Lari/Obat) terpasang di HUD",
-                GameObject.Find("TombolSenterCepat") != null
-                && GameObject.Find("TombolAutoLari") != null
-                && GameObject.Find("TombolObatCepat") != null);
+            var tc = Object.FindFirstObjectByType<TouchControls>(FindObjectsInactive.Include);
+            var canvas = tc != null ? tc.GetComponentInParent<Canvas>() : null;
+            bool tombolOk = canvas != null
+                && canvas.transform.Find("TombolSenterCepat") != null
+                && canvas.transform.Find("TombolAutoLari") != null
+                && canvas.transform.Find("TombolObatCepat") != null;
+            cek("Kontrol Android: 3 tombol cepat (Senter/Auto-Lari/Obat) terpasang di HUD", tombolOk);
 
             var pen = Object.FindFirstObjectByType<PenandaLandmarkHUD>(FindObjectsInactive.Include);
+            var patok = GameObject.Find("PatokJalanSetapak");
+            var bunga = GameObject.Find("BungaTropisLiar");
+            bool posOk = GameObject.Find("PosPenjaga_0") != null && GameObject.Find("PosPenjaga_1") != null;
             float j;
             int idx = PenandaLandmarkHUD.CariTerdekat(Vector3.zero, new[]
             {
@@ -35,9 +41,9 @@ namespace AlasKeramat.EditorTools
             cek("Navigasi HUD & Dunia: Penanda Landmark, patok jalur, bunga tropis & pos penjaga",
                 idx == 1 && Mathf.Approximately(j, 20f)
                 && pen != null && pen.JumlahLandmark >= 8
-                && NusantaraMasterBuilder.JumlahPatokJalan >= 20
-                && NusantaraMasterBuilder.JumlahBungaTropis >= 40
-                && NusantaraMasterBuilder.JumlahPosPenjaga >= 2);
+                && patok != null && patok.transform.childCount >= 20
+                && bunga != null && bunga.transform.childCount >= 40
+                && posOk);
         }
     }
 }
