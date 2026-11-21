@@ -64,6 +64,11 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Player.CombatAndLeftHandController.HitungAyunFP(1.5f, 4f, true, false) != Quaternion.identity
                 && AlasKeramat.AI.WildAnimalAI.KlipSuaraHewan(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau, out pSw) == AlasKeramat.Core.ProceduralAudioSynth.KlipTeriakSekte
                 && GameObject.Find("SumurDesa_1") != null && GameObject.Find("PerahuNelayan_0") != null);
+            cek("V4 Dunia & Vegetasi: scale-fade serasah & jarak tarik per preset",
+                AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(70f, 80f) > 0.99f
+                && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(76f, 80f) > 0.1f && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(76f, 80f) < 0.9f
+                && AlasKeramat.Core.SerasahHutan.FaktorSkalaJarak(80f, 80f) == 0f
+                && AlasKeramat.UI.MenuScreens.JarakSerasahPreset(AlasKeramat.UI.PresetGrafis.Rendah) < AlasKeramat.UI.MenuScreens.JarakSerasahPreset(AlasKeramat.UI.PresetGrafis.Ultra));
             if (AssetDatabase.IsValidFolder(ImporHewanAsli.Folder))
             {
                 int nh = 0;

@@ -162,3 +162,8 @@ _(Tulis tahap berikutnya dan hal yang perlu diperhatikan.)_
   - Tangan & senjata orang-pertama (`BuilderSteps.Tebang.cs`, `BuilderSteps.Jarak.cs`, `CombatAndLeftHandController.cs`) ditambah jam tangan taktis menyala, jari menggenggam, lilitan kulit, bilah baja `FP_BajaTajam`, cahaya bara `GolokApiPusaka`, detail busur/tombak/senapan/ketapel, serta ayunan napas/jalan/lari `HitungAyunFP`.
   - `PartikelAlam` ditambah kunang-kunang malam di hutan dan spora bercahaya konstan di dalam gua (`KunangMalam`, `LajuKunang`).
   - `BuilderSteps.AudioKenney.cs` dan `WildAnimalAI.cs` memperluas 4 rekaman CC0 Kenney (`impact_punch_medium_000`, `creak_1`, `metal_click`, `door_open_1`) serta suara 3D satwa saat waspada, menyerang, dan terluka (`KlipSuaraHewan`).
+- V4 Vegetasi, Anti-Tiling & Gua (`vis-v4-dunia-vegetasi`):
+  - `BuilderSteps.Dunia.cs` memperbesar `tileSize` lapisan tanah (`6,4-12,5 m`) agar lereng bukit tidak berpola repetitif.
+  - `SerasahHutan.cs` menambah `JarakTarik` dinamis per preset (`42/62/86/105 m` via `MenuScreens.JarakSerasahPreset` & `PengawasPerforma`) dengan smooth scale-fade `8 m` terluar (`FaktorSkalaJarak`) agar prop lantai tidak meletup muncul tiba-tiba.
+  - `AK_Kulit.shader` menambah `_VariasiWarna` per posisi pohon (selaras `AK_Daun.shader`), dipadukan dengan nilai variasi lebih natural di `BuilderSteps.Vegetasi.cs`.
+  - Gua UG1 & Kubah Akar Boss UG3 (`BuilderSteps.Gua.cs`, `BuilderSteps.Gua3.cs`): mengganti terpal/ransel oranye menyolok dengan kanvas lapuk alami, meredupkan lampu kamp R2, menambah kilap basah lantai boss & memperbanyak gugus batu/akar arena. Static check lulus (0 masalah); verifikasi Unity/foto CI menunggu PR.
