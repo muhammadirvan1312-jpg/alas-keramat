@@ -62,7 +62,7 @@ namespace AlasKeramat.EditorTools
 
         static void AturPemain()
         {
-            NusantaraAndroidBuild.TerapkanPengaturanAndroid(true);
+            NusantaraAndroidBuild.TerapkanPengaturanAndroid(false); // DIAG: Mono 32-bit
         }
 
         static void BangunApk(string path)

@@ -44,6 +44,12 @@ namespace AlasKeramat.EditorTools
                 PlayerSettings.SetIl2CppCompilerConfiguration(NamedBuildTarget.Android, Il2CppCompilerConfiguration.Release);
                 PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
             }
+            else
+            {
+                // DIAG: seperti build 18 Nov yang jalan di Samsung A16 (Mono, 32-bit).
+                PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android, ScriptingImplementation.Mono2x);
+                PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARMv7;
+            }
             PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.Android, true);
             AssetDatabase.SaveAssets();
         }
