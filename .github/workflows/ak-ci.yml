@@ -24,7 +24,7 @@ jobs:
     outputs:
       snapshot: ${{ steps.scenefoto.outcome }}
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 140
     steps:
       - name: Kosongkan disk runner
         uses: jlumbroso/free-disk-space@v1.3.1
@@ -153,7 +153,7 @@ jobs:
         id: build
         if: steps.cekproyek.outputs.ada == '1'
         continue-on-error: true
-        timeout-minutes: 75
+        timeout-minutes: 120
         uses: game-ci/unity-builder@v4
         env:
           AK_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
