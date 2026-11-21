@@ -37,8 +37,17 @@ namespace AlasKeramat.EditorTools
                 && AlasKeramat.Core.SuaraHujan.TargetUntuk(AlasKeramat.Core.WeatherState.Cerah) == 0f && synth != null && synth.GetComponent<AlasKeramat.Core.SuaraHujan>() != null);
             cek("Mixamo: peta model karakter (Deden=Remy, Ningsih=Peasant_Girl, KiRogo=Peasant_Man, Genderuwo=Warrok)", NusantaraMasterBuilder.ModelUntuk("BossGenderuwo") == "Warrok"
                 && NusantaraMasterBuilder.ModelUntuk("Deden") == "Remy" && NusantaraMasterBuilder.ModelUntuk("Ningsih") == "Peasant_Girl" && NusantaraMasterBuilder.ModelUntuk("KiRogo") == "Peasant_Man"
-                && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiWanita") == "Zombiegirl" && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiSekte") == "Nightshade" && NusantaraMasterBuilder.ModelUntuk("Musuh_KiRogo") == null
+                && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiWanita") == "Zombiegirl" && NusantaraMasterBuilder.ModelUntuk("Musuh_AbdiSekte") == "Nightshade" && NusantaraMasterBuilder.ModelUntuk("Hantu_Kuntilanak") == "Zombiegirl"
+                && NusantaraMasterBuilder.ModelUntuk("Hantu_GenderuwoHutan") == "Warrok" && NusantaraMasterBuilder.ModelUntuk("Musuh_KiRogo") == null
                 && AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(1.8f, 1.8f) == 1f && AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(3f, 1f) == 2.5f);
+            cek("Visual V2: material kulit Indonesia, rambut, LookAt/klip monster & bayangan kontak preset Rendah",
+                AlasKeramat.AI.AnimasiMixamo.BolehTampilModelMixamo(AlasKeramat.AI.ProceduralAnimator.Mode.DudukTerhuyung)
+                && AlasKeramat.AI.AnimasiMixamo.AdalahMaterialKulit("Body_Skin")
+                && !AlasKeramat.AI.AnimasiMixamo.AdalahMaterialKulit("Hair_Mat")
+                && AlasKeramat.AI.AnimasiMixamo.AdalahMaterialRambut("Peasant_Hair")
+                && AlasKeramat.AI.AnimasiMixamo.WarnaKulitIndonesia(AlasKeramat.AI.AnimasiMixamo.Peran.Pria, false).r > 0.7f
+                && AlasKeramat.AI.AnimasiMixamo.KlipSerangUntuk(AlasKeramat.AI.AnimasiMixamo.Peran.Raksasa, true, true) == "Zombie_Attack"
+                && AlasKeramat.AI.AnimasiMixamo.PerluBayanganKontak(ShadowQuality.Disable, 35f));
             cek("Hewan asli: peta model & pilihan klip", NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Rusa) == "rusa"
                 && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.Harimau) == "harimau"
                 && NusantaraMasterBuilder.ModelHewanUntuk(AlasKeramat.Core.ResepHewan.JenisHewan.BabiHutan) == "babi_hutan"
