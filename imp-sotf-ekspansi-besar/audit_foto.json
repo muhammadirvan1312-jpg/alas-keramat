@@ -1,15 +1,152 @@
 {
-  "commit": "4ab6b6fd57ca231976dc4a730434a0259a46c463",
-  "passed": false,
-  "photos": [],
-  "errors": [
-    "Sumber foto tidak cocok dengan commit yang diuji",
-    "Foto belum tersedia: g3_01_deden_wajah",
-    "Foto belum tersedia: g3_02_ningsih_wajah",
-    "Foto belum tersedia: g3_03_hutan_malam",
-    "Foto belum tersedia: g3_04_lantai_hutan",
-    "Foto belum tersedia: t10_01_gua_lumut",
-    "Foto belum tersedia: t10_02_kubah_akar_boss"
+  "commit": "79fa799030c471a2b9f84647d5e4edfc3b5a2cd4",
+  "passed": true,
+  "photos": [
+    {
+      "shot": "g3_01_deden_wajah",
+      "width": 960,
+      "height": 540,
+      "p95": 0.4111,
+      "variation": 0.1364,
+      "pink": 0.0,
+      "sha256": "20b91834d0b2d0b96398dd4425b767b8b01505eef1dec1f7078c75202565daba"
+    },
+    {
+      "shot": "g3_02_ningsih_wajah",
+      "width": 960,
+      "height": 540,
+      "p95": 0.5066,
+      "variation": 0.1639,
+      "pink": 0.0,
+      "sha256": "239b670b49d9921370ffd651149eea45ebe2bf36cd45945551a258bf931d1a24"
+    },
+    {
+      "shot": "g3_03_hutan_malam",
+      "width": 960,
+      "height": 540,
+      "p95": 0.2417,
+      "variation": 0.0807,
+      "pink": 0.0,
+      "sha256": "3d7a62924077e3feb6e541d732581194f280fb9378aecea924d77589539c4082"
+    },
+    {
+      "shot": "g3_04_lantai_hutan",
+      "width": 960,
+      "height": 540,
+      "p95": 0.394,
+      "variation": 0.1196,
+      "pink": 0.0,
+      "sha256": "2d2e79f422fc1e1bd711c7418849e0496dacd40a72cd046e9579809bdb023424"
+    },
+    {
+      "shot": "t10_01_gua_lumut",
+      "width": 960,
+      "height": 540,
+      "p95": 0.679,
+      "variation": 0.1956,
+      "pink": 0.0,
+      "sha256": "339befa2750f6980edd2605d0c8cdacace4c5bf35c39a59d03d6ce37171b7a0e"
+    },
+    {
+      "shot": "t10_02_kubah_akar_boss",
+      "width": 960,
+      "height": 540,
+      "p95": 0.3147,
+      "variation": 0.1144,
+      "pink": 0.0,
+      "sha256": "99b5de3771e9eb6d61d37fd546f02f5444b1a0ca15c49dc324e211097a4640c6"
+    },
+    {
+      "shot": "v1_01_heli_pagi_sinar",
+      "width": 960,
+      "height": 540,
+      "p95": 0.2404,
+      "variation": 0.0808,
+      "pink": 0.0,
+      "sha256": "d94e39dadaf9d694fc9c8dbe5735942edb1b6a8655b30e9efe7e2f1d02c43a76"
+    },
+    {
+      "shot": "v1_02_desa_senja",
+      "width": 960,
+      "height": 540,
+      "p95": 0.1619,
+      "variation": 0.1011,
+      "pink": 0.0,
+      "sha256": "f98c85a5c12c4c3622f48c6d5777caa96f8f91c8867c7a2ae175c6822d8efcb3"
+    },
+    {
+      "shot": "v1_03_beringin_maghrib",
+      "width": 960,
+      "height": 540,
+      "p95": 0.0317,
+      "variation": 0.0296,
+      "pink": 0.0,
+      "sha256": "e70ccccca43cd418c9d9c95845d12a486b8670016704dbf5829facf36749e661"
+    },
+    {
+      "shot": "v1_04_pantai_badai",
+      "width": 960,
+      "height": 540,
+      "p95": 0.4174,
+      "variation": 0.1463,
+      "pink": 0.0,
+      "sha256": "9e1ab1b4fbf144e80fa893d57ae0686280b72a3694274d0dec2e290dbce9a9a1"
+    },
+    {
+      "shot": "v1_05_malam_senter",
+      "width": 960,
+      "height": 540,
+      "p95": 0.1315,
+      "variation": 0.0403,
+      "pink": 0.0,
+      "sha256": "15e062b07825ecbda7d5b32199df380d2f98b0cb304a3edebac16d623aa694ba"
+    },
+    {
+      "shot": "v1_06_sekte_desa",
+      "width": 960,
+      "height": 540,
+      "p95": 0.8024,
+      "variation": 0.2495,
+      "pink": 0.0,
+      "sha256": "938364ef0d4c85367109995e71508dc531291283b6d59c4e4c5501872263a189"
+    },
+    {
+      "shot": "v1_hewan_barisan",
+      "width": 960,
+      "height": 540,
+      "p95": 0.3969,
+      "variation": 0.1375,
+      "pink": 0.0,
+      "sha256": "a51c83693641f5605e40fc84e02808c5b6900e425080d4ef928ca8c555dd374a"
+    },
+    {
+      "shot": "v1_wajah_deden",
+      "width": 960,
+      "height": 540,
+      "p95": 0.5642,
+      "variation": 0.1718,
+      "pink": 0.0,
+      "sha256": "24dae1fee8be5fc0e579bdd35408d0038b7bb57265e05f1b985bb7e59514d5b8"
+    },
+    {
+      "shot": "v1_wajah_kirogo",
+      "width": 960,
+      "height": 540,
+      "p95": 0.2053,
+      "variation": 0.084,
+      "pink": 0.0,
+      "sha256": "711ccedc9816305366adfc99a1c9b7c0d34db57fd0a687c77356e8df2e08691a"
+    },
+    {
+      "shot": "v1_wajah_ningsih",
+      "width": 960,
+      "height": 540,
+      "p95": 0.8068,
+      "variation": 0.2792,
+      "pink": 0.0,
+      "sha256": "0c3780dfb3d1f46205db3e33c3d3282aa5ab90b6153892fe3e66ef1c1a902012"
+    }
   ],
+  "errors": [],
   "note": "Pemeriksaan teknis gambar; kualitas seni dan kesetaraan visual belum dinilai"
 }
