@@ -1,8 +1,8 @@
 # LAPORAN CI
-- Commit: cfa77d205cf7b3e50d0d740678e04d128e76dbc0
+- Commit: 47a32bb12b5f22984ffac2530643b5622907adef
 - Hasil aset visual: success
 - Hasil langkah Unity: failure
-- Waktu: 2026-11-22T03:53:35Z
+- Waktu: 2026-11-22T04:00:36Z
 
 Ringkasan dari NusantaraCI tidak ada (kemungkinan error kompilasi sebelum kode berjalan).
 
