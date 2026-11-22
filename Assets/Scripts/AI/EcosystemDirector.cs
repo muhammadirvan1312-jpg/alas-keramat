@@ -8,8 +8,8 @@ namespace AlasKeramat.AI
     // 03 §8: maks 10 hewan aktif dalam 100 m; muncul berkelompok 50-90 m dari kamera di bioma yang cocok; hilang > 140 m bila tak terlihat.
     public class EcosystemDirector : MonoBehaviour
     {
-        public const int MaksAktif = 28;
-        public const float RadiusAktif = 100f, JarakMunculMin = 22f, JarakMunculMaks = 62f, JarakHilang = 125f, Interval = 1.5f;
+        public const int MaksAktif = 42;
+        public const float RadiusAktif = 115f, JarakMunculMin = 20f, JarakMunculMaks = 68f, JarakHilang = 135f, Interval = 1.25f;
 
         [SerializeField] GameObject[] template = new GameObject[0]; // indeks = JenisHewan
         readonly List<WildAnimalAI> _hidup = new List<WildAnimalAI>();
