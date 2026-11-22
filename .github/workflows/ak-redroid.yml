@@ -1,0 +1,55 @@
+# Uji APK di Android ARM64 asli (redroid dalam Docker) pada runner ARM64 GitHub, rekam logcat crash.
+name: AK Redroid ARM64
+on:
+  push:
+    branches: ['emu-*']
+permissions:
+  actions: read
+  contents: read
+env:
+  PAKET: "com.alaskeramat.game"
+jobs:
+  uji:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        sumber: ["47:44952249743", "E:44963025837", "D:44963023712", "A:44960029645"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Tentukan run
+        run: |
+          S="${{ matrix.sumber }}"; echo "LABEL=${S%%:*}" >> "$GITHUB_ENV"; echo "RUNID=${S##*:}" >> "$GITHUB_ENV"
+      - name: Ambil APK
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: hasil-*
+          path: apk
+      - name: Siapkan redroid (Android 13 ARM64)
+        run: |
+          APK=$(find apk -name "*.apk" | head -n1); echo "APK=$APK" >> "$GITHUB_ENV"; ls -la "$APK"
+          sudo apt-get update -qq && sudo apt-get install -y -qq adb > /dev/null
+          sudo modprobe binder_linux devices="binder,hwbinder,vndbinder"
+          sudo modprobe ashmem_linux 2>/dev/null || true
+          docker run -itd --rm --privileged --name android -p 5555:5555 redroid/redroid:13.0.0-latest \
+            androidboot.redroid_gpu_mode=guest androidboot.redroid_width=1280 androidboot.redroid_height=720
+          for i in $(seq 1 60); do adb connect localhost:5555 >/dev/null 2>&1; B=$(adb -s localhost:5555 shell getprop sys.boot_completed 2>/dev/null | tr -d '\r'); [ "$B" = "1" ] && break; sleep 5; done
+          echo "boot_completed=$B"; adb devices
+      - name: Jalankan game
+        run: |
+          export ANDROID_SERIAL=localhost:5555
+          bash Tools/uji_emulator.sh "$APK" "$PAKET" logcat_redroid_${LABEL}
+          adb shell dumpsys meminfo "$PAKET" 2>/dev/null | head -n 30 || true
+          docker logs android 2>&1 | tail -n 20 || true
+      - name: Unggah logcat
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: redroid-${{ env.LABEL }}
+          path: logcat_redroid_*
+          if-no-files-found: ignore
