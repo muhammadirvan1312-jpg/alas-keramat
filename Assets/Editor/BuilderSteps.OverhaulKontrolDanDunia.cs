@@ -36,36 +36,61 @@ namespace AlasKeramat.EditorTools
             var canvas = tc.GetComponentInParent<Canvas>();
             if (canvas == null) return;
             var ikonBulat = AssetDatabase.LoadAssetAtPath<Sprite>(FolderIkon + "/ui_lingkaran.png");
+            var cincin = AssetDatabase.LoadAssetAtPath<Sprite>(FolderIkon + "/ui_cincin.png");
 
-            BuatTombolCepat(canvas.transform, "TombolSenterCepat", "SENTER", new Vector2(0f, 0f), new Vector2(92f, 295f), new Color(0.95f, 0.82f, 0.35f, 0.78f), ikonBulat, tc.TekanSenter);
-            BuatTombolCepat(canvas.transform, "TombolAutoLari", "AUTO", new Vector2(0f, 0f), new Vector2(182f, 295f), new Color(0.42f, 0.86f, 0.62f, 0.78f), ikonBulat, tc.TekanAutoLari);
-            BuatTombolCepat(canvas.transform, "TombolObatCepat", "OBAT", new Vector2(1f, 0f), new Vector2(-240f, 295f), new Color(0.92f, 0.36f, 0.32f, 0.80f), ikonBulat, tc.TekanObatCepat);
+            BuatTombolCepat(canvas.transform, "TombolSenterCepat", "SENTER", new Vector2(0f, 0f), new Vector2(88f, 292f), new Color(0.95f, 0.78f, 0.36f, 0.75f), ikonBulat, cincin, MuatIkon("obor"), tc.TekanSenter);
+            BuatTombolCepat(canvas.transform, "TombolAutoLari", "AUTO", new Vector2(0f, 0f), new Vector2(174f, 292f), new Color(0.46f, 0.86f, 0.64f, 0.75f), ikonBulat, cincin, MuatIkon("lompat"), tc.TekanAutoLari);
+            BuatTombolCepat(canvas.transform, "TombolObatCepat", "OBAT", new Vector2(1f, 0f), new Vector2(-240f, 292f), new Color(0.92f, 0.38f, 0.34f, 0.78f), ikonBulat, cincin, MuatIkon("makan"), tc.TekanObatCepat);
         }
 
-        static void BuatTombolCepat(Transform induk, string nama, string label, Vector2 anchor, Vector2 pos, Color warna, Sprite sprite, UnityEngine.Events.UnityAction aksi)
+        static void BuatTombolCepat(Transform induk, string nama, string label, Vector2 anchor, Vector2 pos, Color warnaAksen, Sprite sprite, Sprite cincin, Sprite ikon, UnityEngine.Events.UnityAction aksi)
         {
             if (induk.Find(nama) != null) return;
             var go = new GameObject(nama, typeof(RectTransform), typeof(Image), typeof(Button));
             go.transform.SetParent(induk, false);
             var rt = (RectTransform)go.transform;
             rt.anchorMin = anchor; rt.anchorMax = anchor; rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = pos; rt.sizeDelta = new Vector2(74f, 74f);
+            rt.anchoredPosition = pos; rt.sizeDelta = new Vector2(72f, 72f);
             var img = go.GetComponent<Image>();
-            img.color = warna;
+            img.color = new Color(0.055f, 0.075f, 0.095f, 0.78f);
             if (sprite != null) { img.sprite = sprite; img.preserveAspect = true; }
             var btn = go.GetComponent<Button>();
             UnityEventTools.AddPersistentListener(btn.onClick, aksi);
 
+            if (cincin != null)
+            {
+                var rGo = new GameObject("CincinAksen", typeof(RectTransform), typeof(Image));
+                rGo.transform.SetParent(go.transform, false);
+                var rrt = (RectTransform)rGo.transform;
+                rrt.anchorMin = Vector2.zero; rrt.anchorMax = Vector2.one;
+                rrt.offsetMin = Vector2.zero; rrt.offsetMax = Vector2.zero;
+                var rImg = rGo.GetComponent<Image>();
+                rImg.sprite = cincin; rImg.color = warnaAksen; rImg.raycastTarget = false;
+            }
+
+            if (ikon != null)
+            {
+                var iGo = new GameObject("Ikon", typeof(RectTransform), typeof(Image));
+                iGo.transform.SetParent(go.transform, false);
+                var irt = (RectTransform)iGo.transform;
+                irt.anchorMin = new Vector2(0.5f, 0.5f); irt.anchorMax = new Vector2(0.5f, 0.5f);
+                irt.anchoredPosition = new Vector2(0f, 6f); irt.sizeDelta = new Vector2(34f, 34f);
+                var iImg = iGo.GetComponent<Image>();
+                iImg.sprite = ikon; iImg.color = new Color(0.96f, 0.94f, 0.90f, 0.94f);
+                iImg.preserveAspect = true; iImg.raycastTarget = false;
+            }
+
             var tGo = new GameObject("Label", typeof(RectTransform), typeof(Text));
             tGo.transform.SetParent(go.transform, false);
             var trt = (RectTransform)tGo.transform;
-            trt.anchorMin = Vector2.zero; trt.anchorMax = Vector2.one;
-            trt.offsetMin = Vector2.zero; trt.offsetMax = Vector2.zero;
+            trt.anchorMin = new Vector2(0f, 0f); trt.anchorMax = new Vector2(1f, 0f);
+            trt.pivot = new Vector2(0.5f, 0f); trt.anchoredPosition = new Vector2(0f, 6f);
+            trt.sizeDelta = new Vector2(0f, 16f);
             var txt = tGo.GetComponent<Text>();
             txt.font = ProceduralAssetFactory.GetSafeFont();
-            txt.fontSize = 14; txt.fontStyle = FontStyle.Bold;
+            txt.fontSize = 9; txt.fontStyle = FontStyle.Bold;
             txt.alignment = TextAnchor.MiddleCenter;
-            txt.color = Color.white; txt.raycastTarget = false;
+            txt.color = new Color(0.92f, 0.90f, 0.84f, 0.92f); txt.raycastTarget = false;
             txt.text = label;
             EditorUtility.SetDirty(btn);
         }

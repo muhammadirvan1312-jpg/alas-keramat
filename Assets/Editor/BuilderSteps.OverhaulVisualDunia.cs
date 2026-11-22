@@ -258,24 +258,28 @@ namespace AlasKeramat.EditorTools
             var matKayu = AmbilMat("M_KulitPohon") ?? AmbilMat("M_Kayu");
             var rnd = new System.Random(6203);
 
-            // 48 formasi batu raksasa & kayu tumbang sepanjang tepi sungai, pantai, & bibir kawah Beringin
-            for (int i = 0; i < 48; i++)
+            // 48 formasi batu raksasa & kayu tumbang + 36 tebing batu besar membingkai bukit Heli, Desa Mati, Beringin & Pantai
+            for (int i = 0; i < 84; i++)
             {
                 float x, z;
+                float skalaMin = 1.35f, skalaRentang = 1.25f;
                 if (i < 16) { x = 210f + i * 11f; z = -290f + (i % 4) * 28f; }
                 else if (i < 32) { x = -190f + (i - 16) * 24f; z = -832f + (i % 3) * 8f; }
-                else { float a = (i - 32) * 22.5f * Mathf.Deg2Rad; x = Mathf.Cos(a) * 44f; z = Mathf.Sin(a) * 44f; }
+                else if (i < 48) { float a = (i - 32) * 22.5f * Mathf.Deg2Rad; x = Mathf.Cos(a) * 44f; z = Mathf.Sin(a) * 44f; }
+                else if (i < 60) { float a = (i - 48) * 30f * Mathf.Deg2Rad; x = 8f + Mathf.Cos(a) * 42f; z = -448f + Mathf.Sin(a) * 42f; skalaMin = 2.6f; skalaRentang = 2.4f; }
+                else if (i < 72) { float a = (i - 60) * 30f * Mathf.Deg2Rad; x = 540f + Mathf.Cos(a) * 56f; z = 204f + Mathf.Sin(a) * 56f; skalaMin = 2.8f; skalaRentang = 2.6f; }
+                else { float a = (i - 72) * 30f * Mathf.Deg2Rad; x = Mathf.Cos(a) * 76f; z = Mathf.Sin(a) * 76f; skalaMin = 3.2f; skalaRentang = 2.8f; }
                 float y = WorldTerrainGenerator.SampleHeight(x, z);
                 if (y < 0.4f) continue;
 
-                bool pakaiKayu = (i % 3 == 2) && mKayu != null;
+                bool pakaiKayu = i < 48 && (i % 3 == 2) && mKayu != null;
                 var mesh = pakaiKayu ? mKayu : mBatu;
                 if (mesh != null)
                 {
                     var go = Anak(grup, "Formasi_" + i);
-                    go.transform.position = new Vector3(x, y - 0.12f, z);
-                    go.transform.rotation = Quaternion.Euler((float)rnd.NextDouble() * 10f - 5f, (float)rnd.NextDouble() * 360f, 0f);
-                    go.transform.localScale = Vector3.one * (1.35f + (float)rnd.NextDouble() * 1.25f);
+                    go.transform.position = new Vector3(x, y - (i >= 48 ? 0.65f : 0.12f), z);
+                    go.transform.rotation = Quaternion.Euler((float)rnd.NextDouble() * 14f - 7f, (float)rnd.NextDouble() * 360f, (float)rnd.NextDouble() * 10f - 5f);
+                    go.transform.localScale = Vector3.one * (skalaMin + (float)rnd.NextDouble() * skalaRentang);
                     go.AddComponent<MeshFilter>().sharedMesh = mesh;
                     var mr = go.AddComponent<MeshRenderer>();
                     mr.sharedMaterial = pakaiKayu ? matKayu : batu;

@@ -23,38 +23,48 @@ namespace AlasKeramat.EditorTools
             panel.layer = GameLayers.UI;
             var prt = panel.AddComponent<RectTransform>();
             prt.anchorMin = prt.anchorMax = prt.pivot = new Vector2(0f, 1f);
-            prt.anchoredPosition = new Vector2(40f, -32f); prt.sizeDelta = new Vector2(440f, 130f);
+            prt.anchoredPosition = new Vector2(28f, -24f); prt.sizeDelta = new Vector2(320f, 134f);
 
-            var warna = new[] { "#E53935", "#7FD3FF", "#F28C28", "#2EC4C9", "#9B59D0" };
-            var latar = new[] { "#5A1414", "#4A4F55", "#3A2A18", "#123A3C", "#2C1A3C" };
-            var lebar = new[] { 360f, 360f, 260f, 260f, 260f };
-            var tinggi = new[] { 22f, 16f, 10f, 10f, 10f };
+            // Kartu kaca gelap profesional bergaya AAA survival di belakang bar vital.
+            var kartuBg = Kotak2D(panel, "LatarVitalGlass", new Vector2(-12f, 10f), new Vector2(316f, 128f), new Color(0.04f, 0.06f, 0.08f, 0.66f));
+            var bgIm = kartuBg.GetComponent<Image>();
+            GayakanTombol(bgIm, new Color(0.04f, 0.06f, 0.08f, 0.66f), null);
+            bgIm.color = new Color(0.04f, 0.06f, 0.08f, 0.66f);
+
+            var warna = new[] { "#C83838", "#DCE6EC", "#D49844", "#4DAAB8", "#8C6AB8" };
+            var latar = new[] { "#161C22", "#161C22", "#161C22", "#161C22", "#161C22" };
+            var lebar = new[] { 288f, 288f, 218f, 218f, 218f };
+            var tinggi = new[] { 16f, 10f, 7f, 7f, 7f };
             var nama = new[] { "Darah", "Stamina", "Kenyang", "Haus", "Kewarasan" };
             var isi = new RectTransform[HUDVital.Jumlah];
             var img = new Image[HUDVital.Jumlah];
             RectTransform plafon = null, beku = null;
-            float y = 0f;
+            float y = -2f;
             for (int i = 0; i < HUDVital.Jumlah; i++)
             {
                 var bar = Kotak2D(panel, "Bar" + nama[i], new Vector2(0f, y), new Vector2(lebar[i], tinggi[i]), ProcTex.Hex(latar[i]));
                 var fill = Kotak2D(bar, "Isi", Vector2.zero, new Vector2(lebar[i], tinggi[i]), ProcTex.Hex(warna[i]));
                 isi[i] = (RectTransform)fill.transform; img[i] = fill.GetComponent<Image>();
-                // Bar bulat (sprite 9-slice sama dengan tombol HUD): latar redup, isian penuh warna.
-                var gBar = bar.GetComponent<Image>(); GayakanTombol(gBar, ProcTex.Hex(latar[i]), null); gBar.color = new Color(gBar.color.r, gBar.color.g, gBar.color.b, 0.85f);
+                var gBar = bar.GetComponent<Image>(); GayakanTombol(gBar, ProcTex.Hex(latar[i]), null); gBar.color = new Color(0.09f, 0.11f, 0.13f, 0.88f);
                 GayakanTombol(img[i], ProcTex.Hex(warna[i]), null); img[i].color = ProcTex.Hex(warna[i]);
                 img[i].type = Image.Type.Filled; img[i].fillMethod = Image.FillMethod.Horizontal; img[i].fillOrigin = 0;
                 if (i == HUDVital.Darah) plafon = Rentang(bar, "PlafonDarah", ProcTex.Hex("#2A0A0AE6"));
                 if (i == HUDVital.Stamina) beku = Rentang(bar, "BekuStamina", ProcTex.Hex("#2E6EA8E6"));
-                y -= tinggi[i] + 8f;
+                y -= tinggi[i] + 7f;
             }
-            var suhu = BuatTeks(panel, "LabelSuhu", "", font, 22, new Vector2(0f, 1f), new Vector2(0f, y - 4f), new Vector2(600f, 30f));
-            suhu.alignment = TextAnchor.UpperLeft; suhu.rectTransform.pivot = new Vector2(0f, 1f); suhu.color = ProcTex.Hex("#BFB8A8");
+            var suhu = BuatTeks(panel, "LabelSuhu", "", font, 16, new Vector2(0f, 1f), new Vector2(0f, y - 4f), new Vector2(360f, 24f));
+            suhu.alignment = TextAnchor.UpperLeft; suhu.rectTransform.pivot = new Vector2(0f, 1f); suhu.color = new Color(0.78f, 0.82f, 0.78f, 0.92f);
             var hud = panel.AddComponent<HUDVital>();
             hud.Pasang(isi, img, plafon, beku, suhu);
             EditorUtility.SetDirty(hud);
 
             var info = kanvas.Find("LabelJam");
-            if (info != null) ((RectTransform)info).anchoredPosition = new Vector2(40f, -32f + y - 40f);
+            if (info != null)
+            {
+                ((RectTransform)info).anchoredPosition = new Vector2(28f, -24f + y - 34f);
+                var tInfo = info.GetComponent<Text>();
+                if (tInfo != null) { tInfo.fontSize = 18; tInfo.color = new Color(0.90f, 0.92f, 0.88f, 0.92f); }
+            }
             Catat("Vital Andi + 5 bar HUD + suhu/basah");
         }
 

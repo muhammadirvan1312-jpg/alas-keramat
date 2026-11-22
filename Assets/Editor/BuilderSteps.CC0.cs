@@ -48,10 +48,10 @@ namespace AlasKeramat.EditorTools
                     for(int p=0;p<apx.Length;p++)
                     {
                         Color c=apx[p];
-                        if(nama=="rumput") c=new Color(c.r*0.66f,c.g*0.72f,c.b*0.54f,1f);
-                        else if(nama=="daun") c=new Color(c.r*0.62f,c.g*0.58f,c.b*0.48f,1f);
-                        else if(nama=="batu") c=new Color(c.r*0.72f,c.g*0.73f,c.b*0.74f,1f);
-                        else c=new Color(c.r*0.86f,c.g*0.80f,c.b*0.74f,1f);
+                        if(nama=="rumput") c=new Color(c.r*0.40f,c.g*0.78f,c.b*0.34f,1f);
+                        else if(nama=="daun") c=new Color(c.r*0.46f,c.g*0.62f,c.b*0.35f,1f);
+                        else if(nama=="batu") c=new Color(c.r*0.68f,c.g*0.72f,c.b*0.69f,1f);
+                        else c=new Color(c.r*0.66f,c.g*0.60f,c.b*0.49f,1f);
                         apx[p]=c;
                     }
                     var graded=new Texture2D(a.width,a.height,TextureFormat.RGBA32,true);

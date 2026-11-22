@@ -29,11 +29,12 @@ namespace AlasKeramat.EditorTools
             var merah = SimpanMat(SafeMaterialFactory.CreatePBR("M_CatMerahPudar", ProcTex.Hex("#8E3A30"), 0f, 0.3f, Tex("beton")));
             var gelap = SimpanMat(SafeMaterialFactory.CreatePBR("M_LogamGelap", ProcTex.Hex("#1A1E24"), 0.78f, 0.82f));
             var hitam = SimpanMat(SafeMaterialFactory.CreatePBR("M_GelapGua", Color.black, 0f, 0f));
-            var ijuk = SimpanMat(SafeMaterialFactory.CreatePBR("M_AtapIjuk", ProcTex.Hex("#3A2E22"), 0f, 0.1f, Tex("kulit_kayu")));
+            var ijuk = SimpanMat(SafeMaterialFactory.CreatePBR("M_AtapIjuk", ProcTex.Hex("#5B4936"), 0f, 0.14f, Tex("kulit_kayu"), Tex("kulit_kayu_n")));
 
-            // Zona 5: Beringin Agung (28 m) + altar + dua gapura candi bentar keramat.
+            // Zona 5: Beringin Agung (28 m) + tajuk rimbun scan + akar gantung keramat + altar + dua gapura candi bentar.
             var beringin = ProcPohon.Buat(ProcPohon.Jenis.BeringinKecil, 7, false);
-            Taruh("BeringinAgung", Simpan(beringin), new[] { AmbilMat("M_KulitPohon"), AmbilMat("M_DaunPohon") }, 0f, 0f, 0f, new Vector3(2.6f, 2.2f, 2.6f), false);
+            var bGo = Taruh("BeringinAgung", Simpan(beringin), new[] { AmbilMat("M_KulitPohon"), AmbilMat("M_DaunPohon") }, 0f, 0f, 0f, new Vector3(2.6f, 2.2f, 2.6f), false);
+            PerkayaTajukBeringinAgung(bGo, AmbilMat("M_KulitPohon"), AmbilMat("M_DaunPohon"));
             Taruh("Altar", Simpan(ProcBangunan.Altar()), new[] { batu }, 0f, -18f, 180f, Vector3.one, true);
             var gapuraMesh = Simpan(ProcBangunan.GapuraBatuKeramat());
             Taruh("GapuraKeramat_0", gapuraMesh, new[] { batu, hitam }, 0f, -24f, 0f, Vector3.one, true);
@@ -93,13 +94,15 @@ namespace AlasKeramat.EditorTools
             var pr = pAsap.GetComponent<ParticleSystemRenderer>(); pr.sharedMaterial = mAsap; pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             DandanLokasiHeli(8f, -448f);
 
-            // Dinding bilik bambu anyaman (foto CC0) untuk sebagian rumah desa agar tidak seragam kayu.
+            // Dinding bilik bambu anyaman & kayu hangat (foto CC0) agar rumah desa tidak gelap datar di foto.
             Material bilik = kayu;
-            if (Tex("bilik") != null) { bilik = SimpanMat(SafeMaterialFactory.CreatePBR("M_Bilik", ProcTex.Hex("#C9B79C"), 0f, 0.12f, Tex("bilik"), Tex("bilik_n"))); MaskPBR(bilik, "bilik"); }
+            if (Tex("bilik") != null) { bilik = SimpanMat(SafeMaterialFactory.CreatePBR("M_Bilik", ProcTex.Hex("#DFCCB2"), 0f, 0.16f, Tex("bilik"), Tex("bilik_n"))); MaskPBR(bilik, "bilik"); }
+            var kayuRumah = SimpanMat(SafeMaterialFactory.CreatePBR("M_KayuRumahDesa", ProcTex.Hex("#C6AA86"), 0f, 0.18f, Tex("kayu"), Tex("kayu_n")));
+            MaskPBR(kayuRumah, "kayu");
             // Zona 3: Desa Mati (6 rumah, dikali 2 dari 03).
             float[,] desa = { { 564, 224, 200, 0.3f }, { 524, 236, 180, 0.4f }, { 592, 176, 260, 0.3f }, { 544, 140, 330, 0.4f }, { 504, 200, 120, 0.85f }, { 580, 260, 210, 0.9f } };
             for (int i = 0; i < desa.GetLength(0); i++)
-                Taruh("RumahDesa_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(100 + i, i == 0 ? 8f : 7f, i == 0 ? 6f : 5.5f, 1.5f, desa[i, 3])), new[] { i % 2 == 1 ? bilik : kayu, i % 2 == 0 ? seng : ijuk }, desa[i, 0], desa[i, 1], desa[i, 2], Vector3.one, true);
+                Taruh("RumahDesa_" + (i + 1), Simpan(ProcBangunan.RumahPanggung(100 + i, i == 0 ? 8f : 7f, i == 0 ? 6f : 5.5f, 1.5f, desa[i, 3])), new[] { i % 2 == 1 ? bilik : kayuRumah, i % 2 == 0 ? seng : ijuk }, desa[i, 0], desa[i, 1], desa[i, 2], Vector3.one, true);
 
             // Zona 11: Kampung Sukamaju (22 rumah seragam, ditinggal mendadak).
             for (int i = 0; i < 22; i++)
@@ -362,6 +365,57 @@ namespace AlasKeramat.EditorTools
             if (collider) go.AddComponent<MeshCollider>().sharedMesh = mesh;
             JumlahLandmark++;
             return go;
+        }
+
+        // Memperkaya siluet Beringin Agung (28 m) dengan 5 tajuk pohon scan Poly Haven rimbun + 12 akar gantung keramat.
+        static void PerkayaTajukBeringinAgung(GameObject induk, Material kulit, Material daun)
+        {
+            if (induk == null) return;
+            var mScanA = MuatPropScan("PohonScan_LOD0");
+            var mScanC = MuatPropScan("PohonScanC_LOD0") ?? mScanA;
+            var mScanD = MuatPropScan("PohonScanD_LOD0") ?? mScanA;
+            var matDaun = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_DaunAsli.mat") ?? daun;
+            var matKulit = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_KulitScan.mat") ?? kulit;
+
+            if (mScanA != null)
+            {
+                Mesh[] pool = { mScanA, mScanC, mScanD };
+                Vector3[] pos =
+                {
+                    new Vector3(0f, 1.8f, 0f),
+                    new Vector3(1.5f, 1.4f, 0.9f),
+                    new Vector3(-1.6f, 1.5f, 0.7f),
+                    new Vector3(0.6f, 1.3f, -1.6f),
+                    new Vector3(-0.8f, 1.2f, -1.4f)
+                };
+                for (int i = 0; i < pos.Length; i++)
+                {
+                    var m = pool[i % pool.Length];
+                    if (m == null) continue;
+                    var t = Anak(induk, "TajukRimbun_" + i);
+                    t.transform.localPosition = pos[i];
+                    t.transform.localRotation = Quaternion.Euler(0f, i * 72f + 15f, 0f);
+                    t.transform.localScale = Vector3.one * (i == 0 ? 0.62f : 0.48f);
+                    t.AddComponent<MeshFilter>().sharedMesh = m;
+                    var mr = t.AddComponent<MeshRenderer>();
+                    mr.sharedMaterials = m.subMeshCount >= 2 ? new[] { matKulit, matDaun } : new[] { matDaun };
+                }
+            }
+
+            // 12 akar gantung beringin turun dari cabang besar ke tanah
+            for (int i = 0; i < 12; i++)
+            {
+                float a = i * 30f * Mathf.Deg2Rad;
+                float r = 1.15f + (i % 3) * 0.45f;
+                var ak = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                ak.name = "AkarGantung_" + i;
+                Object.DestroyImmediate(ak.GetComponent<Collider>());
+                ak.transform.SetParent(induk.transform, false);
+                ak.transform.localPosition = new Vector3(Mathf.Cos(a) * r, 2.8f, Mathf.Sin(a) * r);
+                ak.transform.localRotation = Quaternion.Euler((i % 2 == 0 ? 4f : -3f), i * 30f, 3f);
+                ak.transform.localScale = new Vector3(0.06f, 2.9f, 0.06f);
+                ak.GetComponent<MeshRenderer>().sharedMaterial = matKulit;
+            }
         }
     }
 }

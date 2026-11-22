@@ -15,9 +15,10 @@ namespace AlasKeramat.EditorTools
             var menu=kanvas.Find("LayarMenuT11");if(menu!=null)root.transform.SetSiblingIndex(menu.GetSiblingIndex());
             var diagnostik=Anak(_sistem,"DiagnostikMain").AddComponent<DiagnostikMain>();diagnostik.Commit=NusantaraCI.SourceCommit();EditorUtility.SetDirty(diagnostik);
             var nav=root.AddComponent<PetaSurveiUI>();var font=ProceduralAssetFactory.GetSafeFont();
-            nav.Kompas=BuatTeks(root,"ArahTujuan","CARI GPS DI KOPER DARURAT",font,24,new Vector2(0.5f,1f),new Vector2(0,-105f),new Vector2(1100f,45f));
-            nav.Kompas.raycastTarget=false;nav.Kompas.gameObject.AddComponent<Shadow>().effectDistance=new Vector2(2,-2);
-            Text teks;var tombol=TombolPanel(root,"BukaPetaSurvei","PETA",font,new Vector2(-180f,-60f),new Vector2(140f,65f),ProcTex.Hex("#314639"),out teks);
+            nav.Kompas=BuatTeks(root,"ArahTujuan","CARI GPS DI KOPER DARURAT",font,17,new Vector2(0.5f,1f),new Vector2(0,-94f),new Vector2(900f,34f));
+            nav.Kompas.color=new Color(0.86f,0.88f,0.84f,0.88f);
+            nav.Kompas.raycastTarget=false;nav.Kompas.gameObject.AddComponent<Shadow>().effectDistance=new Vector2(1,-1);
+            Text teks;var tombol=TombolPanel(root,"BukaPetaSurvei","PETA",font,new Vector2(-180f,-60f),new Vector2(140f,65f),new Color(0.06f,0.09f,0.11f,0.78f),out teks);
             var rt=(RectTransform)tombol.transform;rt.anchorMin=rt.anchorMax=new Vector2(0.5f,1f);rt.anchoredPosition=new Vector2(150,-45);
             UnityEventTools.AddPersistentListener(tombol.onClick,nav.Toggle);
             nav.Panel=UIStretch(root,"PanelPetaSurvei",Vector2.zero,Vector2.one);nav.Panel.AddComponent<Image>().color=ProcTex.Hex("#111A16F8");

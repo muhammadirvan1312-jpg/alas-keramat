@@ -13,28 +13,29 @@ namespace AlasKeramat.EditorTools
     {
         public const string FolderVeg = FolderGen + "/Vegetasi";
         public const string PathVegData = FolderVeg + "/VegetationData.asset";
-        const int Varian = 3, CalonPohonPerHa = 140, CalonSemakPerHa = 560, UkuranSel = 125;
-        const float FaktorSemak = 0.85f, LerengMaksVeg = 42f, JarakGridSawit = 8f;
+        const int Varian = 3, CalonPohonPerHa = 185, CalonSemakPerHa = 640, UkuranSel = 125;
+        const float FaktorSemak = 0.88f, LerengMaksVeg = 45f, JarakGridSawit = 8f;
 
         struct Kepadatan { public J jenis; public float perHa; public Kepadatan(J j, float d) { jenis = j; perHa = d; } }
 
         static Kepadatan[] TabelPohon(int biome)
         {
+            // Kepadatan hutan tropis lebat (target ~35.000-40.000 pohon, aman di bawah batas self-test 45.000)
             switch (biome)
             {
-                case (int)Biome.HutanJatiSelatan: return new[] { new Kepadatan(J.Jati, 68), new Kepadatan(J.Mahoni, 32), new Kepadatan(J.Aren, 10), new Kepadatan(J.Pisang, 8), new Kepadatan(J.BeringinKecil, 4) };
-                case (int)Biome.HutanCampuran: return new[] { new Kepadatan(J.Mahoni, 55), new Kepadatan(J.Jati, 40), new Kepadatan(J.Aren, 12), new Kepadatan(J.Pisang, 8), new Kepadatan(J.BeringinKecil, 4) };
-                case (int)Biome.HutanBambu: return new[] { new Kepadatan(J.BambuRumpun, 48), new Kepadatan(J.Mahoni, 14), new Kepadatan(J.Pisang, 10) };
-                case (int)Biome.TepiSungai: return new[] { new Kepadatan(J.Mahoni, 42), new Kepadatan(J.Jati, 34), new Kepadatan(J.BambuRumpun, 18), new Kepadatan(J.Aren, 10), new Kepadatan(J.Pisang, 10), new Kepadatan(J.Kelapa, 6) };
-                case (int)Biome.Pantai: return new[] { new Kepadatan(J.Kelapa, 24) };
-                case (int)Biome.Desa: return new[] { new Kepadatan(J.Kelapa, 8), new Kepadatan(J.Pisang, 10) };
-                case (int)Biome.KawahBeringin: return new[] { new Kepadatan(J.Mahoni, 28), new Kepadatan(J.Jati, 16) };
-                case (int)Biome.TebingKapur: return new[] { new Kepadatan(J.Jati, 24), new Kepadatan(J.Mahoni, 18) };
-                case 11: return new[] { new Kepadatan(J.BeringinKecil, 14), new Kepadatan(J.Aren, 8), new Kepadatan(J.Pisang, 4) };
-                case 12: return new[] { new Kepadatan(J.Kelapa, 3) };
-                case 13: return new[] { new Kepadatan(J.Jati, 24), new Kepadatan(J.Mahoni, 14) };
-                case 14: return new[] { new Kepadatan(J.Tebu, 70), new Kepadatan(J.Kelapa, 3) };
-                case 15: return new[] { new Kepadatan(J.Mahoni, 60), new Kepadatan(J.BeringinKecil, 10), new Kepadatan(J.Aren, 12), new Kepadatan(J.Jati, 18) };
+                case (int)Biome.HutanJatiSelatan: return new[] { new Kepadatan(J.Jati, 92), new Kepadatan(J.Mahoni, 52), new Kepadatan(J.Aren, 14), new Kepadatan(J.Pisang, 12), new Kepadatan(J.BeringinKecil, 6) };
+                case (int)Biome.HutanCampuran: return new[] { new Kepadatan(J.Mahoni, 76), new Kepadatan(J.Jati, 56), new Kepadatan(J.Aren, 16), new Kepadatan(J.Pisang, 12), new Kepadatan(J.BeringinKecil, 6) };
+                case (int)Biome.HutanBambu: return new[] { new Kepadatan(J.BambuRumpun, 64), new Kepadatan(J.Mahoni, 22), new Kepadatan(J.Pisang, 14) };
+                case (int)Biome.TepiSungai: return new[] { new Kepadatan(J.Mahoni, 58), new Kepadatan(J.Jati, 44), new Kepadatan(J.BambuRumpun, 24), new Kepadatan(J.Aren, 14), new Kepadatan(J.Pisang, 12), new Kepadatan(J.Kelapa, 10) };
+                case (int)Biome.Pantai: return new[] { new Kepadatan(J.Kelapa, 42), new Kepadatan(J.Pisang, 8) };
+                case (int)Biome.Desa: return new[] { new Kepadatan(J.Kelapa, 20), new Kepadatan(J.Pisang, 18), new Kepadatan(J.Mahoni, 14) };
+                case (int)Biome.KawahBeringin: return new[] { new Kepadatan(J.Mahoni, 54), new Kepadatan(J.Jati, 36), new Kepadatan(J.BeringinKecil, 12), new Kepadatan(J.Aren, 10) };
+                case (int)Biome.TebingKapur: return new[] { new Kepadatan(J.Jati, 38), new Kepadatan(J.Mahoni, 28) };
+                case 11: return new[] { new Kepadatan(J.BeringinKecil, 22), new Kepadatan(J.Aren, 14), new Kepadatan(J.Pisang, 8) };
+                case 12: return new[] { new Kepadatan(J.Kelapa, 8), new Kepadatan(J.Mahoni, 6) };
+                case 13: return new[] { new Kepadatan(J.Jati, 38), new Kepadatan(J.Mahoni, 26) };
+                case 14: return new[] { new Kepadatan(J.Tebu, 80), new Kepadatan(J.Kelapa, 6) };
+                case 15: return new[] { new Kepadatan(J.Mahoni, 80), new Kepadatan(J.BeringinKecil, 16), new Kepadatan(J.Aren, 16), new Kepadatan(J.Jati, 28) };
                 default: return new Kepadatan[0];
             }
         }
