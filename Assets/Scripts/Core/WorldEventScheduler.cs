@@ -17,9 +17,19 @@ namespace AlasKeramat.Core
 
         TimeOfDayClock _jam;
         AndiFPSController _andi;
-        int _hariUndi = -1, _hariPesawat = -1, _hariMeteor = -1, _hariKunang = -1, _jenazah, _hariJenazah = -10, _hariPenyu = -1;
+        int _hariUndi = -1, _hariPesawat = -1, _hariMeteor = -1, _hariKunang = -1, _jenazah, _hariJenazah = -10, _hariPenyu = -1, _hariCuacaKejadian = -1;
         float _jamPesawat = -1f, _tPesawat;
         bool _penyuBesok;
+
+        public static int KodeKejadianCuacaDanMalam(WeatherState cuaca, float jam, int hari)
+        {
+            if (cuaca == WeatherState.HujanBadai) return hari % 2 == 0 ? 2 : 3;
+            if (cuaca == WeatherState.Gerimis) return 4;
+            if (jam >= 22f && jam < 23.5f) return 7;
+            if (jam >= 14f && jam < 16f) return 8;
+            if (jam >= 9f && jam < 11f) return 10;
+            return 0;
+        }
 
         public string SaveKey { get { return "peristiwa_dunia"; } }
         public int JumlahJenazah { get { return _jenazah; } }
@@ -66,7 +76,17 @@ namespace AlasKeramat.Core
                 foreach (var api in ApiUnggun.Semua) if (api != null && api.Menyala && Vector3.Distance(api.transform.position, _andi.transform.position) < 40f) suar = true;
                 if (suar) { _tPesawat = 0f; GameEvents.RaiseSubtitle("(Pesawat itu berbelok sedikit... lalu pergi. Mereka mencari, tapi kabut menutupi semuanya.)"); }
             }
-            bool cerah = GameServices.Get<URPAtmosphereAndWeather>() is URPAtmosphereAndWeather c && c.Cuaca == WeatherState.Cerah;
+            var atm = GameServices.Get<URPAtmosphereAndWeather>();
+            bool cerah = atm != null && atm.Cuaca == WeatherState.Cerah;
+            if (_hariCuacaKejadian != hari && atm != null)
+            {
+                int kode = KodeKejadianCuacaDanMalam(atm.Cuaca, jam, hari);
+                if (kode > 0)
+                {
+                    _hariCuacaKejadian = hari;
+                    JalankanKejadianDunia(kode);
+                }
+            }
             if (hari == 7 && jam >= 21f && jam < 22f && _hariMeteor != hari && cerah)
             {
                 _hariMeteor = hari;
@@ -106,9 +126,76 @@ namespace AlasKeramat.Core
             return arah * (WorldTerrainGenerator.BatasDunia * 0.8f);
         }
 
+        public static int JumlahBagianPetiTerdampar() { return 4; }
+
+        static void BuatVisualPetiTerdampar(Vector3 pos)
+        {
+            var root = new GameObject("PetiTerdampar");
+            root.transform.position = pos;
+            root.transform.rotation = Quaternion.Euler(4f, Random.value * 360f, -6f);
+            var mKayu = SafeMaterialFactory.GetCached("M_PetiKayuPantai", new Color(0.42f, 0.30f, 0.18f), 0f, 0.22f);
+            var mOranye = SafeMaterialFactory.GetCached("M_PitaPetiOranye", new Color(0.86f, 0.38f, 0.12f), 0f, 0.35f);
+            var mBesi = SafeMaterialFactory.GetCached("M_SikuPetiBesi", new Color(0.24f, 0.25f, 0.27f), 0.7f, 0.55f);
+            var badan = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Destroy(badan.GetComponent<Collider>());
+            badan.transform.SetParent(root.transform, false);
+            badan.transform.localPosition = new Vector3(0f, 0.22f, 0f);
+            badan.transform.localScale = new Vector3(0.76f, 0.44f, 0.52f);
+            badan.GetComponent<MeshRenderer>().sharedMaterial = mKayu;
+            var tutup = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Destroy(tutup.GetComponent<Collider>());
+            tutup.transform.SetParent(root.transform, false);
+            tutup.transform.localPosition = new Vector3(0f, 0.46f, 0f);
+            tutup.transform.localScale = new Vector3(0.80f, 0.06f, 0.56f);
+            tutup.GetComponent<MeshRenderer>().sharedMaterial = mKayu;
+            var pita = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Destroy(pita.GetComponent<Collider>());
+            pita.transform.SetParent(root.transform, false);
+            pita.transform.localPosition = new Vector3(0f, 0.24f, 0f);
+            pita.transform.localScale = new Vector3(0.78f, 0.10f, 0.54f);
+            pita.GetComponent<MeshRenderer>().sharedMaterial = mOranye;
+            var sabuk = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Destroy(sabuk.GetComponent<Collider>());
+            sabuk.transform.SetParent(root.transform, false);
+            sabuk.transform.localPosition = new Vector3(0f, 0.25f, 0f);
+            sabuk.transform.localScale = new Vector3(0.12f, 0.46f, 0.55f);
+            sabuk.GetComponent<MeshRenderer>().sharedMaterial = mBesi;
+        }
+
+        static void BuatVisualRanselEkspedisi(Vector3 pos, string nama)
+        {
+            var root = new GameObject("RanselEkspedisi_" + nama);
+            root.transform.position = pos;
+            root.transform.rotation = Quaternion.Euler(0f, Random.value * 360f, 0f);
+            var mKain = SafeMaterialFactory.GetCached("M_RanselEkspedisi", new Color(0.24f, 0.30f, 0.20f), 0f, 0.2f);
+            var mKayu = SafeMaterialFactory.GetCached("M_PatokEkspedisi", new Color(0.46f, 0.36f, 0.22f), 0f, 0.25f);
+            var mKuningan = SafeMaterialFactory.GetCached("M_TagEkspedisi", new Color(0.82f, 0.68f, 0.28f), 0.8f, 0.78f);
+            var tas = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            Destroy(tas.GetComponent<Collider>());
+            tas.transform.SetParent(root.transform, false);
+            tas.transform.localPosition = new Vector3(0f, 0.16f, 0f);
+            tas.transform.localRotation = Quaternion.Euler(78f, 15f, 0f);
+            tas.transform.localScale = new Vector3(0.36f, 0.28f, 0.26f);
+            tas.GetComponent<MeshRenderer>().sharedMaterial = mKain;
+            var patok = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            Destroy(patok.GetComponent<Collider>());
+            patok.transform.SetParent(root.transform, false);
+            patok.transform.localPosition = new Vector3(-0.32f, 0.42f, 0.12f);
+            patok.transform.localRotation = Quaternion.Euler(6f, 0f, 8f);
+            patok.transform.localScale = new Vector3(0.045f, 0.45f, 0.045f);
+            patok.GetComponent<MeshRenderer>().sharedMaterial = mKayu;
+            var tag = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Destroy(tag.GetComponent<Collider>());
+            tag.transform.SetParent(root.transform, false);
+            tag.transform.localPosition = new Vector3(0.14f, 0.28f, 0.06f);
+            tag.transform.localScale = new Vector3(0.08f, 0.02f, 0.12f);
+            tag.GetComponent<MeshRenderer>().sharedMaterial = mKuningan;
+        }
+
         void Peti()
         {
             var p = TitikPantai(Random.value * Mathf.PI * 2f);
+            BuatVisualPetiTerdampar(p);
             var isi = new[] { ItemID.Baterai, ItemID.PerbanKain, ItemID.RansumDarurat, ItemID.PelurSuar };
             for (int i = 0; i < 2; i++) JarahanTanah.Jatuhkan(p + new Vector3(i * 0.6f, 0.4f, 0f), isi[Random.Range(0, isi.Length)], 1);
             GameEvents.RaiseToast("Sesuatu terdampar di pantai");
@@ -127,9 +214,53 @@ namespace AlasKeramat.Core
                 float x = a.x + Mathf.Cos(s) * r, z = a.z + Mathf.Sin(s) * r;
                 if (JarakKeSungai(x, z) < 12f && WorldTerrainGenerator.SampleHeight(x, z) > 0.2f) { p = new Vector3(x, WorldTerrainGenerator.SampleHeight(x, z), z); break; }
             }
+            BuatVisualRanselEkspedisi(p, nama);
             JarahanTanah.Jatuhkan(p + Vector3.up * 0.4f, ItemID.RansumDarurat, 1);
             JarahanTanah.Jatuhkan(p + new Vector3(0.7f, 0.4f, 0f), ItemID.Baterai, 1);
             GameEvents.RaiseSubtitle("(Di tepi sungai: jenazah anggota ekspedisi. Tanda pengenalnya: " + nama + ".)");
+        }
+
+        void JalankanKejadianDunia(int kode)
+        {
+            var a = _andi.transform.position;
+            var audio = GameServices.Get<ProceduralAudioSynth>();
+            Vector3 sekitar = a + new Vector3(Random.Range(-28f, 28f), 0f, Random.Range(-28f, 28f));
+            sekitar.y = Mathf.Max(0.2f, WorldTerrainGenerator.SampleHeight(sekitar.x, sekitar.z));
+            switch (kode)
+            {
+                case 2:
+                    if (audio != null) audio.PlayTreeCrackAndFall(sekitar);
+                    KayuFisik.Buat(sekitar + Vector3.up * 0.5f, Vector3.right, null, false);
+                    GameEvents.RaiseSubtitle("(Angin kencang menumbangkan sebatang pohon di dekat sini!)");
+                    break;
+                case 3:
+                    if (audio != null) audio.Play(ProceduralAudioSynth.KlipGuruh, sekitar, AudioCategory.Efek, 1f, 0.9f, 5);
+                    ApiArea.Buat(sekitar);
+                    GameEvents.RaiseSubtitle("(Petir menyambar pepohonan dan menyulut kobaran api!)");
+                    break;
+                case 4:
+                    if (JarakKeSungai(a.x, a.z) < 120f)
+                    {
+                        KayuFisik.Buat(sekitar + Vector3.up * 0.4f, Vector3.forward, null, false);
+                        GameEvents.RaiseToast("Air sungai meluap membawa gelondong kayu");
+                    }
+                    break;
+                case 7:
+                    if (audio != null) audio.PlayKentonganBamboo(a + Vector3.forward * 75f);
+                    GameEvents.RaiseSubtitle("(Dari kejauhan terdengar kentongan bersahutan... prosesi obor Sekte melintas.)");
+                    break;
+                case 8:
+                    JarahanTanah.Jatuhkan(sekitar + Vector3.up * 0.3f, ItemID.DagingMentah, 1);
+                    GameEvents.RaiseSubtitle("(Terdengar geraman bentrokan antara babi hutan dan penjaga Sekte di balik rimba.)");
+                    break;
+                case 10:
+                    if (!FungsiBangunan.MenangkalTuyul(a))
+                    {
+                        if (audio != null) audio.Play(ProceduralAudioSynth.KlipKedasih, sekitar, AudioCategory.Efek, 0.8f, 1.35f, 3);
+                        GameEvents.RaiseToast("Kawanan monyet hutan berkeliaran di sekitar kemah");
+                    }
+                    break;
+            }
         }
 
         public static float JarakKeSungai(float x, float z)

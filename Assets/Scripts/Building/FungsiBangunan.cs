@@ -24,6 +24,79 @@ namespace AlasKeramat.Building
         readonly float[] _tJemur = new float[SlotJemur];
         float _tAir;
         URPAtmosphereAndWeather _atmos;
+        ParticleSystem _baraBangunan;
+        Transform _airPenampung;
+
+        public static float TinggiAirPenampung01(int stok)
+        {
+            return Mathf.Clamp01((float)stok / MaksAir);
+        }
+
+        void PerbaruiVisualPenampungDanJemuran()
+        {
+            if (Jenis == BlueprintID.PenampungHujan)
+            {
+                float t01 = TinggiAirPenampung01(Stok);
+                if (t01 > 0f && _airPenampung == null)
+                {
+                    var go = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                    Destroy(go.GetComponent<Collider>());
+                    go.name = "PermukaanAirHujan";
+                    go.transform.SetParent(transform, false);
+                    var mr = go.GetComponent<MeshRenderer>();
+                    mr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_AirPenampungHujan", new Color(0.24f, 0.52f, 0.64f, 0.78f), 0.1f, 0.92f, null, null, null, SurfaceMode.Transparent);
+                    mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                    _airPenampung = go.transform;
+                }
+                if (_airPenampung != null)
+                {
+                    bool ada = t01 > 0f;
+                    if (_airPenampung.gameObject.activeSelf != ada) _airPenampung.gameObject.SetActive(ada);
+                    if (ada)
+                    {
+                        _airPenampung.localPosition = new Vector3(0f, Mathf.Lerp(0.18f, 0.62f, t01), 0f);
+                        _airPenampung.localScale = new Vector3(0.54f, 0.015f, 0.54f);
+                    }
+                }
+            }
+            else if (Jenis == BlueprintID.JemuranIkan)
+            {
+                float w = Time.time;
+                for (int i = 0; i < visual.Length; i++)
+                    if (visual[i] != null && visual[i].gameObject.activeSelf)
+                        visual[i].localRotation = Quaternion.Euler(Mathf.Sin(w * 2.3f + i * 1.1f) * 6f, 0f, Mathf.Cos(w * 1.8f + i * 0.9f) * 4f);
+            }
+        }
+
+        public static bool PunyaBaraBangunan(BlueprintID j, float nyalaSisa)
+        {
+            return nyalaSisa > 0f && (j == BlueprintID.OborTengkorak || j == BlueprintID.LampuMinyak || j == BlueprintID.PatungNgeri || j == BlueprintID.KomporBatu);
+        }
+
+        void PerbaruiBaraBangunan()
+        {
+            if (PunyaBaraBangunan(Jenis, NyalaSisa))
+            {
+                if (_baraBangunan == null)
+                {
+                    var go = new GameObject("BaraBangunan");
+                    go.transform.SetParent(transform, false);
+                    go.transform.localPosition = lampu != null ? lampu.transform.localPosition : new Vector3(0f, 1.1f, 0f);
+                    _baraBangunan = go.AddComponent<ParticleSystem>();
+                    var m = _baraBangunan.main;
+                    m.loop = true; m.startLifetime = 0.85f; m.startSpeed = 0.55f; m.startSize = 0.045f;
+                    m.maxParticles = 20; m.gravityModifier = -0.25f; m.simulationSpace = ParticleSystemSimulationSpace.World;
+                    m.startColor = new Color(1f, 0.58f, 0.16f, 0.9f);
+                    var em = _baraBangunan.emission; em.rateOverTime = 7f;
+                    var sh = _baraBangunan.shape; sh.shapeType = ParticleSystemShapeType.Sphere; sh.radius = 0.12f;
+                    var pr = go.GetComponent<ParticleSystemRenderer>();
+                    pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_BaraBangunan", new Color(1f, 0.55f, 0.15f), 0f, 0.2f, null, null, new Color(3.2f, 1.2f, 0.25f));
+                    pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+                if (!_baraBangunan.isPlaying) _baraBangunan.Play();
+            }
+            else if (_baraBangunan != null && _baraBangunan.isPlaying) _baraBangunan.Stop();
+        }
 
         public float HoldDuration { get { return 0f; } }
         public void Pasang(BlueprintID j, Transform[] vis, Light l, Transform p, Vector3 atas) { Jenis = j; visual = vis; lampu = l; pintu = p; titikAtas = atas; }
@@ -47,6 +120,8 @@ namespace AlasKeramat.Building
             if ((Jenis == BlueprintID.OborTengkorak || Jenis == BlueprintID.LampuMinyak || Jenis == BlueprintID.PatungNgeri || Jenis == BlueprintID.KomporBatu) && NyalaSisa > 0f) NyalaSisa -= dt;
             if (Jenis == BlueprintID.OborTengkorak || Jenis == BlueprintID.PatungNgeri) AlasKeramat.AI.ZonaPenangkal.SetObor(this, transform.position, NyalaSisa > 0f); // T7b: penangkal hantu & raid
             if (lampu != null) { lampu.enabled = NyalaSisa > 0f; if (lampu.enabled) lampu.intensity = 1.8f * (0.9f + 0.2f * Mathf.PerlinNoise(Time.time * 7f, 0.5f)); }
+            PerbaruiBaraBangunan();
+            PerbaruiVisualPenampungDanJemuran();
             if (pintu != null) pintu.localRotation = Quaternion.Slerp(pintu.localRotation, Quaternion.Euler(0f, Terbuka ? 95f : 0f, 0f), dt * 6f);
             int tampil = Jenis == BlueprintID.JemuranIkan ? Terisi() : Stok;
             for (int i = 0; i < visual.Length; i++) if (visual[i] != null && visual[i].gameObject.activeSelf != (i < tampil)) visual[i].gameObject.SetActive(i < tampil);

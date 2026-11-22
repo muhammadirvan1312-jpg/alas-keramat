@@ -35,7 +35,8 @@ namespace AlasKeramat.EditorTools
             File.WriteAllBytes(p, t.EncodeToPNG()); Object.DestroyImmediate(t);
             AssetDatabase.ImportAsset(p);
             var imp = (TextureImporter)AssetImporter.GetAtPath(p);
-            imp.textureType = TextureImporterType.Sprite; imp.alphaIsTransparency = true; imp.mipmapEnabled = false;
+            imp.textureType = TextureImporterType.Sprite; imp.spriteImportMode = SpriteImportMode.Single;
+            imp.alphaIsTransparency = true; imp.mipmapEnabled = false;
             imp.wrapMode = TextureWrapMode.Clamp; imp.textureCompression = TextureImporterCompression.Uncompressed; imp.SaveAndReimport();
             return AssetDatabase.LoadAssetAtPath<Sprite>(p);
         }

@@ -1,4 +1,5 @@
 using AlasKeramat.Core;
+using AlasKeramat.Inventory;
 using AlasKeramat.Player;
 using UnityEngine;
 
@@ -242,18 +243,53 @@ namespace AlasKeramat.AI
             }
         }
 
+        ItemID _barangCurianTuyul;
+
+        public static ItemID PilihBarangCurianTuyul(AlasKeramat.Inventory.TikarPandan3DInventory inv)
+        {
+            if (inv == null) return ItemID.None;
+            ItemID[] incar = { ItemID.Baterai, ItemID.RansumDarurat, ItemID.DagingMatang, ItemID.IkanMatang, ItemID.Pisang, ItemID.LogamBekas };
+            for (int i = 0; i < incar.Length; i++) if (inv.Punya(incar[i])) return incar[i];
+            return ItemID.None;
+        }
+
+        public static float PengaliLajuHantuAir(bool diAir) { return diAir ? 1.65f : 1f; }
+
         // ---------------- Tuyul (13 §4.5: pencuri malam gesit, kabur disorot cahaya & ditangkal Mangkuk Kepiting) ----------------
         void TickTuyul(float dt)
         {
             if (Disorot(dt) || AlasKeramat.Building.FungsiBangunan.MenangkalTuyul(transform.position))
             {
+                if (_barangCurianTuyul != ItemID.None)
+                {
+                    JarahanTanah.Jatuhkan(transform.position + Vector3.up * 0.4f, _barangCurianTuyul, 1);
+                    GameEvents.RaiseToast("Tuyul ketakutan dan menjatuhkan barang curiannya!");
+                    _barangCurianTuyul = ItemID.None;
+                }
                 Hadap(-KeAndi(), dt); Geser(-KeAndi().normalized * _d.lari, dt, 0f);
                 if (JarakAndi() > 28f) gameObject.SetActive(false);
                 return;
             }
             if (_fase == FaseHantu.Hilang) { if (_t >= 6f) gameObject.SetActive(false); return; }
             float d = JarakAndi();
-            if (d < 8f) { Hadap(-KeAndi(), dt); Geser(-KeAndi().normalized * _d.lari, dt, 0f); }
+            if (_barangCurianTuyul == ItemID.None && d < 2.8f)
+            {
+                var inv = GameServices.Get<AlasKeramat.Inventory.TikarPandan3DInventory>();
+                var curi = PilihBarangCurianTuyul(inv);
+                if (curi != ItemID.None && inv.Kurangi(curi, 1))
+                {
+                    _barangCurianTuyul = curi;
+                    if (_audio != null) _audio.PlayKuntilanakLaugh(transform.position);
+                    GameEvents.RaiseToast("Tuyul mencuri " + ItemDatabase.Get(curi).displayName + "! Sorot dengan senter/obor!");
+                    Ubah(FaseHantu.Hilang);
+                    return;
+                }
+            }
+            if (_barangCurianTuyul == ItemID.None && d < 9f)
+            {
+                Hadap(KeAndi(), dt); Geser(KeAndi().normalized * _d.lari, dt, 0f);
+            }
+            else if (d < 8f) { Hadap(-KeAndi(), dt); Geser(-KeAndi().normalized * _d.lari, dt, 0f); }
             else { _sudut += 35f * dt; Vector3 p = Sarang + new Vector3(Mathf.Cos(_sudut * Mathf.Deg2Rad), 0f, Mathf.Sin(_sudut * Mathf.Deg2Rad)) * 5f; Hadap(p - transform.position, dt); Geser((p - transform.position).normalized * _d.jalan, dt, 0f); }
         }
 
@@ -263,9 +299,21 @@ namespace AlasKeramat.AI
             if (TerusirPenangkal(transform.position)) { Hadap(-KeAndi(), dt); Geser(-KeAndi().normalized * _d.jalan, dt, 0f); return; }
             float d = JarakAndi();
             if (d > _d.lihatMalam * 1.4f) return;
+            bool diAir = WorldTerrainGenerator.IsUnderwater(transform.position);
+            float pengali = Jenis == EnemyArchetype.HantuAir ? PengaliLajuHantuAir(diAir) : 1f;
             Hadap(KeAndi(), dt);
-            if (d > 1.8f) Geser(KeAndi().normalized * (d < 9f ? _d.lari : _d.jalan), dt, 0f);
-            else if (_t >= 1.6f) { _t = 0f; bool p; KenaiAndi(_d.damage, true, DamageType.Tumpul, out p); }
+            if (d > 1.8f) Geser(KeAndi().normalized * (d < 9f ? _d.lari : _d.jalan) * pengali, dt, 0f);
+            else if (_t >= 1.6f)
+            {
+                _t = 0f; bool p;
+                KenaiAndi(_d.damage, true, DamageType.Tumpul, out p);
+                if (!p && Jenis == EnemyArchetype.HantuAir && _vital != null) _vital.Pakai(12f);
+                if (!p && Jenis == EnemyArchetype.GenderuwoHutan)
+                {
+                    if (_andi != null) _andi.GuncangKamera(0.24f);
+                    if (_vital != null) _vital.UbahSanity(-3f);
+                }
+            }
         }
 
         // ---------------- Penyerupa (13 §4.6: meniru tenang lalu memutar kepala 180 deg) ----------------

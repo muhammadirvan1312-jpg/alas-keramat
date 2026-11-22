@@ -48,6 +48,7 @@ namespace AlasKeramat.EditorTools
             var arena = Anak(k, "Arena");
             arena.transform.localPosition = k3.pos;
             var batu = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_BatuArena.mat") ?? AmbilMat("M_Batu");
+            SafeMaterialFactory.SetF(batu, "_Smoothness", 0.42f);
             var apiMat = MatEmisi("M_ApiTungku", "#FF6B1A", new Color(18f, 9.5f, 2.2f), false);
             var baraMat = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_Banaspati.mat") ?? apiMat;
             var meshPilar = new[] { SimpanMeshGua(ProcGua.PilarAkar("PilarAkar_0", 22f, 1.45f, 101)), SimpanMeshGua(ProcGua.PilarAkar("PilarAkar_1", 22f, 1.45f, 202)) };
@@ -115,17 +116,25 @@ namespace AlasKeramat.EditorTools
             var matAkarScan = MaterialSolidScan("AkarAsli", "M_AkarScan", new Color(0.78f, 0.74f, 0.68f, 1f), 0.24f) ?? akarMat;
             var meshBatuBoss = MuatPropScan("BatuBesarScan") ?? MuatPropScan("BatuLumutA");
             var matBatuBoss = MaterialSolidScan("BatuBesarAsli", "M_BatuArenaScan", ProcTex.Hex("#8A7C76"), 0.34f) ?? batu;
-            for (int i = 0; i < 8 && (meshAkarBoss != null || meshBatuBoss != null); i++)
+            for (int i = 0; i < 12; i++)
             {
-                float a = (i + 0.25f) * 45f * Mathf.Deg2Rad;
-                float rProp = (i % 2 == 0) ? 6.2f : 11.8f;
-                var prp = Anak(arena, "PropArena_" + i);
-                prp.transform.localPosition = new Vector3(Mathf.Sin(a) * rProp, -0.05f, Mathf.Cos(a) * rProp);
-                prp.transform.localRotation = Quaternion.Euler(0f, i * 63f, 0f);
-                prp.transform.localScale = Vector3.one * (0.85f + (i % 2) * 0.35f);
-                bool ak = i % 2 == 1 && meshAkarBoss != null;
-                prp.AddComponent<MeshFilter>().sharedMesh = ak ? meshAkarBoss : (meshBatuBoss ?? meshAkarBoss);
-                prp.AddComponent<MeshRenderer>().sharedMaterial = ak ? matAkarScan : matBatuBoss;
+                float a = (i * 0.5236f) + 0.18f;
+                float rProp = (i % 3 == 0) ? 5.6f : (i % 3 == 1 ? 10.4f : 14.2f);
+                if (meshAkarBoss != null || meshBatuBoss != null)
+                {
+                    var prp = Anak(arena, "PropArena_" + i);
+                    prp.transform.localPosition = new Vector3(Mathf.Sin(a) * rProp, -0.05f, Mathf.Cos(a) * rProp);
+                    prp.transform.localRotation = Quaternion.Euler((i % 2) * 5f, i * 63f, 0f);
+                    prp.transform.localScale = Vector3.one * (0.78f + (i % 3) * 0.28f);
+                    bool ak = i % 2 == 1 && meshAkarBoss != null;
+                    prp.AddComponent<MeshFilter>().sharedMesh = ak ? meshAkarBoss : (meshBatuBoss ?? meshAkarBoss);
+                    prp.AddComponent<MeshRenderer>().sharedMaterial = ak ? matAkarScan : matBatuBoss;
+                }
+                else
+                {
+                    var slab = Hias(arena, PrimitiveType.Cube, "LempengArena_" + i, new Vector3(Mathf.Sin(a) * rProp, 0.04f, Mathf.Cos(a) * rProp), new Vector3(1.8f + (i % 3) * 0.5f, 0.14f, 1.4f + (i % 2) * 0.6f), batu, false);
+                    slab.transform.localRotation = Quaternion.Euler(0f, i * 47f, 0f);
+                }
             }
             var shKabut = Shader.Find("AlasKeramat/KabutLokal");
             if (shKabut != null)

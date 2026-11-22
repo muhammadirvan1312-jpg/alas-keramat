@@ -37,6 +37,40 @@ namespace AlasKeramat.AI
         bool _lelah;
         Object _sasaranKerja;
         int _iPagar;
+        Transform _alatTangan;
+
+        public static bool HarusTampilAlatDeden(CompanionOrder perintah, bool bergabung, bool kritis)
+        {
+            return bergabung && !kritis && perintah != CompanionOrder.Istirahat && perintah != CompanionOrder.Tunggu;
+        }
+
+        void PerbaruiAlatTangan()
+        {
+            bool tampil = HarusTampilAlatDeden(Perintah, Bergabung, Kritis) && !Gugur;
+            if (tampil && _alatTangan == null)
+            {
+                var go = new GameObject("AlatKerjaDeden");
+                go.transform.SetParent(transform, false);
+                go.transform.localPosition = new Vector3(0.32f, 0.94f, 0.24f);
+                go.transform.localRotation = Quaternion.Euler(22f, 0f, -12f);
+                var gagang = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                Destroy(gagang.GetComponent<Collider>());
+                gagang.transform.SetParent(go.transform, false);
+                gagang.transform.localPosition = new Vector3(0f, 0f, -0.06f);
+                gagang.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                gagang.transform.localScale = new Vector3(0.032f, 0.08f, 0.032f);
+                gagang.GetComponent<MeshRenderer>().sharedMaterial = SafeMaterialFactory.GetCached("M_GagangAlatDeden", new Color(0.38f, 0.25f, 0.14f), 0f, 0.25f);
+                var bilah = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                Destroy(bilah.GetComponent<Collider>());
+                bilah.transform.SetParent(go.transform, false);
+                bilah.transform.localPosition = new Vector3(0f, 0.01f, 0.14f);
+                bilah.transform.localScale = new Vector3(0.018f, 0.048f, 0.28f);
+                bilah.GetComponent<MeshRenderer>().sharedMaterial = SafeMaterialFactory.GetCached("M_BilahAlatDeden", new Color(0.74f, 0.78f, 0.82f), 0.82f, 0.78f);
+                _alatTangan = go.transform;
+            }
+            if (_alatTangan != null && _alatTangan.gameObject.activeSelf != tampil)
+                _alatTangan.gameObject.SetActive(tampil);
+        }
 
         public void Pasang(Material kayu) { matKayu = kayu; }
 
@@ -64,6 +98,7 @@ namespace AlasKeramat.AI
         void Tick(float dt)
         {
             AmbilLayanan();
+            PerbaruiAlatTangan();
             if (Gugur) return;
             if (Kritis) { TickKritis(dt); return; }
             _tCek -= dt;

@@ -16,7 +16,8 @@ namespace AlasKeramat.AI
         readonly float[] _hpAnggota = { 0f, HPKepala, HPLengan, HPLengan, HPKaki, HPKaki };
         readonly bool[] _putus = new bool[6];
         readonly List<GameObject> _luka = new List<GameObject>();
-        bool _ragdoll, _topengDiambil, _dipotong;
+        bool _ragdoll, _topengDiambil, _dipotong, _disingkirkan;
+        public static bool BisaSingkirkanMayat(bool digeledah, bool sudahDisingkirkan) { return digeledah && !sudahDisingkirkan; }
         GoreSystem _gore;
         SkinnedMeshRenderer _smr;
 
@@ -128,6 +129,7 @@ namespace AlasKeramat.AI
             if (!_digeledah && _jarahan.Count > 0) return "GELEDAH";
             if (!_topengDiambil && StatMusuh.Sekte(jenis) && !Abu()) return "AMBIL TOPENG";
             if (!_dipotong && GoreSystem.BolehMutilasi(GoreSystem.Tingkat) && StatMusuh.Sekte(jenis)) return "POTONG";
+            if (BisaSingkirkanMayat(_digeledah || _jarahan.Count == 0, _disingkirkan)) return "SINGKIRKAN MAYAT";
             return "";
         }
 
@@ -153,6 +155,15 @@ namespace AlasKeramat.AI
                 if (_gore != null) _gore.Semburan(transform.position + Vector3.up * 0.3f, Vector3.up, 30f, false, false);
                 Suara(ProceduralAudioSynth.KlipPutusTulang, 1f);
                 GameEvents.RaiseToast("Dapat: " + ItemDatabase.Get(ItemID.PotonganTubuh).displayName);
+                return true;
+            }
+            if (p == "SINGKIRKAN MAYAT")
+            {
+                _disingkirkan = true;
+                bool bakar = inv != null && inv.Punya(ItemID.KorekGas);
+                if (bakar && inv != null) inv.Tambah(ItemID.Arang, 1);
+                GameEvents.RaiseToast(bakar ? "Mayat dibakar (+1 Arang)" : "Mayat disembunyikan ke semak");
+                gameObject.SetActive(false);
                 return true;
             }
             return false;

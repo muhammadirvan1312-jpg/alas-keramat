@@ -66,6 +66,9 @@ namespace AlasKeramat.EditorTools
             for (int i = 0; i < 4; i++) Hias(hias, PrimitiveType.Cylinder, "Tabung_" + i, r2.pos + new Vector3(4.5f, 1f, -4f + i * 2.6f), new Vector3(0.8f, 1f, 0.8f), cairan, true);
             Wadah(k, "MejaLab", "Meja Lab", r2.pos + new Vector3(0f, 0f, 4f), new Vector3(1.6f, 0.9f, 0.8f), logam,
                 new[] { ItemID.SenterTaktis, ItemID.Baterai }, new[] { 1, 3 }, (int)LoreID.L09, false);
+            Hias(hias, PrimitiveType.Cylinder, "KapsulRendra_R2", r2.pos + new Vector3(-4.2f, 1.1f, -3.5f), new Vector3(1.1f, 1.1f, 1.1f), cairan, true);
+            Wadah(k, "MejaRendra_R2", "Meja Rendra", r2.pos + new Vector3(-2.6f, 0f, -3.5f), new Vector3(1.1f, 0.85f, 0.7f), kayu,
+                new[] { ItemID.TandaPengenalRendra, ItemID.PatungKayuDewi, ItemID.PerbanKain }, new[] { 1, 1, 2 }, 0, false);
             Wadah(k, "RakPeralatan", "Rak Peralatan", r3.pos + new Vector3(0f, 0f, 3f), new Vector3(2.2f, 1.2f, 0.7f), logam,
                 new[] { ItemID.ZiplineGun, ItemID.TaliZipline, ItemID.LogamBekas, ItemID.ZirahBaja, ItemID.KapakBaja }, new[] { 1, 6, 4, 2, 1 }, 0, false);
             Hias(hias, PrimitiveType.Cylinder, "TabungSegel", r4.pos + new Vector3(0f, 1.2f, 0f), new Vector3(1.2f, 1.2f, 1.2f), MatEmisi("M_KacaSegel", "#2A3038A0", new Color(0.05f, 0.05f, 0.08f), true), false);

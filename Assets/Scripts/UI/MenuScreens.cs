@@ -107,6 +107,17 @@ namespace AlasKeramat.UI
             tombolSkala = daftarTombol ?? new RectTransform[0];
         }
 
+        public static float AnggaranMemoriPreset(PresetGrafis p)
+        {
+            switch (p)
+            {
+                case PresetGrafis.Rendah: return 220f;
+                case PresetGrafis.Sedang: return 400f;
+                case PresetGrafis.Tinggi: return 750f;
+                default: return 1200f;
+            }
+        }
+
         // ---------- Rumus Murni (diuji Self-Test T11) ----------
         public static DataPresetGrafis AmbilPreset(PresetGrafis p)
         {
@@ -126,6 +137,17 @@ namespace AlasKeramat.UI
         public static float PengaliLajuVital(Difficulty d)
         {
             return d == Difficulty.Damai ? 0.7f : d == Difficulty.Sulit ? 1.25f : 1.0f;
+        }
+
+        public static float JarakSerasahPreset(PresetGrafis p)
+        {
+            switch (p)
+            {
+                case PresetGrafis.Rendah: return 42f;
+                case PresetGrafis.Sedang: return 62f;
+                case PresetGrafis.Tinggi: return 86f;
+                default: return 105f;
+            }
         }
 
         public static float PengaliDamageMusuh(Difficulty d)
@@ -243,6 +265,7 @@ namespace AlasKeramat.UI
             SaveSystem.SlotAktif = Mathf.Clamp(PlayerPrefs.GetInt(PrefSlot, 1), 1, 3);
             TerrorDirector.Setelan = (PenjadwalTeror.Intensitas)Mathf.Clamp(PlayerPrefs.GetInt(PrefHoror, (int)PenjadwalTeror.Intensitas.Normal), 0, 2);
             TerrorDirector.Headset = PlayerPrefs.GetInt(PrefHeadset, 1) != 0;
+            MuatModeTantangan();
         }
 
         public void SimpanPengaturan()
@@ -267,6 +290,8 @@ namespace AlasKeramat.UI
             PlayerPrefs.SetInt(PrefSlot, SaveSystem.SlotAktif);
             PlayerPrefs.SetInt(PrefHoror, (int)TerrorDirector.Setelan);
             PlayerPrefs.SetInt(PrefHeadset, TerrorDirector.Headset ? 1 : 0);
+            PlayerPrefs.SetInt(PrefSengsara, AndiVitalsAndSanity.ModeSengsara ? 1 : 0);
+            PlayerPrefs.SetInt(PrefPantang, AndiVitalsAndSanity.ModePantangMundur ? 1 : 0);
             PlayerPrefs.Save();
         }
 
@@ -276,6 +301,8 @@ namespace AlasKeramat.UI
             QualitySettings.vSyncCount = 0;
             QualitySettings.asyncUploadTimeSlice = 2;
             QualitySettings.asyncUploadBufferSize = 16;
+            QualitySettings.streamingMipmapsActive = true;
+            QualitySettings.streamingMipmapsMemoryBudget = AnggaranMemoriPreset(Preset);
             Application.targetFrameRate = TargetFps;
             Time.fixedDeltaTime = 0.025f;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
@@ -315,7 +342,7 @@ namespace AlasKeramat.UI
             var veg = GameServices.Get<VegetationManager>();
             if (veg != null) { veg.PengaliJarak = dp.pengaliVeg; veg.PengaliDetail = dp.detailVeg; }
             var serasah=GameServices.Get<SerasahHutan>();
-            if(serasah!=null) { serasah.Kepadatan=dp.rumput; serasah.BayanganPadat=Preset>=PresetGrafis.Tinggi; }
+            if(serasah!=null) { serasah.Kepadatan=dp.rumput; serasah.JarakTarik=JarakSerasahPreset(Preset); serasah.BayanganPadat=Preset>=PresetGrafis.Tinggi; }
             if(Application.isPlaying)
             {
                 var volume=UnityEngine.Object.FindFirstObjectByType<Volume>();
@@ -370,7 +397,8 @@ namespace AlasKeramat.UI
                 "  |  Ukuran Tombol: " + (SkalaTombol * 100f).ToString("0") + "%\n" +
                 "Volume Master: " + (VolMaster * 100f).ToString("0") + "%  |  Headset: " + (TerrorDirector.Headset ? "AKTIF" : "MATI") +
                 "  |  Getar: " + (Getar ? "AKTIF" : "MATI") + "  |  Imersif: " + (ModeImersif ? "YA" : "TIDAK") + "\n" +
-                "Tingkat Gore: " + GoreSystem.Tingkat + "  |  Intensitas Horor: " + TerrorDirector.Setelan + "  |  Kesulitan: " + Kesulitan;
+                "Tingkat Gore: " + GoreSystem.Tingkat + "  |  Intensitas Horor: " + TerrorDirector.Setelan + "  |  Kesulitan: " + Kesulitan +
+                "  |  Tantangan: " + LabelModeTantangan(AndiVitalsAndSanity.ModeSengsara, AndiVitalsAndSanity.ModePantangMundur);
         }
 
         // ---------- Aksi Tombol Menu & Jeda ----------

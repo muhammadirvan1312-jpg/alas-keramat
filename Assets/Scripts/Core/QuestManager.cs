@@ -19,6 +19,20 @@ namespace AlasKeramat.Core
             public bool hari2, ningsihTerlihat, trust31, cangkul, kartu, rebreather, zipline, keluarBunker, sisiUtara, bossKalah, siegeSelesai;
             public int tertancap, ending;     // paku tertancap di altar (0-3); ending 0 = belum, 1 = A, 2 = B
             public bool intro;                // T10d: cutscene intro sudah diputar
+            public bool[] sampingan = new bool[4]; // S01-S04 selesai
+        }
+
+        public static string TeksMisiSampingan(int indeks, bool selesai)
+        {
+            if (selesai) return "";
+            switch (indeks)
+            {
+                case 0: return "Sampingan: Temukan kenangan Dewi di Alas Keramat";
+                case 1: return "Sampingan: Cari jejak Rendra di bunker bawah tanah";
+                case 2: return "Sampingan: Tenangkan arwah yang tersesat di malam hari";
+                case 3: return "Sampingan: Nyalakan kemenyan persembahan di api unggun";
+                default: return "";
+            }
         }
         public ProgresMisiT6 Progres = new ProgresMisiT6();
         public bool M05Selesai { get { return Progres.m05; } }

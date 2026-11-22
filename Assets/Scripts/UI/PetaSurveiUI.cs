@@ -11,8 +11,19 @@ namespace AlasKeramat.UI
         public GameObject Panel;
         public RectTransform Bidang, Andi, Tujuan;
         public Text Info, Kompas;
-        public static readonly string[] NamaLokasi={"HELI","BERINGIN","DESA","GUA SUNGAI","GUA UTARA","BUNKER","PANTAI"};
-        public static readonly Vector2[] Lokasi={new Vector2(0,-440),Vector2.zero,new Vector2(540,196),new Vector2(256,-276),new Vector2(0,694),new Vector2(-560,290),new Vector2(0,-840)};
+        public static readonly string[] NamaLokasi={"HELI","BERINGIN","DESA","GUA SUNGAI","GUA UTARA","BUNKER","PANTAI","KAMPUNG","PABRIK GULA","MERCUSUAR","MAKAM TUA","KEMAH RAWA","WATU IRENG"};
+        public static readonly Vector2[] Lokasi={new Vector2(0,-440),Vector2.zero,new Vector2(540,196),new Vector2(256,-276),new Vector2(0,694),new Vector2(-560,290),new Vector2(0,-840),new Vector2(620,600),new Vector2(650,-510),new Vector2(-190,-876),new Vector2(-320,180),new Vector2(382,-312),new Vector2(-420,460)};
+
+        public static int IndeksLokasiTerdekat(Vector2 dunia, float radiusMaks)
+        {
+            int idx = -1; float min = radiusMaks;
+            for (int i = 0; i < Lokasi.Length; i++)
+            {
+                float d = Vector2.Distance(dunia, Lokasi[i]);
+                if (d < min) { min = d; idx = i; }
+            }
+            return idx;
+        }
         Vector2 _tujuan=Lokasi[0]; string _nama="HELI";
         AndiFPSController _pemain; TikarPandan3DInventory _tas;
         float _jeda; bool _terbuka;
@@ -57,7 +68,8 @@ namespace AlasKeramat.UI
             Vector2 p;if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(Bidang,e.position,e.pressEventCamera,out p) || !Bidang.rect.Contains(p))return;
             Vector2 uv=new Vector2((p.x-Bidang.rect.xMin)/Bidang.rect.width,(p.y-Bidang.rect.yMin)/Bidang.rect.height);
             _tujuan=KeDunia(uv);_nama="TANDA PETA";
-            for(int i=0;i<Lokasi.Length;i++)if(Vector2.Distance(_tujuan,Lokasi[i])<60f){_tujuan=Lokasi[i];_nama=NamaLokasi[i];break;}
+            int dekat = IndeksLokasiTerdekat(_tujuan, 60f);
+            if (dekat >= 0) { _tujuan = Lokasi[dekat]; _nama = NamaLokasi[dekat]; }
             if(Tujuan!=null){Tujuan.anchorMin=Tujuan.anchorMax=KeUV(_tujuan);Tujuan.anchoredPosition=Vector2.zero;}
             _jeda=0f;
         }

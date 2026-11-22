@@ -25,6 +25,7 @@ namespace AlasKeramat.EditorTools
         {
             if (!assetPath.StartsWith(Folder + "/")) return;
             var t = (TextureImporter)assetImporter;
+            t.streamingMipmaps = true;
             t.maxTextureSize = 2048;
             var a = t.GetPlatformTextureSettings("Android");
             a.overridden = true; a.maxTextureSize = 2048; a.format = TextureImporterFormat.ASTC_4x4;

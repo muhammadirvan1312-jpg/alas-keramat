@@ -125,6 +125,34 @@ namespace AlasKeramat.Building
             _siap = true;
         }
 
+        public static bool CekJarakSemak(Vector3 posPemain, Vector3 posSemak, float radius)
+        {
+            Vector3 d = posPemain - posSemak; d.y = 0f;
+            return d.sqrMagnitude <= radius * radius;
+        }
+
+        public bool DiDalamSemak(Vector3 p, float radius = 1.75f)
+        {
+            if (!_siap) Siapkan();
+            if (!_siap || _mat == null) return false;
+            float rSq = radius * radius;
+            for (int c = 0; c < data.sel.Length; c++)
+            {
+                var sel = data.sel[c];
+                var jp = _jenisPohon[sel.jenis];
+                if (jp != ProcPohon.Jenis.Semak && jp != ProcPohon.Jenis.BambuRumpun && jp != ProcPohon.Jenis.Pisang) continue;
+                if ((sel.pusat - p).sqrMagnitude > (sel.radius + radius) * (sel.radius + radius)) continue;
+                var ps = _posInst[c];
+                var ks = _kosong[c];
+                for (int k = 0; k < ps.Length; k++)
+                {
+                    if (ks[k]) continue;
+                    if (CekJarakSemak(p, ps[k], radius)) return true;
+                }
+            }
+            return false;
+        }
+
         // Cari pohon dalam radius r dari p (tanpa alokasi; buffer dari pemanggil). Mengembalikan jumlah yang terisi.
         public int Cari(Vector3 p, float r, InfoPohon[] buffer)
         {

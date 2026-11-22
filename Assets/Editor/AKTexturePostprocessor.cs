@@ -34,7 +34,7 @@ namespace AlasKeramat.EditorTools
             var andr = imp.GetPlatformTextureSettings("Android");
             andr.overridden = true;
             andr.maxTextureSize = 2048;
-            andr.format = TextureImporterFormat.ASTC_4x4;
+            andr.format = TextureImporterFormat.ASTC_6x6;
             imp.SetPlatformTextureSettings(andr);
         }
     }

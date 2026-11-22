@@ -10,7 +10,7 @@ namespace AlasKeramat.Building
     // hujan tanpa atap x2, badai tanpa atap padam 60 s; masak 4 tusuk: matang 25 s, gosong 40 s; bakar kemenyan kewarasan +20.
     public class ApiUnggun : MonoBehaviour, IInteractable
     {
-        public const float BBMaks = 600f, BBRanting = 45f, BBKayu = 300f, BBAwal = 120f, Matang = 25f, Gosong = 40f, JarakHangat = 4f, PadamBadai = 60f;
+        public const float BBMaks = 600f, BBRanting = 45f, BBKayu = 300f, BBAwal = 120f, Matang = 25f, Gosong = 40f, JarakHangat = 4f, PadamBadai = 60f, LamaAsapKemenyan = 60f;
         public const int Tusuk = 4;
         public static readonly List<ApiUnggun> Semua = new List<ApiUnggun>();
 
@@ -20,8 +20,76 @@ namespace AlasKeramat.Building
         public bool Menyala { get; private set; }
         readonly ItemID[] _masak = new ItemID[Tusuk];
         readonly float[] _t = new float[Tusuk];
-        float _badai;
+        float _badai, _tKemenyan;
+        ParticleSystem _asapKemenyan, _asapMasak;
         URPAtmosphereAndWeather _atmos;
+
+        public static float LajuAsapMasakan(int jumlahTusukTerisi, bool menyala)
+        {
+            if (!menyala || jumlahTusukTerisi <= 0) return 0f;
+            return 3f + jumlahTusukTerisi * 2.5f;
+        }
+
+        void PerbaruiAsapMasakan()
+        {
+            int terisi = 0;
+            for (int i = 0; i < Tusuk; i++) if (_masak[i] != ItemID.None) terisi++;
+            float laju = LajuAsapMasakan(terisi, Menyala);
+            if (laju > 0f)
+            {
+                if (_asapMasak == null)
+                {
+                    var go = new GameObject("AsapMasakTusuk");
+                    go.transform.SetParent(transform, false);
+                    go.transform.localPosition = new Vector3(0f, 0.56f, 0.32f);
+                    _asapMasak = go.AddComponent<ParticleSystem>();
+                    var m = _asapMasak.main;
+                    m.loop = true; m.startLifetime = 1.35f; m.startSpeed = 0.42f; m.startSize = 0.13f;
+                    m.maxParticles = 22; m.gravityModifier = -0.07f; m.simulationSpace = ParticleSystemSimulationSpace.World;
+                    m.startColor = new Color(0.88f, 0.84f, 0.76f, 0.34f);
+                    var sh = _asapMasak.shape; sh.shapeType = ParticleSystemShapeType.Box; sh.scale = new Vector3(0.55f, 0.05f, 0.15f);
+                    var pr = go.GetComponent<ParticleSystemRenderer>();
+                    pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_AsapMasakTusuk", new Color(0.88f, 0.84f, 0.76f, 0.32f), 0f, 0.1f, null, null, null, SurfaceMode.Transparent);
+                    pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+                var em = _asapMasak.emission; em.rateOverTime = laju;
+                if (!_asapMasak.isPlaying) _asapMasak.Play();
+            }
+            else if (_asapMasak != null && _asapMasak.isPlaying) _asapMasak.Stop();
+        }
+
+        public static float LajuAsapKemenyan(float sisaWaktu, bool menyala)
+        {
+            if (!menyala || sisaWaktu <= 0f) return 0f;
+            return Mathf.Lerp(4f, 11f, Mathf.Clamp01(sisaWaktu / LamaAsapKemenyan));
+        }
+
+        void PerbaruiAsapKemenyan(float dt)
+        {
+            if (_tKemenyan > 0f) _tKemenyan = Mathf.Max(0f, _tKemenyan - dt);
+            float laju = LajuAsapKemenyan(_tKemenyan, Menyala);
+            if (laju > 0f)
+            {
+                if (_asapKemenyan == null)
+                {
+                    var go = new GameObject("AsapKemenyan");
+                    go.transform.SetParent(transform, false);
+                    go.transform.localPosition = new Vector3(0f, 0.35f, 0f);
+                    _asapKemenyan = go.AddComponent<ParticleSystem>();
+                    var m = _asapKemenyan.main;
+                    m.loop = true; m.startLifetime = 2.6f; m.startSpeed = 0.65f; m.startSize = 0.28f;
+                    m.maxParticles = 32; m.gravityModifier = -0.06f; m.simulationSpace = ParticleSystemSimulationSpace.World;
+                    m.startColor = new Color(0.96f, 0.92f, 0.78f, 0.38f);
+                    var sh = _asapKemenyan.shape; sh.shapeType = ParticleSystemShapeType.Cone; sh.angle = 16f; sh.radius = 0.18f;
+                    var pr = go.GetComponent<ParticleSystemRenderer>();
+                    pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_AsapKemenyan", new Color(0.96f, 0.92f, 0.78f, 0.36f), 0f, 0.1f, null, null, new Color(0.45f, 0.38f, 0.18f), SurfaceMode.Transparent);
+                    pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+                var em = _asapKemenyan.emission; em.rateOverTime = laju;
+                if (!_asapKemenyan.isPlaying) _asapKemenyan.Play();
+            }
+            else if (_asapKemenyan != null && _asapKemenyan.isPlaying) _asapKemenyan.Stop();
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void Reset() { Semua.Clear(); }
@@ -45,6 +113,47 @@ namespace AlasKeramat.Building
 
         AudioSource _kretek;
         bool _kretekCoba;
+        Transform _nyalaRoot;
+        Transform[] _lidah;
+
+        void PastikanVisualApi()
+        {
+            if (_nyalaRoot != null) return;
+            var root = new GameObject("VisualApi");
+            root.transform.SetParent(transform, false);
+            root.transform.localPosition = new Vector3(0f, 0.22f, 0f);
+            _nyalaRoot = root.transform;
+            var mApi = SafeMaterialFactory.CreatePBR("M_ApiUnggunNyala", new Color(1f, 0.52f, 0.12f), 0f, 0.2f, null, null, new Color(3.4f, 1.35f, 0.25f));
+            _lidah = new Transform[3];
+            Vector3[] offs = { Vector3.zero, new Vector3(-0.10f, -0.02f, 0.08f), new Vector3(0.10f, -0.02f, -0.07f) };
+            for (int i = 0; i < 3; i++)
+            {
+                var l = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                Destroy(l.GetComponent<Collider>());
+                l.transform.SetParent(_nyalaRoot, false);
+                l.transform.localPosition = offs[i];
+                l.transform.localScale = new Vector3(0.14f - i * 0.02f, 0.24f - i * 0.03f, 0.14f - i * 0.02f);
+                var r = l.GetComponent<Renderer>();
+                r.sharedMaterial = mApi;
+                r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                _lidah[i] = l.transform;
+            }
+            var baraGo = new GameObject("BaraApi");
+            baraGo.transform.SetParent(_nyalaRoot, false);
+            var ps = baraGo.AddComponent<ParticleSystem>();
+            var main = ps.main;
+            main.loop = true; main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.8f, 1.6f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.6f, 1.3f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.025f, 0.055f);
+            main.gravityModifier = -0.15f; main.maxParticles = 24;
+            main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.72f, 0.22f, 0.9f), new Color(1f, 0.35f, 0.08f, 0.75f));
+            var em = ps.emission; em.rateOverTime = 9f;
+            var sh = ps.shape; sh.shapeType = ParticleSystemShapeType.Cone; sh.angle = 18f; sh.radius = 0.24f;
+            var pr = baraGo.GetComponent<ParticleSystemRenderer>();
+            pr.sharedMaterial = mApi; pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
+
         // Suara kretek api rekaman CC0, 3D, hanya saat menyala.
         void SuaraKretek()
         {
@@ -70,6 +179,20 @@ namespace AlasKeramat.Building
             if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
             float dt = Time.deltaTime;
             SuaraKretek();
+            PerbaruiAsapKemenyan(dt);
+            PerbaruiAsapMasakan();
+            if (Menyala) PastikanVisualApi();
+            if (_nyalaRoot != null)
+            {
+                if (_nyalaRoot.gameObject.activeSelf != Menyala) _nyalaRoot.gameObject.SetActive(Menyala);
+                if (Menyala && _lidah != null)
+                    for (int i = 0; i < _lidah.Length; i++)
+                        if (_lidah[i] != null)
+                        {
+                            float g = 0.78f + 0.45f * Mathf.PerlinNoise(Time.time * 9f + i * 2.1f, 0.4f);
+                            _lidah[i].localScale = new Vector3(0.13f, (0.24f - i * 0.03f) * g, 0.13f);
+                        }
+            }
             if (Menyala)
             {
                 bool atap = Beratap();
@@ -159,6 +282,7 @@ namespace AlasKeramat.Building
             {
                 var v = GameServices.Get<AndiVitalsAndSanity>();
                 if (v != null) v.UbahSanity(20f);
+                _tKemenyan = LamaAsapKemenyan;
                 GameEvents.RaiseToast("Asap kemenyan menenangkan pikiranmu");
                 AlasKeramat.AI.ZonaPenangkal.TambahKemenyan(transform.position); // T7b: Pocong menjauh 20 m selama 60 s
                 return;

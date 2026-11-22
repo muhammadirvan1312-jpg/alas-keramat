@@ -13,10 +13,45 @@ namespace AlasKeramat.Player
         AndiFPSController _ctrl;
         AndiVitalsAndSanity _v;
         ProceduralAudioSynth _synth;
+        GoreSystem _gore;
         float _jarak, _tNapas, _tJantung, _sejakLangkah;
         int _var;
         bool _diTanahLalu = true;
         Vector3 _posLalu;
+        ParticleSystem _psLangkah;
+
+        public static int JumlahPartikelLangkah(SurfaceType s, float vol)
+        {
+            if (vol < 0.35f) return 0;
+            if (s == SurfaceType.Air) return Mathf.RoundToInt(10f * vol);
+            if (s == SurfaceType.Pasir || s == SurfaceType.DaunKering || s == SurfaceType.Tanah) return Mathf.RoundToInt(6f * vol);
+            return 0;
+        }
+
+        void PancarLangkah(SurfaceType s, Vector3 pos, float vol)
+        {
+            int n = JumlahPartikelLangkah(s, vol);
+            if (n <= 0) return;
+            if (_psLangkah == null)
+            {
+                var go = new GameObject("PartikelLangkah");
+                go.transform.SetParent(transform, false);
+                _psLangkah = go.AddComponent<ParticleSystem>();
+                _psLangkah.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                var m = _psLangkah.main;
+                m.playOnAwake = false; m.loop = false; m.startLifetime = 0.38f;
+                m.startSpeed = 1.8f; m.startSize = 0.08f; m.gravityModifier = 0.65f;
+                m.simulationSpace = ParticleSystemSimulationSpace.World; m.maxParticles = 64;
+                var sh = _psLangkah.shape; sh.shapeType = ParticleSystemShapeType.Sphere; sh.radius = 0.18f;
+                var pr = go.GetComponent<ParticleSystemRenderer>();
+                pr.sharedMaterial = SafeMaterialFactory.GetCached("M_DebuLangkah", new Color(0.72f, 0.68f, 0.60f), 0f, 0.2f);
+                pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+            var main = _psLangkah.main;
+            main.startColor = s == SurfaceType.Air ? new Color(0.80f, 0.90f, 0.98f, 0.75f) : new Color(0.56f, 0.46f, 0.34f, 0.55f);
+            _psLangkah.transform.position = pos + Vector3.up * 0.08f;
+            _psLangkah.Emit(n);
+        }
 
         void Awake() { _ctrl = GetComponent<AndiFPSController>(); _posLalu = transform.position; }
 
@@ -52,7 +87,7 @@ namespace AlasKeramat.Player
             else if (_ctrl.Berenang)
             {
                 _jarak += d.magnitude;
-                if (_jarak >= 1.4f) { _jarak = 0f; Mainkan(ProceduralAudioSynth.NamaLangkah(SurfaceType.Air, _var++), p, 0.5f); }
+                if (_jarak >= 1.4f) { _jarak = 0f; Mainkan(ProceduralAudioSynth.NamaLangkah(SurfaceType.Air, _var++), p, 0.5f); PancarLangkah(SurfaceType.Air, p, 0.55f); PercikAir(p + Vector3.up * 0.2f); }
             }
             if (d.sqrMagnitude < 0.0001f) _jarak = 0f;
             _diTanahLalu = _ctrl.DiTanah;
@@ -74,6 +109,14 @@ namespace AlasKeramat.Player
             float? wl = WorldTerrainGenerator.GetWaterLevelAt(p.x, p.z);
             var s = Permukaan(WorldTerrainGenerator.GetBiome(p.x, p.z), wl.HasValue && wl.Value > p.y, struktur);
             Mainkan(ProceduralAudioSynth.NamaLangkah(s, _var++), p, vol);
+            PancarLangkah(s, p, vol);
+            if (s == SurfaceType.Air) PercikAir(p);
+        }
+
+        void PercikAir(Vector3 p)
+        {
+            if (_gore == null) _gore = GameServices.Get<GoreSystem>();
+            if (_gore != null) _gore.PercikPartikel(p + Vector3.up * 0.08f, new Color(0.75f, 0.88f, 0.96f, 0.62f), 6, 0.045f, 1.4f, 0.45f);
         }
 
         void Mainkan(string nama, Vector3 p, float vol) { _synth.Play(nama, null, AudioCategory.Efek, vol, Random.Range(0.96f, 1.04f), 2); }
