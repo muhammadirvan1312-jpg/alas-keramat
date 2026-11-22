@@ -96,7 +96,7 @@ namespace AlasKeramat.Core
         {
             Vector4 siang = new Vector4(0.34f, 6f, 4f, 0.15f);
             Vector4 maghrib = new Vector4(0.32f, 10f, 18f, 0.20f);
-            Vector4 malam = new Vector4(0.36f, -4f, -10f, 0.20f);
+            Vector4 malam = new Vector4(0.32f, -4f, -10f, 0.20f); // tetap terbaca di HP, tapi lebih gelap dari siang (pilar horor)
             Vector4 fajar = new Vector4(0.30f, 6f, 12f, 0.19f);
             Vector4 v;
             if (jam >= 7f && jam < 16.5f) v = siang;
