@@ -1,0 +1,17 @@
+Perangkat grafis: llvmpipe (LLVM 15.0.7, 256 bits) (OpenGLCore)
+g3_01_deden_wajah
+g3_02_ningsih_wajah
+g3_03_hutan_malam
+g3_04_lantai_hutan
+t10_01_gua_lumut
+t10_02_kubah_akar_boss
+v1_01_heli_pagi_sinar
+v1_02_desa_senja
+v1_03_beringin_maghrib
+v1_04_pantai_badai
+v1_05_malam_senter
+v1_06_sekte_desa
+v1_wajah_deden
+v1_wajah_ningsih
+v1_wajah_kirogo
+v1_hewan_barisan
