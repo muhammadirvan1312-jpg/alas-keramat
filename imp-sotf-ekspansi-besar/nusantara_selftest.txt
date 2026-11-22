@@ -1,11 +1,11 @@
-[GAGAL] Builder pertama tanpa langkah gagal
-[GAGAL] Builder kedua tanpa langkah gagal
-[LULUS] Idempoten: jumlah objek sama (8196 = 8196)
+[LULUS] Builder pertama tanpa langkah gagal
+[LULUS] Builder kedua tanpa langkah gagal
+[LULUS] Idempoten: jumlah objek sama (12885 = 12885)
 [LULUS] Layer 6-18 terdaftar
 [LULUS] Semua tag terdaftar
 [LULUS] Aset URP terpasang di semua level Quality
 [LULUS] Tekstur >= 10 (110)
-[LULUS] Material >= 5 (366)
+[LULUS] Material >= 5 (497)
 [LULUS] Tidak ada material ber-shader error
 [LULUS] GetSafeFont() tidak null
 [LULUS] WAV >= 8 (62)
@@ -36,9 +36,9 @@
 [LULUS] Gunung Kapur menjulang > 120 m
 [LULUS] Jam dunia maju
 [LULUS] Atmosfer & langit terpasang
-[GAGAL] Pohon 8.000-45.000 (0)
-[GAGAL] Semak/pakis >= 10.000 (0)
-[GAGAL] VegetationManager & data terpasang
+[LULUS] Pohon 8.000-45.000 (36759)
+[LULUS] Semak/pakis >= 10.000 (93253)
+[LULUS] VegetationManager & data terpasang
 [LULUS] Semua 7 cuaca bisa diset
 [LULUS] Landmark >= 35 (97)
 [LULUS] Beringin Agung & altar & cerobong ada
@@ -68,16 +68,16 @@
 [LULUS] Radar: depan = atas (saat menghadap utara & timur)
 [LULUS] Volume global + ACES + bloom
 [LULUS] Kamera utama pakai pasca-proses
-[LULUS] Pasca-proses malam lebih gelap & dingin dari siang
+[GAGAL] Pasca-proses malam lebih gelap & dingin dari siang
 [LULUS] Vital Andi & bar HUD ada
-[GAGAL] Laju vital 60 s sesuai 05 (haus -4.34, kenyang -3.30, istirahat -2.10)
+[LULUS] Laju vital 60 s sesuai 05 x musim (haus -4.34, kenyang -3.30, istirahat -2.10)
 [LULUS] Plafon HP 05 §3.1 (lapar 10, haus 10 -> 58)
 [LULUS] Suhu udara: siang kemarau > malam
 [LULUS] Klip foley 20/20
 [LULUS] Permukaan langkah: pantai=pasir, air=air, struktur=kayu
 [LULUS] Foley, subtitle, sabuk cepat ada
 [LULUS] Subtitle: lama tampil min 2,5 s
-[LULUS] Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga sesuai anggaran (real <=30000), 24 sendi bernama (32/32)
+[LULUS] Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga sesuai anggaran (real <=30000), 24 sendi bernama (56/56)
 [LULUS] Tahi lalat Andi di bawah mata kiri (02 §2)
 [LULUS] Deden di heli & Ningsih di Sarang
 [LULUS] Pohon rebah menjauhi takikan (tebang dari selatan -> rebah ke utara)
@@ -120,7 +120,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 399 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 239 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
@@ -256,16 +256,16 @@
 [LULUS] Kelelawar senja: hanya keluar saat Maghrib dan memuncak di tengahnya
 [LULUS] Gagak: >= 8 gagak bertengger di atap Desa Mati (12)
 [LULUS] Kelelawar senja: >= 2 mulut gua punya kawanan berlembar kepak, partikel <= 250 (2)
-[GAGAL] Laron: tiap lampu minyak punya laron (mati awal, <= 20 partikel)
+[LULUS] Laron: tiap lampu minyak punya laron (mati awal, <= 20 partikel)
 [LULUS] Sarang laba-laba: >= 30 di sudut rumah Desa Mati & kampung (46)
 [LULUS] Geledah: isi wadah deterministik per posisi, sebagian kosong dijarah (30 isi / 10 kosong)
 [LULUS] Prop desa: >= 50 props tersebar di desa/kampung/heli/pabrik (131)
 [LULUS] Prop desa: semua props bertekstur foto CC0 (tidak pink)
 [LULUS] Atap genteng: >= 15 rumah desa beratap genteng foto CC0 (19)
 [LULUS] Geledah: >= 25 wadah desa bisa digeledah (156)
-[GAGAL] Prop desa: >= 10 lampu minyak, cahaya mati awal, tanpa bayangan, jangkauan <= 6 m (33)
+[LULUS] Prop desa: >= 10 lampu minyak, cahaya mati awal, tanpa bayangan, jangkauan <= 6 m (33)
 [LULUS] Prop desa: maksimal 2 cahaya titik aktif (hemat HP 4 GB)
-[GAGAL] Ekspansi SOTF: biota air (ikan tangkap & kepiting pantai)
+[LULUS] Ekspansi SOTF: biota air (ikan tangkap & kepiting pantai)
 [LULUS] Ekspansi SOTF: kupu-kupu & capung aktif siang cerah, mati malam/badai
 [LULUS] Ekspansi SOTF: jejak kaki basah/pasir & komponen terpasang di Andi
 [LULUS] Ekspansi SOTF: 10 perangkap survival (jerat hewan & duri sekte)
@@ -281,7 +281,7 @@
 [LULUS] Fitur Baru SOTF: 5 jalur Zipline & kurva kabel
 [LULUS] Fitur Baru SOTF: 3 Perahu Dayung aktif
 [LULUS] Fitur Baru SOTF: 3 Rumah Pohon Aman (tangga panjat & kasur tidur/save)
-[GAGAL] Fitur Baru SOTF: 4 Sarang Pemangsa & 8 Jejak Lacak
+[LULUS] Fitur Baru SOTF: 4 Sarang Pemangsa & 8 Jejak Lacak
 [LULUS] Fitur Baru SOTF: 2 Boss Mini Buto Ijo (lemah api/pusaka & Ground Slam)
 [LULUS] Fitur Baru SOTF: 3 Suar Sinyal Darurat pengusir hantu
 [LULUS] Overhaul Visual: 5 mega-landmark (Air Terjun, Candi, Jembatan Gantung, Bangkai Kapal, Pendopo)
@@ -307,6 +307,7 @@
 [LULUS] PendopoDesaMati bebas tabrakan DesaMati
 [LULUS] Integrasi 4 loop inti (Musim/Reputasi/Kombo/Level)
 [LULUS] Shader Langit mendukung Badai/Awan 2 Lapis/Kilat
+[LULUS] Shader KabutLembut (God-Ray & Kabut Radial halus) ada
 [LULUS] BerkasCahayaRimba & Kabut Lembah terpasang
 [LULUS] Intensitas God-Ray pagi > 0 & malam = 0
 [LULUS] Kunang-Kunang (32) & Daun Gugur (24) aktif
@@ -317,9 +318,32 @@
 [LULUS] 5 Kuali Jamu Nusantara terpasang
 [LULUS] 6 Kentongan Interaktif & 16 Tungku Api Kuno
 [LULUS] Jurnal Eksplorasi 22 Lokasi & HUD Banner/Glider/Bahaya
+[LULUS] Karakter V6: klasifikasi mata/sepatu & warna pakaian fallback Mixamo bukan putih polos
+[LULUS] Karakter Hidup V6: AktivitasHidupKarakter terpasang (>= 8 karakter) & faktor dingin/napas valid
+[LULUS] Ekosistem Rimba V6: 64 satwa 4 kuadran (rusa, ayam, babi, rangkong, camar) & aturan jam/cuaca
+[LULUS] Suasana Desa & Pantai V6: jendela malam, jemuran batik, lentera & perahu ombak (>= 45 elemen)
+[LULUS] Perbaikan Visual V6: BerkasSuar & UapJamu pakai KabutLembut + properti 12 lokasi terpasang
+[LULUS] Dunia Hidup V7: AktivitasDesaSekte (>= 16 agen: kurir sekte, anjing kampung & gagak atap kaget)
+[LULUS] Dunia Hidup V7: IkanLompatDanKepiting (>= 44 biota: ikan lompat, kepiting pantai & capung)
+[LULUS] Dunia Hidup V7: MesinDanKincirHidup (roda pabrik, kincir air, turbin, parabola, suar & jemuran ikan)
+[LULUS] Dunia Hidup V7: RohKeramatPenjaga (>= 38 entitas: 24 roh orbit, 8 kelelawar malam & 6 rune menhir)
+[LULUS] Dunia Hidup V8: kapasitas EcosystemDirector naik (>= 40 satwa aktif)
+[LULUS] Dunia Hidup V8: KejadianHidupPulau (>= 72 elemen: 24 burung migrasi-V, 36 serbuk alam & 12 semak kaget)
+[LULUS] Dunia Hidup V8: DinamikaKawananAlam (>= 30 satwa: 18 migrasi, 6 predator & 6 reptil berjemur)
+[LULUS] Dunia Hidup V8: 24 TitikKehidupanInteraktif (10 sesajen, 8 pohon buah guncang, 6 api penyintas)
+[LULUS] Dunia Hidup V8: KeanekaragamanRimbaV8 (>= 84 hayati: 16 nuri, 32 kupu, 24 sulur & 12 kura) + 22 Tugu Jalur
+[LULUS] Dunia Nyata V9: 12 NPC MakeHuman G3 bertulang asli (WargaHidupPulau) & obor malam
+[LULUS] Dunia Nyata V9: 28 habitat satwa bertulang/FBX asli lintas 4 kuadran (SatwaAsliPulauV9)
+[LULUS] Dunia Nyata V9: lanskap suara hidup 24 jam (fajar kokok, maghrib gamelan/kentongan)
+[LULUS] Dunia Nyata V9: sinyal asap/pendaran cakrawala & wadah DuniaRealV9 terpasang
+[LULUS] Dunia V10: InteraksiSosialTeman terpasang pada Kang Deden & Ningsih + hadiah herbal & sapaan cuaca
+[LULUS] Dunia V10: 12 CatatanDuniaHidup interaktif di 12 lokasi utama
+[LULUS] Dunia V10: CuacaHidupDunia (petir badai & kabut reaktif hujan) + arsitektur upgrade V10
+[LULUS] Hero & FP V11: material kulit lengan FP pakai KulitManusia & emas senjata metalik tinggi
+[LULUS] Hero & Gua V11: AtmosferGuaHidup (>= 50 elemen bio/bunker/kubah boss/spora) & diorama hero terpasang
 [LULUS] Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance
 [LULUS] Pasca-proses: HP kritis memudarkan warna & menggelapkan tepi
-[LULUS] HUD: tombol pakai ikon (15)
+[LULUS] HUD: tombol pakai ikon (18)
 [LULUS] HUD: indikator luka (vinyet & arah) terpasang, arah kanan positif
 [LULUS] Senter: cookie terpasang, pusat terang, tepi gelap
 [LULUS] Partikel alam: percikan hujan di tanah ikut intensitas
@@ -330,7 +354,7 @@
 [LULUS] G3c: kulit kedua lengan bawah Ningsih tidak terhapus bersama torso (1482/1482)
 [LULUS] G3c: 4 MakeHuman berpakaian, <=30rb tris, 24 tulang, bobot normal, 13 bentuk wajah
 [LULUS] G3c: model nyata tersambung ke scene, material & kendali wajah
-[GAGAL] G3b: pohon & pakis pemindaian tersambung ke instancing dengan LOD
+[LULUS] G3b: pohon & pakis pemindaian tersambung ke instancing dengan LOD
 [LULUS] G3 shader AlasKeramat/KabutLokal tanpa error
 [LULUS] G3 shader AlasKeramat/KulitManusia tanpa error
 [LULUS] G3a: kabut lokal tetap, basah cuaca, malam & gua terbaca
@@ -363,7 +387,7 @@
 [LULUS] Tas: seluruh jenis item dapat dijangkau melalui halaman, termasuk sesudah item 36
 [LULUS] Analog: setengah rentang menghasilkan setengah laju tanpa redaman kedua
 [LULUS] Analog: diagonal dinormalisasi dan nol tidak bergerak
-[GAGAL] Sentuh: jari kedua tidak merebut kamera
+[LULUS] Sentuh: jari kedua tidak merebut kamera
 [LULUS] Sentuh: reset membuang delta dan kepemilikan jari
 [LULUS] Panel: membatalkan elak tidak meninggalkan kebal permanen atau serangan
 [LULUS] LOD: dua pohon dalam satu petak tetap memilih detail berdasarkan jaraknya sendiri

@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-22 02:12:56
+Laporan Builder Alas Keramat - 2026-11-22 05:47:00
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -25,8 +25,8 @@ Laporan Builder Alas Keramat - 2026-11-22 02:12:56
   - Terrain 16 tile @1025, laut, 2 sungai
 [LULUS] 3b. Dunia 2x2 km
   - G3b: 12 varian scan pohon/pakis/semak tersambung ke instancing dan tebang, dengan LOD
-[GAGAL] 3c. Vegetasi: The object of type 'AlasKeramat.Building.VegetationData' has been destroyed but you are still trying to access it.
-Your script should either check if it is null or you should not destroy the object. Parameter name: asset
+  - Vegetasi: 36759 pohon, 93253 semak/pakis, 4107 sel instancing
+[LULUS] 3c. Vegetasi
   - Landmark: 97 objek (Beringin Agung, heli, 6 rumah desa + interior, 22 rumah kampung, sumur, gerobak, perahu karam, mercusuar + suar, pabrik gula + mesin/lori, 2 mulut gua, altar)
 [LULUS] 3d. Landmark
   - Ambien: 23 klip, 1130 emitter titik
@@ -78,8 +78,7 @@ Your script should either check if it is null or you should not destroy the obje
 [LULUS] 7u. Ritual Beringin, siege & lore
   - Ending: Heli SAR, layar intro/Pilihan Takdir/Ending A-B/statistik, Mode Sandbox
 [LULUS] 7v. Heli SAR, ending & statistik
-  - Lantai hutan photogrammetry CC0: 8351 batch, 35781 sebaran se-pulau & tepi sungai (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)
-  - Lantai hutan photogrammetry CC0: 8351 batch (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)
+  - Lantai hutan photogrammetry CC0: 8834 batch, 85600 sebaran se-pulau, 5 hub ikonik & tepi sungai (rumput scan, pakis, keladi, batu lumut 3 jenis, kayu tumbang, akar, tunggul, ranting kering)
   - G3a: bulan terbaca, gua tidak hitam, grading netral, bayangan 2 kaskade, kabut lokal, god rays hutan & basah dinamis
 [LULUS] 7w. G3 visual realistis
   - Kontrol aksi berjarak, TAS/BUKU ikut safe area, subtitle di atas area aksi
@@ -98,7 +97,7 @@ Your script should either check if it is null or you should not destroy the obje
 [LULUS] 7z3. Partikel alam
   - Indikator luka: vinyet merah + busur arah serangan di HUD; jejak ayunan senjata di 1 pengendali
 [LULUS] 7z5. Indikator luka
-  - Ikon kontrol: 15 tombol HUD pakai ikon, joystick profesional terpasang
+  - Ikon kontrol: 15 tombol HUD pakai ikon + tema kaca taktis gelap AAA, joystick profesional terpasang
 [LULUS] 7z6. Ikon kontrol & joystick
   - Kelelawar gua: 12 ekor dipasang di UG1 (Ruang Lumut, Kolam Hitam, Altar Paku) & UG3 (Kubah Akar)
   - Hewan asli: 12 templat hewan memakai model FBX beranimasi + tekstur PBR 2K
@@ -113,7 +112,7 @@ Your script should either check if it is null or you should not destroy the obje
 [LULUS] 7z10. Ekspansi Dunia 2 (24 model 4K, jemuran, air hujan, bubu, suar, musim & sekte)
   - Fitur Baru SOTF: 5 zipline, 3 perahu dayung, 3 rumah pohon aman, 4 sarang pemangsa, 2 Boss Mini Buto Ijo & 3 suar sinyal darurat
 [LULUS] 7z11. Fitur Baru SOTF (Zipline, Perahu Dayung, Rumah Pohon, Sarang, Boss Buto Ijo & Suar)
-  - Overhaul Visual Dunia: 5 mega-landmark (Air Terjun, Candi Kuno, Jembatan Gantung, Bangkai Kapal, Pendopo Desa), 48 formasi batu/akar raksasa, 9 lentera ayun & 8 ombak pantai
+  - Overhaul Visual Dunia: 5 mega-landmark (Air Terjun, Candi Kuno, Jembatan Gantung, Bangkai Kapal, Pendopo Desa), 84 formasi batu/akar raksasa, 9 lentera ayun & 8 ombak pantai
 [LULUS] 7z12. Overhaul Visual & Mega-Landmark (Air Terjun, Candi, Jembatan Gantung, Kapal, Pendopo)
   - Sistem Lanjutan SOTF: Kombo 3-serangan, Level Survival 4 atribut, 4 radio darurat, 3 pohon keramat sesajen & audio ambien spasial mega-landmark
 [LULUS] 7z13. Sistem Lanjutan SOTF (Kombo, Level Survival, Radio Darurat, Sesajen & Audio Spasial)
@@ -129,8 +128,20 @@ Your script should either check if it is null or you should not destroy the obje
 [LULUS] 7z18a. Mega Overhaul Visual & Dunia (7 Landmark Baru, God-Rays, Kabut Lembah, Kunang-Kunang & Vignette)
   - Mega Overhaul Gameplay V2: 4 glider bambu, 6 spot pancing, 8 peti supply parasut, 5 kuali jamu, 6 kentongan interaktif, 16 tungku api kuno & Jurnal 22 Lokasi
 [LULUS] 7z18b. Mega Overhaul Gameplay (4 Glider Bambu, 6 Spot Pancing, 8 Peti Parasut, 5 Kuali Jamu, Kentongan & Jurnal 22 Lokasi)
+  - Overhaul Dunia Hidup V6: 87 properti 12 lokasi, 81 elemen desa/pantai hidup, 64 satwa 4 kuadran & 9 karakter beraktivitas
+[LULUS] 7z19. Overhaul Karakter Visual & Dunia Hidup V6 (12 Lokasi, 64 Satwa, Aktivitas Karakter & Lentera Desa/Pantai)
+  - Overhaul Dunia Hidup V7 (22/22 Lokasi): 22 situs diperkaya, 16 agen desa/anjing/gagak, 44 ikan/kepiting/capung, 38 mekanis/kincir/suar & 38 roh/kelelawar/rune
+[LULUS] 7z20. Overhaul Dunia Hidup V7 Skala Penuh (22/22 Lokasi, Kurir Sekte, Anjing, Gagak, Ikan/Kepiting, Kincir & Roh Keramat)
+  - Overhaul Dunia Hidup V8: 72 kejadian/migrasi, 30 kawanan predator-mangsa, 24 titik alam interaktif, 84 hayati tropis & 22 tugu penunjuk 22 lokasi
+[LULUS] 7z21. Overhaul Dunia Hidup V8 (Migrasi Formasi-V, Rantai Makanan 24 Jam, 24 Interaksi Alam, Hayati Tropis & 22 Tugu Jalur)
+  - Overhaul Dunia Nyata V9 (Aset Asli): 307 props 4K scan di 22 lokasi, 196 gugus alam scan, 12 NPC MakeHuman G3, 28 habitat satwa FBX asli & 16 sinyal cakrawala
+[LULUS] 7z22. Overhaul Dunia Nyata V9 (320+ Props 4K Scan di 22 Lokasi, 180+ Alam Scan, 12 NPC MakeHuman G3, 28 Satwa FBX & Suara 24 Jam)
+  - Overhaul Dunia V10: sosial Kang Deden & Ningsih, 12 catatan cerita 12 lokasi, 33 mebel interior 4K & cuaca badai hidup
+[LULUS] 7z23. Overhaul Arsitektur, Interior 4K, Sosial Companion & Cuaca Hidup V10 (12 Catatan Dunia & Petir Badai)
+  - Overhaul Hero & Gua V11: 39 aksen diorama hero permukaan & 74 detail gua bioluminesens/stalaktit/bunker/kubah boss
+[LULUS] 7z24. Overhaul Hero Camera, Senjata FP PBR & Gua Bioluminesens V11 (UG1-UG3 + 7 Sudut Hero)
 [LULUS] 7d. Pasca-proses kamera
-  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 8196
+  - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 12885
 [LULUS] 9. Simpan scene
-Durasi: 2277.6 detik
-HASIL: GAGAL di 3c. Vegetasi
+Durasi: 2727.8 detik
+HASIL: SEMUA LANGKAH LULUS
