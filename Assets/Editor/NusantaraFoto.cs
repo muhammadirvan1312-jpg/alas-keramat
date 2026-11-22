@@ -260,6 +260,11 @@ namespace AlasKeramat.EditorTools
                         if (!r.forceRenderingOff) { r.forceRenderingOff = true; tersembunyi.Add(r); }
                     }
                     preview = UnityEngine.Object.Instantiate(modelPrefab, target.transform, false);
+                    var soAm = new SerializedObject(am);
+                    bool isKunti = soAm.FindProperty("adalahKuntilanak") != null && soAm.FindProperty("adalahKuntilanak").boolValue;
+                    string idNama = soAm.FindProperty("namaIdentitas") != null ? soAm.FindProperty("namaIdentitas").stringValue : target.name;
+                    var shKulit = soAm.FindProperty("shaderKulit") != null ? soAm.FindProperty("shaderKulit").objectReferenceValue as Shader : Shader.Find("AlasKeramat/KulitManusia");
+                    AlasKeramat.AI.AnimasiMixamo.TerapkanMaterialVisual(preview, am.PeranAktif, isKunti, string.IsNullOrEmpty(idNama) ? target.name : idNama, shKulit, false);
                     float mb = float.MaxValue, ma = float.MinValue;
                     foreach (var r in preview.GetComponentsInChildren<Renderer>(true)) { mb = Mathf.Min(mb, r.bounds.min.y); ma = Mathf.Max(ma, r.bounds.max.y); }
                     float s = AlasKeramat.AI.AnimasiMixamo.SkalaTinggi(atasLama > bawahLama ? atasLama - bawahLama : 1.75f, ma > mb ? ma - mb : 1.75f);
@@ -280,14 +285,14 @@ namespace AlasKeramat.EditorTools
                 URPAtmosphereAndWeather.DalamRuangan = bawah;
 
                 keyGo = new GameObject("V1_KeyLight");
-                keyGo.transform.position = headPos + (depan + target.transform.right * 0.85f).normalized * 2.2f + Vector3.up * 0.9f;
+                keyGo.transform.position = headPos + (depan + target.transform.right * 0.85f).normalized * 2.2f + Vector3.up * 0.85f;
                 keyGo.transform.LookAt(headPos);
-                var kl = keyGo.AddComponent<Light>(); kl.type = LightType.Spot; kl.range = 6f; kl.spotAngle = 60f; kl.intensity = 2.4f; kl.color = new Color(1f, 0.92f, 0.82f);
+                var kl = keyGo.AddComponent<Light>(); kl.type = LightType.Spot; kl.range = 6.5f; kl.spotAngle = 62f; kl.intensity = 2.9f; kl.color = new Color(1f, 0.93f, 0.84f);
 
                 rimGo = new GameObject("V1_RimLight");
-                rimGo.transform.position = headPos + (-depan * 0.7f - target.transform.right * 0.8f).normalized * 2.0f + Vector3.up * 0.6f;
+                rimGo.transform.position = headPos + (-depan * 0.65f - target.transform.right * 0.82f).normalized * 2.0f + Vector3.up * 0.65f;
                 rimGo.transform.LookAt(headPos);
-                var rl = rimGo.AddComponent<Light>(); rl.type = LightType.Spot; rl.range = 6f; rl.spotAngle = 65f; rl.intensity = 1.6f; rl.color = new Color(0.55f, 0.78f, 1f);
+                var rl = rimGo.AddComponent<Light>(); rl.type = LightType.Spot; rl.range = 6.5f; rl.spotAngle = 68f; rl.intensity = 2.1f; rl.color = new Color(0.68f, 0.84f, 1f);
 
                 cam.transform.SetPositionAndRotation(posCam, Quaternion.LookRotation(headPos + Vector3.up * 0.02f - posCam));
                 cam.fieldOfView = 38f;

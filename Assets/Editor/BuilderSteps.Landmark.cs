@@ -144,7 +144,22 @@ namespace AlasKeramat.EditorTools
             quad.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
             quad.transform.localScale = new Vector3(36f, 4.5f, 1f);
             var mr = quad.GetComponent<MeshRenderer>();
-            mr.sharedMaterial = SimpanMat(SafeMaterialFactory.CreatePBR("M_BerkasSuar", new Color(1f, 0.92f, 0.72f, 0.22f), 0f, 0.1f, null, null, new Color(2.4f, 2.0f, 1.3f), SurfaceMode.Transparent));
+            var shSuar = AmbilShaderAK("AlasKeramat/KabutLembut");
+            Material mSuar;
+            if (shSuar != null)
+            {
+                var ms = new Material(shSuar) { name = "M_BerkasSuar" };
+                SafeMaterialFactory.SetC(ms, "_BaseColor", new Color(1.45f, 1.24f, 0.78f, 0.34f));
+                SafeMaterialFactory.SetF(ms, "_Mode", 0f);
+                SafeMaterialFactory.SetF(ms, "_SkalaNoise", 1.8f);
+                SafeMaterialFactory.SetF(ms, "_Kecepatan", 0.08f);
+                mSuar = SimpanMat(ms);
+            }
+            else
+            {
+                mSuar = SimpanMat(SafeMaterialFactory.CreatePBR("M_BerkasSuar", new Color(1f, 0.92f, 0.72f, 0.22f), 0f, 0.1f, null, null, new Color(2.4f, 2.0f, 1.3f), SurfaceMode.Transparent));
+            }
+            mr.sharedMaterial = mSuar;
             mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; mr.receiveShadows = false;
             var suar = kepala.AddComponent<SuarMercusuar>();
             suar.Pasang(l, mr);

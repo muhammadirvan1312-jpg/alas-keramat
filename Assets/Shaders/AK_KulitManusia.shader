@@ -147,12 +147,22 @@ Shader "AlasKeramat/KulitManusia"
             Light skinLight=GetMainLight(d.shadowCoord,d.positionWS,half4(1,1,1,1));
             half ndv=saturate(dot(d.normalWS,d.viewDirectionWS));
             half ndl=dot(d.normalWS,skinLight.direction);
-            half wrap=saturate((ndl+0.55h)/1.55h);
-            half fresnelSheen=pow(1.0h-ndv,3.6h)*0.085h;
-            half3 warmSss=half3(0.38h,0.13h,0.075h);
-            half shadowMix=0.32h+0.68h*skinLight.shadowAttenuation;
-            lit.rgb+=c.rgb*warmSss*wrap*0.52h*skinLight.color*shadowMix*skinLight.distanceAttenuation;
-            lit.rgb+=fresnelSheen*(c.rgb*0.45h+skinLight.color*0.32h)*(0.38h+0.62h*shadowMix);
+            half wrap=saturate((ndl+0.62h)/1.62h);
+            // Subsurface scattering hangat di tepi bayangan (terminator) & cuping/pipi agar kulit tidak pucat abu-abu.
+            half termBand=saturate(1.0h-abs(ndl)*2.2h)*0.65h+wrap*0.55h;
+            half fresnelSheen=pow(1.0h-ndv,3.2h)*0.11h;
+            half3 warmSss=half3(0.46h,0.165h,0.092h);
+            half shadowMix=0.38h+0.62h*skinLight.shadowAttenuation;
+            lit.rgb+=c.rgb*warmSss*termBand*0.56h*skinLight.color*shadowMix*skinLight.distanceAttenuation;
+            // Pantulan halus pori/minyak alami kulit (dual-lobe micro specular) + pantulan hangat tanah/langit.
+            half3 halfVec=SafeNormalize(skinLight.direction+d.viewDirectionWS);
+            half ndh=saturate(dot(d.normalWS,halfVec));
+            half skinSpec=pow(ndh,26.0h)*0.085h*(0.35h+0.65h*s.smoothness)*shadowMix*skinLight.distanceAttenuation;
+            lit.rgb+=skinLight.color*skinSpec;
+            half hemiWarm=saturate(-d.normalWS.y*0.5h+0.5h);
+            half3 bounceFill=lerp(half3(0.11h,0.12h,0.15h),half3(0.16h,0.12h,0.085h),hemiWarm);
+            lit.rgb+=c.rgb*bounceFill*0.24h;
+            lit.rgb+=fresnelSheen*(c.rgb*0.52h+skinLight.color*0.36h)*(0.42h+0.58h*shadowMix);
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;
         }

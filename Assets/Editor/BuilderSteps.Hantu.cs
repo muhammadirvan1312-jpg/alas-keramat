@@ -114,7 +114,27 @@ namespace AlasKeramat.EditorTools
             var lDio = Anak(dio, "CahayaDioramaHantu").AddComponent<Light>();
             float fx = PosDioramaHantu.x - 0.4f, fz = PosDioramaHantu.z - 2.6f;
             lDio.transform.position = new Vector3(fx, WorldTerrainGenerator.SampleHeight(fx, fz) + 3.6f, fz);
-            lDio.type = LightType.Point; lDio.range = 20f; lDio.intensity = 7.5f; lDio.color = ProcTex.Hex("#82A8DE"); lDio.shadows = LightShadows.None;
+            lDio.type = LightType.Point; lDio.range = 22f; lDio.intensity = 8.2f; lDio.color = ProcTex.Hex("#86B2EA"); lDio.shadows = LightShadows.None;
+            // Lilin sesajen + kabut tanah tipis mistis agar diorama hantu malam sinematik.
+            var lRim = Anak(dio, "CahayaSesajenDiorama").AddComponent<Light>();
+            lRim.transform.position = new Vector3(PosDioramaHantu.x + 2.4f, WorldTerrainGenerator.SampleHeight(PosDioramaHantu.x + 2.4f, PosDioramaHantu.z + 1.8f) + 1.4f, PosDioramaHantu.z + 1.8f);
+            lRim.type = LightType.Point; lRim.range = 14f; lRim.intensity = 3.8f; lRim.color = new Color(1f, 0.56f, 0.22f); lRim.shadows = LightShadows.None;
+            var shKabutDio = AmbilShaderAK("AlasKeramat/KabutLembut");
+            if (shKabutDio != null)
+            {
+                var matKabutDio = SimpanMat(BuatMatKabutDio(shKabutDio));
+                for (int k = 0; k < 3; k++)
+                {
+                    var kf = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                    kf.name = "KabutDiorama_" + k; Object.DestroyImmediate(kf.GetComponent<Collider>());
+                    kf.transform.SetParent(dio.transform, false);
+                    float kx = PosDioramaHantu.x + (k - 1) * 2.2f, kz = PosDioramaHantu.z + (k == 1 ? -0.4f : 0.8f);
+                    kf.transform.position = new Vector3(kx, WorldTerrainGenerator.SampleHeight(kx, kz) + 0.28f, kz);
+                    kf.transform.rotation = Quaternion.Euler(90f, k * 37f, 0f);
+                    kf.transform.localScale = new Vector3(6.8f, 6.8f, 1f);
+                    var kmr = kf.GetComponent<MeshRenderer>(); kmr.sharedMaterial = matKabutDio; kmr.shadowCastingMode = ShadowCastingMode.Off; kmr.receiveShadows = false;
+                }
+            }
             dio.SetActive(false);
             Catat("Hantu: Pocong, Kuntilanak, Banaspati, Kuyang, Tuyul, Genderuwo Hutan, Hantu Air, Penyerupa + 6 Totem Topeng");
         }
@@ -151,6 +171,16 @@ namespace AlasKeramat.EditorTools
             tali.SetActive(false);
             h.PasangInteraksi(tali); // T9: LEPAS TALI POCONG / TANCAPKAN PAKU
             return SimpanPrefab(go, "Hantu_" + a);
+        }
+
+        static Material BuatMatKabutDio(Shader sh)
+        {
+            var m = new Material(sh) { name = "M_KabutDioramaHantu" };
+            SafeMaterialFactory.SetC(m, "_BaseColor", new Color(0.55f, 0.72f, 0.92f, 0.24f));
+            SafeMaterialFactory.SetF(m, "_Mode", 0f);
+            SafeMaterialFactory.SetF(m, "_SkalaNoise", 3.2f);
+            SafeMaterialFactory.SetF(m, "_Kecepatan", 0.14f);
+            return m;
         }
 
         static GameObject PrefabBanaspati()
@@ -192,7 +222,20 @@ namespace AlasKeramat.EditorTools
             }
             AssetDatabase.CreateAsset(m, pm);
             m = AssetDatabase.LoadAssetAtPath<Material>(pm);
-            var mApiInti = SafeMaterialFactory.CreatePBR("M_BanaspatiInti", ProcTex.Hex("#FF8822"), 0f, 0.1f, null, null, new Color(14f, 6.2f, 1.2f));
+            var shKabutApi = AmbilShaderAK("AlasKeramat/KabutLembut");
+            Material mApiInti;
+            if (shKabutApi != null)
+            {
+                mApiInti = new Material(shKabutApi) { name = "M_BanaspatiInti" };
+                SafeMaterialFactory.SetC(mApiInti, "_BaseColor", new Color(2.6f, 0.98f, 0.22f, 0.82f));
+                SafeMaterialFactory.SetF(mApiInti, "_Mode", 1f);
+                SafeMaterialFactory.SetF(mApiInti, "_SkalaNoise", 4.6f);
+                SafeMaterialFactory.SetF(mApiInti, "_Kecepatan", 0.95f);
+            }
+            else
+            {
+                mApiInti = SafeMaterialFactory.CreatePBR("M_BanaspatiInti", ProcTex.Hex("#FF8822"), 0f, 0.1f, null, null, new Color(8f, 3.4f, 0.6f));
+            }
             string pi = FolderMat + "/M_BanaspatiInti.mat"; AssetDatabase.DeleteAsset(pi); AssetDatabase.CreateAsset(mApiInti, pi);
             mApiInti = AssetDatabase.LoadAssetAtPath<Material>(pi);
             var mSkull = SafeMaterialFactory.CreatePBR("M_BanaspatiTengkorak", new Color(0.18f, 0.12f, 0.1f), 0f, 0.35f,
@@ -244,8 +287,8 @@ namespace AlasKeramat.EditorTools
             }
             var bara = Anak(go, "BaraApi");
             var psys = bara.AddComponent<ParticleSystem>();
-            var main = psys.main; main.startLifetime = 0.8f; main.startSpeed = 0.9f; main.startSize = 0.18f; main.startColor = new Color(1f, 0.55f, 0.15f, 0.85f); main.maxParticles = 24; main.prewarm = true;
-            var em = psys.emission; em.rateOverTime = 14f;
+            var main = psys.main; main.startLifetime = 0.95f; main.startSpeed = 1.15f; main.startSize = 0.22f; main.startColor = new Color(1f, 0.58f, 0.14f, 0.90f); main.maxParticles = 40; main.prewarm = true;
+            var em = psys.emission; em.rateOverTime = 26f;
             var shp = psys.shape; shp.shapeType = ParticleSystemShapeType.Sphere; shp.radius = 0.22f;
             var pr = psys.GetComponent<ParticleSystemRenderer>(); pr.sharedMaterial = m; pr.shadowCastingMode = ShadowCastingMode.Off;
             var sc = go.AddComponent<SphereCollider>(); sc.radius = 0.5f;

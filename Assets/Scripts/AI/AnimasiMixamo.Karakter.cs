@@ -13,6 +13,7 @@ namespace AlasKeramat.AI
         [SerializeField] GameObject modelKarakter;
         [SerializeField] Shader shaderKulit;
         [SerializeField] bool adalahKuntilanak, mataMenyalaMalam;
+        [SerializeField] string namaIdentitas;
         GameObject _model, _mataMalam, _bayanganKontak;
         Transform _hipsModel, _kepalaModel;
         Vector3 _hipsModel0;
@@ -24,7 +25,7 @@ namespace AlasKeramat.AI
 
         public void PasangModel(GameObject prefab) { modelKarakter = prefab; }
         public void PasangShaderKulit(Shader s) { shaderKulit = s; }
-        public void PasangOpsiVisual(bool kunti, bool mataMalam) { adalahKuntilanak = kunti; mataMenyalaMalam = mataMalam; }
+        public void PasangOpsiVisual(bool kunti, bool mataMalam, string identitas = "") { adalahKuntilanak = kunti; mataMenyalaMalam = mataMalam; namaIdentitas = identitas ?? ""; }
         public bool PakaiModelAsli { get { return _model != null; } }
 
         public static bool AdalahMaterialKulit(string namaMat)
@@ -33,25 +34,59 @@ namespace AlasKeramat.AI
             string n = namaMat.ToLowerInvariant();
             if (n.Contains("cloth") || n.Contains("shirt") || n.Contains("pant") || n.Contains("shoe") || n.Contains("boot")
                 || n.Contains("hair") || n.Contains("brow") || n.Contains("lash") || n.Contains("eye")
-                || n.Contains("dress") || n.Contains("skirt") || n.Contains("kain") || n.Contains("belt")) return false;
+                || n.Contains("dress") || n.Contains("skirt") || n.Contains("kain") || n.Contains("belt")
+                || n.Contains("top") || n.Contains("bottom") || n.Contains("jacket") || n.Contains("vest") || n.Contains("hat")) return false;
             return n.Contains("skin") || n.Contains("body") || n.Contains("head") || n.Contains("face")
-                || n.Contains("arm") || n.Contains("hand") || n.Contains("leg") || n.Contains("kulit");
+                || n.Contains("arm") || n.Contains("hand") || n.Contains("leg") || n.Contains("kulit")
+                || n.Contains("ch33") || n.Contains("remy_body") || n.Contains("flesh");
         }
 
         public static bool AdalahMaterialRambut(string namaMat)
         {
             if (string.IsNullOrEmpty(namaMat)) return false;
             string n = namaMat.ToLowerInvariant();
-            return n.Contains("hair") || n.Contains("brow") || n.Contains("lash") || n.Contains("rambut") || n.Contains("beard");
+            return n.Contains("hair") || n.Contains("brow") || n.Contains("lash") || n.Contains("rambut") || n.Contains("beard") || n.Contains("ponytail");
+        }
+
+        public static bool AdalahMaterialMata(string namaMat)
+        {
+            if (string.IsNullOrEmpty(namaMat)) return false;
+            string n = namaMat.ToLowerInvariant();
+            if (n.Contains("lash") || n.Contains("brow")) return false;
+            return n.Contains("eye") || n.Contains("iris") || n.Contains("cornea") || n.Contains("mata");
+        }
+
+        public static bool AdalahMaterialSepatu(string namaMat)
+        {
+            if (string.IsNullOrEmpty(namaMat)) return false;
+            string n = namaMat.ToLowerInvariant();
+            return n.Contains("shoe") || n.Contains("boot") || n.Contains("sandal") || n.Contains("foot") || n.Contains("sepatu");
         }
 
         public static Color WarnaKulitIndonesia(Peran p, bool kuntilanak)
         {
-            if (kuntilanak) return new Color(0.76f, 0.78f, 0.77f);
-            if (p == Peran.Wanita) return new Color(0.84f, 0.65f, 0.52f);
-            if (p == Peran.Pria) return new Color(0.76f, 0.56f, 0.43f);
-            if (p == Peran.Sekte) return new Color(0.82f, 0.72f, 0.65f);
-            return Color.white;
+            if (kuntilanak) return new Color(0.74f, 0.78f, 0.77f);
+            if (p == Peran.Wanita) return new Color(0.88f, 0.70f, 0.56f);
+            if (p == Peran.Pria) return new Color(0.80f, 0.60f, 0.46f);
+            if (p == Peran.Raksasa) return new Color(0.32f, 0.24f, 0.20f);
+            if (p == Peran.Sekte) return new Color(0.70f, 0.54f, 0.42f);
+            return new Color(0.80f, 0.62f, 0.48f);
+        }
+
+        public static Color WarnaPakaianFallback(Peran p, bool kuntilanak, string identitas, string namaMat)
+        {
+            string id = (identitas ?? "").ToLowerInvariant();
+            string mn = (namaMat ?? "").ToLowerInvariant();
+            bool bawahan = mn.Contains("bottom") || mn.Contains("pant") || mn.Contains("skirt") || mn.Contains("trouser") || mn.Contains("jarik");
+            if (kuntilanak) return new Color(0.76f, 0.78f, 0.74f, 1f);
+            if (id.Contains("kirogo"))
+                return bawahan ? new Color(0.28f, 0.20f, 0.14f, 1f) : new Color(0.42f, 0.18f, 0.14f, 1f);
+            if (id.Contains("ningsih") || p == Peran.Wanita)
+                return bawahan ? new Color(0.56f, 0.34f, 0.18f, 1f) : new Color(0.90f, 0.84f, 0.72f, 1f);
+            if (id.Contains("deden") || p == Peran.Pria || p == Peran.Terluka)
+                return bawahan ? new Color(0.42f, 0.36f, 0.26f, 1f) : new Color(0.34f, 0.39f, 0.26f, 1f);
+            if (p == Peran.Raksasa) return new Color(0.24f, 0.17f, 0.14f, 1f);
+            return bawahan ? new Color(0.26f, 0.20f, 0.16f, 1f) : new Color(0.46f, 0.22f, 0.16f, 1f);
         }
 
         public static bool PerluBayanganKontak(ShadowQuality q, float shadowDistance)
@@ -110,64 +145,116 @@ namespace AlasKeramat.AI
 
         void KonversiMaterialIndonesia()
         {
-            bool utama = peran == Peran.Pria || peran == Peran.Wanita || adalahKuntilanak;
-            if (!utama) return;
-            string tag = (adalahKuntilanak ? "Kunti" : peran.ToString());
-            foreach (var r in _model.GetComponentsInChildren<Renderer>(true))
+            TerapkanMaterialVisual(_model, peran, adalahKuntilanak, string.IsNullOrEmpty(namaIdentitas) ? name : namaIdentitas, shaderKulit, true);
+        }
+
+        // Konversi material FBX Mixamo agar selalu memakai shader URP/KulitManusia + warna Nusantara (tidak pernah putih kapur).
+        public static void TerapkanMaterialVisual(GameObject model, Peran p, bool kunti, string identitas, Shader shKulit, bool pakaiCache)
+        {
+            if (model == null) return;
+            string id = identitas ?? "";
+            string tag = (kunti ? "Kunti" : p.ToString()) + "_" + id;
+            Shader urpLit = Shader.Find("Universal Render Pipeline/Lit");
+            bool kiRogo = id.ToLowerInvariant().Contains("kirogo");
+
+            foreach (var r in model.GetComponentsInChildren<Renderer>(true))
             {
                 var src = r.sharedMaterials;
                 var dst = new Material[src.Length];
+                string namaObj = r.gameObject.name;
                 for (int i = 0; i < src.Length; i++)
                 {
                     var m = src[i];
                     if (m == null) { dst[i] = null; continue; }
-                    string k = tag + "_" + m.name;
+                    string kunciNama = m.name + "_" + namaObj;
+                    string k = tag + "_" + kunciNama;
                     Material cached;
-                    if (_cacheMatMixamo.TryGetValue(k, out cached) && cached != null) { dst[i] = cached; continue; }
+                    if (pakaiCache && _cacheMatMixamo.TryGetValue(k, out cached) && cached != null) { dst[i] = cached; continue; }
+
+                    Texture baseTex = m.HasProperty("_BaseMap") ? m.GetTexture("_BaseMap") : null;
+                    if (baseTex == null && m.HasProperty("_MainTex")) baseTex = m.GetTexture("_MainTex");
+                    Texture bumpTex = m.HasProperty("_BumpMap") ? m.GetTexture("_BumpMap") : null;
+                    bool punyaTex = baseTex != null;
+
                     var clone = new Material(m) { name = "AK_" + k };
-                    if (AdalahMaterialRambut(m.name))
+                    // Jika FBX masih memakai shader Standard/Legacy atau shader hilang, naikkan ke URP/Lit terlebih dulu.
+                    if (urpLit != null && (clone.shader == null || !clone.shader.name.Contains("Universal") && !clone.shader.name.Contains("AlasKeramat")))
                     {
-                        Color rambut = adalahKuntilanak ? new Color(0.06f, 0.06f, 0.07f, 1f) : new Color(0.08f, 0.068f, 0.06f, 1f);
+                        clone.shader = urpLit;
+                        if (baseTex != null) SafeMaterialFactory.SetT(clone, "_BaseMap", baseTex);
+                        if (bumpTex != null) SafeMaterialFactory.SetT(clone, "_BumpMap", bumpTex);
+                    }
+
+                    if (AdalahMaterialRambut(kunciNama))
+                    {
+                        Color rambut = kunti ? new Color(0.06f, 0.06f, 0.07f, 1f)
+                            : kiRogo ? new Color(0.38f, 0.36f, 0.34f, 1f)
+                            : new Color(0.09f, 0.068f, 0.055f, 1f);
                         SafeMaterialFactory.SetC(clone, "_BaseColor", rambut);
                         SafeMaterialFactory.SetC(clone, "_Color", rambut);
                         SafeMaterialFactory.SetF(clone, "_Smoothness", 0.14f);
                         SafeMaterialFactory.SetF(clone, "_EnvironmentReflections", 0f);
-                        SafeMaterialFactory.SetF(clone, "_AlphaClip", 1f);
-                        SafeMaterialFactory.SetF(clone, "_Cutoff", 0.35f);
-                        clone.EnableKeyword("_ALPHATEST_ON");
-                    }
-                    else if (AdalahMaterialKulit(m.name))
-                    {
-                        if (shaderKulit != null && !adalahKuntilanak)
+                        clone.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
+                        if (punyaTex)
                         {
-                            var baseTex = m.HasProperty("_BaseMap") ? m.GetTexture("_BaseMap") : null;
-                            var bumpTex = m.HasProperty("_BumpMap") ? m.GetTexture("_BumpMap") : null;
-                            clone.shader = shaderKulit;
+                            SafeMaterialFactory.SetF(clone, "_AlphaClip", 1f);
+                            SafeMaterialFactory.SetF(clone, "_Cutoff", 0.34f);
+                            clone.EnableKeyword("_ALPHATEST_ON");
+                        }
+                    }
+                    else if (AdalahMaterialMata(kunciNama))
+                    {
+                        Color mata = kunti ? new Color(0.88f, 0.24f, 0.18f, 1f)
+                            : p == Peran.Raksasa ? new Color(0.95f, 0.32f, 0.10f, 1f)
+                            : (punyaTex ? Color.white : new Color(0.18f, 0.11f, 0.07f, 1f));
+                        SafeMaterialFactory.SetC(clone, "_BaseColor", mata);
+                        SafeMaterialFactory.SetC(clone, "_Color", mata);
+                        SafeMaterialFactory.SetF(clone, "_Smoothness", 0.94f);
+                        if (kunti || p == Peran.Raksasa)
+                        {
+                            SafeMaterialFactory.SetC(clone, "_EmissionColor", kunti ? new Color(1.1f, 0.18f, 0.12f) : new Color(1.8f, 0.32f, 0.08f));
+                            clone.EnableKeyword("_EMISSION");
+                        }
+                    }
+                    else if (AdalahMaterialSepatu(kunciNama))
+                    {
+                        Color sep = punyaTex ? new Color(0.85f, 0.80f, 0.74f, 1f) : new Color(0.24f, 0.18f, 0.14f, 1f);
+                        SafeMaterialFactory.SetC(clone, "_BaseColor", sep);
+                        SafeMaterialFactory.SetC(clone, "_Color", sep);
+                        SafeMaterialFactory.SetF(clone, "_Smoothness", 0.24f);
+                    }
+                    else if (AdalahMaterialKulit(kunciNama))
+                    {
+                        if (shKulit != null && !kunti)
+                        {
+                            clone.shader = shKulit;
                             if (baseTex != null) SafeMaterialFactory.SetT(clone, "_BaseMap", baseTex);
                             if (bumpTex != null) SafeMaterialFactory.SetT(clone, "_BumpMap", bumpTex);
-                            SafeMaterialFactory.SetF(clone, "_BumpScale", 0.72f);
+                            SafeMaterialFactory.SetF(clone, "_BumpScale", 0.68f);
                         }
-                        Color kulit = WarnaKulitIndonesia(peran, adalahKuntilanak);
+                        Color kulit = WarnaKulitIndonesia(p, kunti);
                         SafeMaterialFactory.SetC(clone, "_BaseColor", kulit);
                         SafeMaterialFactory.SetC(clone, "_Color", kulit);
-                        SafeMaterialFactory.SetF(clone, "_Smoothness", adalahKuntilanak ? 0.22f : 0.34f);
-                    }
-                    else if (adalahKuntilanak)
-                    {
-                        Color gaun = new Color(0.84f, 0.83f, 0.80f, 1f);
-                        SafeMaterialFactory.SetC(clone, "_BaseColor", gaun);
-                        SafeMaterialFactory.SetC(clone, "_Color", gaun);
-                        SafeMaterialFactory.SetF(clone, "_Smoothness", 0.12f);
+                        SafeMaterialFactory.SetF(clone, "_Smoothness", kunti ? 0.22f : 0.34f);
                     }
                     else
                     {
-                        // Pakaian penyintas: redupkan kilau plastik dan beri rona tanah lembap Nusantara.
-                        Color c0 = clone.HasProperty("_BaseColor") ? clone.GetColor("_BaseColor") : Color.white;
-                        Color c1 = Color.Lerp(c0, new Color(c0.r * 0.88f, c0.g * 0.84f, c0.b * 0.78f, c0.a), 0.65f);
+                        // Pakaian / kain: bila FBX tidak punya tekstur, gunakan warna pakaian khas karakter (bukan putih polos).
+                        Color c1;
+                        if (punyaTex)
+                        {
+                            Color c0 = clone.HasProperty("_BaseColor") ? clone.GetColor("_BaseColor") : Color.white;
+                            c1 = kunti ? new Color(0.82f, 0.83f, 0.80f, 1f) : Color.Lerp(c0, new Color(c0.r * 0.92f, c0.g * 0.88f, c0.b * 0.82f, c0.a), 0.50f);
+                        }
+                        else
+                        {
+                            c1 = WarnaPakaianFallback(p, kunti, id, kunciNama);
+                        }
                         SafeMaterialFactory.SetC(clone, "_BaseColor", c1);
-                        SafeMaterialFactory.SetF(clone, "_Smoothness", 0.18f);
+                        SafeMaterialFactory.SetC(clone, "_Color", c1);
+                        SafeMaterialFactory.SetF(clone, "_Smoothness", 0.16f);
                     }
-                    _cacheMatMixamo[k] = clone;
+                    if (pakaiCache) _cacheMatMixamo[k] = clone;
                     dst[i] = clone;
                 }
                 r.sharedMaterials = dst;

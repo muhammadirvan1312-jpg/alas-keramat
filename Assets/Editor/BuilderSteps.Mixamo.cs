@@ -91,7 +91,9 @@ namespace AlasKeramat.EditorTools
         static GameObject MuatModelKarakter(string nama)
         {
             if (nama == null) return null;
-            return AssetDatabase.LoadAssetAtPath<GameObject>(ImporKarakterMixamo.Folder + "/" + nama + ".fbx");
+            string p = ImporKarakterMixamo.Folder + "/" + nama + ".fbx";
+            ImporKarakterMixamo.PastikanTeksturDiekstrak(p);
+            return AssetDatabase.LoadAssetAtPath<GameObject>(p);
         }
 
         static void Pasangkan(GameObject go, BankAnimasiMixamo bank, AnimasiMixamo.Peran peran, string namaUntukModel = null)
@@ -103,7 +105,7 @@ namespace AlasKeramat.EditorTools
             var model = MuatModelKarakter(ModelUntuk(nm));
             am.PasangModel(model);
             am.PasangShaderKulit(Shader.Find("AlasKeramat/KulitManusia"));
-            am.PasangOpsiVisual(nm.Contains("Kuntilanak"), nm.Contains("Genderuwo") || nm.Contains("Buto"));
+            am.PasangOpsiVisual(nm.Contains("Kuntilanak"), nm.Contains("Genderuwo") || nm.Contains("Buto"), nm);
             if (model != null) JumlahModelMixamo++;
             EditorUtility.SetDirty(am);
         }

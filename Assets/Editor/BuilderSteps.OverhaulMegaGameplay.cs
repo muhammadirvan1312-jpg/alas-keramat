@@ -138,10 +138,25 @@ namespace AlasKeramat.EditorTools
         static void PasangKualiJamuNusantara(GameObject induk, Material besi, Material apiMat)
         {
             var grup = Anak(induk, "KualiJamuNusantara");
-            var matUap = SimpanMat(SafeMaterialFactory.CreatePBR("M_UapJamu", new Color(0.64f, 0.92f, 0.56f, 0.42f), 0f, 0.1f, null, null, null, SurfaceMode.Transparent));
+            var shKabut = AmbilShaderAK("AlasKeramat/KabutLembut");
+            Material matUap;
+            if (shKabut != null)
+            {
+                var mU = new Material(shKabut) { name = "M_UapJamu" };
+                SafeMaterialFactory.SetC(mU, "_BaseColor", new Color(0.82f, 0.90f, 0.78f, 0.22f));
+                SafeMaterialFactory.SetF(mU, "_Mode", 1f);
+                SafeMaterialFactory.SetF(mU, "_SkalaNoise", 4.2f);
+                SafeMaterialFactory.SetF(mU, "_Kecepatan", 0.42f);
+                matUap = SimpanMat(mU);
+            }
+            else
+            {
+                matUap = SimpanMat(SafeMaterialFactory.CreatePBR("M_UapJamu", new Color(0.80f, 0.88f, 0.76f, 0.18f), 0f, 0.1f, null, null, null, SurfaceMode.Transparent));
+            }
+            var matAsap = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_AsapHeli.mat") ?? matUap;
             var lokasi = new[]
             {
-                new { nama = "Pos Heli", x = 20f, z = -440f },
+                new { nama = "Pos Heli", x = 15.5f, z = -444.5f },
                 new { nama = "Kampung Sukamaju", x = 58f, z = -372f },
                 new { nama = "Alun-Alun Desa Mati", x = 518f, z = 196f },
                 new { nama = "Kamp Peneliti", x = -386f, z = 312f },
@@ -156,9 +171,14 @@ namespace AlasKeramat.EditorTools
                 var bc = go.AddComponent<BoxCollider>(); bc.size = new Vector3(1.1f, 1.0f, 1.1f); bc.center = new Vector3(0f, 0.5f, 0f);
                 Hias(go, PrimitiveType.Cylinder, "Tungku", new Vector3(0f, 0.22f, 0f), new Vector3(0.85f, 0.22f, 0.85f), besi, true);
                 Hias(go, PrimitiveType.Sphere, "Kuali", new Vector3(0f, 0.52f, 0f), new Vector3(0.82f, 0.52f, 0.82f), besi, false);
-                Hias(go, PrimitiveType.Sphere, "Bara", new Vector3(0f, 0.24f, 0f), new Vector3(0.45f, 0.2f, 0.45f), apiMat, false);
-                var uap = Hias(go, PrimitiveType.Sphere, "UapHerbal", new Vector3(0f, 0.92f, 0f), new Vector3(0.48f, 0.36f, 0.48f), matUap, false);
+                Hias(go, PrimitiveType.Sphere, "Bara", new Vector3(0f, 0.24f, 0f), new Vector3(0.42f, 0.18f, 0.42f), apiMat, false);
+                var uap = Hias(go, PrimitiveType.Cylinder, "UapHerbal", new Vector3(0f, 0.96f, 0f), new Vector3(0.28f, 0.24f, 0.28f), matUap, false);
                 uap.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
+                var ps = uap.AddComponent<ParticleSystem>();
+                var pm = ps.main; pm.startLifetime = 2.2f; pm.startSpeed = 0.35f; pm.startSize = 0.42f; pm.startColor = new Color(0.88f, 0.94f, 0.84f, 0.34f); pm.maxParticles = 12; pm.prewarm = true;
+                var pe = ps.emission; pe.rateOverTime = 4f;
+                var psh = ps.shape; psh.shapeType = ParticleSystemShapeType.Circle; psh.radius = 0.18f;
+                var pr = ps.GetComponent<ParticleSystemRenderer>(); pr.sharedMaterial = matAsap; pr.shadowCastingMode = ShadowCastingMode.Off;
                 var kj = go.AddComponent<KualiJamuNusantara>();
                 kj.Pasang(lokasi[i].nama, uap.transform);
                 EditorUtility.SetDirty(kj);
@@ -205,6 +225,10 @@ namespace AlasKeramat.EditorTools
                 new Vector2(464f, 174f), new Vector2(472f, 182f), new Vector2(512f, 196f), new Vector2(520f, 200f),
                 new Vector2(-198f, -238f), new Vector2(-392f, 306f), new Vector2(-516f, -344f), new Vector2(-116f, 614f)
             };
+            var apiMesh = ProcGua.ApiTungku("ApiTungkuKunoV6", 31);
+            string pApiM = FolderLandmark + "/ApiTungkuKunoV6.asset";
+            AssetDatabase.DeleteAsset(pApiM); AssetDatabase.CreateAsset(apiMesh, pApiM);
+            apiMesh = AssetDatabase.LoadAssetAtPath<Mesh>(pApiM);
             for (int i = 0; i < pos.Length; i++)
             {
                 float y = WorldTerrainGenerator.SampleHeight(pos[i].x, pos[i].y);
@@ -213,8 +237,12 @@ namespace AlasKeramat.EditorTools
                 go.layer = GameLayers.Interactable; go.tag = GameTags.Interactable;
                 var bc = go.AddComponent<BoxCollider>(); bc.size = new Vector3(0.95f, 1.35f, 0.95f); bc.center = new Vector3(0f, 0.65f, 0f);
                 Hias(go, PrimitiveType.Cylinder, "PilarBatu", new Vector3(0f, 0.45f, 0f), new Vector3(0.62f, 0.45f, 0.62f), batu, true);
-                var nyala = Hias(go, PrimitiveType.Sphere, "NyalaApi", new Vector3(0f, 1.05f, 0f), new Vector3(0.38f, 0.48f, 0.38f), apiMat, false);
-                nyala.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
+                Hias(go, PrimitiveType.Cylinder, "MangkukBatu", new Vector3(0f, 0.90f, 0f), new Vector3(0.76f, 0.12f, 0.76f), batu, false);
+                var nyala = Anak(go, "NyalaApi");
+                nyala.transform.localPosition = new Vector3(0f, 0.96f, 0f);
+                nyala.transform.localScale = new Vector3(0.46f, 0.68f, 0.46f);
+                nyala.AddComponent<MeshFilter>().sharedMesh = apiMesh;
+                var nmr = nyala.AddComponent<MeshRenderer>(); nmr.sharedMaterial = apiMat; nmr.shadowCastingMode = ShadowCastingMode.Off;
                 var lGo = Anak(go, "CahayaTungku"); lGo.transform.localPosition = new Vector3(0f, 1.35f, 0f);
                 var l = lGo.AddComponent<Light>();
                 l.type = LightType.Point; l.range = 10.5f; l.intensity = 2.6f; l.color = new Color(1f, 0.58f, 0.20f); l.shadows = LightShadows.None;
