@@ -76,8 +76,8 @@ namespace AlasKeramat.World
 
             float iBerkas = bawah ? 0f : IntensitasBerkas(jam, w);
             Color colBerkas = jam > 15f
-                ? new Color(1.0f, 0.74f, 0.38f, iBerkas * 0.22f)
-                : new Color(1.0f, 0.94f, 0.72f, iBerkas * 0.19f);
+                ? new Color(1.0f, 0.76f, 0.42f, iBerkas * 0.11f)
+                : new Color(1.0f, 0.94f, 0.72f, iBerkas * 0.095f);
             _mpbBerkas.SetColor("_BaseColor", colBerkas);
 
             float jB2 = JarakBerkas * JarakBerkas;
@@ -95,10 +95,10 @@ namespace AlasKeramat.World
 
             float iKabut = bawah ? 0f : IntensitasKabutLembah(jam, w);
             Color colKabut = w == WeatherState.KabutDarah
-                ? new Color(0.55f, 0.16f, 0.14f, iKabut * 0.24f)
+                ? new Color(0.55f, 0.16f, 0.14f, iKabut * 0.18f)
                 : (jam >= 17.5f && jam < 19.2f
-                    ? new Color(0.86f, 0.58f, 0.42f, iKabut * 0.22f)
-                    : new Color(0.82f, 0.88f, 0.86f, iKabut * 0.22f));
+                    ? new Color(0.86f, 0.58f, 0.42f, iKabut * 0.16f)
+                    : new Color(0.82f, 0.88f, 0.86f, iKabut * 0.16f));
             _mpbKabut.SetColor("_BaseColor", colKabut);
 
             float jK2 = JarakKabut * JarakKabut;

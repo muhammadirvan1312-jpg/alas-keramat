@@ -110,18 +110,21 @@ namespace AlasKeramat.EditorTools
                 titikAsap[i] = new Vector3(asapXZ[i].x, WorldTerrainGenerator.SampleHeight(asapXZ[i].x, asapXZ[i].y) + (i == 1 ? 9.5f : 2.6f), asapXZ[i].y);
 
             var kayu = AmbilMat("M_Kayu");
-            var kainMerah = MatPolos("M_BenderaSekte", "#8A1E18");
-            var kainPutih = MatPolos("M_BenderaDesa", "#D8D2C0");
+            var kainDasar = AmbilMat("M_Kain");
+            var kainMerah = SimpanMat(SafeMaterialFactory.CreatePBR("M_UmbulSekte", new Color(0.56f, 0.14f, 0.11f), 0f, 0.15f, kainDasar != null ? kainDasar.mainTexture : null));
+            var kainPutih = SimpanMat(SafeMaterialFactory.CreatePBR("M_UmbulDesa", new Color(0.78f, 0.72f, 0.58f), 0f, 0.15f, kainDasar != null ? kainDasar.mainTexture : null));
             var daftarKain = new Transform[18];
             for (int i = 0; i < 18; i++)
             {
                 var c = asapXZ[i % asapXZ.Length];
-                float x = c.x + Mathf.Cos(i * 1.7f) * 6.5f, z = c.y + Mathf.Sin(i * 1.7f) * 6.5f;
+                float x = c.x + Mathf.Cos(i * 1.7f) * 11.5f, z = c.y + Mathf.Sin(i * 1.7f) * 11.5f;
                 float y = WorldTerrainGenerator.SampleHeight(x, z);
                 var tiang = Anak(go, "TiangBendera_" + i);
                 tiang.transform.position = new Vector3(x, y, z);
-                Hias(tiang, PrimitiveType.Cylinder, "Tiang", new Vector3(0f, 1.8f, 0f), new Vector3(0.07f, 1.8f, 0.07f), kayu, false);
-                var kain = Hias(tiang, PrimitiveType.Cube, "Kain", new Vector3(0.52f, 3.1f, 0f), new Vector3(0.95f, 0.55f, 0.04f), (i % 2 == 0) ? kainMerah : kainPutih, false);
+                // Umbul-umbul bambu vertikal khas Nusantara (melengkung lembut, bukan persegi kaku)
+                var bambu = Hias(tiang, PrimitiveType.Cylinder, "Tiang", new Vector3(0f, 2.25f, 0f), new Vector3(0.055f, 2.25f, 0.055f), kayu, false);
+                bambu.transform.localRotation = Quaternion.Euler(0f, 0f, -6f);
+                var kain = Hias(tiang, PrimitiveType.Cube, "Kain", new Vector3(0.32f, 3.15f, 0f), new Vector3(0.34f, 1.95f, 0.025f), (i % 2 == 0) ? kainMerah : kainPutih, false);
                 daftarKain[i] = kain.transform;
             }
 

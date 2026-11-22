@@ -187,20 +187,33 @@ namespace AlasKeramat.EditorTools
 
         static void BangunPendopoDanGerbangDesa(GameObject induk, Material kayu, Material genteng, List<Transform> lentera)
         {
-            // Pendopo alun-alun barat Desa Mati (bebas tabrakan dari RumahDesa_*)
+            // Pendopo Joglo alun-alun barat Desa Mati (atap miring Limasan/Joglo autentik Nusantara, bebas tabrakan)
             float x = 516f, z = 198f;
             float y = WorldTerrainGenerator.SampleHeight(x, z);
             var p = Anak(induk, "PendopoDesaMati");
             p.transform.position = new Vector3(x, y, z);
-            Hias(p, PrimitiveType.Cube, "LantaiPendopo", new Vector3(0f, 0.25f, 0f), new Vector3(8.5f, 0.5f, 8.5f), AmbilMat("M_Batu"), true);
+            var matBatuP = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_BatuCandi2K.mat") ?? AmbilMat("M_Batu");
+            Hias(p, PrimitiveType.Cube, "LantaiPendopo", new Vector3(0f, 0.25f, 0f), new Vector3(8.6f, 0.5f, 8.6f), matBatuP, true);
+            Hias(p, PrimitiveType.Cube, "UndakPendopo", new Vector3(0f, 0.08f, 0f), new Vector3(9.4f, 0.16f, 9.4f), matBatuP, true);
             for (int i = 0; i < 4; i++)
             {
                 float sx = (i % 2 == 0 ? -1f : 1f) * 3.4f, sz = (i < 2 ? -1f : 1f) * 3.4f;
-                Hias(p, PrimitiveType.Cylinder, "SokoGuru_" + i, new Vector3(sx, 2.1f, sz), new Vector3(0.22f, 1.9f, 0.22f), kayu, true);
+                Hias(p, PrimitiveType.Cylinder, "SokoGuru_" + i, new Vector3(sx, 2.05f, sz), new Vector3(0.22f, 1.85f, 0.22f), kayu, true);
+                Hias(p, PrimitiveType.Cube, "Umpak_" + i, new Vector3(sx, 0.62f, sz), new Vector3(0.46f, 0.28f, 0.46f), matBatuP, false);
             }
-            Hias(p, PrimitiveType.Cube, "AtapPendopoBawah", new Vector3(0f, 4.15f, 0f), new Vector3(9.4f, 0.35f, 9.4f), genteng, false);
-            Hias(p, PrimitiveType.Cube, "AtapPendopoAtas", new Vector3(0f, 5.15f, 0f), new Vector3(5.2f, 1.4f, 5.2f), genteng, false);
-            lentera.Add(BuatLenteraGantung(p, "LenteraPendopo", new Vector3(0f, 3.6f, 0f), kayu));
+            // Rangka balok atas & 4 bidang atap genteng miring Joglo (bukan kotak bertumpuk)
+            Hias(p, PrimitiveType.Cube, "BalokAtasU", new Vector3(0f, 3.82f, 3.4f), new Vector3(7.2f, 0.20f, 0.22f), kayu, false);
+            Hias(p, PrimitiveType.Cube, "BalokAtasS", new Vector3(0f, 3.82f, -3.4f), new Vector3(7.2f, 0.20f, 0.22f), kayu, false);
+            Hias(p, PrimitiveType.Cube, "BalokAtasT", new Vector3(3.4f, 3.82f, 0f), new Vector3(0.22f, 0.20f, 7.2f), kayu, false);
+            Hias(p, PrimitiveType.Cube, "BalokAtasB", new Vector3(-3.4f, 3.82f, 0f), new Vector3(0.22f, 0.20f, 7.2f), kayu, false);
+            Hias(p, PrimitiveType.Cube, "AtapMiringU", new Vector3(0f, 4.35f, 2.65f), new Vector3(9.6f, 0.16f, 4.6f), genteng, false).transform.localRotation = Quaternion.Euler(24f, 0f, 0f);
+            Hias(p, PrimitiveType.Cube, "AtapMiringS", new Vector3(0f, 4.35f, -2.65f), new Vector3(9.6f, 0.16f, 4.6f), genteng, false).transform.localRotation = Quaternion.Euler(-24f, 0f, 0f);
+            Hias(p, PrimitiveType.Cube, "AtapMiringT", new Vector3(2.65f, 4.35f, 0f), new Vector3(4.6f, 0.16f, 9.6f), genteng, false).transform.localRotation = Quaternion.Euler(0f, 0f, -24f);
+            Hias(p, PrimitiveType.Cube, "AtapMiringB", new Vector3(-2.65f, 4.35f, 0f), new Vector3(4.6f, 0.16f, 9.6f), genteng, false).transform.localRotation = Quaternion.Euler(0f, 0f, 24f);
+            Hias(p, PrimitiveType.Cube, "JogloAtasU", new Vector3(0f, 5.55f, 1.05f), new Vector3(4.8f, 0.16f, 2.9f), genteng, false).transform.localRotation = Quaternion.Euler(42f, 0f, 0f);
+            Hias(p, PrimitiveType.Cube, "JogloAtasS", new Vector3(0f, 5.55f, -1.05f), new Vector3(4.8f, 0.16f, 2.9f), genteng, false).transform.localRotation = Quaternion.Euler(-42f, 0f, 0f);
+            Hias(p, PrimitiveType.Cube, "WuwunganJoglo", new Vector3(0f, 6.45f, 0f), new Vector3(4.6f, 0.24f, 0.28f), kayu, false);
+            lentera.Add(BuatLenteraGantung(p, "LenteraPendopo", new Vector3(0f, 3.65f, 0f), kayu));
 
             // Gerbang Bambu Desa Mati & Kampung Sukamaju
             Vector2[] gerbang = { new Vector2(526f, 188f), new Vector2(48f, -388f) };

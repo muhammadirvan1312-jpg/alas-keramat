@@ -20,11 +20,11 @@ namespace AlasKeramat.EditorTools
             var lm = GameObject.Find(NamaRoot + "/World/Landmark") ?? GameObject.Find(NamaRoot + "/Landmark") ?? _root;
             var induk = Anak(lm, "MegaOverhaulVisualV2");
 
-            var matKayu = AmbilMat("M_Kayu");
-            var matBatu = AmbilMat("M_Batu");
-            var matGenteng = AmbilMat("M_Genteng") ?? MatPolos("M_GentengMega", "#7B3A24");
+            var matKayu = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_KayuLapuk2K.mat") ?? AmbilMat("M_Kayu");
+            var matBatu = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_BatuCandi2K.mat") ?? AmbilMat("M_Batu");
+            var matGenteng = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_GentengLumut.mat") ?? AmbilMat("M_Genteng") ?? MatPolos("M_GentengMega", "#7B3A24");
             var matKain = AmbilMat("M_Kain") ?? MatPolos("M_KainMega", "#8C3B2B");
-            var matKarat = AmbilMat("M_LogamKarat") ?? MatPolos("M_KaratMega", "#5B3B2B");
+            var matKarat = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_KaratPabrik2K.mat") ?? AmbilMat("M_LogamKarat") ?? MatPolos("M_KaratMega", "#5B3B2B");
             var matKristal = SimpanMat(SafeMaterialFactory.CreatePBR("M_KristalGuaAir", new Color(0.28f, 0.92f, 0.86f, 0.9f), 0.1f, 0.9f, null, null, new Color(0.55f, 2.2f, 2.0f)));
 
             BangunDermagaBarat(induk, matKayu, matKarat);
@@ -38,6 +38,7 @@ namespace AlasKeramat.EditorTools
             PasangBerkasCahayaDanKabutLembah(induk);
             PasangKunangDanDaunGugur(induk);
             SebarVignetteCeritaPulau(induk, matKayu, matBatu, matKain);
+            SebarDetailLantaiRimbaScan(induk, matBatu, matKayu);
 
             Catat("Mega Overhaul Visual V2: " + JumlahLandmarkMegaV2 + " landmark besar baru, " + JumlahBerkasCahaya + " god-rays, "
                 + JumlahKabutLembah + " kabut lembah, " + JumlahKunang + " kunang-kunang & " + JumlahVignetteDunia + " vignette dunia");
@@ -198,13 +199,34 @@ namespace AlasKeramat.EditorTools
         static void PasangBerkasCahayaDanKabutLembah(GameObject induk)
         {
             var grup = Anak(induk, "AtmosferBerkasDanKabut");
-            var matBerkas = SimpanMat(SafeMaterialFactory.CreatePBR("M_BerkasCahayaRimba", new Color(1f, 0.92f, 0.68f, 0.16f), 0f, 0.05f, null, null, new Color(1.0f, 0.86f, 0.52f), SurfaceMode.Transparent));
-            var matKabut = SimpanMat(SafeMaterialFactory.CreatePBR("M_KabutLembah", new Color(0.84f, 0.90f, 0.88f, 0.18f), 0f, 0.05f, null, null, null, SurfaceMode.Transparent));
+            var shKabut = Shader.Find("AlasKeramat/KabutLembut");
+            Material matBerkas, matKabut;
+            if (shKabut != null)
+            {
+                var mb = new Material(shKabut) { name = "M_BerkasCahayaRimba" };
+                SafeMaterialFactory.SetC(mb, "_BaseColor", new Color(1.0f, 0.91f, 0.68f, 0.095f));
+                SafeMaterialFactory.SetF(mb, "_Mode", 1f);
+                SafeMaterialFactory.SetF(mb, "_Kecepatan", 0.05f);
+                SafeMaterialFactory.SetF(mb, "_SkalaNoise", 2.4f);
+                matBerkas = SimpanMat(mb);
+
+                var mk = new Material(shKabut) { name = "M_KabutLembah" };
+                SafeMaterialFactory.SetC(mk, "_BaseColor", new Color(0.84f, 0.90f, 0.88f, 0.14f));
+                SafeMaterialFactory.SetF(mk, "_Mode", 0f);
+                SafeMaterialFactory.SetF(mk, "_Kecepatan", 0.07f);
+                SafeMaterialFactory.SetF(mk, "_SkalaNoise", 2.8f);
+                matKabut = SimpanMat(mk);
+            }
+            else
+            {
+                matBerkas = SimpanMat(SafeMaterialFactory.CreatePBR("M_BerkasCahayaRimba", new Color(1f, 0.92f, 0.68f, 0.06f), 0f, 0.05f, null, null, new Color(1.0f, 0.86f, 0.52f), SurfaceMode.Transparent));
+                matKabut = SimpanMat(SafeMaterialFactory.CreatePBR("M_KabutLembah", new Color(0.84f, 0.90f, 0.88f, 0.08f), 0f, 0.05f, null, null, null, SurfaceMode.Transparent));
+            }
 
             Vector2[] posBerkas =
             {
-                new Vector2(12f, -438f), new Vector2(46f, -382f), new Vector2(120f, -310f), new Vector2(268f, -218f),
-                new Vector2(314f, -162f), new Vector2(518f, 196f), new Vector2(468f, 178f), new Vector2(0f, -12f),
+                new Vector2(28f, -424f), new Vector2(58f, -366f), new Vector2(120f, -310f), new Vector2(268f, -218f),
+                new Vector2(314f, -162f), new Vector2(506f, 186f), new Vector2(468f, 178f), new Vector2(16f, -18f),
                 new Vector2(-195f, -236f), new Vector2(-262f, 112f), new Vector2(-390f, 310f), new Vector2(210f, 420f),
                 new Vector2(-120f, 610f), new Vector2(590f, 560f), new Vector2(720f, -140f), new Vector2(-580f, 620f),
                 new Vector2(-520f, -340f), new Vector2(-115f, -858f)
@@ -213,7 +235,8 @@ namespace AlasKeramat.EditorTools
             for (int i = 0; i < posBerkas.Length; i++)
             {
                 float y = WorldTerrainGenerator.SampleHeight(posBerkas[i].x, posBerkas[i].y);
-                var q = Hias(grup, PrimitiveType.Cylinder, "GodRay_" + i, new Vector3(posBerkas[i].x, y + 11f, posBerkas[i].y), new Vector3(3.2f, 13.5f, 3.2f), matBerkas, false);
+                var q = Hias(grup, PrimitiveType.Cylinder, "GodRay_" + i, new Vector3(posBerkas[i].x, y + 10.5f, posBerkas[i].y), new Vector3(4.6f, 12.5f, 4.6f), matBerkas, false);
+                q.transform.rotation = Quaternion.Euler(26f, 28f + (i % 5) * 9f, 10f);
                 var mr = q.GetComponent<MeshRenderer>();
                 mr.shadowCastingMode = ShadowCastingMode.Off;
                 mr.receiveShadows = false;
@@ -221,22 +244,23 @@ namespace AlasKeramat.EditorTools
                 JumlahBerkasCahaya++;
             }
 
+            // Kabut lembah melingkar halus ditempatkan khusus di sungai, air terjun, rawa & lembah (tidak menutupi heli/desa tengah).
             Vector2[] posKabut =
             {
                 new Vector2(240f, -245f), new Vector2(278f, -212f), new Vector2(312f, -165f), new Vector2(190f, -295f),
-                new Vector2(-180f, -154f), new Vector2(-220f, -135f), new Vector2(-150f, -190f), new Vector2(532f, 202f),
-                new Vector2(468f, 176f), new Vector2(54f, -374f), new Vector2(8f, -445f), new Vector2(0f, 12f),
+                new Vector2(-180f, -154f), new Vector2(-220f, -135f), new Vector2(-150f, -190f), new Vector2(494f, 174f),
+                new Vector2(452f, 162f), new Vector2(88f, -356f), new Vector2(-34f, -412f), new Vector2(34f, 24f),
                 new Vector2(-260f, 110f), new Vector2(-240f, 88f), new Vector2(-390f, 310f), new Vector2(210f, 420f),
-                new Vector2(-160f, 675f), new Vector2(580f, 540f), new Vector2(705f, -125f), new Vector2(-518f, -345f),
-                new Vector2(-640f, -552f), new Vector2(660f, -502f), new Vector2(-115f, -848f), new Vector2(18f, -844f)
+                new Vector2(-120f, 610f), new Vector2(590f, 560f), new Vector2(720f, -140f), new Vector2(-518f, -345f),
+                new Vector2(-640f, -552f), new Vector2(660f, -502f), new Vector2(-148f, -856f), new Vector2(36f, -848f)
             };
             var listKabut = new List<MeshRenderer>(posKabut.Length);
             var listAsal = new List<Vector3>(posKabut.Length);
             for (int i = 0; i < posKabut.Length; i++)
             {
-                float y = WorldTerrainGenerator.SampleHeight(posKabut[i].x, posKabut[i].y) + 0.9f;
+                float y = WorldTerrainGenerator.SampleHeight(posKabut[i].x, posKabut[i].y) + 0.55f;
                 var pos = new Vector3(posKabut[i].x, y, posKabut[i].y);
-                var q = Hias(grup, PrimitiveType.Quad, "KabutLembah_" + i, pos, new Vector3(26f, 26f, 1f), matKabut, false);
+                var q = Hias(grup, PrimitiveType.Quad, "KabutLembah_" + i, pos, new Vector3(30f, 30f, 1f), matKabut, false);
                 q.transform.rotation = Quaternion.Euler(90f, i * 19f, 0f);
                 var mr = q.GetComponent<MeshRenderer>();
                 mr.shadowCastingMode = ShadowCastingMode.Off;
@@ -333,6 +357,47 @@ namespace AlasKeramat.EditorTools
                     Hias(v, PrimitiveType.Cylinder, "Tonggak", new Vector3(-0.9f, 0.9f, 0.4f), new Vector3(0.11f, 0.95f, 0.11f), kayu, false);
                 }
                 JumlahVignetteDunia++;
+            }
+        }
+
+        // 65 gugus detail lantai rimba hasil scan Poly Haven (pakis, keladi, rumput, batu lumut, tunggul, akar, ranting)
+        // di sekeliling zona ikonik (menjaga radius aman 11 m dari spawn/koper heli).
+        static void SebarDetailLantaiRimbaScan(GameObject induk, Material matBatu, Material matKayu)
+        {
+            var grup = Anak(induk, "DetailLantaiRimbaScan");
+            var mDaun = new[] { MuatPropScan("PakisScan_LOD0"), MuatPropScan("KeladiScan"), MuatPropScan("RumputScanA"), MuatPropScan("RumputScanB") };
+            var mPadat = new[] { MuatPropScan("BatuLumutA"), MuatPropScan("BatuLumutB"), MuatPropScan("TunggulScan"), MuatPropScan("AkarScan"), MuatPropScan("RantingScanA") };
+            var matDaun = AmbilMat("M_DaunPohon") ?? MatPolos("M_PakisDetail", "#24441B");
+            var matKulit = AmbilMat("M_KulitPohon") ?? matKayu;
+
+            Vector2[] zona =
+            {
+                new Vector2(8f, -448f), new Vector2(56f, -376f), new Vector2(524f, 198f),
+                new Vector2(0f, 0f), new Vector2(312f, -165f), new Vector2(-265f, 115f)
+            };
+            var rnd = new System.Random(9431);
+            for (int i = 0; i < 65; i++)
+            {
+                var c = zona[i % zona.Length];
+                float a = (float)rnd.NextDouble() * Mathf.PI * 2f;
+                float r = 11.5f + (float)rnd.NextDouble() * 19.5f;
+                float x = c.x + Mathf.Cos(a) * r, z = c.y + Mathf.Sin(a) * r;
+                float y = WorldTerrainGenerator.SampleHeight(x, z);
+                if (y < 0.8f) continue;
+
+                bool daun = (i % 5) < 3;
+                var pool = daun ? mDaun : mPadat;
+                var mesh = pool[i % pool.Length] ?? mDaun[0] ?? mPadat[0];
+                if (mesh == null) continue;
+
+                var go = Anak(grup, "DetailScan_" + i);
+                go.transform.position = new Vector3(x, y - 0.04f, z);
+                go.transform.rotation = Quaternion.Euler(0f, (float)rnd.NextDouble() * 360f, 0f);
+                go.transform.localScale = Vector3.one * (daun ? (0.85f + (float)rnd.NextDouble() * 0.65f) : (0.75f + (float)rnd.NextDouble() * 0.55f));
+                go.AddComponent<MeshFilter>().sharedMesh = mesh;
+                var mr = go.AddComponent<MeshRenderer>();
+                mr.sharedMaterial = daun ? matDaun : ((i % 5) == 3 ? matBatu : matKulit);
+                mr.shadowCastingMode = daun ? ShadowCastingMode.Off : ShadowCastingMode.On;
             }
         }
     }

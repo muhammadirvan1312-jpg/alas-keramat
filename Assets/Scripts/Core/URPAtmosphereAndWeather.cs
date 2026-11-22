@@ -6,8 +6,8 @@ namespace AlasKeramat.Core
     public partial class URPAtmosphereAndWeather : MonoBehaviour
     {
         public const float SudutUtara = -35f;
-        const float IntensitasMatahari = 2.0f, IntensitasBulan = 1.60f;
-        const float KabutSiang = 0.0044f, KabutMalam = 0.0068f, KabutMaghrib = 0.0055f; // kabut jarak lembut memadukan bukit ke langit
+        const float IntensitasMatahari = 2.15f, IntensitasBulan = 1.65f;
+        const float KabutSiang = 0.0038f, KabutMalam = 0.0058f, KabutMaghrib = 0.0046f; // kabut jarak lembut memadukan bukit ke langit
 
         [SerializeField] Light sun;
         [SerializeField] Light moon;
@@ -80,13 +80,13 @@ namespace AlasKeramat.Core
         static void SiapkanGradien()
         {
             if (_warnaMatahari != null) return;
-            // Maks 8 kunci per Gradient (batas Unity).
-            _warnaMatahari = G("#283652@0", "#FF8848@5.8", "#FFD59E@7.5", "#FFF0D8@12", "#FF5428@18", "#B31E12@18.6", "#283652@19.5", "#283652@24");
-            _warnaLangit = G("#060912@0", "#EC945D@6", "#8AB2D8@8", "#7BA4D4@13", "#C84B28@18", "#741410@18.6", "#0A0E18@19.6", "#060912@24");
-            _warnaKabut = G("#101B28@0", "#565466@5.5", "#B6C4BE@7", "#A4BFC0@12", "#A4422C@18", "#501412@18.7", "#131F2E@19.6", "#101B28@24");
-            _ambienAtas = G("#1E324B@0", "#4E4E68@5.6", "#A4C8E6@8", "#BAD6EA@12", "#AD4E38@18", "#341412@18.8", "#1E324B@19.6", "#1E324B@24");
-            _ambienTengah = G("#142236@0", "#38363E@5.6", "#60785B@8", "#6C8466@12", "#6E3022@18", "#22100E@18.8", "#142236@19.6", "#142236@24");
-            _ambienBawah = G("#0C1424@0", "#242022@5.6", "#384030@8", "#424E38@12", "#341812@18", "#120A08@18.8", "#0C1424@19.6", "#0C1424@24");
+            // Maks 8 kunci per Gradient (batas Unity) — pantulan ambien senja/maghrib/malam diangkat agar siluet kaya detail.
+            _warnaMatahari = G("#34486E@0", "#FF9252@5.8", "#FFDAA6@7.5", "#FFF4DF@12", "#FF6836@18", "#C83420@18.6", "#34486E@19.5", "#34486E@24");
+            _warnaLangit = G("#0A1020@0", "#F09B64@6", "#88B6DE@8", "#74A6DA@13", "#D45A34@18", "#822422@18.6", "#0E1626@19.6", "#0A1020@24");
+            _warnaKabut = G("#142234@0", "#646072@5.5", "#B8C8C4@7", "#9ABCC4@12", "#AE523A@18", "#5E2424@18.7", "#18283C@19.6", "#142234@24");
+            _ambienAtas = G("#284062@0", "#5E5A78@5.6", "#AED0EC@8", "#C4DDF0@12", "#BA6046@18", "#482428@18.8", "#284062@19.6", "#284062@24");
+            _ambienTengah = G("#1B2D46@0", "#46424C@5.6", "#6A8664@8", "#76906E@12", "#7E3E2E@18", "#341C1E@18.8", "#1B2D46@19.6", "#1B2D46@24");
+            _ambienBawah = G("#121D30@0", "#302A2C@5.6", "#424C38@8", "#4C5840@12", "#46261E@18", "#221414@18.8", "#121D30@19.6", "#121D30@24");
         }
 
         public void Terapkan(float jam)
@@ -122,7 +122,7 @@ namespace AlasKeramat.Core
             RenderSettings.fogColor = _warnaKabut.Evaluate(u);
             bool maghrib = jam >= 17.6f && jam < 19.2f;
             RenderSettings.fogDensity = maghrib ? KabutMaghrib : Mathf.Lerp(KabutSiang, KabutMalam, Malam01(jam));
-            RenderSettings.reflectionIntensity = Mathf.Lerp(0.40f, 0.16f, Malam01(jam));
+            RenderSettings.reflectionIntensity = Mathf.Lerp(0.54f, 0.26f, Malam01(jam));
             if (skybox != null)
             {
                 RenderSettings.skybox = skybox;

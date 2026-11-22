@@ -111,21 +111,21 @@ namespace AlasKeramat.EditorTools
                 }
             }
 
-            // Lempeng jalan batu berlumut di Desa Mati & jalan masuk Altar Beringin.
+            // Lempeng jalan batu berlumut ditanam rata tanah di jalur masuk selatan Desa Mati & Altar Beringin (bebas tabrakan meja/rumah).
             var matPelapis = matJalan ?? AmbilMat("M_Batu");
             var jalanInduk = Anak(induk, "JalanBatuDesa");
             for (int i = 0; i < 14; i++)
             {
-                float x = 532f + i * 2.6f, z = 194f + i * 2.1f;
-                float y = WorldTerrainGenerator.SampleHeight(x, z) + 0.03f;
-                var q = Hias(jalanInduk, PrimitiveType.Cube, "LempengDesa_" + i, new Vector3(x, y, z), new Vector3(2.3f, 0.08f, 1.9f), matPelapis, false);
-                q.transform.rotation = Quaternion.Euler(0f, 38f + (i % 3) * 6f, 0f);
+                float x = 524f + Mathf.Sin(i * 0.35f) * 1.1f, z = 156f + i * 2.15f;
+                float y = WorldTerrainGenerator.SampleHeight(x, z) - 0.015f;
+                var q = Hias(jalanInduk, PrimitiveType.Cube, "LempengDesa_" + i, new Vector3(x, y, z), new Vector3(1.85f, 0.07f, 1.45f), matPelapis, false);
+                q.transform.rotation = Quaternion.Euler(0f, (i % 3 - 1) * 7f, 0f);
             }
             for (int i = 0; i < 10; i++)
             {
                 float x = 2f + Mathf.Sin(i * 0.4f) * 1.2f, z = -34f + i * 2.5f;
-                float y = WorldTerrainGenerator.SampleHeight(x, z) + 0.03f;
-                var q = Hias(jalanInduk, PrimitiveType.Cube, "LempengAltar_" + i, new Vector3(x, y, z), new Vector3(2.4f, 0.08f, 2.0f), matPelapis, false);
+                float y = WorldTerrainGenerator.SampleHeight(x, z) - 0.015f;
+                var q = Hias(jalanInduk, PrimitiveType.Cube, "LempengAltar_" + i, new Vector3(x, y, z), new Vector3(2.0f, 0.07f, 1.55f), matPelapis, false);
                 q.transform.rotation = Quaternion.Euler(0f, (i % 2) * 8f, 0f);
             }
         }
@@ -456,22 +456,22 @@ namespace AlasKeramat.EditorTools
             var strip = new GameObject("KompasSuhuStrip", typeof(RectTransform), typeof(Image));
             strip.transform.SetParent(canvas.transform, false);
             var rt = (RectTransform)strip.transform;
-            rt.anchorMin = new Vector2(0.5f, 1f); rt.anchorMax = new Vector2(0.5f, 1f);
-            rt.pivot = new Vector2(0.5f, 1f); rt.anchoredPosition = new Vector2(0f, -14f);
-            rt.sizeDelta = new Vector2(310f, 30f);
+            rt.anchorMin = new Vector2(1f, 1f); rt.anchorMax = new Vector2(1f, 1f);
+            rt.pivot = new Vector2(1f, 1f); rt.anchoredPosition = new Vector2(-12f, -158f);
+            rt.sizeDelta = new Vector2(198f, 24f);
             var bg = strip.GetComponent<Image>();
-            bg.color = new Color(0.05f, 0.07f, 0.08f, 0.56f); bg.raycastTarget = false;
+            bg.color = new Color(0.04f, 0.06f, 0.07f, 0.56f); bg.raycastTarget = false;
 
             var tGo = new GameObject("TeksKompasSuhu", typeof(RectTransform), typeof(Text));
             tGo.transform.SetParent(strip.transform, false);
             var trt = (RectTransform)tGo.transform;
             trt.anchorMin = Vector2.zero; trt.anchorMax = Vector2.one;
-            trt.offsetMin = new Vector2(8f, 2f); trt.offsetMax = new Vector2(-8f, -2f);
+            trt.offsetMin = new Vector2(6f, 1f); trt.offsetMax = new Vector2(-6f, -1f);
             var txt = tGo.GetComponent<Text>();
             txt.font = ProceduralAssetFactory.GetSafeFont();
-            txt.fontSize = 15; txt.alignment = TextAnchor.MiddleCenter;
+            txt.fontSize = 12; txt.alignment = TextAnchor.MiddleCenter;
             txt.color = new Color(0.92f, 0.95f, 0.90f, 0.95f); txt.raycastTarget = false;
-            txt.text = "U  |  Hutan Rimba  |  28 C";
+            txt.text = "U | Hutan Rimba | 28 C";
 
             var kompas = strip.AddComponent<KompasSuhuHUD>();
             kompas.Pasang(txt);

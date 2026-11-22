@@ -94,10 +94,10 @@ namespace AlasKeramat.Core
         Color _filter = Color.white, _targetFilter = Color.white;
         public static Vector4 Target(float jam, WeatherState cuaca)
         {
-            Vector4 siang = new Vector4(0.32f, 3f, 3f, 0.16f);
-            Vector4 maghrib = new Vector4(0.24f, 6f, 18f, 0.22f);
-            Vector4 malam = new Vector4(0.30f, -8f, -12f, 0.22f);
-            Vector4 fajar = new Vector4(0.24f, 3f, 12f, 0.22f);
+            Vector4 siang = new Vector4(0.34f, 6f, 4f, 0.15f);
+            Vector4 maghrib = new Vector4(0.32f, 10f, 18f, 0.20f);
+            Vector4 malam = new Vector4(0.36f, -4f, -10f, 0.20f);
+            Vector4 fajar = new Vector4(0.30f, 6f, 12f, 0.19f);
             Vector4 v;
             if (jam >= 7f && jam < 16.5f) v = siang;
             else if (jam >= 16.5f && jam < 18f) v = Vector4.Lerp(siang, maghrib, (jam - 16.5f) / 1.5f);

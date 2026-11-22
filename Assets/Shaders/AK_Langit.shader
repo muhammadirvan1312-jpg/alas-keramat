@@ -132,11 +132,33 @@ Shader "AlasKeramat/Langit"
                 half atasMask = saturate((half)(rawDir.y * 5.0));
                 sky += half3(0.78h, 0.88h, 1.0h) * (moonDisc * 1.75h + moonHalo) * (half)_NightBlend * atasMask * cerahMask;
 
-                float starCell = Hash21(floor(rawDir.xz / max(rawDir.y + 0.15, 0.15) * 98.0));
-                float starTwinkle = 0.62 + 0.38 * sin(_Time.y * 2.6 + starCell * 62.0);
-                half bintang = step(0.9942, starCell) * (half)starTwinkle * saturate((half)((rawDir.y - 0.05) * 6.0)) * (half)_NightBlend * cerahMask;
-                half bimaSakti = exp(-abs(rawDir.x * 1.4h - rawDir.z * 0.8h + 0.15h) * 3.8h) * atasMask * (half)_NightBlend * cerahMask * 0.055h;
-                sky += half3(0.45h, 0.58h, 0.85h) * bimaSakti;
+                // Bintang melingkar tajam 2 lapis (tanpa piksel kotak!) & pita Bima Sakti halus saat malam cerah.
+                float2 starProj = rawDir.xz / max(rawDir.y + 0.16, 0.16);
+                float2 sGrid1 = starProj * 78.0;
+                float2 sCell1 = floor(sGrid1), sFrac1 = frac(sGrid1);
+                float sHash1 = Hash21(sCell1);
+                float2 sOff1 = float2(frac(sHash1 * 17.3), frac(sHash1 * 31.7)) * 0.56 + 0.22;
+                float sDist1 = length(sFrac1 - sOff1);
+                float sTwink1 = 0.68 + 0.32 * sin(_Time.y * 2.8 + sHash1 * 62.0);
+                half star1 = smoothstep(0.085, 0.012, sDist1) * step(0.86, sHash1) * (half)sTwink1;
+
+                float2 sGrid2 = starProj * 155.0 + 19.3;
+                float2 sCell2 = floor(sGrid2), sFrac2 = frac(sGrid2);
+                float sHash2 = Hash21(sCell2);
+                float2 sOff2 = float2(frac(sHash2 * 23.1), frac(sHash2 * 41.9)) * 0.6 + 0.2;
+                half star2 = smoothstep(0.095, 0.015, length(sFrac2 - sOff2)) * step(0.88, sHash2) * 0.62h;
+
+                half nightSkyMask = saturate((half)((rawDir.y - 0.04) * 6.0)) * (half)_NightBlend * cerahMask;
+                half3 starTint = lerp(half3(0.82h, 0.90h, 1.0h), half3(1.0h, 0.92h, 0.78h), (half)frac(sHash1 * 9.7));
+                half3 bintangCol = starTint * (star1 + star2) * nightSkyMask * 1.35h;
+
+                half bimaMask = exp(-abs(rawDir.x * 1.45h - rawDir.z * 0.82h + 0.14h) * 3.6h);
+                half bimaDust = (half)FbmAwan(starProj * 1.8 + 4.2);
+                sky += half3(0.42h, 0.56h, 0.86h) * (bimaMask * bimaDust * atasMask * (half)_NightBlend * cerahMask * 0.09h);
+
+                // Pendaran atmosfer hangat di cakrawala dekat matahari saat fajar & senja.
+                half scatterH = pow(sunDot, 5.0h) * exp(-abs((half)rawDir.y) * 5.2h) * cerahMask;
+                sky += _SunColor.rgb * scatterH * lerp(0.18h, 0.52h, (half)_DuskBlend);
 
                 // Awan 2 lapis (sirus tinggi + kumulus tebal) dengan silver-lining matahari & kilatan petir badai.
                 float2 proj = rawDir.xz / max(rawDir.y + 0.17, 0.17);
@@ -161,7 +183,7 @@ Shader "AlasKeramat/Langit"
                 // Kilatan petir menerangi awan dari dalam saat badai!
                 awanCol += half3(0.82h, 0.90h, 1.0h) * ((half)_Lightning * (0.45h + 0.85h * tebalInti));
 
-                sky += half3(0.86h, 0.93h, 1.0h) * bintang * (1.0h - awanAlpha);
+                sky += bintangCol * (1.0h - awanAlpha);
                 sky = lerp(sky, awanCol, awanAlpha);
 
                 half horizonMix = smoothstep((half)_HorizonHeight, -0.03h, (half)rawDir.y);

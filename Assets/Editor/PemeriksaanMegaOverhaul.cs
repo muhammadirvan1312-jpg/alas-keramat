@@ -17,6 +17,9 @@ namespace AlasKeramat.EditorTools
             bool skyOk = sky != null && sky.HasProperty("_StormBlend") && sky.HasProperty("_CloudCover") && sky.HasProperty("_Lightning");
             cek("Shader Langit mendukung Badai/Awan 2 Lapis/Kilat", skyOk);
 
+            var shKabut = Shader.Find("AlasKeramat/KabutLembut");
+            cek("Shader KabutLembut (God-Ray & Kabut Radial halus) ada", shKabut != null);
+
             var berkas = Object.FindFirstObjectByType<BerkasCahayaRimba>(FindObjectsInactive.Include);
             cek("BerkasCahayaRimba & Kabut Lembah terpasang", berkas != null && berkas.JumlahBerkas >= 18 && berkas.JumlahKabut >= 24);
             cek("Intensitas God-Ray pagi > 0 & malam = 0", BerkasCahayaRimba.IntensitasBerkas(8f, WeatherState.Cerah) > 0.5f

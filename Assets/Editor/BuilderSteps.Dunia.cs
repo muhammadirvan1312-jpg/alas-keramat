@@ -56,15 +56,16 @@ namespace AlasKeramat.EditorTools
             var hasil = new TerrainLayer[LapisTerrain.Length];
             for (int i = 0; i < LapisTerrain.Length; i++)
             {
-                float ubin = i == L_Batu ? 12.5f : i == L_Pasir ? 9.5f : i == L_Daun ? 6.8f : i == L_Rumput ? 7.2f : 6.4f;
+                // Skala ubin asimetris non-periodik memecah pola garis berulang pada lereng bukit jauh.
+                float ubin = i == L_Batu ? 21.3f : i == L_Pasir ? 16.5f : i == L_Daun ? 11.8f : i == L_Rumput ? 17.7f : i == L_Lumpur ? 13.9f : 14.3f;
                 var tl = new TerrainLayer
                 {
                     diffuseTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + ".png"),
                     normalMapTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + "_n.png"),
                     maskMapTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + "_mask.png"),
-                    normalScale = i == L_Batu || i == L_Daun ? 1.45f : i == L_Rumput || i == L_Lumpur ? 1.25f : 1.05f,
-                    tileSize = new Vector2(ubin, ubin),
-                    smoothness = i == L_Lumpur ? 0.38f : i == L_Batu ? 0.16f : 0.08f
+                    normalScale = i == L_Batu || i == L_Daun ? 1.55f : i == L_Rumput || i == L_Lumpur ? 1.35f : 1.15f,
+                    tileSize = new Vector2(ubin, ubin * 1.13f),
+                    smoothness = i == L_Lumpur ? 0.42f : i == L_Batu ? 0.18f : 0.10f
                 };
                 if (tl.diffuseTexture == null) throw new Exception("tekstur terrain hilang: " + LapisTerrain[i]);
                 string p = FolderTerrain + "/L_" + LapisTerrain[i] + ".terrainlayer";

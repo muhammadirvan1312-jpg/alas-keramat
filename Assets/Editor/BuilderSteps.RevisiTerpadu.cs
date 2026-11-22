@@ -34,17 +34,17 @@ namespace AlasKeramat.EditorTools
             rrt.anchorMin = Vector2.zero; rrt.anchorMax = Vector2.one;
             rrt.offsetMin = Vector2.zero; rrt.offsetMax = Vector2.zero;
 
-            // 1. Pill Status Musim / Level / Ancaman Sekte (di bawah PenandaLandmarkStrip, y = -76)
+            // 1. Pill Status Musim / Level / Ancaman Sekte (kanan atas rapi di bawah PenandaLandmarkStrip, y = -208)
             var pill = new GameObject("PillStatusSurvival", typeof(RectTransform), typeof(Image));
             pill.transform.SetParent(root.transform, false);
             var prt = (RectTransform)pill.transform;
-            prt.anchorMin = new Vector2(0.5f, 1f); prt.anchorMax = new Vector2(0.5f, 1f);
-            prt.pivot = new Vector2(0.5f, 1f); prt.anchoredPosition = new Vector2(0f, -76f);
-            prt.sizeDelta = new Vector2(360f, 22f);
+            prt.anchorMin = new Vector2(1f, 1f); prt.anchorMax = new Vector2(1f, 1f);
+            prt.pivot = new Vector2(1f, 1f); prt.anchoredPosition = new Vector2(-12f, -208f);
+            prt.sizeDelta = new Vector2(198f, 20f);
             var pImg = pill.GetComponent<Image>();
-            pImg.color = new Color(0.03f, 0.05f, 0.06f, 0.42f); pImg.raycastTarget = false;
+            pImg.color = new Color(0.03f, 0.05f, 0.06f, 0.48f); pImg.raycastTarget = false;
 
-            var txtStatus = BuatTeksTerpadu(pill.transform, "TeksStatus", 12, new Color(0.84f, 0.92f, 0.88f, 0.92f), TextAnchor.MiddleCenter);
+            var txtStatus = BuatTeksTerpadu(pill.transform, "TeksStatus", 10, new Color(0.84f, 0.92f, 0.88f, 0.92f), TextAnchor.MiddleCenter);
             txtStatus.text = "Kemarau | Kuat Lv.1 Lari Lv.1";
 
             // 2. Kilatan Kombo x2 / FINISHER x3 (tengah-bawah reticle)
@@ -67,8 +67,8 @@ namespace AlasKeramat.EditorTools
             bossPanel.transform.SetParent(root.transform, false);
             var brt = (RectTransform)bossPanel.transform;
             brt.anchorMin = new Vector2(0.5f, 1f); brt.anchorMax = new Vector2(0.5f, 1f);
-            brt.pivot = new Vector2(0.5f, 1f); brt.anchoredPosition = new Vector2(0f, -106f);
-            brt.sizeDelta = new Vector2(340f, 34f);
+            brt.pivot = new Vector2(0.5f, 1f); brt.anchoredPosition = new Vector2(0f, -124f);
+            brt.sizeDelta = new Vector2(320f, 32f);
             var bBg = bossPanel.GetComponent<Image>();
             bBg.color = new Color(0.08f, 0.02f, 0.02f, 0.72f); bBg.raycastTarget = false;
 

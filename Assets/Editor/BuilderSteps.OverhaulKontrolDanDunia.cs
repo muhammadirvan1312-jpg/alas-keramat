@@ -80,20 +80,20 @@ namespace AlasKeramat.EditorTools
             var strip = new GameObject("PenandaLandmarkStrip", typeof(RectTransform), typeof(Image));
             strip.transform.SetParent(canvas.transform, false);
             var rt = (RectTransform)strip.transform;
-            rt.anchorMin = new Vector2(0.5f, 1f); rt.anchorMax = new Vector2(0.5f, 1f);
-            rt.pivot = new Vector2(0.5f, 1f); rt.anchoredPosition = new Vector2(0f, -48f);
-            rt.sizeDelta = new Vector2(310f, 24f);
+            rt.anchorMin = new Vector2(1f, 1f); rt.anchorMax = new Vector2(1f, 1f);
+            rt.pivot = new Vector2(1f, 1f); rt.anchoredPosition = new Vector2(-12f, -184f);
+            rt.sizeDelta = new Vector2(198f, 22f);
             var bg = strip.GetComponent<Image>();
-            bg.color = new Color(0.04f, 0.06f, 0.07f, 0.45f); bg.raycastTarget = false;
+            bg.color = new Color(0.04f, 0.06f, 0.07f, 0.50f); bg.raycastTarget = false;
 
             var tGo = new GameObject("TeksLandmark", typeof(RectTransform), typeof(Text));
             tGo.transform.SetParent(strip.transform, false);
             var trt = (RectTransform)tGo.transform;
             trt.anchorMin = Vector2.zero; trt.anchorMax = Vector2.one;
-            trt.offsetMin = new Vector2(6f, 1f); trt.offsetMax = new Vector2(-6f, -1f);
+            trt.offsetMin = new Vector2(5f, 1f); trt.offsetMax = new Vector2(-5f, -1f);
             var txt = tGo.GetComponent<Text>();
             txt.font = ProceduralAssetFactory.GetSafeFont();
-            txt.fontSize = 13; txt.alignment = TextAnchor.MiddleCenter;
+            txt.fontSize = 11; txt.alignment = TextAnchor.MiddleCenter;
             txt.color = new Color(0.95f, 0.85f, 0.48f, 0.94f); txt.raycastTarget = false;
             txt.text = "TERDEKAT: Lokasi Heli";
 
@@ -156,26 +156,50 @@ namespace AlasKeramat.EditorTools
             var grup = Anak(induk, "BungaTropisLiar");
             var mats = new[]
             {
-                MatPolos("M_BungaMerah", "#C8342E"),
-                MatPolos("M_BungaKuning", "#E2B628"),
-                MatPolos("M_BungaUngu", "#8C42A8")
+                MatPolos("M_BungaMerah", "#9C2C26"),
+                MatPolos("M_BungaKuning", "#B89428"),
+                MatPolos("M_BungaUngu", "#6E387E")
             };
-            var daun = MatPolos("M_DaunBunga", "#2E5424");
-            Vector2[] pusat = { new Vector2(12f, -440f), new Vector2(56f, -376f), new Vector2(540f, 204f), new Vector2(312f, -172f), new Vector2(-265f, 105f), new Vector2(0f, -18f) };
+            var mKeladi = MuatPropScan("KeladiScan");
+            var mPakis = MuatPropScan("PakisScan_LOD0");
+            var mRumput = MuatPropScan("RumputScanA");
+            var matDaun = AmbilMat("M_DaunPohon") ?? MatPolos("M_DaunBunga", "#25441D");
+            Vector2[] pusat = { new Vector2(18f, -432f), new Vector2(56f, -376f), new Vector2(516f, 186f), new Vector2(312f, -172f), new Vector2(-265f, 105f), new Vector2(0f, -22f) };
             var rnd = new System.Random(5519);
             for (int i = 0; i < 60; i++)
             {
                 var c = pusat[i % pusat.Length];
                 float a = (float)rnd.NextDouble() * Mathf.PI * 2f;
-                float r = 4f + (float)rnd.NextDouble() * 18f;
+                float r = 7f + (float)rnd.NextDouble() * 19f;
                 float x = c.x + Mathf.Cos(a) * r, z = c.y + Mathf.Sin(a) * r;
                 float y = WorldTerrainGenerator.SampleHeight(x, z);
                 if (y < 1.0f) continue;
                 var b = Anak(grup, "Bunga_" + i);
-                b.transform.position = new Vector3(x, y, z);
-                Hias(b, PrimitiveType.Sphere, "Rumpun", new Vector3(0f, 0.16f, 0f), new Vector3(0.55f, 0.28f, 0.55f), daun, false);
-                Hias(b, PrimitiveType.Sphere, "KelopakA", new Vector3(-0.12f, 0.34f, 0.08f), Vector3.one * 0.16f, mats[i % mats.Length], false);
-                Hias(b, PrimitiveType.Sphere, "KelopakB", new Vector3(0.14f, 0.31f, -0.06f), Vector3.one * 0.14f, mats[(i + 1) % mats.Length], false);
+                b.transform.position = new Vector3(x, y - 0.03f, z);
+                b.transform.rotation = Quaternion.Euler(0f, (float)rnd.NextDouble() * 360f, 0f);
+
+                // Pakai mesh daun scan asli (Keladi/Pakis/Rumput) + kelopak tipis menyilang (bukan bola kartun).
+                var scan = (i % 3 == 0 ? mKeladi : (i % 3 == 1 ? mPakis : mRumput)) ?? mKeladi ?? mPakis;
+                if (scan != null)
+                {
+                    var d = Anak(b, "DaunScan");
+                    d.transform.localScale = Vector3.one * (0.65f + (float)rnd.NextDouble() * 0.45f);
+                    d.AddComponent<MeshFilter>().sharedMesh = scan;
+                    var mr = d.AddComponent<MeshRenderer>();
+                    mr.sharedMaterial = matDaun;
+                    mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+                else
+                {
+                    var q1 = Hias(b, PrimitiveType.Quad, "DaunA", new Vector3(0f, 0.18f, 0f), new Vector3(0.45f, 0.32f, 1f), matDaun, false);
+                    q1.transform.localRotation = Quaternion.Euler(25f, 0f, 0f);
+                }
+                var kA = Hias(b, PrimitiveType.Quad, "KelopakA", new Vector3(0.05f, 0.28f, 0.04f), new Vector3(0.11f, 0.11f, 1f), mats[i % mats.Length], false);
+                kA.transform.localRotation = Quaternion.Euler(55f, 25f, 0f);
+                kA.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                var kB = Hias(b, PrimitiveType.Quad, "KelopakB", new Vector3(-0.07f, 0.24f, -0.05f), new Vector3(0.09f, 0.09f, 1f), mats[(i + 1) % mats.Length], false);
+                kB.transform.localRotation = Quaternion.Euler(62f, 145f, 0f);
+                kB.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 JumlahBungaTropis++;
             }
         }
