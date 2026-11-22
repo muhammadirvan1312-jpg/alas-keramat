@@ -32,6 +32,7 @@ namespace AlasKeramat.EditorTools
                 imp.textureType=TextureImporterType.Default;imp.isReadable=true;imp.sRGBTexture=peta=="Albedo";imp.maxTextureSize=2048;imp.textureCompression=TextureImporterCompression.Uncompressed;
                 var settings=imp.GetPlatformTextureSettings("Android");settings.overridden=true;settings.maxTextureSize=2048;settings.format=TextureImporterFormat.RGBA32;imp.SetPlatformTextureSettings(settings);imp.SaveAndReimport();
             }
+            LepasMemoriBerkala();
             return AssetDatabase.LoadAssetAtPath<Texture2D>(p);
         }
         static void PanggangFotoPBR()

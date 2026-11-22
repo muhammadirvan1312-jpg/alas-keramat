@@ -30,6 +30,11 @@ jobs:
         with:
           tool-cache: false
 
+      - name: Tambah swap 16 GB (pulau 4 km butuh RAM besar)
+        run: |
+          sudo fallocate -l 16G /swapfile_ak && sudo chmod 600 /swapfile_ak && sudo mkswap /swapfile_ak >/dev/null && sudo swapon /swapfile_ak
+          free -h
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -247,6 +252,11 @@ jobs:
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
+
+      - name: Tambah swap 16 GB (pulau 4 km butuh RAM besar)
+        run: |
+          sudo fallocate -l 16G /swapfile_ak && sudo chmod 600 /swapfile_ak && sudo mkswap /swapfile_ak >/dev/null && sudo swapon /swapfile_ak
+          free -h
 
       - name: Checkout
         uses: actions/checkout@v4

@@ -141,7 +141,22 @@ namespace AlasKeramat.EditorTools
                 _laporan.Add("[GAGAL] " + nama + ": " + e.Message);
                 Debug.LogError("[AK][Builder] Langkah " + nama + " gagal: " + e);
             }
+            LepasMemori();
         }
+
+        // Pulau 4 km + ratusan tekstur foto CC0 (dibaca mentah RGBA32) menghabiskan RAM runner CI 16 GB (exit 137).
+        // Lepas aset yang tidak lagi dirujuk scene/kode setelah tiap langkah dan berkala saat impor foto.
+        static int _hitungFoto;
+        public static void LepasMemori()
+        {
+            EditorUtility.UnloadUnusedAssetsImmediate(true);
+            GC.Collect();
+        }
+        static void LepasMemoriBerkala()
+        {
+            if (++_hitungFoto % FotoPerPelepasan == 0) LepasMemori();
+        }
+        const int FotoPerPelepasan = 16;
 
         public static bool LastBuildSucceeded { get { return _gagal.Count == 0; } }
 
