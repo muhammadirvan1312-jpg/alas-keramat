@@ -1,4 +1,4 @@
-Laporan Builder Alas Keramat - 2026-11-22 05:47:00
+Laporan Builder Alas Keramat - 2026-11-22 11:55:50
 [LULUS] 0. Bersihkan Assets/Generated
   - Tag 15 & layer 6-18 terdaftar
   - Player Settings: Linear, landscape, com.alaskeramat.game
@@ -143,5 +143,5 @@ Laporan Builder Alas Keramat - 2026-11-22 05:47:00
 [LULUS] 7d. Pasca-proses kamera
   - Scene: Assets/Scenes/AlasKeramat_Main.unity, objek di root: 12885
 [LULUS] 9. Simpan scene
-Durasi: 2727.8 detik
+Durasi: 2195.5 detik
 HASIL: SEMUA LANGKAH LULUS

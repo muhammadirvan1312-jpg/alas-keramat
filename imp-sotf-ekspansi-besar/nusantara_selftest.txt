@@ -68,7 +68,7 @@
 [LULUS] Radar: depan = atas (saat menghadap utara & timur)
 [LULUS] Volume global + ACES + bloom
 [LULUS] Kamera utama pakai pasca-proses
-[GAGAL] Pasca-proses malam lebih gelap & dingin dari siang
+[LULUS] Pasca-proses malam lebih gelap & dingin dari siang
 [LULUS] Vital Andi & bar HUD ada
 [LULUS] Laju vital 60 s sesuai 05 x musim (haus -4.34, kenyang -3.30, istirahat -2.10)
 [LULUS] Plafon HP 05 §3.1 (lapar 10, haus 10 -> 58)
@@ -120,7 +120,7 @@
 [LULUS] Rakit memiliki kecepatan 2,5 m/s
 [LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
 [LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
-[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 239 ms
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 211 ms
 [LULUS] A* jarak pendek selesai cepat (3 node)
 [LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
 [LULUS] Token penyerang Normal 2 / Sulit 3
