@@ -38,17 +38,21 @@ namespace AlasKeramat.EditorTools
         static void BangunDesaNelayanTimur(GameObject induk, Material kayu, Material genteng)
         {
             var go = Anak(induk, "DesaNelayanTimur");
+            var bilik = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_Bilik.mat") ?? kayu;
             float cx = 720f, cz = -140f;
             for (int i = 0; i < 5; i++)
             {
                 float x = cx + (i % 3) * 14f, z = cz + (i / 3) * 16f;
                 float y = WorldTerrainGenerator.SampleHeight(x, z);
+                // Rumah panggung Nusantara asli (atap pelana miring + kolong + beranda), bukan 3 kubus datar.
+                var meshRumah = Simpan(ProcBangunan.RumahPanggung(720 + i, 6.2f, 5.0f, 1.35f, 0.25f));
                 var r = Anak(go, "RumahNelayanTimur_" + i);
                 r.transform.position = new Vector3(x, y, z);
-                Hias(r, PrimitiveType.Cube, "Lantai", new Vector3(0f, 1.1f, 0f), new Vector3(5.2f, 0.24f, 4.4f), kayu, true);
-                Hias(r, PrimitiveType.Cube, "Dinding", new Vector3(0f, 2.3f, 0f), new Vector3(4.8f, 2.2f, 4.0f), kayu, true);
-                Hias(r, PrimitiveType.Cube, "Atap", new Vector3(0f, 3.7f, 0f), new Vector3(5.8f, 0.35f, 5.0f), genteng, false);
-                var peti = Hias(r, PrimitiveType.Cube, "PetiNelayan", new Vector3(3.1f, 0.35f, 0f), new Vector3(0.9f, 0.7f, 0.7f), kayu, true);
+                r.transform.rotation = Quaternion.Euler(0f, (i % 2 == 0 ? 180f : 0f) + i * 7f, 0f);
+                r.AddComponent<MeshFilter>().sharedMesh = meshRumah;
+                r.AddComponent<MeshRenderer>().sharedMaterials = new[] { i % 2 == 0 ? bilik : kayu, genteng };
+                r.AddComponent<MeshCollider>().sharedMesh = meshRumah;
+                var peti = Hias(r, PrimitiveType.Cube, "PetiNelayan", new Vector3(3.4f, 0.35f, 0f), new Vector3(0.9f, 0.7f, 0.7f), kayu, true);
                 peti.layer = GameLayers.Interactable; peti.tag = GameTags.Interactable;
                 var pg = peti.AddComponent<PropGeledah>(); pg.Jenis = PropGeledah.Wadah.Peti; EditorUtility.SetDirty(pg);
             }
@@ -97,20 +101,42 @@ namespace AlasKeramat.EditorTools
             var go = Anak(induk, "PerkebunanTimurLaut");
             go.transform.position = new Vector3(x, y, z);
 
-            // 2 Gudang Kolonial Tua
+            // 2 Gudang Kolonial Tua beratap pelana miring & pilar beranda.
             for (int i = 0; i < 2; i++)
             {
                 var g = Anak(go, "GudangKolonial_" + i);
                 g.transform.localPosition = new Vector3(i * 15f, 0f, 0f);
                 Hias(g, PrimitiveType.Cube, "Badan", new Vector3(0f, 2.2f, 0f), new Vector3(9.5f, 4.4f, 6.5f), batu, true);
-                Hias(g, PrimitiveType.Cube, "Atap", new Vector3(0f, 4.6f, 0f), new Vector3(10.5f, 0.4f, 7.4f), genteng, false);
+                Hias(g, PrimitiveType.Cube, "AtapL", new Vector3(0f, 5.15f, -1.9f), new Vector3(10.8f, 0.26f, 4.4f), genteng, false).transform.localRotation = Quaternion.Euler(-24f, 0f, 0f);
+                Hias(g, PrimitiveType.Cube, "AtapR", new Vector3(0f, 5.15f, 1.9f), new Vector3(10.8f, 0.26f, 4.4f), genteng, false).transform.localRotation = Quaternion.Euler(24f, 0f, 0f);
+                Hias(g, PrimitiveType.Cube, "Bubungan", new Vector3(0f, 6.05f, 0f), new Vector3(10.9f, 0.28f, 0.45f), genteng, false);
             }
-            // 24 baris tanaman teh/perdu
+            // 24 baris tanaman teh/perdu (memakai mesh pakis/rumput scan organik bila ada, bukan balok kotak polos).
             var tehMat = MatPolos("M_PerduTeh", "#2C5422");
+            var perduScan = MuatPropScan("PakisScan_LOD0") ?? MuatPropScan("RumputScanA");
+            var matPerduScan = perduScan != null ? (MaterialFolScan("PakisAsli", "M_PerduTehScan", 0.35f, 0.06f, new Color(0.68f, 0.84f, 0.56f, 1f)) ?? tehMat) : tehMat;
             for (int r = 0; r < 24; r++)
             {
                 float px = x - 18f + (r % 6) * 8f, pz = z - 24f - (r / 6) * 7f;
-                Hias(induk, PrimitiveType.Cube, "BarisTeh_" + r, new Vector3(px, WorldTerrainGenerator.SampleHeight(px, pz) + 0.45f, pz), new Vector3(6.2f, 0.9f, 1.4f), tehMat, false);
+                float py = WorldTerrainGenerator.SampleHeight(px, pz);
+                if (perduScan != null)
+                {
+                    var row = Anak(induk, "BarisTeh_" + r);
+                    row.transform.position = new Vector3(px, py, pz);
+                    for (int k = -1; k <= 1; k++)
+                    {
+                        var b = Anak(row, "Semak_" + (k + 1));
+                        b.transform.localPosition = new Vector3(k * 2.1f, 0f, 0f);
+                        b.transform.localRotation = Quaternion.Euler(0f, r * 37f + k * 60f, 0f);
+                        b.transform.localScale = new Vector3(1.8f, 1.25f, 1.5f);
+                        b.AddComponent<MeshFilter>().sharedMesh = perduScan;
+                        var bmr = b.AddComponent<MeshRenderer>(); bmr.sharedMaterial = matPerduScan; bmr.shadowCastingMode = ShadowCastingMode.Off;
+                    }
+                }
+                else
+                {
+                    Hias(induk, PrimitiveType.Cube, "BarisTeh_" + r, new Vector3(px, py + 0.45f, pz), new Vector3(6.2f, 0.9f, 1.4f), tehMat, false);
+                }
             }
             JumlahZonaKuadranLuar++;
         }
@@ -120,9 +146,24 @@ namespace AlasKeramat.EditorTools
             float x = -320f, z = -885f;
             var go = Anak(induk, "PulauKarangSelatan");
             go.transform.position = new Vector3(x, 0f, z);
-            // Daratan pulau karang kecil di tengah laut selatan
+            // Daratan pulau karang + 10 bongkahan tebing batu scan 4K alami.
             Hias(go, PrimitiveType.Cylinder, "KarangPulau", new Vector3(0f, 0.8f, 0f), new Vector3(24f, 2.2f, 20f), batu, true);
             Hias(go, PrimitiveType.Cylinder, "MenaraKarang", new Vector3(0f, 4.5f, 0f), new Vector3(2.8f, 3.2f, 2.8f), batu, true);
+            var batuScan = MuatPropScan("BatuBesarScan") ?? MuatPropScan("BatuLumutA");
+            var matKarang = MaterialSolidScan("BatuLumutAsli", "M_KarangScanV10", new Color(0.76f, 0.78f, 0.74f, 1f), 0.25f) ?? batu;
+            if (batuScan != null)
+            {
+                for (int b = 0; b < 10; b++)
+                {
+                    float ang = b * (Mathf.PI * 2f / 10f);
+                    var bk = Anak(go, "TebingKarang_" + b);
+                    bk.transform.localPosition = new Vector3(Mathf.Cos(ang) * 9.5f, 1.1f + (b % 3) * 0.7f, Mathf.Sin(ang) * 8.2f);
+                    bk.transform.localRotation = Quaternion.Euler(b * 17f, b * 49f, 0f);
+                    bk.transform.localScale = Vector3.one * (2.4f + (b % 3) * 0.85f);
+                    bk.AddComponent<MeshFilter>().sharedMesh = batuScan;
+                    bk.AddComponent<MeshRenderer>().sharedMaterial = matKarang;
+                }
+            }
             // Peti harta karun pulau karang
             var peti = Hias(go, PrimitiveType.Cube, "PetiPulauKarang", new Vector3(3.2f, 2.15f, 1.5f), new Vector3(1.1f, 0.7f, 0.8f), kayu, true);
             peti.layer = GameLayers.Interactable; peti.tag = GameTags.Interactable;
@@ -136,8 +177,15 @@ namespace AlasKeramat.EditorTools
             float y = WorldTerrainGenerator.SampleHeight(x, z);
             var go = Anak(induk, "KuilBambuUtara");
             go.transform.position = new Vector3(x, y, z);
+            var genteng = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_AtapIjuk.mat") ?? kayu;
             Hias(go, PrimitiveType.Cube, "Pelataran", new Vector3(0f, 0.35f, 0f), new Vector3(9.5f, 0.7f, 9.5f), batu, true);
-            Hias(go, PrimitiveType.Cube, "AtapKuil", new Vector3(0f, 4.2f, 0f), new Vector3(8.0f, 0.35f, 8.0f), kayu, false);
+            // Atap Joglo/Meru 2 tingkat miring khas kuil Nusantara (bukan kubus datar).
+            var atapKuil = Anak(go, "AtapKuil"); atapKuil.transform.localPosition = new Vector3(0f, 4.2f, 0f);
+            Hias(atapKuil, PrimitiveType.Cube, "Tingkat1U", new Vector3(0f, 0.35f, 2.2f), new Vector3(8.6f, 0.20f, 4.8f), genteng, false).transform.localRotation = Quaternion.Euler(22f, 0f, 0f);
+            Hias(atapKuil, PrimitiveType.Cube, "Tingkat1S", new Vector3(0f, 0.35f, -2.2f), new Vector3(8.6f, 0.20f, 4.8f), genteng, false).transform.localRotation = Quaternion.Euler(-22f, 0f, 0f);
+            Hias(atapKuil, PrimitiveType.Cube, "Tingkat2U", new Vector3(0f, 1.85f, 1.25f), new Vector3(5.2f, 0.20f, 2.9f), genteng, false).transform.localRotation = Quaternion.Euler(30f, 0f, 0f);
+            Hias(atapKuil, PrimitiveType.Cube, "Tingkat2S", new Vector3(0f, 1.85f, -1.25f), new Vector3(5.2f, 0.20f, 2.9f), genteng, false).transform.localRotation = Quaternion.Euler(-30f, 0f, 0f);
+            Hias(atapKuil, PrimitiveType.Cube, "Mustaka", new Vector3(0f, 2.85f, 0f), new Vector3(0.55f, 0.85f, 0.55f), batu, false);
             for (int i = 0; i < 4; i++)
                 Hias(go, PrimitiveType.Cylinder, "TiangKuil_" + i, new Vector3((i % 2 == 0 ? -3f : 3f), 2.2f, (i < 2 ? -3f : 3f)), new Vector3(0.22f, 2.0f, 0.22f), kayu, true);
             var altar = Hias(go, PrimitiveType.Cube, "AltarSesajenUtara", new Vector3(0f, 1.0f, 0f), new Vector3(1.4f, 0.8f, 1.0f), batu, true);

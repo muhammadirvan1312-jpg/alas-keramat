@@ -59,6 +59,17 @@ namespace AlasKeramat.EditorTools
                 Hias(go, PrimitiveType.Cylinder, "TiangR_" + i, new Vector3(1.8f, -0.6f, pz), new Vector3(0.22f, 2.2f, 0.22f), kayu, true);
             }
             Hias(go, PrimitiveType.Cube, "PosJagaDermaga", new Vector3(2.8f, 1.8f, 3.2f), new Vector3(2.8f, 2.4f, 2.8f), kayu, true);
+            // Atap miring pos jaga & tiang tambat tali sepanjang dermaga barat.
+            var atapPosL = Hias(go, PrimitiveType.Cube, "AtapPosL", new Vector3(2.0f, 3.35f, 3.2f), new Vector3(2.0f, 0.14f, 3.3f), karat, false);
+            atapPosL.transform.localRotation = Quaternion.Euler(0f, 0f, 24f);
+            var atapPosR = Hias(go, PrimitiveType.Cube, "AtapPosR", new Vector3(3.6f, 3.35f, 3.2f), new Vector3(2.0f, 0.14f, 3.3f), karat, false);
+            atapPosR.transform.localRotation = Quaternion.Euler(0f, 0f, -24f);
+            for (int r = 0; r < 5; r++)
+            {
+                float rz = 1f - r * 5.2f;
+                Hias(go, PrimitiveType.Cylinder, "BollardL_" + r, new Vector3(-1.95f, 1.05f, rz), new Vector3(0.20f, 0.38f, 0.20f), kayu, false);
+                Hias(go, PrimitiveType.Cylinder, "BollardR_" + r, new Vector3(1.95f, 1.05f, rz), new Vector3(0.20f, 0.38f, 0.20f), kayu, false);
+            }
             Hias(go, PrimitiveType.Cube, "JangkarKarat", new Vector3(-2.6f, 0.95f, -20.5f), new Vector3(0.9f, 0.4f, 1.4f), karat, false);
             JumlahLandmarkMegaV2++;
         }
@@ -70,15 +81,32 @@ namespace AlasKeramat.EditorTools
             var go = Anak(induk, "MenaraPengawasApi");
             go.transform.position = new Vector3(x, y, z);
 
-            // 4 tiang menara 13 m + panggung atas 5,5x5,5 m + tangga landai yang bisa dinaiki pemain
+            // 4 tiang menara 13 m + palang silang diagonal + pagar pengaman dek + atap limasan miring khas menara api.
             for (int i = 0; i < 4; i++)
             {
                 float sx = (i % 2 == 0 ? -1f : 1f) * 2.2f, sz = (i < 2 ? -1f : 1f) * 2.2f;
                 Hias(go, PrimitiveType.Cylinder, "TiangMenara_" + i, new Vector3(sx, 6.5f, sz), new Vector3(0.26f, 6.6f, 0.26f), kayu, true);
+                Hias(go, PrimitiveType.Cylinder, "TiangKabin_" + i, new Vector3(sx * 1.1f, 13.7f, sz * 1.1f), new Vector3(0.18f, 1.45f, 0.18f), kayu, false);
+            }
+            for (int lv = 0; lv < 2; lv++)
+            {
+                float cy = 3.2f + lv * 6.0f;
+                Hias(go, PrimitiveType.Cube, "SilangDepanA_" + lv, new Vector3(0f, cy, 2.2f), new Vector3(6.0f, 0.16f, 0.16f), kayu, false).transform.localRotation = Quaternion.Euler(0f, 0f, 44f);
+                Hias(go, PrimitiveType.Cube, "SilangDepanB_" + lv, new Vector3(0f, cy, 2.2f), new Vector3(6.0f, 0.16f, 0.16f), kayu, false).transform.localRotation = Quaternion.Euler(0f, 0f, -44f);
+                Hias(go, PrimitiveType.Cube, "SilangBelakangA_" + lv, new Vector3(0f, cy, -2.2f), new Vector3(6.0f, 0.16f, 0.16f), kayu, false).transform.localRotation = Quaternion.Euler(0f, 0f, 44f);
+                Hias(go, PrimitiveType.Cube, "SilangBelakangB_" + lv, new Vector3(0f, cy, -2.2f), new Vector3(6.0f, 0.16f, 0.16f), kayu, false).transform.localRotation = Quaternion.Euler(0f, 0f, -44f);
             }
             Hias(go, PrimitiveType.Cube, "LantaiTengah", new Vector3(0f, 6.2f, 0f), new Vector3(5.0f, 0.25f, 5.0f), kayu, true);
             Hias(go, PrimitiveType.Cube, "DekPengawas", new Vector3(0f, 12.2f, 0f), new Vector3(6.2f, 0.3f, 6.2f), kayu, true);
-            Hias(go, PrimitiveType.Cube, "AtapMenara", new Vector3(0f, 15.2f, 0f), new Vector3(6.8f, 0.45f, 6.8f), genteng, false);
+            // Pagar pengaman 4 sisi dek pengawas + atap limasan miring 4 bidang.
+            Hias(go, PrimitiveType.Cube, "PagarU", new Vector3(0f, 13.25f, 2.95f), new Vector3(6.0f, 0.14f, 0.14f), kayu, false);
+            Hias(go, PrimitiveType.Cube, "PagarS", new Vector3(0f, 13.25f, -2.95f), new Vector3(6.0f, 0.14f, 0.14f), kayu, false);
+            Hias(go, PrimitiveType.Cube, "PagarT", new Vector3(2.95f, 13.25f, 0f), new Vector3(0.14f, 0.14f, 6.0f), kayu, false);
+            Hias(go, PrimitiveType.Cube, "PagarB", new Vector3(-2.95f, 13.25f, 0f), new Vector3(0.14f, 0.14f, 6.0f), kayu, false);
+            var atapMenara = Anak(go, "AtapMenara"); atapMenara.transform.localPosition = new Vector3(0f, 15.2f, 0f);
+            Hias(atapMenara, PrimitiveType.Cube, "SisiU", new Vector3(0f, 0.45f, 1.65f), new Vector3(6.8f, 0.18f, 3.8f), genteng, false).transform.localRotation = Quaternion.Euler(22f, 0f, 0f);
+            Hias(atapMenara, PrimitiveType.Cube, "SisiS", new Vector3(0f, 0.45f, -1.65f), new Vector3(6.8f, 0.18f, 3.8f), genteng, false).transform.localRotation = Quaternion.Euler(-22f, 0f, 0f);
+            Hias(atapMenara, PrimitiveType.Cube, "Bubungan", new Vector3(0f, 1.15f, 0f), new Vector3(7.0f, 0.24f, 0.42f), genteng, false);
 
             // 2 ramp tangga zig-zag sehingga Andi dapat naik ke puncak menara setinggi 12 m
             var r1 = Hias(go, PrimitiveType.Cube, "RampBawah", new Vector3(3.6f, 3.1f, 0f), new Vector3(1.5f, 0.22f, 13.5f), kayu, true);
@@ -95,11 +123,31 @@ namespace AlasKeramat.EditorTools
             var go = Anak(induk, "GuaAirTerjunRahasia");
             go.transform.position = new Vector3(x, y, z);
 
-            // Lengkungan batu gua rahasia & 7 gugus kristal bercahaya
+            // Lengkungan batu gua rahasia dibungkus bongkahan batu scan 4K alami + 7 gugus kristal bercahaya.
             Hias(go, PrimitiveType.Cube, "TebingKiri", new Vector3(-3.8f, 2.8f, 0f), new Vector3(2.2f, 6.0f, 9.5f), batu, true);
             Hias(go, PrimitiveType.Cube, "TebingKanan", new Vector3(3.8f, 2.8f, 0f), new Vector3(2.2f, 6.0f, 9.5f), batu, true);
             Hias(go, PrimitiveType.Cube, "AtapGua", new Vector3(0f, 5.6f, 0f), new Vector3(9.8f, 1.8f, 10.0f), batu, true);
             Hias(go, PrimitiveType.Cube, "DindingBelakang", new Vector3(0f, 2.8f, 4.4f), new Vector3(8.4f, 6.0f, 1.8f), batu, true);
+            var batuScan = MuatPropScan("BatuBesarScan") ?? MuatPropScan("BatuLumutA");
+            var matBatuScan = MaterialSolidScan("BatuLumutAsli", "M_BatuGuaAirScan", new Color(0.76f, 0.80f, 0.75f, 1f), 0.28f) ?? batu;
+            if (batuScan != null)
+            {
+                Vector3[] posB =
+                {
+                    new Vector3(-4.4f, 1.4f, -3.6f), new Vector3(4.4f, 1.4f, -3.6f), new Vector3(-4.8f, 4.2f, -2.0f),
+                    new Vector3(4.8f, 4.2f, -2.0f), new Vector3(0f, 6.4f, -3.2f), new Vector3(-2.6f, 6.0f, 0.8f),
+                    new Vector3(2.6f, 6.0f, 0.8f), new Vector3(0f, 3.8f, 5.2f)
+                };
+                for (int b = 0; b < posB.Length; b++)
+                {
+                    var bs = Anak(go, "BatuTebingGua_" + b);
+                    bs.transform.localPosition = posB[b];
+                    bs.transform.localRotation = Quaternion.Euler(b * 23f, b * 67f, b * 17f);
+                    bs.transform.localScale = Vector3.one * (2.2f + (b % 3) * 0.65f);
+                    bs.AddComponent<MeshFilter>().sharedMesh = batuScan;
+                    bs.AddComponent<MeshRenderer>().sharedMaterial = matBatuScan;
+                }
+            }
             for (int i = 0; i < 7; i++)
             {
                 float kx = -2.4f + i * 0.8f, kz = 1.8f + (i % 3) * 0.7f;
