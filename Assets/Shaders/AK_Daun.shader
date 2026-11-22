@@ -138,22 +138,28 @@ Shader "AlasKeramat/Daun"
             d.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(i.positionCS);
             d.shadowMask = half4(1,1,1,1);
             SurfaceData s = (SurfaceData)0;
-            half ao = saturate(0.55h + 0.45h * i.color.g) * saturate(0.75h + 0.25h * d.normalWS.y);
+            // Gradien kedalaman tajuk 3D: bagian dalam/bawah lebih teduh dingin, ujung tajuk atas hangat tersinari matahari.
+            half canopyGrad = saturate(d.normalWS.y * 0.5h + 0.5h);
+            half ao = saturate(0.48h + 0.52h * i.color.g) * lerp(0.72h, 1.16h, canopyGrad);
             half wet = _AK_Basah * saturate(d.normalWS.y * 0.7h + 0.4h);
-            s.albedo = c.rgb * (0.86h + 0.14h * ao) * (1.0h - wet * 0.14h);
+            half3 shadeTint = lerp(half3(0.76h, 0.90h, 0.82h), half3(1.12h, 1.16h, 0.88h), canopyGrad);
+            s.albedo = c.rgb * shadeTint * (0.82h + 0.18h * ao) * (1.0h - wet * 0.14h);
             s.alpha = 1;
             s.metallic = 0;
-            s.smoothness = saturate(_Smoothness * 0.42h + wet * 0.38h);
-            s.occlusion = ao;
+            s.smoothness = saturate(_Smoothness * 0.48h + 0.14h * canopyGrad + wet * 0.40h);
+            s.occlusion = saturate(ao);
             s.normalTS = half3(0,0,1);
             half4 lit = UniversalFragmentPBR(d, s);
             Light sun = GetMainLight(d.shadowCoord, d.positionWS, half4(1,1,1,1));
             half back = saturate(dot(-d.normalWS, sun.direction) * 0.75h + 0.25h);
             half towardSun = pow(saturate(dot(-d.viewDirectionWS, sun.direction)), 3);
-            half rim = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3) * 0.12h * back;
-            half3 sssTint = s.albedo * half3(0.92h, 1.24h, 0.58h);
-            lit.rgb += sssTint * sun.color * ((_Translucency * 1.18h * back * (0.30h + 0.70h * towardSun) + rim)
-                * sun.distanceAttenuation * sun.shadowAttenuation);
+            half rim = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3) * 0.14h * back;
+            half waxSpec = pow(saturate(dot(reflect(-sun.direction, d.normalWS), d.viewDirectionWS)), 24.0h) * (0.12h + wet * 0.28h);
+            half skySheen = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3.0h) * (0.06h + wet * 0.24h);
+            half3 sssTint = s.albedo * half3(1.14h, 1.48h, 0.52h);
+            lit.rgb += sssTint * sun.color * ((_Translucency * 1.68h * back * (0.36h + 0.64h * towardSun) + rim * 1.60h)
+                * sun.distanceAttenuation * sun.shadowAttenuation)
+                + sun.color * ((waxSpec + skySheen) * sun.distanceAttenuation * sun.shadowAttenuation);
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;
         }

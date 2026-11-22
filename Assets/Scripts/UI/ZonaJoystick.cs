@@ -16,11 +16,24 @@ namespace AlasKeramat.UI
 
         public Vector2 Nilai { get; private set; }
         public bool Lari { get; private set; }
+        public bool TerkunciLari { get; private set; }
 
         int _jari = int.MinValue;
         Vector2 _asal, _posisiDiam;
-        float _tahan;
+        float _tahan, _tKunci;
         RectTransform _rt;
+
+        public static bool SyaratKunciLari(float jarakLokal, float sudutDariAtas)
+        {
+            return jarakLokal >= RadiusGerak * 1.40f && sudutDariAtas <= 35f;
+        }
+
+        public void ToggleKunciLari()
+        {
+            TerkunciLari = !TerkunciLari;
+            if (TerkunciLari) { Nilai = Vector2.up; Lari = true; if (labelLari != null) { labelLari.enabled = true; labelLari.text = "AUTO LARI"; } }
+            else Lepas();
+        }
 
         public void Pasang(RectTransform b, RectTransform k, UnityEngine.UI.Image c, UnityEngine.UI.Text lari)
         {
@@ -40,6 +53,7 @@ namespace AlasKeramat.UI
         public void OnPointerDown(PointerEventData e)
         {
             if (_jari != int.MinValue || PengunciInput.Terblokir) return;
+            if (TerkunciLari) TerkunciLari = false;
             _jari = e.pointerId;
             Vector2 lokal;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, e.position, e.pressEventCamera, out lokal))
@@ -56,6 +70,12 @@ namespace AlasKeramat.UI
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_rt, e.position, e.pressEventCamera, out lokal)) return;
             Vector2 selisih = lokal - _asal;
             float jarak = selisih.magnitude;
+            if (SyaratKunciLari(jarak, Vector2.Angle(Vector2.up, selisih)))
+            {
+                _tKunci += Time.unscaledDeltaTime;
+                if (_tKunci >= 0.35f) TerkunciLari = true;
+            }
+            else _tKunci = 0f;
             if (jarak > RadiusGerak * 1.15f)
             {
                 Vector2 targetAsal = lokal - (selisih / jarak) * RadiusGerak;
@@ -78,6 +98,14 @@ namespace AlasKeramat.UI
         public void OnPointerUp(PointerEventData e)
         {
             if (e.pointerId != _jari) return;
+            if (TerkunciLari)
+            {
+                _jari = int.MinValue;
+                Nilai = Vector2.up; Lari = true;
+                if (kenop != null) kenop.anchoredPosition = Vector2.up * RadiusGerak;
+                if (labelLari != null) { labelLari.enabled = true; labelLari.text = "AUTO LARI"; }
+                return;
+            }
             Lepas();
         }
 
@@ -88,7 +116,7 @@ namespace AlasKeramat.UI
 
         void Lepas()
         {
-            _jari = int.MinValue; Nilai = Vector2.zero; Lari = false; _tahan = 0f;
+            _jari = int.MinValue; Nilai = Vector2.zero; Lari = false; TerkunciLari = false; _tahan = 0f; _tKunci = 0f;
             if (kenop != null) kenop.anchoredPosition = Vector2.zero;
             if (basis != null) basis.anchoredPosition = _posisiDiam;
             Warna(AlphaDiam);
@@ -111,6 +139,7 @@ namespace AlasKeramat.UI
 #if ENABLE_LEGACY_INPUT_MANAGER
             if (_jari != int.MinValue && Input.touchSupported && Input.touchCount == 0) { Lepas(); return; }
 #endif
+            if (TerkunciLari) return;
             bool pos = _jari != int.MinValue && (Lari ? (Nilai.magnitude >= 0.72f && Vector2.Angle(Vector2.up, Nilai) <= 55f) : PosisiSprint(Nilai));
             _tahan = pos ? _tahan + Time.unscaledDeltaTime : 0f;
             bool lari = Lari ? pos : _tahan >= TahanSprint;

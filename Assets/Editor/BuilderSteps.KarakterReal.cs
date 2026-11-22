@@ -326,14 +326,16 @@ namespace AlasKeramat.EditorTools
             {
                 float u=(float)x/w,v=(float)y/h;
                 int idx=y*w+x;Color c=px[idx];
+                // Rona hangat kulit penyintas Nusantara terkalibrasi ACES Linear (tidak abu-abu gelap).
+                c=new Color(Mathf.Min(1f,c.r*1.12f+0.025f),Mathf.Min(1f,c.g*1.05f+0.015f),Mathf.Min(1f,c.b*0.95f+0.008f),1f);
                 if(u>0.88f && u<0.96f && v>0.41f && v<0.55f)
                 {
-                    // Janggut tipis & kotoran penyintas heli di rahang & pipi (gaya Kelvin SOTF).
-                    float st=Mathf.PerlinNoise(u*220f,v*220f);
-                    if(st>0.48f)c=Color.Lerp(c,new Color(0.20f,0.16f,0.13f),(st-0.48f)*0.45f);
+                    // Janggut tipis rapi di rahang (gaya penyintas SAR).
+                    float st=Mathf.PerlinNoise(u*240f,v*240f);
+                    if(st>0.52f)c=Color.Lerp(c,new Color(0.24f,0.18f,0.14f),(st-0.52f)*0.34f);
                 }
-                float grime=Mathf.Clamp01((Mathf.PerlinNoise(u*28f+4f,v*28f+9f)-0.56f)*2.4f);
-                c=Color.Lerp(c,new Color(0.32f,0.24f,0.18f),grime*0.22f);
+                float grime=Mathf.Clamp01((Mathf.PerlinNoise(u*28f+4f,v*28f+9f)-0.66f)*2.2f);
+                c=Color.Lerp(c,new Color(0.42f,0.32f,0.23f),grime*0.14f);
                 c.a=1f;px[idx]=c;
             }
             var tex=new Texture2D(w,h,TextureFormat.RGBA32,true);tex.SetPixels(px);tex.Apply();
@@ -451,16 +453,19 @@ namespace AlasKeramat.EditorTools
                     }
                     else
                     {
-                        float s1=Mathf.PerlinNoise(u*175f,v*5.5f);
-                        float s2=Mathf.PerlinNoise(u*360f+7.3f,v*11f+1.7f);
-                        float strand=s1*0.64f+s2*0.36f;
-                        float gloss=Mathf.Pow(Mathf.Clamp01(1f-Mathf.Abs(v-0.58f)*3.4f),2f)*0.22f;
-                        Color baseH=Color.Lerp(new Color(0.09f,0.06f,0.05f),new Color(0.28f,0.17f,0.11f),strand+gloss);
-                        float root=Ramp(0.98f,0.74f,v);
-                        baseH*=Mathf.Lerp(0.76f,1.12f,root);
-                        float tip=Ramp(0.04f,0.24f,v);
-                        float edgeU=Ramp(0.01f,0.08f,u)*Ramp(0.87f,0.78f,u);
-                        baseH.a=Mathf.Clamp01(tip*edgeU*(0.88f+strand*0.35f));
+                        // Helai rambut halus berlapis dengan pinggiran alpha lembut (tanpa kotak poligon tajam).
+                        float s1=Mathf.PerlinNoise(u*220f,v*5.2f);
+                        float s2=Mathf.PerlinNoise(u*460f+7.3f,v*12f+1.7f);
+                        float s3=Mathf.PerlinNoise(u*85f+2.1f,v*3.4f);
+                        float strand=s1*0.56f+s2*0.30f+s3*0.14f;
+                        float gloss=Mathf.Pow(Mathf.Clamp01(1f-Mathf.Abs(v-0.56f)*3.0f),2f)*0.26f;
+                        Color baseH=Color.Lerp(new Color(0.11f,0.075f,0.06f),new Color(0.36f,0.23f,0.15f),strand+gloss);
+                        float root=Ramp(0.98f,0.70f,v);
+                        baseH*=Mathf.Lerp(0.80f,1.15f,root);
+                        float tip=Ramp(0.06f,0.34f,v);
+                        float edgeU=Ramp(0.02f,0.16f,u)*Ramp(0.86f,0.72f,u);
+                        float wispy=Mathf.Clamp01(0.45f+strand*0.95f);
+                        baseH.a=Mathf.Clamp01(tip*edgeU*wispy);
                         px[y*w+x]=baseH;
                     }
                 }
@@ -470,7 +475,7 @@ namespace AlasKeramat.EditorTools
                 htex=AssetDatabase.LoadAssetAtPath<Texture2D>(pn);
             }
             Color tint=j==J.KiRogo?new Color(0.95f,0.94f,0.92f):j==J.Ningsih?Color.white:new Color(0.86f,0.82f,0.79f);
-            float cutoff=j==J.Ningsih?0.32f:0.35f;
+            float cutoff=j==J.Ningsih?0.25f:0.35f;
             var mr=SafeMaterialFactory.CreatePBR("M_Rambut_"+j,tint,0f,j==J.Ningsih?0.14f:0.18f,htex,hairNorm,null,SurfaceMode.Cutout,cutoff);
             SafeMaterialFactory.SetF(mr,"_Cull",0f);
             // Pantulan langit HDRI membuat rambut tampak biru berkotak (foto G3): matikan pantulan lingkungan pada rambut.
@@ -537,29 +542,32 @@ namespace AlasKeramat.EditorTools
                     float grain=0.92f+0.08f*Mathf.PerlinNoise(u*340f,v*340f);
                     if(!skirt)
                     {
-                        // Kebaya renda merah-delima cerah terkalibrasi ACES Linear dengan lis sulam emas di kerah sweetheart & sabuk pinggang.
-                        float lace=(Mathf.Sin(ou*165f)*Mathf.Sin(v*165f))*0.045f;
-                        float brokat=Mathf.PerlinNoise(ou*96f,v*96f)*0.12f;
-                        Color ruby=j==J.Penyerupa?new Color(0.42f,0.38f,0.38f):new Color(0.84f,0.17f,0.23f);
-                        Color gold=j==J.Penyerupa?new Color(0.48f,0.46f,0.44f):new Color(0.96f,0.78f,0.34f);
+                        // Kebaya putih-gading brokat halus khas Nusantara dengan sulam emas di kerah & selendang merah-delima di pinggang.
+                        float lace=(Mathf.Sin(ou*185f)*Mathf.Sin(v*185f))*0.045f;
+                        float brokat=Mathf.PerlinNoise(ou*105f,v*105f)*0.09f;
+                        Color ivory=j==J.Penyerupa?new Color(0.54f,0.52f,0.50f):new Color(0.93f,0.89f,0.82f);
+                        Color gold=j==J.Penyerupa?new Color(0.56f,0.52f,0.44f):new Color(0.94f,0.76f,0.34f);
+                        Color sashRuby=j==J.Penyerupa?new Color(0.36f,0.28f,0.28f):new Color(0.76f,0.20f,0.24f);
                         float collarTrim=v>0.82f?Mathf.Clamp01((v-0.82f)*7f):0f;
-                        float beltGold=v<0.17f?Mathf.Clamp01((0.17f-v)*7f):0f;
+                        float beltSash=v<0.18f?Mathf.Clamp01((0.18f-v)*7f):0f;
                         float fil=0.5f+0.5f*Mathf.Sin(ou*220f)*Mathf.Cos(v*180f);
-                        Color baseCloth=ruby*(1f-brokat+lace)*Mathf.Lerp(0.90f,1.06f,lum);
-                        Color trimCol=Color.Lerp(ruby*0.75f,gold,Mathf.Clamp01(0.45f+0.55f*fil));
-                        Color col=Color.Lerp(baseCloth,trimCol,Mathf.Max(collarTrim,beltGold*0.85f))*foldAo*grain;
+                        Color baseCloth=ivory*(1f-brokat+lace)*Mathf.Lerp(0.92f,1.06f,lum);
+                        Color trimCol=Color.Lerp(ivory*0.86f,gold,Mathf.Clamp01(0.45f+0.55f*fil));
+                        Color beltCol=Color.Lerp(sashRuby,gold,Mathf.Clamp01(0.28f+0.52f*fil));
+                        Color col=Color.Lerp(baseCloth,trimCol,collarTrim);
+                        col=Color.Lerp(col,beltCol,beltSash*0.92f)*foldAo*grain;
                         col.a=1f;px[y*w+x]=col;
                     }
                     else
                     {
-                        // Batik Parang Rusak mewah terbaca hangat di ACES Linear (eboni, merah delima & emas hangat).
+                        // Batik Parang Rusak Sogan Nusantara yang terang & jelas terbaca di ACES Linear (jati hangat, sogan emas & aksen delima).
                         float wave=Mathf.Sin((ou*24f+v*20f)*Mathf.PI*2f+Mathf.Sin(ou*48f)*0.9f)*0.5f+0.5f;
                         float isen=Mathf.Clamp01(1f-Mathf.Abs(Mathf.Repeat(ou*38f-v*34f,1f)-0.5f)*4.0f);
                         float pat=Mathf.Clamp01(wave*0.64f+isen*0.36f);
-                        Color eboni=new Color(0.20f,0.12f,0.09f),emas=new Color(0.92f,0.72f,0.32f),delima=new Color(0.60f,0.16f,0.20f);
-                        Color motif=pat<0.55f?Color.Lerp(eboni,delima,pat/0.55f):Color.Lerp(delima,emas,(pat-0.55f)/0.45f);
-                        Color col=motif*Mathf.Lerp(0.92f,1.05f,lum)*foldAo*grain;
-                        if(j==J.Penyerupa)col=Color.Lerp(col,new Color(0.2f,0.22f,0.24f),0.45f);
+                        Color jati=new Color(0.32f,0.19f,0.12f),emas=new Color(0.92f,0.74f,0.36f),sogan=new Color(0.70f,0.38f,0.19f);
+                        Color motif=pat<0.52f?Color.Lerp(jati,sogan,pat/0.52f):Color.Lerp(sogan,emas,(pat-0.52f)/0.48f);
+                        Color col=motif*Mathf.Lerp(0.94f,1.08f,lum)*foldAo*grain;
+                        if(j==J.Penyerupa)col=Color.Lerp(col,new Color(0.24f,0.26f,0.28f),0.45f);
                         col.a=1f;px[y*w+x]=col;
                     }
                 }
@@ -615,9 +623,9 @@ namespace AlasKeramat.EditorTools
                 return AssetDatabase.LoadAssetAtPath<Texture2D>(pK);
             }
 
-            Color tone=j==J.Deden?new Color(0.46f,0.42f,0.31f):j==J.KiRogo?new Color(0.14f,0.12f,0.11f):
-                j==J.PemimpinPatroli?new Color(0.48f,0.12f,0.09f):j==J.AbdiLumpur?new Color(0.24f,0.20f,0.15f):
-                j>=J.AbdiSekte?new Color(0.30f,0.26f,0.21f):new Color(0.38f,0.39f,0.26f);
+            Color tone=j==J.Deden?new Color(0.60f,0.55f,0.40f):j==J.KiRogo?new Color(0.40f,0.18f,0.15f):
+                j==J.PemimpinPatroli?new Color(0.62f,0.19f,0.14f):j==J.AbdiLumpur?new Color(0.44f,0.36f,0.26f):
+                j>=J.AbdiSekte?new Color(0.48f,0.38f,0.29f):new Color(0.50f,0.52f,0.36f);
             bool remapped=j==J.Deden || j==J.KiRogo;
             var nBase=(j==J.Deden || j==J.KiRogo)?BacaReadableKarakter("Assets/ThirdParty/Characters/System/clothes/"+suit+"/"+suit+"_normal.png"):null;
             var npix2=remapped?new Color[w*h]:null;
@@ -626,26 +634,26 @@ namespace AlasKeramat.EditorTools
                 float u=(float)x/w,v=(float)y/h;
                 if(remapped && u>=0.89f)
                 {
-                    float grain=0.9f+0.15f*Mathf.PerlinNoise(u*160f,v*160f);
+                    float grain=0.92f+0.12f*Mathf.PerlinNoise(u*160f,v*160f);
                     if(j==J.Deden && v>=0.50f)
                     {
-                        // Perban kasa putih-krem dengan noda darah kecil.
-                        float spot=Mathf.Clamp01((Mathf.PerlinNoise(u*60f,v*40f)-0.62f)*4f);
-                        px[y*w+x]=Color.Lerp(new Color(0.82f,0.78f,0.70f),new Color(0.38f,0.06f,0.05f),spot*0.65f)*grain;
+                        // Perban kasa putih-krem bersih dengan noda darah halus.
+                        float spot=Mathf.Clamp01((Mathf.PerlinNoise(u*60f,v*40f)-0.66f)*3.6f);
+                        px[y*w+x]=Color.Lerp(new Color(0.88f,0.84f,0.76f),new Color(0.48f,0.09f,0.07f),spot*0.55f)*grain;
                     }
                     else if(j==J.Deden)
                     {
-                        // Rompi taktis SAR kanvas zaitun-gelap bernoda lumpur hutan.
+                        // Rompi taktis SAR kanvas zaitun-terang dengan garis jahitan & sabuk saku agar jelas terbaca.
                         float weave=0.92f+0.08f*Mathf.Sin(u*320f)*Mathf.Sin(v*320f);
-                        Color vest=new Color(0.22f,0.24f,0.19f)*weave*grain;
-                        if(Mathf.Abs(v-0.25f)<0.04f)vest*=0.72f;
+                        Color vest=new Color(0.34f,0.40f,0.28f)*weave*grain;
+                        if(Mathf.Abs(v-0.25f)<0.045f || Mathf.Abs(v-0.42f)<0.025f)vest=Color.Lerp(vest,new Color(0.68f,0.58f,0.42f),0.55f);
                         px[y*w+x]=vest;
                     }
                     else
                     {
-                        // Blangkon KiRogo motif lurik/batik gelap.
-                        float stripe=Mathf.Repeat((u-0.9f)*48f+v*18f,1f)<0.4f?0.75f:1.05f;
-                        px[y*w+x]=new Color(0.28f,0.21f,0.14f)*stripe*grain;
+                        // Blangkon KiRogo motif batik sogan emas-jati yang jelas & berwibawa.
+                        float stripe=Mathf.Repeat((u-0.9f)*48f+v*18f,1f)<0.42f?0.78f:1.18f;
+                        px[y*w+x]=new Color(0.56f,0.39f,0.22f)*stripe*grain;
                     }
                     px[y*w+x].a=1f;
                     if(npix2!=null)npix2[y*w+x]=new Color(0.5f,0.5f,1f,1f);
@@ -653,14 +661,25 @@ namespace AlasKeramat.EditorTools
                 }
                 float ou=remapped?Mathf.Clamp01(u/0.88f):u;
                 Color asli=source.GetPixelBilinear(ou,v);float lum=asli.grayscale;
-                float ao=aoSrc!=null?(0.42f+0.58f*aoSrc.GetPixelBilinear(ou,v).grayscale):1f;
+                float ao=aoSrc!=null?(0.64f+0.36f*aoSrc.GetPixelBilinear(ou,v).grayscale):1f;
                 float denim=Mathf.Clamp01((asli.b-asli.r)*6f);
-                Color dyed=tone*Mathf.Lerp(0.20f,1.20f,lum);
-                Color shirt=j==J.Deden?asli*new Color(0.86f,0.81f,0.74f):asli*0.92f;
-                Color res=j==J.Andi?Color.Lerp(shirt,dyed,denim):(j==J.Deden && lum>0.65f)?Color.Lerp(dyed,shirt,0.55f):dyed;
+                // Angkat lantai luminansi agar pakaian Deden/Ki Rogo/Sekte tidak jatuh hitam pekat di ACES Linear.
+                Color dyed=tone*Mathf.Lerp(0.62f,1.26f,lum);
+                if(j==J.KiRogo)
+                {
+                    float lurik=Mathf.Repeat(ou*72f,1f)<0.18f?1f:0f;
+                    dyed=Color.Lerp(dyed,new Color(0.84f,0.66f,0.32f),lurik*0.52f);
+                }
+                else if(j>=J.AbdiSekte && j<=J.PemimpinPatroli)
+                {
+                    float ritual=Mathf.Abs(Mathf.Sin((ou*18f+v*12f)*Mathf.PI))>0.92f?1f:0f;
+                    dyed=Color.Lerp(dyed,new Color(0.84f,0.76f,0.62f),ritual*0.48f);
+                }
+                Color shirt=j==J.Deden?new Color(0.68f,0.63f,0.50f)*Mathf.Lerp(0.72f,1.18f,lum):asli*1.05f;
+                Color res=j==J.Andi?Color.Lerp(shirt,dyed,denim):(j==J.Deden && lum>0.42f)?Color.Lerp(dyed,shirt,0.62f):dyed;
                 res*=ao;
-                float grime=Mathf.Clamp01((Mathf.PerlinNoise(ou*14f+2f,v*14f+6f)-0.48f)*2.4f);
-                if(j>=J.Deden)res=Color.Lerp(res,new Color(0.18f,0.14f,0.09f),grime*0.38f);
+                float grime=Mathf.Clamp01((Mathf.PerlinNoise(ou*14f+2f,v*14f+6f)-0.58f)*2.2f);
+                if(j>=J.Deden)res=Color.Lerp(res,new Color(0.28f,0.22f,0.16f),grime*0.24f);
                 res.a=1f;px[y*w+x]=res;
                 if(npix2!=null)npix2[y*w+x]=nBase!=null?nBase.GetPixelBilinear(ou,v):new Color(0.5f,0.5f,1f,1f);
             }

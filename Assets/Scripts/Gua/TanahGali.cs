@@ -7,6 +7,29 @@ namespace AlasKeramat.Core
     {
         public const float TurunPerGali = 0.18f;
         [SerializeField] Transform gundukan;
+
+        public static int JumlahPartikelGali(bool tembusPalka) { return tembusPalka ? 26 : 16; }
+
+        void PancarTanahGali(bool tembusPalka)
+        {
+            if (!Application.isPlaying) return;
+            var go = new GameObject("SemburanGali");
+            go.transform.position = transform.position + Vector3.up * 0.2f;
+            var ps = go.AddComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var m = ps.main;
+            m.playOnAwake = false; m.loop = false; m.startLifetime = 0.6f; m.startSpeed = 3.2f;
+            m.startSize = tembusPalka ? 0.07f : 0.09f; m.gravityModifier = 1.6f;
+            m.simulationSpace = ParticleSystemSimulationSpace.World;
+            Color w = tembusPalka ? new Color(1f, 0.72f, 0.28f) : new Color(0.36f, 0.24f, 0.14f);
+            m.startColor = w;
+            var sh = ps.shape; sh.shapeType = ParticleSystemShapeType.Cone; sh.angle = 35f; sh.radius = 0.25f;
+            var pr = go.GetComponent<ParticleSystemRenderer>();
+            pr.sharedMaterial = SafeMaterialFactory.GetCached(tembusPalka ? "M_PercikPalka" : "M_TanahGali", w, 0f, 0.2f);
+            pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            ps.Emit(JumlahPartikelGali(tembusPalka));
+            Destroy(go, 1.2f);
+        }
         [SerializeField] GameObject palka;
         int _versi = -1;
         Vector3 _posAwal;
@@ -28,6 +51,7 @@ namespace AlasKeramat.Core
             var inv = GameServices.Get<TikarPandan3DInventory>();
             if (inv == null || !inv.Punya(ItemID.Cangkul)) { GameEvents.RaiseToast("Tanahnya gembur. Butuh Cangkul untuk menggali."); return; }
             m.TambahGali();
+            PancarTanahGali(m.Ada(WorldCaveAndSaveManager.B_Palka));
             var a = GameServices.Get<ProceduralAudioSynth>();
             if (a != null) a.Play(ProceduralAudioSynth.KlipTebang, transform.position, AudioCategory.Efek, 1f, 0.55f, 2);
             if (m.Ada(WorldCaveAndSaveManager.B_Palka)) GameEvents.RaiseToast("Logam! Ada pintu palka baja di bawah tanah.");

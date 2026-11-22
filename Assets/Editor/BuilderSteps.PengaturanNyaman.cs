@@ -16,7 +16,7 @@ namespace AlasKeramat.EditorTools
             info = BuatTeks(panel, "InfoPengaturan", "", font, 22, new Vector2(0.5f, 0), new Vector2(0, 78), new Vector2(1400, 120));
             info.gameObject.SetActive(false);
             string[] tab = { "KONTROL & KAMERA", "GRAFIS", "AUDIO", "PERMAINAN" };
-            var halaman = new GameObject[4]; var slider = new Slider[7]; var nilai = new Text[7]; var pilihan = new Text[13];
+            var halaman = new GameObject[4]; var slider = new Slider[7]; var nilai = new Text[7]; var pilihan = new Text[15];
             for (int i = 0; i < tab.Length; i++)
             {
                 Text label;
@@ -38,12 +38,13 @@ namespace AlasKeramat.EditorTools
                 UnityEventTools.AddPersistentListener(slider[i].onValueChanged, aksi[i]);
             }
             UnityAction[] tindakan = { menu.ToggleBalikY, menu.ToggleHeadBob, menu.ToggleGoyangan, menu.ToggleBantuanBidik, menu.ToggleGetar, menu.ToggleJedaPanel,
-                menu.SiklusPreset, menu.ToggleTargetFps, menu.ToggleHeadset, menu.SiklusGore, menu.SiklusHoror, menu.SiklusKesulitan, menu.ToggleImersif };
+                menu.SiklusPreset, menu.ToggleTargetFps, menu.ToggleHeadset, menu.SiklusGore, menu.SiklusHoror, menu.SiklusKesulitan, menu.ToggleImersif,
+                menu.ToggleModeSengsara, menu.ToggleModePantangMundur };
             for (int i = 0; i < tindakan.Length; i++)
             {
                 int page = i < 6 ? 0 : i < 8 ? 1 : i == 8 ? 2 : 3;
                 float x = page == 0 ? 360 : 0;
-                float y = page == 0 ? -40 - i * 92 : page == 1 ? -80 - (i - 6) * 150 : page == 2 ? -530 : -60 - (i - 9) * 125;
+                float y = page == 0 ? -40 - i * 92 : page == 1 ? -80 - (i - 6) * 150 : page == 2 ? -530 : -40 - (i - 9) * 92;
                 var b = TombolPanel(halaman[page], "PilihanNyaman" + i, "", font, Vector2.zero, new Vector2(630, 72), ProcTex.Hex("#3B4A3E"), out pilihan[i]);
                 var r = (RectTransform)b.transform; r.anchorMin = r.anchorMax = new Vector2(0.5f, 1); r.anchoredPosition = new Vector2(x, y);
                 pilihan[i].fontSize = 24; UnityEventTools.AddPersistentListener(b.onClick, tindakan[i]);
@@ -73,8 +74,9 @@ namespace AlasKeramat.EditorTools
             var isi = UIStretch(areaIsi, "Isi", new Vector2(0f, 0f), new Vector2(0f, 1f));
             var gIsi = isi.AddComponent<Image>(); GayakanTombol(gIsi, ProcTex.Hex("#E0B33A"), null); gIsi.color = ProcTex.Hex("#E0B33A"); gIsi.raycastTarget = false;
             var area = UIStretch(fondasi, "AreaKenop", new Vector2(0.05f, 0), new Vector2(0.95f, 1));
-            var kenop = UIGambar(area, "Kenop", null, new Vector2(58, 58), new Vector2(0.5f, 0.5f), Vector2.zero);
+            var kenop = UIGambar(area, "Kenop", null, new Vector2(56, 56), new Vector2(0.5f, 0.5f), Vector2.zero);
             var gk = kenop.GetComponent<Image>(); var sk = SpriteLingkaran(); if (sk != null) gk.sprite = sk;
+            gk.preserveAspect = true;
             gk.color = ProcTex.Hex("#F2CE5A");
             var s = fondasi.AddComponent<Slider>(); s.minValue = min; s.maxValue = max; s.wholeNumbers = max > 10;
             s.targetGraphic = gk; s.handleRect = (RectTransform)kenop.transform; s.fillRect = (RectTransform)isi.transform;

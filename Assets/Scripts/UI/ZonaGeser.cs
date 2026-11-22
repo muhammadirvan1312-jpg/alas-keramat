@@ -6,11 +6,28 @@ namespace AlasKeramat.UI
     // Area geser kamera (09 §2.4): jari pertama di area kamera memutar view. Delta dalam piksel layar.
     public class ZonaGeser : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, ICancelHandler, IInitializePotentialDragHandler
     {
-        int _jari = int.MinValue;
-        Vector2 _akumulasi;
+        public const float AmbangAksel = 14f, MaksAksel = 1.65f, FaktorHalus = 0.62f;
 
-        public void ResetSentuh() { _jari = int.MinValue; _akumulasi = Vector2.zero; }
-        public Vector2 AmbilDelta() { var d = _akumulasi; _akumulasi = Vector2.zero; return d; }
+        int _jari = int.MinValue;
+        Vector2 _akumulasi, _halus;
+
+        public static Vector2 HitungKurvaGeser(Vector2 delta)
+        {
+            float m = delta.magnitude;
+            if (m < 0.05f) return Vector2.zero;
+            float aksel = m <= AmbangAksel ? 1f : Mathf.Lerp(1f, MaksAksel, Mathf.Clamp01((m - AmbangAksel) / 42f));
+            return delta * aksel;
+        }
+
+        public void ResetSentuh() { _jari = int.MinValue; _akumulasi = Vector2.zero; _halus = Vector2.zero; }
+        public Vector2 AmbilDelta()
+        {
+            Vector2 target = HitungKurvaGeser(_akumulasi);
+            _akumulasi = Vector2.zero;
+            _halus = Vector2.Lerp(_halus, target, FaktorHalus);
+            if (_halus.sqrMagnitude < 0.002f) _halus = Vector2.zero;
+            return _halus;
+        }
 
         public void OnInitializePotentialDrag(PointerEventData e) { e.useDragThreshold = false; }
         void OnDisable() { ResetSentuh(); }

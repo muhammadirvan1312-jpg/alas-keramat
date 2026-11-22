@@ -23,7 +23,7 @@ namespace AlasKeramat.EditorTools
             {
                 var look=go.AddComponent<ZonaGeser>();var satu=new PointerEventData(es){pointerId=1,delta=new Vector2(12,4)};var dua=new PointerEventData(es){pointerId=2,delta=new Vector2(90,90)};
                 look.OnPointerDown(satu);look.OnPointerDown(dua);look.OnDrag(dua);look.OnPointerUp(dua);look.OnDrag(satu);
-                cek("Sentuh: jari kedua tidak merebut kamera",look.AmbilDelta()==new Vector2(12,4));
+                cek("Sentuh: jari kedua tidak merebut kamera",(look.AmbilDelta()-Vector2.Lerp(Vector2.zero,ZonaGeser.HitungKurvaGeser(new Vector2(12,4)),ZonaGeser.FaktorHalus)).sqrMagnitude<1e-6f);
                 look.ResetSentuh();look.OnDrag(satu);cek("Sentuh: reset membuang delta dan kepemilikan jari",look.AmbilDelta()==Vector2.zero);
             }
             finally { Object.DestroyImmediate(go); }

@@ -20,13 +20,51 @@ namespace AlasKeramat.Player
         public float Vitamin { get; private set; } = GiziAwal;
         public float Fullness { get { return (Karbo + Protein + Lemak + Vitamin) * 0.25f; } }
         public bool Diare { get { return _diare > 0f; } }
+        public float LukaKepala { get; private set; }
+        public float LukaLengan { get; private set; }
+        public float LukaKaki { get; private set; }
         public StatusEffect Status { get; private set; }
+        public static bool ModeSengsara, ModePantangMundur;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetModeTantangan() { ModeSengsara = false; ModePantangMundur = false; }
+        public static float PengaliModeSengsara(bool aktif) { return aktif ? 1.45f : 1f; }
 
         float _diare, _racun, _bisa;
 
+        public static float PengaliKecepatanLuka(float lukaKaki) { return lukaKaki > 0f ? 0.78f : 1f; }
+        public static float PengaliBiayaStaminaLuka(float lukaLengan) { return lukaLengan > 0f ? 1.25f : 1f; }
+
+        public void ObatiLukaTubuh()
+        {
+            if (LukaKepala > 0f || LukaLengan > 0f || LukaKaki > 0f)
+                GameEvents.RaiseToast("Luka pada tubuhmu mulai pulih");
+            LukaKepala = 0f; LukaLengan = 0f; LukaKaki = 0f;
+        }
+
+        void TerapkanLukaTubuh(DamageInfo info, float sisaDamage)
+        {
+            if (info.type == DamageType.Jatuh && sisaDamage >= 8f)
+            {
+                LukaKaki = Mathf.Max(LukaKaki, 90f);
+                GameEvents.RaiseToast("Pergelangan kakimu terkilir! Gerakan melambat sampai diobati.");
+                return;
+            }
+            if (sisaDamage < 14f) return;
+            if (info.isHeavy)
+            {
+                if (Random.value < 0.45f) { LukaKepala = Mathf.Max(LukaKepala, 60f); GameEvents.RaiseToast("Pandanganmu berkunang-kunang karena benturan kepala!"); }
+                else { LukaLengan = Mathf.Max(LukaLengan, 75f); GameEvents.RaiseToast("Lenganmu terluka! Konsumsi stamina meningkat."); }
+            }
+            else if (Random.value < 0.35f)
+            {
+                LukaKaki = Mathf.Max(LukaKaki, 65f);
+                GameEvents.RaiseToast("Kakimu terluka! Balut dengan Perban atau Jamu.");
+            }
+        }
+
         void AwalGizi() { Karbo = Protein = Lemak = Vitamin = GiziAwal; }
         void SetGiziMinimal(float v) { Karbo = Mathf.Max(Karbo, v); Protein = Mathf.Max(Protein, v); Lemak = Mathf.Max(Lemak, v); Vitamin = Mathf.Max(Vitamin, v); }
-        void BersihkanPenyakit() { _diare = 0f; _racun = 0f; _bisa = 0f; SetStatus(StatusEffect.Keracunan, false); SetStatus(StatusEffect.Racun, false); }
+        void BersihkanPenyakit() { _diare = 0f; _racun = 0f; _bisa = 0f; LukaKepala = 0f; LukaLengan = 0f; LukaKaki = 0f; SetStatus(StatusEffect.Keracunan, false); SetStatus(StatusEffect.Racun, false); }
 
         void TickGizi(bool sprint, float dt)
         {
@@ -63,11 +101,13 @@ namespace AlasKeramat.Player
 
         void ObatiDariMakanan(ItemID id)
         {
+            if (id == ItemID.PerbanKain) ObatiLukaTubuh();
             if (id == ItemID.KunyitObat || id == ItemID.JamuHerbal || id == ItemID.DaunSirih)
             {
                 if (_diare > 0f || _racun > 0f || _bisa > 0f) GameEvents.RaiseToast("Ramuan meredakan racun dan sakit perutmu");
                 if (id != ItemID.DaunSirih) { _diare = 0f; _racun = 0f; SetStatus(StatusEffect.Keracunan, false); }
                 _bisa = 0f; SetStatus(StatusEffect.Racun, false);
+                ObatiLukaTubuh();
             }
         }
 
@@ -113,6 +153,9 @@ namespace AlasKeramat.Player
             if (_diare > 0f) { _diare -= dt; Hydration = Mathf.Max(0f, Hydration - HausDiare * dt); if (_diare <= 0f) GameEvents.RaiseToast("Diaremu reda"); }
             if (_racun > 0f) { _racun -= dt; if (_racun <= 0f) SetStatus(StatusEffect.Keracunan, false); }
             if (_bisa > 0f) { _bisa -= dt; if (_bisa <= 0f) { SetStatus(StatusEffect.Racun, false); GameEvents.RaiseToast("Bisa ular mulai mereda"); } }
+            if (LukaKepala > 0f) LukaKepala = Mathf.Max(0f, LukaKepala - dt);
+            if (LukaLengan > 0f) LukaLengan = Mathf.Max(0f, LukaLengan - dt);
+            if (LukaKaki > 0f) LukaKaki = Mathf.Max(0f, LukaKaki - dt);
         }
 
         public void KenaBisaUlar(float lama = 20f)

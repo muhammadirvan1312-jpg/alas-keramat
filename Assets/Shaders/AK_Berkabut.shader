@@ -21,6 +21,7 @@ Shader "AlasKeramat/KabutLokal"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             TEXTURE2D(_BaseMap);SAMPLER(sampler_BaseMap);
+            float _AK_MatikanDepth;
             CBUFFER_START(UnityPerMaterial)
                 float4 _BaseMap_ST;half4 _BaseColor;
             CBUFFER_END
@@ -37,9 +38,13 @@ Shader "AlasKeramat/KabutLokal"
                 float2 uv=i.uv;
                 half noise=SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,uv*2+_Time.y*float2(0.006,0.002)).r;
                 half edge=saturate(uv.x*(1-uv.x)*6)*saturate(uv.y*(1-uv.y)*6);
-                float scene=LinearEyeDepth(SampleSceneDepth(i.screen.xy/i.screen.w),_ZBufferParams);
-                float own=-TransformWorldToView(i.world).z;
-                half soft=saturate((scene-own)*0.45);
+                half soft=1.0h;
+                if(_AK_MatikanDepth<0.5)
+                {
+                    float scene=LinearEyeDepth(SampleSceneDepth(i.screen.xy/i.screen.w),_ZBufferParams);
+                    float own=-TransformWorldToView(i.world).z;
+                    soft=saturate((scene-own)*0.45);
+                }
                 half dist=saturate((distance(_WorldSpaceCameraPos,i.world)-2.5)/10.0);
                 return half4(_BaseColor.rgb,_BaseColor.a*noise*edge*soft*dist);
             }

@@ -44,6 +44,42 @@ namespace AlasKeramat.AI
         ProceduralAnimator _anim;
         Renderer[] _rend;
         MaterialPropertyBlock _mpb;
+        ParticleSystem _auraHantu;
+
+        public static Color WarnaAuraHantu(EnemyArchetype j)
+        {
+            if (j == EnemyArchetype.Banaspati) return new Color(1f, 0.42f, 0.12f, 0.55f);
+            if (j == EnemyArchetype.Kuntilanak || j == EnemyArchetype.Kuyang) return new Color(0.82f, 0.18f, 0.22f, 0.42f);
+            if (j == EnemyArchetype.HantuAir) return new Color(0.25f, 0.78f, 0.72f, 0.42f);
+            return new Color(0.68f, 0.82f, 0.92f, 0.38f);
+        }
+
+        void PerbaruiAuraHantu()
+        {
+            bool aktif = IsAlive && _fase != FaseHantu.Hilang && _fase != FaseHantu.Diusir;
+            if (aktif)
+            {
+                if (_auraHantu == null)
+                {
+                    var go = new GameObject("AuraHantu");
+                    go.transform.SetParent(transform, false);
+                    go.transform.localPosition = new Vector3(0f, 1.05f, 0f);
+                    _auraHantu = go.AddComponent<ParticleSystem>();
+                    var w = WarnaAuraHantu(jenis);
+                    var m = _auraHantu.main;
+                    m.loop = true; m.startLifetime = 1.25f; m.startSpeed = 0.38f; m.startSize = 0.20f;
+                    m.maxParticles = 32; m.gravityModifier = -0.12f; m.simulationSpace = ParticleSystemSimulationSpace.World;
+                    m.startColor = w;
+                    var em = _auraHantu.emission; em.rateOverTime = 12f;
+                    var sh = _auraHantu.shape; sh.shapeType = ParticleSystemShapeType.Sphere; sh.radius = 0.48f;
+                    var pr = go.GetComponent<ParticleSystemRenderer>();
+                    pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_AuraHantu_" + (int)jenis, w, 0f, 0.2f, null, null, w * 1.6f, SurfaceMode.Transparent);
+                    pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+                if (!_auraHantu.isPlaying) _auraHantu.Play();
+            }
+            else if (_auraHantu != null && _auraHantu.isPlaying) _auraHantu.Stop();
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetStatis() { Semua.Clear(); }
@@ -88,6 +124,7 @@ namespace AlasKeramat.AI
                 if (_tBakar > 0f) _tBakar -= dt;
                 TickApi(dt);
                 SinkronInteraksi();
+                PerbaruiAuraHantu();
                 if (_fase == FaseHantu.Diusir) { TickLarut(); return; }
                 if (_andi == null) return;
                 if (jenis == EnemyArchetype.Kuntilanak) TickKuntilanak(dt);
@@ -104,7 +141,15 @@ namespace AlasKeramat.AI
             }
         }
 
-        void Ubah(FaseHantu f) { _fase = f; _t = 0f; _sudahKena = false; }
+        void Ubah(FaseHantu f)
+        {
+            _fase = f; _t = 0f; _sudahKena = false;
+            if (f == FaseHantu.Diusir)
+            {
+                var gore = GameServices.Get<GoreSystem>();
+                if (gore != null) gore.PercikPartikel(transform.position + Vector3.up * 0.9f, new Color(0.14f, 0.14f, 0.17f, 0.78f), 14, 0.14f, 1.3f, 0.95f);
+            }
+        }
 
         // ---------- Rumus murni (self-test) ----------
         public static float IndraPocong(float sanity) { return sanity < 25f ? PocongIndraTakut : PocongIndra; }

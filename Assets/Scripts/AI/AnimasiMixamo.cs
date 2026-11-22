@@ -84,6 +84,20 @@ namespace AlasKeramat.AI
             _siap = true;
         }
 
+        public static bool BolehTampilModelMixamo(ProceduralAnimator.Mode mode)
+        {
+            return mode == ProceduralAnimator.Mode.Normal || mode == ProceduralAnimator.Mode.DudukTerhuyung;
+        }
+
+        public static string KlipSerangUntuk(Peran peran, bool adaZombieAttack, bool adaGreatSword)
+        {
+            if (peran == Peran.Raksasa)
+                return adaZombieAttack ? "Zombie_Attack" : adaGreatSword ? "Great_Sword_Slash" : "Standing_Melee_Attack_Horizontal";
+            if (peran == Peran.Sekte && adaZombieAttack)
+                return "Zombie_Attack";
+            return "Standing_Melee_Attack_Horizontal";
+        }
+
         // Pilih klip menurut peran, kecepatan dan pose tempur. "" = biarkan animasi prosedural.
         public static string KlipUntuk(Peran peran, float kec, ProceduralAnimator.PoseTempur pose)
         {
@@ -107,14 +121,19 @@ namespace AlasKeramat.AI
         {
             if (!_siap) return;
             if (_model != null && !_pa.enabled) { MatiModel(); return; }
-            if (_model != null) TampilModel(_pa.ModeAktif == ProceduralAnimator.Mode.Normal);
-            if (_pa.ModeAktif != ProceduralAnimator.Mode.Normal) return;
+            bool bolehModel = BolehTampilModelMixamo(_pa.ModeAktif);
+            if (_model != null) TampilModel(bolehModel);
+            if (!bolehModel) return;
             if (_kamera == null) { var c = Camera.main; if (c != null) _kamera = c.transform; }
             bool dekat = _kamera == null || (_kamera.position - transform.position).sqrMagnitude < JarakAktif * JarakAktif;
             if (_anim.enabled != dekat) _anim.enabled = dekat;
             if (!dekat) return;
             float kec = _pa.Kecepatan;
-            string mau = KlipUntuk(peran, kec, _pa.Pose);
+            string mau = _pa.ModeAktif == ProceduralAnimator.Mode.DudukTerhuyung
+                ? (_anim.GetClip("Sitting_Idle") != null ? "Sitting_Idle" : "Kneeling_Idle")
+                : (_pa.Pose == ProceduralAnimator.PoseTempur.Ancang || _pa.Pose == ProceduralAnimator.PoseTempur.Ayun)
+                    ? KlipSerangUntuk(peran, _anim.GetClip("Zombie_Attack") != null, _anim.GetClip("Great_Sword_Slash") != null)
+                    : KlipUntuk(peran, kec, _pa.Pose);
             if (mau.Length > 0 && _anim.GetClip(mau) == null) mau = kec < BatasLari ? "Walking" : "Running";
             if (_model != null && (mau.Length == 0 || _anim.GetClip(mau) == null)) mau = _anim.GetClip("Breathing_Idle") != null ? "Breathing_Idle" : mau;
             if (mau.Length == 0 || _anim.GetClip(mau) == null) { _kini = ""; return; }
@@ -122,7 +141,7 @@ namespace AlasKeramat.AI
             var st = _anim[mau];
             if (st != null) st.speed = mau == "Walking" || mau == "Female_Walk" || mau == "Injured_Walk" ? Mathf.Clamp(kec / LajuJalanAsli, 0.6f, 1.6f)
                 : mau == "Running" || mau == "Zombie_Running" ? Mathf.Clamp(kec / LajuLariAsli, 0.7f, 1.5f) : 1f;
-            if (_model != null) KunciPinggul(); else Salin();
+            if (_model != null) { KunciPinggul(); GerakKepalaDanMata(); PerbaruiBayanganKontak(); } else Salin();
         }
 
         void Salin()

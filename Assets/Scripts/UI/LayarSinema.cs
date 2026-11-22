@@ -113,6 +113,7 @@ namespace AlasKeramat.UI
         }
         public void PilihA() { Pilih(1); }
         public void PilihB() { Pilih(2); }
+        public void PilihC() { Pilih(3); }
         void Pilih(int e)
         {
             if (panelPilihan != null) panelPilihan.SetActive(false);
@@ -126,6 +127,10 @@ namespace AlasKeramat.UI
             if (e == 1)
                 return (ningsihIkut ? "Andi merangkul bahu Kang Deden dan mengulurkan tangan kepada Ningsih. Mereka bertiga naik." : "Andi merangkul bahu Kang Deden. Sekali lagi ia menatap lembah bambu, untuk gadis berkebaya yang tak sempat ia kenal.")
                     + " Helikopter lepas landas saat matahari terbit, dan lampu mercusuar menyala hijau.\n\nAlas Keramat kembali sunyi. Di bawah akar Beringin Agung, tiga paku kembali tertidur - dan kali ini, ada yang tahu cara menjaganya.";
+            if (e == 3)
+                return "Andi mencabut Keris Pusaka dan menyatukan sinarnya dengan tiga Paku Keramat di Altar Beringin. Kang Deden berjaga di gerbang candi"
+                    + (ningsihIkut ? ", sementara Ningsih melantunkan kidung penutup perjanjian kuno." : " saat kabut merah terhisap masuk ke dalam batu altar.")
+                    + "\n\nRetakan antara dua dunia tertutup selamanya. Mereka kini menjadi Pewaris Perjanjian Alas Keramat.";
             return "Andi menyerahkan dokumen bukti kepada Kapten Hendra. Pilot memberi hormat dan terbang. Kang Deden mengacungkan jempol"
                 + (ningsihIkut ? ", dan Ningsih tersenyum dengan bunga kantil di telinga." : ". Di tepi hutan, bayangan berkebaya mengawasi dari kejauhan.")
                 + "\n\nSebagian orang pulang. Sebagian lagi memilih menjadi penjaga.";
@@ -158,12 +163,16 @@ namespace AlasKeramat.UI
             Gelap(0f); JedaDunia.Atur(GetInstanceID(), false); Berjalan = false;
             var heli = GameServices.Get<HeliSAR>();
             if (heli != null) heli.Terbang();
-            if (_ending != 2) return;
+            if (_ending != 2 && _ending != 3) return;
             EnemyDirector.TanpaMalamDarah = true;
             for (int i = HantuAI.Semua.Count - 1; i >= 0; i--) if (HantuAI.Semua[i] != null && HantuAI.Semua[i].IsAlive) HantuAI.Semua[i].TakeDamage(new DamageInfo { amount = 99999f, type = DamageType.Gaib, direction = Vector3.up });
             var inv = GameServices.Get<TikarPandan3DInventory>();
-            if (inv != null) inv.Tambah(ItemID.GolokApiPusaka, 1);
-            GameEvents.RaiseToast("Mode Sandbox terbuka. Golok Api Pusaka didapat.");
+            if (inv != null)
+            {
+                inv.Tambah(ItemID.GolokApiPusaka, 1);
+                if (_ending == 3) { inv.Tambah(ItemID.KerisPusaka, 1); inv.Tambah(ItemID.ZirahEmas, 1); }
+            }
+            GameEvents.RaiseToast(_ending == 3 ? "Pewaris Perjanjian: Mode Sandbox, Golok Api & Keris Pusaka didapat." : "Mode Sandbox terbuka. Golok Api Pusaka didapat.");
         }
 
         public void MulaiBaru()

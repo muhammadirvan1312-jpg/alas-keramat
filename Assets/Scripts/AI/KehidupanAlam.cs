@@ -27,11 +27,22 @@ namespace AlasKeramat.AI
             wadah = w; burung = b; sayapKiri = sk; sayapKanan = sn; kupu = kp; kunang = kn; ikan = ik;
         }
 
+        public static float SkalaBentangBurung(int indeks)
+        {
+            return indeks % 5 == 0 ? 1.65f : indeks % 3 == 0 ? 1.35f : 1f;
+        }
+
         void Awake()
         {
             int nB = burung.Length;
             _rBurung = new float[nB]; _sBurung = new float[nB]; _tBurung = new float[nB];
-            for (int i = 0; i < nB; i++) { _rBurung[i] = 28f + (i % 5) * 9f; _sBurung[i] = (i % 2 == 0 ? 1f : -1f) * (0.14f + (i % 3) * 0.04f); _tBurung[i] = i * 0.63f; }
+            for (int i = 0; i < nB; i++)
+            {
+                _rBurung[i] = 28f + (i % 5) * 9f;
+                _sBurung[i] = (i % 2 == 0 ? 1f : -1f) * (0.14f + (i % 3) * 0.04f);
+                _tBurung[i] = i * 0.63f;
+                if (burung[i] != null) burung[i].localScale = Vector3.one * SkalaBentangBurung(i);
+            }
             _pusatKupu = new Vector3[kupu.Length];
             _pusatKunang = new Vector3[kunang.Length];
             _pusatIkan = new Vector3[ikan.Length];

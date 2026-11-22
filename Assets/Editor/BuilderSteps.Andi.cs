@@ -94,8 +94,9 @@ namespace AlasKeramat.EditorTools
             {
                 var rt = zona.rectTransform;
                 rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 1f);
-                rt.anchoredPosition = new Vector2(0f, -150f);
-                zona.fontSize = 44;
+                rt.anchoredPosition = new Vector2(0f, -124f);
+                zona.fontSize = 28;
+                zona.color = new Color(0.96f, 0.94f, 0.88f, 0.94f);
             }
             var hud = kanvas.gameObject.AddComponent<HUDInfo>();
             hud.Pasang(info, zona);

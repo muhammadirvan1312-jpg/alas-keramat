@@ -38,7 +38,10 @@ namespace AlasKeramat.Player
         public bool PakaiHeadBob; // Opsional; bawaan tanpa goyangan untuk kenyamanan layar sentuh.
         public event System.Action OnLompat;
         public bool Jongkok { get; private set; }
+        public bool TersembunyiDiSemak { get; private set; }
         public bool Berenang { get; private set; }
+        float _tCekSemak;
+        Building.VegetationManager _veg;
         public bool Menyelam { get; private set; }
         public bool DiTanah { get; private set; }
         public bool SedangLari { get; private set; }
@@ -65,7 +68,12 @@ namespace AlasKeramat.Player
         CharacterController _cc;
         Vector3 _vDatar;
         Vector2 _lihatLalu;
-        float _vy, _yaw, _pitch, _sejakTanah, _faseBob, _mata = MataBerdiri, _puncakY;
+        float _vy, _yaw, _pitch, _sejakTanah, _faseBob, _mata = MataBerdiri, _puncakY, _tekukMendarat;
+
+        public static float HitungTekukMendarat(float tinggiJatuh)
+        {
+            return tinggiJatuh < 0.4f ? 0f : Mathf.Clamp(tinggiJatuh * 0.045f, 0.04f, 0.24f);
+        }
         bool _mintaLompat, _diUdara;
 #if ENABLE_LEGACY_INPUT_MANAGER && (UNITY_EDITOR || UNITY_STANDALONE)
         bool _keyboardGerak;
@@ -123,6 +131,13 @@ namespace AlasKeramat.Player
                 }
                 else BacaKeyboardMouse();
                 if (!GerakKendaraan(Time.deltaTime)) Gerak(Time.deltaTime);
+                _tCekSemak -= Time.deltaTime;
+                if (_tCekSemak <= 0f)
+                {
+                    _tCekSemak = 0.25f;
+                    if (_veg == null) _veg = GameServices.Get<Building.VegetationManager>();
+                    TersembunyiDiSemak = Jongkok && _veg != null && _veg.DiDalamSemak(transform.position);
+                }
             }
             catch (System.Exception e) { Debug.LogError("[AK][AndiFPSController] " + e.Message); }
         }
@@ -144,9 +159,10 @@ namespace AlasKeramat.Player
             float laju = DiTanah && !Berenang ? KecepatanDatar / JalanMaks : 0f;
             _faseBob += Time.deltaTime * FrekBob * Mathf.PI * 2f * Mathf.Max(0.0001f, laju);
             float fBob = PakaiHeadBob ? 1f : 0f;
+            _tekukMendarat = Mathf.MoveTowards(_tekukMendarat, 0f, Time.deltaTime * 0.85f);
             float bobV = Mathf.Sin(_faseBob * 2f) * BobV * Mathf.Clamp01(laju) * fBob;
             float bobL = Mathf.Sin(_faseBob) * BobL * Mathf.Clamp01(laju) * fBob;
-            kamera.localPosition = new Vector3(bobL, _mata + bobV, 0f);
+            kamera.localPosition = new Vector3(bobL, _mata + bobV - _tekukMendarat, 0f);
             float sisa = GoyanganTempur ? Mathf.Clamp01((_akhirGuncang - Time.unscaledTime) / Mathf.Max(_lamaGuncang, 0.01f)) : 0f;
             float guncang = Mathf.Sin(Time.unscaledTime * 95f) * 0.6f * sisa;
             kamera.localRotation = Quaternion.Euler(_pitch + guncang, guncang * 0.45f, 0f);
@@ -162,6 +178,7 @@ namespace AlasKeramat.Player
                     _cam.fieldOfView = FovDasar + _fovTambah;
                 }
             }
+            PerbaruiGelembungSelam();
         }
 
         // H3: keyboard/mouse hanya untuk uji di Editor/PC, di dalam ENABLE_LEGACY_INPUT_MANAGER.
@@ -245,6 +262,7 @@ namespace AlasKeramat.Player
             {
                 _diUdara = false;
                 TinggiJatuhTerakhir = _puncakY - y;
+                _tekukMendarat = Mathf.Max(_tekukMendarat, HitungTekukMendarat(TinggiJatuhTerakhir));
                 if (TinggiJatuhTerakhir > JatuhAman)
                 {
                     var target = GetComponent<IDamageable>();

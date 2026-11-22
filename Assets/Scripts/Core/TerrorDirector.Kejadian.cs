@@ -45,6 +45,18 @@ namespace AlasKeramat.Core
             d.Add(K("E34", "Tangan dari Air", T.Keras, false, k => k.berenang && k.malam));
             d.Add(K("E35", "Jeritan dari Gua", T.Ringan, false, k => k.malam && k.dekatGua));
             d.Add(K("E14", "Sosok di Kilat", T.Sedang, false, k => k.hujanBadai));
+            d.Add(K("E15", "Bayangan di Air", T.Ringan, false, k => k.malam && k.berenang));
+            d.Add(K("E16", "Gema Langkah Gua", T.Ringan, true, k => k.bawahTanah && k.sendirian));
+            d.Add(K("E17", "Ranting Patah Dekat", T.Ringan, true, k => k.malam && k.dekatGua));
+            d.Add(K("E19", "Pocong di Balik Pohon", T.Sedang, false, k => k.malam && k.pocongTerlihat30));
+            d.Add(K("E20", "Suara Sinden Samar", T.Ringan, false, k => k.malam && k.dekatDesa250));
+            d.Add(K("E25", "Api Unggun Meredup", T.Ringan, false, k => k.malam && k.hantuDekat20));
+            d.Add(K("E26", "Bayangan di Dinding Gua", T.Sedang, false, k => k.bawahTanah && k.bawaCahaya));
+            d.Add(K("E28", "Tetesan Darah Langit-Langit", T.Sedang, false, k => k.bawahTanah && k.sanity < 45f));
+            d.Add(K("E29", "Pintu Berderit Sendiri", T.Ringan, false, k => k.malam && k.diStruktur));
+            d.Add(K("E31", "Isyarat Panik Kang Deden", T.Ringan, false, k => k.malam && k.dedenTidurDiKemah && k.hantuDekat20));
+            d.Add(K("E36", "Kabut Berbisik", T.Ringan, true, k => k.hujanBadai && k.sendirian));
+            d.Add(K("E37", "Gema Nama Andi", T.Sedang, false, k => k.bawahTanah && k.sanity < 35f));
             return d;
         }
 
@@ -120,6 +132,18 @@ namespace AlasKeramat.Core
                         break;
                     }
                 case "E35": foreach (var g in MulutGua) if (new Vector2(a.x - g.x, a.z - g.z).magnitude < 50f) { Bunyi(ProceduralAudioSynth.KlipJeritGua, new Vector3(g.x, a.y, g.z), 1f); break; } break;
+                case "E15": Bunyi(ProceduralAudioSynth.KlipNapasBerat, a - Vector3.up * 0.4f, 0.8f); GameEvents.RaiseSubtitle("(Ada bayangan melintas tepat di bawah kakimu di dalam air...)"); break;
+                case "E16": Bunyi(ProceduralAudioSynth.NamaLangkah(SurfaceType.BatuGua, 0), a + Belakang() * 4f, 0.85f, 0.9f); break;
+                case "E17": Bunyi(ProceduralAudioSynth.KlipKerikil, a + _andi.transform.right * 4f, 0.9f, 0.7f); break;
+                case "E19": MunculSosok(a + _andi.transform.forward * 14f + _andi.transform.right * 3f, false); break;
+                case "E20": Bunyi(ProceduralAudioSynth.KlipGamelanJauh, a + Arah(Random.value * 360f) * 65f, 0.75f, 1.15f); GameEvents.RaiseSubtitle("(Alunan sinden samar terbawa angin malam...)"); break;
+                case "E25": CahayaSekarat(); GameEvents.RaiseSubtitle("(Lidah api unggun mendadak mengecil sejenak...)"); break;
+                case "E26": MunculSosok(a + _andi.transform.forward * 6f, false); Nanti(0.9f, HapusSosok); break;
+                case "E28": Bunyi(ProceduralAudioSynth.KlipTebasBasah, a + Vector3.up * 2f, 0.5f, 1.3f); if (_vital != null) _vital.UbahSanity(-3f); break;
+                case "E29": Bunyi(ProceduralAudioSynth.KlipKetukan, a + _andi.transform.forward * 3f, 0.75f, 0.8f); break;
+                case "E31": GameEvents.RaiseSubtitle("(Kang Deden menunjuk gelisah ke luar lingkaran api!)"); break;
+                case "E36": Bunyi(ProceduralAudioSynth.KlipBisikan, a + _andi.transform.right * 1.4f, 0.7f, 0.85f); break;
+                case "E37": Bunyi(ProceduralAudioSynth.KlipBisikan, a - _andi.transform.right * 1.2f, 0.8f, 0.75f); GameEvents.RaiseSubtitle("(\"Andi...\" - gema memanggil dari lorong gelap.)"); break;
             }
             if (_audio != null && (id == "E14" || id == "E18" || id == "E27")) Bunyi(ProceduralAudioSynth.KlipStinger, a, 0.6f);
         }

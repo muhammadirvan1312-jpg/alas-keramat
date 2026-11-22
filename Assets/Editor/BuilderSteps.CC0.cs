@@ -12,7 +12,13 @@ namespace AlasKeramat.EditorTools
         static readonly string[,] PasanganFoto={
             {"tanah","TanahHutan"},{"rumput","LumutHutan"},{"batu","Batu"},{"kayu","Kayu"},
             {"kulit_kayu","KulitKayu"},{"pasir","Pasir"},{"lumpur","Lumpur"},{"daun","Serasah"},
-            {"beton","Beton"},{"logam_karat","Karat"},{"palem","Palem"},{"kain","Kain"},{"batu_gua","BatuGua"},{"bilik","BilikBambu"}
+            {"beton","Beton"},{"logam_karat","Karat"},{"palem","Palem"},{"kain","Kain"},{"batu_gua","BatuGua"},{"bilik","BilikBambu"},
+            {"genteng","AtapGenteng"},{"genteng_lumut","AtapLumut"},
+            {"beton_bunker","BetonBunker"},{"batu_candi","BatuCandi"},{"kayu_lapuk","KayuLapuk"},{"karat_pabrik","KaratPabrik"},
+            {"tanah_rawa","TanahRawa"},{"kerikil_sungai","KerikilSungai"},{"jalan_batu_desa","JalanBatuDesa"},{"karang_kapur","KarangKapur"},
+            {"beton_retak","BetonRetak"},{"bata_lumut","BataLumut"},{"dinding_batu_tua","DindingBatuTua"},{"papan_rumah","PapanRumah"},
+            {"papan_lantai","PapanLantai"},{"kisi_baja_karat","KisiBajaKarat"},{"seng_karat","SengKarat"},{"lumpur_berbatu","LumpurBerbatu"},
+            {"batu_kali","BatuKali"},{"kulit_pohon_tua","KulitPohonTua"}
         };
         static Texture2D BacaFoto(string slot,string peta)
         {
@@ -42,10 +48,10 @@ namespace AlasKeramat.EditorTools
                     for(int p=0;p<apx.Length;p++)
                     {
                         Color c=apx[p];
-                        if(nama=="rumput") c=new Color(c.r*0.66f,c.g*0.72f,c.b*0.54f,1f);
-                        else if(nama=="daun") c=new Color(c.r*0.62f,c.g*0.58f,c.b*0.48f,1f);
-                        else if(nama=="batu") c=new Color(c.r*0.72f,c.g*0.73f,c.b*0.74f,1f);
-                        else c=new Color(c.r*0.86f,c.g*0.80f,c.b*0.74f,1f);
+                        if(nama=="rumput") c=new Color(c.r*0.40f,c.g*0.78f,c.b*0.34f,1f);
+                        else if(nama=="daun") c=new Color(c.r*0.46f,c.g*0.62f,c.b*0.35f,1f);
+                        else if(nama=="batu") c=new Color(c.r*0.68f,c.g*0.72f,c.b*0.69f,1f);
+                        else c=new Color(c.r*0.66f,c.g*0.60f,c.b*0.49f,1f);
                         apx[p]=c;
                     }
                     var graded=new Texture2D(a.width,a.height,TextureFormat.RGBA32,true);

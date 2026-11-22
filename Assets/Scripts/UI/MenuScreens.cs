@@ -107,25 +107,47 @@ namespace AlasKeramat.UI
             tombolSkala = daftarTombol ?? new RectTransform[0];
         }
 
+        public static float AnggaranMemoriPreset(PresetGrafis p)
+        {
+            switch (p)
+            {
+                case PresetGrafis.Rendah: return 220f;
+                case PresetGrafis.Sedang: return 400f;
+                case PresetGrafis.Tinggi: return 750f;
+                default: return 1200f;
+            }
+        }
+
         // ---------- Rumus Murni (diuji Self-Test T11) ----------
         public static DataPresetGrafis AmbilPreset(PresetGrafis p)
         {
             switch (p)
             {
                 case PresetGrafis.Rendah:
-                    return new DataPresetGrafis { renderScale = 0.7f, bayangan = 0f, cascade = 1, msaa = 1, hdr = false, bloom = false, farKamera = 135f, kabutTambah = 0.006f, pengaliVeg = 0.55f, detailVeg = 0.45f, rumput = 0.15f, targetFps = 30 };
+                    return new DataPresetGrafis { renderScale = 0.7f, bayangan = 0f, cascade = 1, msaa = 1, hdr = false, bloom = false, farKamera = 185f, kabutTambah = 0.0035f, pengaliVeg = 0.55f, detailVeg = 0.45f, rumput = 0.15f, targetFps = 30 };
                 case PresetGrafis.Tinggi:
-                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 60f, cascade = 2, msaa = 1, hdr = true, bloom = true, farKamera = 250f, kabutTambah = 0f, pengaliVeg = 1.15f, detailVeg = 0.9f, rumput = 0.65f, targetFps = 60 };
+                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 60f, cascade = 2, msaa = 1, hdr = true, bloom = true, farKamera = 340f, kabutTambah = 0f, pengaliVeg = 1.15f, detailVeg = 0.9f, rumput = 0.65f, targetFps = 60 };
                 case PresetGrafis.Ultra:
-                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 90f, cascade = 4, msaa = 2, hdr = true, bloom = true, farKamera = 360f, kabutTambah = 0f, pengaliVeg = 1.4f, detailVeg = 1.15f, rumput = 1f, targetFps = 30 };
+                    return new DataPresetGrafis { renderScale = 1.0f, bayangan = 90f, cascade = 4, msaa = 2, hdr = true, bloom = true, farKamera = 450f, kabutTambah = 0f, pengaliVeg = 1.4f, detailVeg = 1.15f, rumput = 1f, targetFps = 30 };
                 default:
-                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 1, hdr = true, bloom = false, farKamera = 185f, kabutTambah = 0.002f, pengaliVeg = 0.85f, detailVeg = 0.65f, rumput = 0.35f, targetFps = 30 }; // 30 stabil: 60 yang tak tercapai membuat frame tidak rata (terasa patah-patah)
+                    return new DataPresetGrafis { renderScale = 0.95f, bayangan = 35f, cascade = 1, msaa = 1, hdr = true, bloom = false, farKamera = 260f, kabutTambah = 0.0012f, pengaliVeg = 0.85f, detailVeg = 0.65f, rumput = 0.35f, targetFps = 30 }; // 30 stabil: 60 yang tak tercapai membuat frame tidak rata (terasa patah-patah)
             }
         }
 
         public static float PengaliLajuVital(Difficulty d)
         {
             return d == Difficulty.Damai ? 0.7f : d == Difficulty.Sulit ? 1.25f : 1.0f;
+        }
+
+        public static float JarakSerasahPreset(PresetGrafis p)
+        {
+            switch (p)
+            {
+                case PresetGrafis.Rendah: return 42f;
+                case PresetGrafis.Sedang: return 62f;
+                case PresetGrafis.Tinggi: return 86f;
+                default: return 105f;
+            }
         }
 
         public static float PengaliDamageMusuh(Difficulty d)
@@ -243,6 +265,7 @@ namespace AlasKeramat.UI
             SaveSystem.SlotAktif = Mathf.Clamp(PlayerPrefs.GetInt(PrefSlot, 1), 1, 3);
             TerrorDirector.Setelan = (PenjadwalTeror.Intensitas)Mathf.Clamp(PlayerPrefs.GetInt(PrefHoror, (int)PenjadwalTeror.Intensitas.Normal), 0, 2);
             TerrorDirector.Headset = PlayerPrefs.GetInt(PrefHeadset, 1) != 0;
+            MuatModeTantangan();
         }
 
         public void SimpanPengaturan()
@@ -267,6 +290,8 @@ namespace AlasKeramat.UI
             PlayerPrefs.SetInt(PrefSlot, SaveSystem.SlotAktif);
             PlayerPrefs.SetInt(PrefHoror, (int)TerrorDirector.Setelan);
             PlayerPrefs.SetInt(PrefHeadset, TerrorDirector.Headset ? 1 : 0);
+            PlayerPrefs.SetInt(PrefSengsara, AndiVitalsAndSanity.ModeSengsara ? 1 : 0);
+            PlayerPrefs.SetInt(PrefPantang, AndiVitalsAndSanity.ModePantangMundur ? 1 : 0);
             PlayerPrefs.Save();
         }
 
@@ -276,6 +301,8 @@ namespace AlasKeramat.UI
             QualitySettings.vSyncCount = 0;
             QualitySettings.asyncUploadTimeSlice = 2;
             QualitySettings.asyncUploadBufferSize = 16;
+            QualitySettings.streamingMipmapsActive = true;
+            QualitySettings.streamingMipmapsMemoryBudget = AnggaranMemoriPreset(Preset);
             Application.targetFrameRate = TargetFps;
             Time.fixedDeltaTime = 0.025f;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
@@ -315,7 +342,7 @@ namespace AlasKeramat.UI
             var veg = GameServices.Get<VegetationManager>();
             if (veg != null) { veg.PengaliJarak = dp.pengaliVeg; veg.PengaliDetail = dp.detailVeg; }
             var serasah=GameServices.Get<SerasahHutan>();
-            if(serasah!=null) { serasah.Kepadatan=dp.rumput; serasah.BayanganPadat=Preset>=PresetGrafis.Tinggi; }
+            if(serasah!=null) { serasah.Kepadatan=dp.rumput; serasah.JarakTarik=JarakSerasahPreset(Preset); serasah.BayanganPadat=Preset>=PresetGrafis.Tinggi; }
             if(Application.isPlaying)
             {
                 var volume=UnityEngine.Object.FindFirstObjectByType<Volume>();
@@ -370,7 +397,8 @@ namespace AlasKeramat.UI
                 "  |  Ukuran Tombol: " + (SkalaTombol * 100f).ToString("0") + "%\n" +
                 "Volume Master: " + (VolMaster * 100f).ToString("0") + "%  |  Headset: " + (TerrorDirector.Headset ? "AKTIF" : "MATI") +
                 "  |  Getar: " + (Getar ? "AKTIF" : "MATI") + "  |  Imersif: " + (ModeImersif ? "YA" : "TIDAK") + "\n" +
-                "Tingkat Gore: " + GoreSystem.Tingkat + "  |  Intensitas Horor: " + TerrorDirector.Setelan + "  |  Kesulitan: " + Kesulitan;
+                "Tingkat Gore: " + GoreSystem.Tingkat + "  |  Intensitas Horor: " + TerrorDirector.Setelan + "  |  Kesulitan: " + Kesulitan +
+                "  |  Tantangan: " + LabelModeTantangan(AndiVitalsAndSanity.ModeSengsara, AndiVitalsAndSanity.ModePantangMundur);
         }
 
         // ---------- Aksi Tombol Menu & Jeda ----------

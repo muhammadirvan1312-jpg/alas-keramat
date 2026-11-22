@@ -12,8 +12,8 @@ namespace AlasKeramat.EditorTools
             BuatSerasahHutan();
             var go=Anak(_root,"AtmosferHutanG3");
             string path=FolderTex+"/noise_kabut.png";
-            var tex=ProcTex.FromHeight("NoiseKabut",128,ProcTex.HeightMap(128,(u,v)=>ProcTex.Fbm(u,v,4,4,2026)),ProcTex.Palet(new[]{Color.black,Color.white}));
-            File.WriteAllBytes(path,tex.EncodeToPNG());Object.DestroyImmediate(tex);AssetDatabase.ImportAsset(path);AturImpor(path,false,false,128);
+            var tex=ProcTex.FromHeight("NoiseKabut",256,ProcTex.HeightMap(256,(u,v)=>ProcTex.Fbm(u,v,4,4,2026)),ProcTex.Palet(new[]{Color.black,Color.white}));
+            File.WriteAllBytes(path,tex.EncodeToPNG());Object.DestroyImmediate(tex);AssetDatabase.ImportAsset(path);AturImpor(path,false,false,256);
             var sh=AmbilShaderAK("AlasKeramat/KabutLokal");
             if(sh==null)throw new System.Exception("Shader kabut G3 tidak tersedia");
             var mat=new Material(sh) { name="M_KabutLokal" };mat.SetTexture("_BaseMap",AssetDatabase.LoadAssetAtPath<Texture2D>(path));
@@ -35,14 +35,14 @@ namespace AlasKeramat.EditorTools
         static void PasangSinarTajuk(GameObject induk,Shader sh,AtmosferHutan atmos)
         {
             string pSinar=FolderTex+"/sinar_tajuk.png";
-            var tex=new Texture2D(128,128,TextureFormat.RGBA32,false) { name="SinarTajuk" };
-            for(int y=0;y<128;y++)
+            var tex=new Texture2D(256,256,TextureFormat.RGBA32,false) { name="SinarTajuk" };
+            for(int y=0;y<256;y++)
             {
-                float v=y/127f;
+                float v=y/255f;
                 float vertikal=Mathf.SmoothStep(0f,0.28f,v)*(1f-Mathf.SmoothStep(0.65f,1f,v));
-                for(int x=0;x<128;x++)
+                for(int x=0;x<256;x++)
                 {
-                    float u=x/127f;
+                    float u=x/255f;
                     float dx=Mathf.Abs(u-0.5f)*2f;
                     float batang=Mathf.Exp(-dx*dx*5.2f);
                     float berkas=0.68f+0.32f*Mathf.Sin(u*Mathf.PI*7f)*Mathf.Sin(u*Mathf.PI*3f+0.6f);
@@ -51,8 +51,9 @@ namespace AlasKeramat.EditorTools
                 }
             }
             tex.Apply();
-            File.WriteAllBytes(pSinar,tex.EncodeToPNG());Object.DestroyImmediate(tex);AssetDatabase.ImportAsset(pSinar);AturImpor(pSinar,false,false,128);
-            var matSinar=new Material(sh) { name="M_SinarTajuk" };matSinar.SetTexture("_BaseMap",AssetDatabase.LoadAssetAtPath<Texture2D>(pSinar));
+            File.WriteAllBytes(pSinar,tex.EncodeToPNG());Object.DestroyImmediate(tex);AssetDatabase.ImportAsset(pSinar);AturImpor(pSinar,false,false,256);
+            var shSinar=AmbilShaderAK("AlasKeramat/SinarTajuk")??sh;
+            var matSinar=new Material(shSinar) { name="M_SinarTajuk" };matSinar.SetTexture("_BaseMap",AssetDatabase.LoadAssetAtPath<Texture2D>(pSinar));
             matSinar=SimpanMat(matSinar);
             var ts=new Transform[AtmosferHutan.JumlahSinar];var rs=new Renderer[ts.Length];
             for(int i=0;i<ts.Length;i++)

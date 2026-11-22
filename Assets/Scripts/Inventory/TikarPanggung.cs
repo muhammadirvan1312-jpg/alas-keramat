@@ -67,25 +67,116 @@ namespace AlasKeramat.Inventory
             TataPilihan();
         }
 
+        public static int JumlahBagianModelItem(ItemID id)
+        {
+            var d = ItemDatabase.Get(id);
+            switch (d.category)
+            {
+                case ItemCategory.Senjata: return 3;
+                case ItemCategory.Amunisi: return 3;
+                case ItemCategory.Alat: return 2;
+                case ItemCategory.Zirah: return 4;
+                default: return 2;
+            }
+        }
+
+        public static Quaternion HitungRotasiInspeksi(bool terpilih, float waktu)
+        {
+            if (!terpilih) return Quaternion.identity;
+            return Quaternion.Euler(12f * Mathf.Sin(waktu * 2.2f), (waktu * 48f) % 360f, 0f);
+        }
+
+        void Update()
+        {
+            if (!Terbuka) return;
+            float w = Time.unscaledTime;
+            for (int i = 0; i < _benda.Count; i++)
+            {
+                if (_benda[i] == null) continue;
+                bool p = _pilih.Contains(_idBenda[i]);
+                _benda[i].transform.localRotation = HitungRotasiInspeksi(p, w + i * 0.4f);
+            }
+        }
+
+        static void Bagian(GameObject induk, PrimitiveType tipe, Vector3 pos, Vector3 rot, Vector3 skala, Material mat)
+        {
+            var p = GameObject.CreatePrimitive(tipe);
+            Destroy(p.GetComponent<Collider>());
+            p.transform.SetParent(induk.transform, false);
+            p.transform.localPosition = pos;
+            p.transform.localRotation = Quaternion.Euler(rot);
+            p.transform.localScale = skala;
+            p.layer = GameLayers.InventoryStage;
+            var mr = p.GetComponent<MeshRenderer>();
+            mr.sharedMaterial = mat;
+            mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
+
         static GameObject Model(ItemID id)
         {
             var d = ItemDatabase.Get(id);
-            PrimitiveType t; Vector3 s;
+            var g = new GameObject("Tikar_" + id);
+            g.layer = GameLayers.InventoryStage;
+            var bc = g.AddComponent<BoxCollider>();
+            bc.center = new Vector3(0f, 0.04f, 0f);
+            bc.size = new Vector3(0.22f, 0.16f, 0.26f);
+
+            float h = ((int)id * 0.618034f) % 1f;
+            var warnaUtama = Color.HSVToRGB(h, 0.45f, 0.75f);
+            var mUtama = SafeMaterialFactory.GetCached("Tikar_" + (int)id, warnaUtama, 0f, 0.35f);
+            var mKayu = SafeMaterialFactory.GetCached("Tikar_Kayu", new Color(0.36f, 0.24f, 0.15f), 0f, 0.25f);
+            var mKuningan = SafeMaterialFactory.GetCached("Tikar_Kuningan", new Color(0.78f, 0.63f, 0.28f), 0.75f, 0.72f);
+            var mBaja = SafeMaterialFactory.GetCached("Tikar_Baja", new Color(0.72f, 0.76f, 0.80f), 0.85f, 0.82f);
+            var mPutih = SafeMaterialFactory.GetCached("Tikar_Putih", new Color(0.88f, 0.85f, 0.78f), 0f, 0.25f);
+
             switch (d.category)
             {
-                case ItemCategory.Makanan: t = PrimitiveType.Sphere; s = new Vector3(0.14f, 0.12f, 0.14f); break;
-                case ItemCategory.Senjata: t = PrimitiveType.Cube; s = new Vector3(0.05f, 0.03f, 0.28f); break;
-                case ItemCategory.Amunisi: t = PrimitiveType.Cylinder; s = new Vector3(0.03f, 0.12f, 0.03f); break;
-                case ItemCategory.Zirah: t = PrimitiveType.Cube; s = new Vector3(0.2f, 0.03f, 0.2f); break;
-                case ItemCategory.Alat: t = PrimitiveType.Capsule; s = new Vector3(0.06f, 0.1f, 0.06f); break;
-                default: t = PrimitiveType.Cube; s = new Vector3(0.14f, 0.07f, 0.14f); break;
+                case ItemCategory.Senjata:
+                    if (id == ItemID.BusurBambu || id == ItemID.BusurTanduk)
+                    {
+                        Bagian(g, PrimitiveType.Cylinder, new Vector3(-0.02f, 0.04f, 0.06f), new Vector3(72f, 15f, 0f), new Vector3(0.022f, 0.08f, 0.022f), mKayu);
+                        Bagian(g, PrimitiveType.Cylinder, new Vector3(-0.02f, 0.04f, -0.06f), new Vector3(108f, -15f, 0f), new Vector3(0.022f, 0.08f, 0.022f), mKayu);
+                        Bagian(g, PrimitiveType.Cylinder, new Vector3(0.02f, 0.04f, 0f), new Vector3(90f, 0f, 0f), new Vector3(0.006f, 0.12f, 0.006f), mPutih);
+                    }
+                    else if (id == ItemID.PistolSuar || id == ItemID.PistolPT || id == ItemID.BedilLocok || id == ItemID.SenapanLaras || id == ItemID.ZiplineGun)
+                    {
+                        Bagian(g, PrimitiveType.Cube, new Vector3(0f, 0.03f, -0.06f), new Vector3(22f, 0f, 0f), new Vector3(0.034f, 0.06f, 0.07f), mKayu);
+                        Bagian(g, PrimitiveType.Cylinder, new Vector3(0f, 0.055f, 0.04f), new Vector3(90f, 0f, 0f), new Vector3(0.028f, 0.10f, 0.028f), id == ItemID.PistolSuar ? mUtama : mBaja);
+                        Bagian(g, PrimitiveType.Cube, new Vector3(0f, 0.045f, -0.01f), Vector3.zero, new Vector3(0.038f, 0.035f, 0.06f), mKuningan);
+                    }
+                    else
+                    {
+                        var mBilah = id == ItemID.GolokApiPusaka
+                            ? SafeMaterialFactory.CreatePBR("Tikar_BilahApi", new Color(1f, 0.42f, 0.12f), 0.5f, 0.8f, null, null, new Color(2.4f, 0.85f, 0.2f))
+                            : id == ItemID.KerisPusaka ? mKuningan : mBaja;
+                        Bagian(g, PrimitiveType.Cylinder, new Vector3(0f, 0.035f, -0.09f), new Vector3(90f, 0f, 0f), new Vector3(0.028f, 0.045f, 0.028f), mKayu);
+                        Bagian(g, PrimitiveType.Cube, new Vector3(0f, 0.038f, -0.04f), Vector3.zero, new Vector3(0.055f, 0.024f, 0.018f), mKuningan);
+                        Bagian(g, PrimitiveType.Cube, new Vector3(0f, 0.038f, 0.055f), Vector3.zero, new Vector3(0.036f, 0.014f, 0.16f), mBilah);
+                    }
+                    break;
+                case ItemCategory.Amunisi:
+                    Bagian(g, PrimitiveType.Cylinder, new Vector3(0f, 0.035f, 0f), new Vector3(90f, 0f, 0f), new Vector3(0.016f, 0.09f, 0.016f), mKayu);
+                    Bagian(g, PrimitiveType.Cube, new Vector3(0f, 0.035f, 0.09f), new Vector3(0f, 45f, 0f), new Vector3(0.026f, 0.012f, 0.026f), mBaja);
+                    Bagian(g, PrimitiveType.Cube, new Vector3(0f, 0.042f, -0.075f), Vector3.zero, new Vector3(0.032f, 0.022f, 0.035f), mUtama);
+                    break;
+                case ItemCategory.Zirah:
+                    for (int k = -1; k <= 1; k++)
+                        Bagian(g, PrimitiveType.Cube, new Vector3(k * 0.055f, 0.035f, 0f), new Vector3(0f, 0f, -k * 6f), new Vector3(0.048f, 0.024f, 0.17f), mUtama);
+                    Bagian(g, PrimitiveType.Cube, new Vector3(0f, 0.022f, 0f), Vector3.zero, new Vector3(0.18f, 0.012f, 0.045f), mKayu);
+                    break;
+                case ItemCategory.Alat:
+                    Bagian(g, PrimitiveType.Capsule, new Vector3(0f, 0.04f, -0.02f), new Vector3(90f, 0f, 0f), new Vector3(0.055f, 0.075f, 0.055f), mUtama);
+                    Bagian(g, PrimitiveType.Cylinder, new Vector3(0f, 0.045f, 0.055f), new Vector3(90f, 0f, 0f), new Vector3(0.042f, 0.025f, 0.042f), mKuningan);
+                    break;
+                case ItemCategory.Makanan:
+                    Bagian(g, PrimitiveType.Sphere, new Vector3(0f, 0.045f, 0f), Vector3.zero, new Vector3(0.13f, 0.09f, 0.13f), mUtama);
+                    Bagian(g, PrimitiveType.Cylinder, new Vector3(0f, 0.085f, 0f), Vector3.zero, new Vector3(0.045f, 0.02f, 0.045f), mKayu);
+                    break;
+                default:
+                    Bagian(g, PrimitiveType.Cube, new Vector3(0f, 0.035f, -0.015f), Vector3.zero, new Vector3(0.13f, 0.055f, 0.13f), mUtama);
+                    Bagian(g, PrimitiveType.Cylinder, new Vector3(0.02f, 0.068f, 0.015f), new Vector3(0f, 25f, 90f), new Vector3(0.035f, 0.055f, 0.035f), id == ItemID.Tengkorak ? mPutih : mKayu);
+                    break;
             }
-            var g = GameObject.CreatePrimitive(t);
-            g.name = "Tikar_" + id;
-            g.transform.localScale = s;
-            float h = ((int)id * 0.618034f) % 1f;
-            var warna = Color.HSVToRGB(h, 0.45f, 0.75f);
-            g.GetComponent<MeshRenderer>().sharedMaterial = SafeMaterialFactory.GetCached("Tikar_" + (int)id, warna, 0f, 0.3f);
             return g;
         }
 

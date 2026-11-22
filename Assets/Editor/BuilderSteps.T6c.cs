@@ -26,15 +26,16 @@ namespace AlasKeramat.EditorTools
             }
             var kanvas=_ui.transform.Find("Canvas_HUD"); if(kanvas==null)return;
             var font=ProceduralAssetFactory.GetSafeFont(); Text teks;
-            var kartu=BuatTeks(kanvas.gameObject,"KartuMisi","Ambil Koper Darurat (0/3)",font,24,new Vector2(1f,1f),new Vector2(0f,-245f),new Vector2(560f,110f));
+            var kartu=BuatTeks(kanvas.gameObject,"KartuMisi","Ambil Koper Darurat (0/3)",font,19,new Vector2(1f,1f),new Vector2(0f,-156f),new Vector2(540f,60f));
             kartu.rectTransform.anchorMin=kartu.rectTransform.anchorMax=new Vector2(0.5f,1f);
-            kartu.color=ProcTex.Hex("#F2C14E"); kartu.raycastTarget=false;
+            kartu.color=ProcTex.Hex("#E8C468"); kartu.raycastTarget=false;
+            kartu.gameObject.AddComponent<Shadow>().effectDistance=new Vector2(1.5f,-1.5f);
             var hud=kartu.gameObject.AddComponent<HUDMisi>(); hud.Kartu=kartu;
-            var simpan=TombolPanel(kanvas.gameObject,"TombolSimpan","SIMPAN",font,new Vector2(-80f,50f),new Vector2(130f,55f),ProcTex.Hex("#3A3A3A"),out teks);
-            var muat=TombolPanel(kanvas.gameObject,"TombolMuat","MUAT",font,new Vector2(80f,50f),new Vector2(130f,55f),ProcTex.Hex("#3A3A3A"),out teks);
+            var simpan=TombolPanel(kanvas.gameObject,"TombolSimpan","SIMPAN",font,new Vector2(-80f,50f),new Vector2(130f,55f),new Color(0.055f,0.075f,0.095f,0.78f),out teks);
+            var muat=TombolPanel(kanvas.gameObject,"TombolMuat","MUAT",font,new Vector2(80f,50f),new Vector2(130f,55f),new Color(0.055f,0.075f,0.095f,0.78f),out teks);
             UnityEventTools.AddPersistentListener(simpan.onClick,hud.Simpan); UnityEventTools.AddPersistentListener(muat.onClick,hud.Muat);
             var builder=Object.FindFirstObjectByType<ShoulderLogAndFreeformBuilder>();
-            var batu=TombolPanel(kanvas.gameObject,"TombolBatu","PANGGUL BATU",font,new Vector2(-280f,50f),new Vector2(210f,55f),ProcTex.Hex("#4A4A42"),out teks);
+            var batu=TombolPanel(kanvas.gameObject,"TombolBatu","PANGGUL BATU",font,new Vector2(-280f,50f),new Vector2(210f,55f),new Color(0.055f,0.075f,0.095f,0.78f),out teks);
             if(builder!=null)UnityEventTools.AddPersistentListener(batu.onClick,builder.PanggulBatu);
             var toolbar=new[]{simpan,muat,batu};
             for(int i=0;i<toolbar.Length;i++)

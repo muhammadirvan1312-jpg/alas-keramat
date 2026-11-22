@@ -51,10 +51,11 @@ namespace AlasKeramat.EditorTools
                     try
                     {
                         var pa = root.GetComponentInChildren<ProceduralAnimator>(true);
-                        if (pa != null && root.GetComponent<NusantaraEnemyAndMutantAI>() != null)
+                        if (pa != null && (root.GetComponent<NusantaraEnemyAndMutantAI>() != null || root.GetComponent<HantuAI>() != null))
                         {
-                            var peran = p.Contains("Buto") ? AnimasiMixamo.Peran.Raksasa : p.Contains("Wanita") ? AnimasiMixamo.Peran.Wanita : AnimasiMixamo.Peran.Sekte;
-                            Pasangkan(pa.gameObject, bank, peran, System.IO.Path.GetFileNameWithoutExtension(p));
+                            string fn = System.IO.Path.GetFileNameWithoutExtension(p);
+                            var peran = (p.Contains("Buto") || p.Contains("Genderuwo")) ? AnimasiMixamo.Peran.Raksasa : (p.Contains("Wanita") || p.Contains("Kuntilanak") || p.Contains("Penyerupa")) ? AnimasiMixamo.Peran.Wanita : AnimasiMixamo.Peran.Sekte;
+                            Pasangkan(pa.gameObject, bank, peran, fn);
                             PrefabUtility.SaveAsPrefabAsset(root, p); n++;
                         }
                     }
@@ -75,6 +76,8 @@ namespace AlasKeramat.EditorTools
             if (nama == "Ningsih") return "Peasant_Girl";
             if (nama == "KiRogo" || nama == "KiRogoPanggung") return "Peasant_Man";
             if (nama.Contains("Genderuwo")) return "Warrok";
+            if (nama.Contains("Kuntilanak")) return "Zombiegirl";
+            if (nama.Contains("Penyerupa")) return "Peasant_Girl";
             if (nama.Contains("AbdiButo")) return "Maw";
             if (nama.Contains("AbdiWanita")) return "Zombiegirl";
             if (nama.Contains("AbdiLumpur") || nama.Contains("MutanGembung")) return "Mutant";
@@ -88,7 +91,9 @@ namespace AlasKeramat.EditorTools
         static GameObject MuatModelKarakter(string nama)
         {
             if (nama == null) return null;
-            return AssetDatabase.LoadAssetAtPath<GameObject>(ImporKarakterMixamo.Folder + "/" + nama + ".fbx");
+            string p = ImporKarakterMixamo.Folder + "/" + nama + ".fbx";
+            ImporKarakterMixamo.PastikanTeksturDiekstrak(p);
+            return AssetDatabase.LoadAssetAtPath<GameObject>(p);
         }
 
         static void Pasangkan(GameObject go, BankAnimasiMixamo bank, AnimasiMixamo.Peran peran, string namaUntukModel = null)
@@ -96,8 +101,11 @@ namespace AlasKeramat.EditorTools
             var am = go.GetComponent<AnimasiMixamo>();
             if (am == null) am = go.AddComponent<AnimasiMixamo>();
             am.Pasang(bank, peran);
-            var model = MuatModelKarakter(ModelUntuk(namaUntukModel ?? ""));
+            string nm = namaUntukModel ?? "";
+            var model = MuatModelKarakter(ModelUntuk(nm));
             am.PasangModel(model);
+            am.PasangShaderKulit(Shader.Find("AlasKeramat/KulitManusia"));
+            am.PasangOpsiVisual(nm.Contains("Kuntilanak"), nm.Contains("Genderuwo") || nm.Contains("Buto"), nm);
             if (model != null) JumlahModelMixamo++;
             EditorUtility.SetDirty(am);
         }

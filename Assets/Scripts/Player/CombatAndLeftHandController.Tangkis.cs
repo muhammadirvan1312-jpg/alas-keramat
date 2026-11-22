@@ -21,7 +21,43 @@ namespace AlasKeramat.Player
         MaterialPropertyBlock _mpbDarah;
         Renderer[] _rendererDarah;
         float _tVisualDarah;
+        ParticleSystem _percikanParry;
         public float DarahSenjata { get { return _darahSenjata; } }
+
+        public bool BasuhDarahSenjata()
+        {
+            if (_darahSenjata <= 0f) return false;
+            _darahSenjata = 0f;
+            TerapkanDarahSenjata();
+            return true;
+        }
+
+        public static int JumlahPercikanParry(bool berhasilParry, bool blokKuat)
+        {
+            return berhasilParry ? 22 : blokKuat ? 10 : 0;
+        }
+
+        void PancarPercikanParry(Vector3 posPenyerang, int jumlah)
+        {
+            if (jumlah <= 0) return;
+            if (_percikanParry == null)
+            {
+                var go = new GameObject("PercikanParry");
+                go.transform.SetParent(transform, false);
+                _percikanParry = go.AddComponent<ParticleSystem>();
+                _percikanParry.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                var main = _percikanParry.main;
+                main.playOnAwake = false; main.loop = false; main.startLifetime = 0.24f;
+                main.startSpeed = 5.5f; main.startSize = 0.038f; main.gravityModifier = 1.4f;
+                main.simulationSpace = ParticleSystemSimulationSpace.World; main.maxParticles = 48;
+                var sh = _percikanParry.shape; sh.shapeType = ParticleSystemShapeType.Sphere; sh.radius = 0.12f;
+                var pr = go.GetComponent<ParticleSystemRenderer>();
+                pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_PercikanParry", new Color(1f, 0.85f, 0.35f), 0f, 0.9f, null, null, new Color(3.6f, 2.2f, 0.55f));
+                pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+            _percikanParry.transform.position = Vector3.Lerp(transform.position + Vector3.up * 1.35f, posPenyerang + Vector3.up * 1.2f, 0.45f);
+            _percikanParry.Emit(jumlah);
+        }
 
         public bool Blok { get { return _blok; } }
         public bool ParryAktif { get { return _tParry > 0f; } }
@@ -71,6 +107,7 @@ namespace AlasKeramat.Player
             {
                 diparry = true; _tParry = -1f; _tPenghabisan = LamaPenghabisan;
                 Guncang(GuncangRingan); MulaiHitStop();
+                PancarPercikanParry(posPenyerang, JumlahPercikanParry(true, false));
                 var a = GameServices.Get<ProceduralAudioSynth>();
                 if (a != null) a.Play(ProceduralAudioSynth.KlipParry, posPenyerang, AudioCategory.Efek, 1f, Random.Range(0.95f, 1.08f), 3);
                 return 0f;
@@ -81,6 +118,7 @@ namespace AlasKeramat.Player
                 float biaya = damage * StaminaBlokPerDamage;
                 if (_v != null && !_v.Pakai(biaya)) { _blok = false; GameEvents.RaiseToast("Tangkisan jebol, stamina habis"); return damage; }
                 Guncang(GuncangRingan);
+                PancarPercikanParry(posPenyerang, JumlahPercikanParry(false, true));
                 return damage * (1f - ReduksiBlok);
             }
             return damage;
@@ -134,19 +172,30 @@ namespace AlasKeramat.Player
         public static bool AimAssist = true;
         static readonly Quaternion PoseBlok = Quaternion.Euler(-20f, 0f, 70f);
 
-        // Mengenai IDamageable: penghabisan bila jendela parry masih terbuka & tebasan berat.
+        SistemKomboDanStagger _kombo;
+        LevelSurvivalAndi _level;
+
+        // Mengenai IDamageable: penghabisan bila jendela parry masih terbuka & tebasan berat, terhubung ke Kombo 3-Hit & Level Kekuatan.
         void KenaiTarget(IDamageable target, RaycastHit hit, Transform cam, float pengali)
         {
+            if (_kombo == null) _kombo = GameServices.Get<SistemKomboDanStagger>();
+            if (_level == null) _level = GameServices.Get<LevelSurvivalAndi>();
+            bool finisher = false;
+            float stam01 = _v != null ? Mathf.Clamp01(_v.Stamina / AndiVitalsAndSanity.Maks) : 1f;
+            float multKombo = _kombo != null ? _kombo.CatatSerangan(Time.time, stam01, hit.point, out finisher) : 1f;
+            float multLvl = _level != null ? _level.BonusDamage : 1f;
+            if (_level != null) _level.TambahXP(LevelSurvivalAndi.Atribut.Kekuatan, _berat ? 6f : 3f);
+
             bool habis = _berat && _tPenghabisan > 0f;
-            float dmg = (_berat ? _aktif.berat : _aktif.ringan) * pengali * (habis ? PengaliPenghabisan : 1f);
+            float dmg = (_berat ? _aktif.berat : _aktif.ringan) * pengali * multKombo * multLvl * (habis ? PengaliPenghabisan : 1f);
             _pukulanPenghabisan = habis;
-            try { target.TakeDamage(new DamageInfo { amount = dmg, type = _aktif.tipe, point = hit.point, direction = cam.forward, source = gameObject, isHeavy = _berat }); }
+            try { target.TakeDamage(new DamageInfo { amount = dmg, type = _aktif.tipe, point = hit.point, direction = cam.forward, source = gameObject, isHeavy = _berat || finisher }); }
             finally { _pukulanPenghabisan = false; }
             if (habis) _tPenghabisan = 0f;
             if (GoreSystem.BolehDarah(GoreSystem.Tingkat)) { _darahSenjata = Mathf.Clamp01(_darahSenjata + (habis ? 0.7f : 0.35f)); TerapkanDarahSenjata(); }
-            if (_berat) MulaiHitStop();
-            Guncang(_berat ? GuncangBerat : GuncangRingan);
-            var h = OnKena; if (h != null) h(_berat || habis);
+            if (_berat || finisher) MulaiHitStop();
+            Guncang(_berat || finisher ? GuncangBerat : GuncangRingan);
+            var h = OnKena; if (h != null) h(_berat || habis || finisher);
             AlasKeramat.AI.MeterSuara.Pancar(hit.point, AlasKeramat.AI.MeterSuara.Pertarungan);
         }
 

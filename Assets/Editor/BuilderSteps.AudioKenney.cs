@@ -25,7 +25,7 @@ namespace AlasKeramat.EditorTools
         {
             { S.KlipJantung, "jantung.wav", "m" }, { S.KlipNapas, "napas_lelah.ogg", "m" }, { S.KlipNapasBerat, "napas_horor.ogg", "m" },
             { S.KlipTembak, "tembak.wav", "m" }, { S.KlipGeramSekte, "geram.ogg", "m" }, { S.KlipTeriakSekte, "teriak.ogg", "m" },
-            { S.KlipJeritGua, "jerit_gua.ogg", "m" }, { S.KlipRintihSekte, "rintih.ogg", "m" },
+            { S.KlipJeritGua, "jerit_gua.ogg", "m" }, { S.KlipRintihSekte, "rintih.ogg", "m" }, { AlasKeramat.AI.GagakDesa.KlipGagak, "gagak.wav", "m" },
             { S.BedTebing, "angin.ogg", "b" }, { S.BedPabrik, "angin.ogg", "b" }, { S.BedWingit, "musik_seram.ogg", "b" },
             { S.KlipMusikTempur, "musik_tegang.ogg", "b" }, { S.KlipHujan, "hujan_malam.ogg", "b" }, { S.KlipApi, "api.ogg", "m" },
             { AlasKeramat.AI.MusikJelajah.KlipSiang, "musik_siang.mp3", "b" }, { AlasKeramat.AI.MusikJelajah.KlipMalam, "musik_malam.ogg", "b" },
@@ -79,6 +79,7 @@ namespace AlasKeramat.EditorTools
                 nOga++;
             }
             if (synth.GetComponent<SuaraHujan>() == null) synth.gameObject.AddComponent<SuaraHujan>();
+            if (synth.GetComponent<SuaraAirDunia>() == null) synth.gameObject.AddComponent<SuaraAirDunia>();
             if (synth.GetComponent<AlasKeramat.AI.MusikJelajah>() == null) synth.gameObject.AddComponent<AlasKeramat.AI.MusikJelajah>();
             synth.AssignBakedClips(nama.ToArray(), klip.ToArray());
             EditorUtility.SetDirty(synth);

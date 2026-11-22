@@ -11,6 +11,7 @@ Shader "AlasKeramat/Kulit"
         _Metallic ("Metalik", Range(0,1)) = 0
         _MaskMap ("AO dan roughness",2D)="white"{}
         _PakaiMask ("Mask aktif",Range(0,1))=0
+        _VariasiWarna ("Variasi tiap pohon", Range(0,0.4)) = 0.14
     }
     SubShader
     {
@@ -27,7 +28,7 @@ Shader "AlasKeramat/Kulit"
             float4 _BaseMap_ST;
             half4 _BaseColor;
             float _Smoothness, _Goyang;
-            float _BumpScale, _Metallic, _PakaiMask;
+            float _BumpScale, _Metallic, _PakaiMask, _VariasiWarna;
         CBUFFER_END
         // Global, sengaja bukan Properties/UnityPerMaterial.
         float4 _AK_AnginArah;
@@ -81,6 +82,8 @@ Shader "AlasKeramat/Kulit"
             o.tangentWS = half4(SafeNormalize(t), v.tangentOS.w * GetOddNegativeScale());
             o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
             o.color = v.color;
+            float hash = frac(sin(dot(pivot.xz, float2(12.9898, 78.233))) * 43758.5453);
+            o.color.rgb *= lerp(half3(1,1,1), half3(0.86 + hash * 0.28, 0.88 + hash * 0.22, 0.84 + hash * 0.24), _VariasiWarna / 0.4);
 
             o.fogLight = half4(ComputeFogFactor(o.positionCS.z), VertexLighting(p, n));
             return o;
@@ -138,11 +141,22 @@ Shader "AlasKeramat/Kulit"
             s.metallic = _Metallic;
             half4 mask=SAMPLE_TEXTURE2D(_MaskMap,sampler_MaskMap,i.uv);
             half wet=_AK_Basah*saturate(d.normalWS.y*0.7+0.4);
-            s.albedo*=1-wet*0.2;
-            s.smoothness = saturate(lerp(_Smoothness,mask.a,_PakaiMask)+wet*0.35);
-            s.occlusion = lerp(1,mask.g,_PakaiMask);
+            // Detail mikro prosedural + lumut tropis alami pada bidang menghadap atas + AO lembap pangkal tanah.
+            half grain = 0.93h + 0.14h * sin(d.positionWS.x * 11.3h + d.positionWS.y * 7.1h) * cos(d.positionWS.z * 10.7h - d.positionWS.y * 5.9h);
+            half rootAO = saturate(d.positionWS.y * 0.38h + 0.52h);
+            half lumutNoise = 0.55h + 0.45h * sin(d.positionWS.x * 0.58h + d.positionWS.z * 0.49h) * cos(d.positionWS.x * 0.23h - d.positionWS.z * 0.71h);
+            half lumut = smoothstep(0.46h, 0.86h, d.normalWS.y) * (0.28h + 0.24h * lumutNoise) * (1.0h - _Metallic);
+            s.albedo = lerp(s.albedo * grain, half3(0.11h, 0.24h, 0.08h), saturate(lumut));
+            s.albedo *= (1.0h - wet * 0.22h) * lerp(0.80h, 1.0h, rootAO);
+            s.smoothness = saturate(lerp(_Smoothness,mask.a,_PakaiMask) * (1.0h - lumut * 0.45h) + wet * 0.38h);
+            s.occlusion = lerp(1,mask.g,_PakaiMask) * rootAO;
             s.normalTS = half3(0,0,1);
             half4 lit = UniversalFragmentPBR(d, s);
+            Light sun = GetMainLight(d.shadowCoord, d.positionWS, half4(1,1,1,1));
+            half fres = pow(1.0h - saturate(dot(d.normalWS, d.viewDirectionWS)), 3.2h);
+            half rimCahaya = fres * (0.09h + wet * 0.26h) * saturate(dot(d.normalWS, sun.direction) * 0.5h + 0.5h);
+            half pantulHutan = saturate(-d.normalWS.y * 0.5h + 0.5h) * (1.0h - rootAO * 0.40h) * 0.12h;
+            lit.rgb += sun.color * (rimCahaya * sun.distanceAttenuation * (0.4h + 0.6h * sun.shadowAttenuation)) + half3(0.16h, 0.26h, 0.11h) * pantulHutan * s.albedo;
 
             lit.rgb = MixFog(lit.rgb, i.fogLight.x);
             return lit;

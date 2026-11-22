@@ -56,15 +56,16 @@ namespace AlasKeramat.EditorTools
             var hasil = new TerrainLayer[LapisTerrain.Length];
             for (int i = 0; i < LapisTerrain.Length; i++)
             {
-                float ubin = i == L_Batu ? 5.2f : i == L_Pasir ? 4.2f : i == L_Daun ? 2.8f : i == L_Rumput ? 2.6f : 2.6f;
+                // Skala ubin asimetris non-periodik memecah pola garis berulang pada lereng bukit jauh.
+                float ubin = i == L_Batu ? 21.3f : i == L_Pasir ? 16.5f : i == L_Daun ? 11.8f : i == L_Rumput ? 17.7f : i == L_Lumpur ? 13.9f : 14.3f;
                 var tl = new TerrainLayer
                 {
                     diffuseTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + ".png"),
                     normalMapTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + "_n.png"),
                     maskMapTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/" + LapisTerrain[i] + "_mask.png"),
-                    normalScale = i == L_Batu || i == L_Daun ? 1.45f : i == L_Rumput || i == L_Lumpur ? 1.25f : 1.05f,
-                    tileSize = new Vector2(ubin, ubin),
-                    smoothness = i == L_Lumpur ? 0.38f : i == L_Batu ? 0.16f : 0.08f
+                    normalScale = i == L_Batu || i == L_Daun ? 1.55f : i == L_Rumput || i == L_Lumpur ? 1.35f : 1.15f,
+                    tileSize = new Vector2(ubin, ubin * 1.13f),
+                    smoothness = i == L_Lumpur ? 0.42f : i == L_Batu ? 0.18f : 0.10f
                 };
                 if (tl.diffuseTexture == null) throw new Exception("tekstur terrain hilang: " + LapisTerrain[i]);
                 string p = FolderTerrain + "/L_" + LapisTerrain[i] + ".terrainlayer";
@@ -104,8 +105,8 @@ namespace AlasKeramat.EditorTools
             var t = go.GetComponent<Terrain>();
             t.materialTemplate = mat;
             t.drawInstanced = true;
-            t.heightmapPixelError = 10f;
-            t.basemapDistance = 120f;
+            t.heightmapPixelError = 3.5f;
+            t.basemapDistance = 520f;
             t.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             return t;
         }
@@ -128,13 +129,15 @@ namespace AlasKeramat.EditorTools
                     for (int i = 0; i < nL; i++) w[i] *= 1f - Mathf.Max(kTanah, kBatu);
                     w[L_Tanah] += kTanah * (1f - kBatu);
                     w[L_Batu] += kBatu;
+                    float makro = Mathf.PerlinNoise(wx * 0.014f + 11f, wz * 0.014f + 23f);
                     float variasi = Mathf.PerlinNoise(wx * 0.045f + 3f, wz * 0.045f + 7f);
                     float mikro = Mathf.PerlinNoise(wx * 0.18f + 19f, wz * 0.18f + 41f);
                     float lembap = Mathf.Clamp01((6f - WorldTerrainGenerator.SampleHeight(wx, wz)) * 0.08f);
-                    w[L_Daun] *= 0.65f + 0.70f * variasi + 0.25f * mikro;
-                    w[L_Rumput] *= 1.15f - 0.60f * variasi + 0.25f * (1f - mikro);
-                    w[L_Tanah] += 0.14f * Mathf.Clamp01(mikro - 0.52f);
-                    w[L_Lumpur] += 0.22f * lembap * (1f - kBatu);
+                    w[L_Daun] *= 0.55f + 0.55f * variasi + 0.22f * mikro;
+                    w[L_Rumput] *= 1.10f + 0.45f * makro - 0.35f * variasi + 0.25f * (1f - mikro);
+                    w[L_Tanah] += 0.10f * Mathf.Clamp01(mikro - 0.56f);
+                    w[L_Batu] += 0.16f * Mathf.Clamp01(makro - 0.68f) * WorldTerrainGenerator.S(14f, 28f, lereng);
+                    w[L_Lumpur] += 0.20f * lembap * (1f - kBatu);
                     float total = 0f;
                     for (int i = 0; i < nL; i++) total += w[i];
                     if (total < 1e-4f) { w[L_Tanah] = 1f; total = 1f; }
@@ -159,19 +162,19 @@ namespace AlasKeramat.EditorTools
             switch ((int)b)
             {
                 case (int)Biome.Laut: case (int)Biome.Pantai: w[L_Pasir] = 1f; break;
-                case (int)Biome.KawahBeringin: w[L_Tanah] = 0.25f; w[L_Daun] = 0.55f; w[L_Rumput] = 0.20f; break;
-                case (int)Biome.TebingKapur: w[L_Batu] = 0.65f; w[L_Rumput] = 0.25f; w[L_Tanah] = 0.10f; break;
+                case (int)Biome.KawahBeringin: w[L_Rumput] = 0.52f; w[L_Daun] = 0.34f; w[L_Tanah] = 0.14f; break;
+                case (int)Biome.TebingKapur: w[L_Batu] = 0.60f; w[L_Rumput] = 0.32f; w[L_Tanah] = 0.08f; break;
                 case (int)Biome.SawitTerbakar: w[L_Lumpur] = 0.5f; w[L_Tanah] = 0.5f; break;
-                case (int)Biome.Desa: w[L_Tanah] = 0.48f; w[L_Daun] = 0.20f; w[L_Rumput] = 0.32f; break;
-                case (int)Biome.HutanBambu: w[L_Daun] = 0.62f; w[L_Rumput] = 0.28f; w[L_Tanah] = 0.10f; break;
-                case (int)Biome.TepiSungai: w[L_Daun] = 0.46f; w[L_Lumpur] = 0.22f; w[L_Rumput] = 0.24f; w[L_Tanah] = 0.08f; break;
-                case (int)Biome.HutanJatiSelatan: w[L_Daun] = 0.54f; w[L_Rumput] = 0.30f; w[L_Tanah] = 0.16f; break;
-                case 11: w[L_Lumpur] = 0.8f; w[L_Daun] = 0.2f; break;      // Rawa Bakau
-                case 12: w[L_Tanah] = 0.7f; w[L_Batu] = 0.3f; break;       // Pabrik Gula
-                case 13: w[L_Batu] = 0.5f; w[L_Rumput] = 0.5f; break;      // Gunung Kapur
-                case 14: w[L_Rumput] = 0.6f; w[L_Tanah] = 0.4f; break;     // Ladang Tebu
-                case 15: w[L_Daun] = 0.7f; w[L_Lumpur] = 0.3f; break;      // Alas Wingit
-                default: w[L_Daun] = 0.58f; w[L_Rumput] = 0.30f; w[L_Tanah] = 0.12f; break;    // Hutan Campuran
+                case (int)Biome.Desa: w[L_Rumput] = 0.50f; w[L_Tanah] = 0.34f; w[L_Daun] = 0.16f; break;
+                case (int)Biome.HutanBambu: w[L_Rumput] = 0.52f; w[L_Daun] = 0.40f; w[L_Tanah] = 0.08f; break;
+                case (int)Biome.TepiSungai: w[L_Rumput] = 0.46f; w[L_Daun] = 0.30f; w[L_Lumpur] = 0.18f; w[L_Tanah] = 0.06f; break;
+                case (int)Biome.HutanJatiSelatan: w[L_Rumput] = 0.56f; w[L_Daun] = 0.34f; w[L_Tanah] = 0.10f; break;
+                case 11: w[L_Lumpur] = 0.68f; w[L_Rumput] = 0.20f; w[L_Daun] = 0.12f; break; // Rawa Bakau
+                case 12: w[L_Tanah] = 0.60f; w[L_Batu] = 0.25f; w[L_Rumput] = 0.15f; break;  // Pabrik Gula
+                case 13: w[L_Batu] = 0.48f; w[L_Rumput] = 0.52f; break;      // Gunung Kapur
+                case 14: w[L_Rumput] = 0.68f; w[L_Tanah] = 0.32f; break;     // Ladang Tebu
+                case 15: w[L_Rumput] = 0.42f; w[L_Daun] = 0.42f; w[L_Lumpur] = 0.16f; break; // Alas Wingit
+                default: w[L_Rumput] = 0.56f; w[L_Daun] = 0.34f; w[L_Tanah] = 0.10f; break;  // Hutan Campuran
             }
         }
 
@@ -202,6 +205,20 @@ namespace AlasKeramat.EditorTools
         {
             var mat = AirAK("M_Sungai", ProcTex.Hex("#3D6B4E50"), ProcTex.Hex("#10261CE6"), 0.6f, new Vector2(1f, 0f));
             if (mat == null) mat = MatAir("M_Sungai", ProcTex.Hex("#2E4A3ECC"), 0.88f);
+            var pSh = Shader.Find("Universal Render Pipeline/Particles/Unlit");
+            Material mJeram = pSh != null ? new Material(pSh) { name = "M_BuihJeram" }
+                : SafeMaterialFactory.CreatePBR("M_BuihJeram", new Color(0.92f, 0.96f, 1f, 0.45f), 0f, 0.2f, null, null, null, SurfaceMode.Transparent);
+            if (pSh != null)
+            {
+                SafeMaterialFactory.SetF(mJeram, "_Surface", 1f);
+                SafeMaterialFactory.SetF(mJeram, "_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                SafeMaterialFactory.SetF(mJeram, "_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                SafeMaterialFactory.SetF(mJeram, "_ZWrite", 0f);
+                mJeram.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); mJeram.renderQueue = 3000;
+                SafeMaterialFactory.SetC(mJeram, "_BaseColor", new Color(0.92f, 0.96f, 1f, 0.42f));
+            }
+            AssetDatabase.CreateAsset(mJeram, FolderMat + "/M_BuihJeram.mat");
+            mJeram = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_BuihJeram.mat");
             for (int s = 0; s < WorldTerrainGenerator.SemuaSungai.Length; s++)
             {
                 var titik = WorldTerrainGenerator.SemuaSungai[s];
@@ -238,6 +255,25 @@ namespace AlasKeramat.EditorTools
                 var mrs = go.AddComponent<MeshRenderer>();
                 mrs.sharedMaterial = mat;
                 mrs.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                for (int i = 0; i < titik.Length - 1; i++)
+                {
+                    var a = titik[i]; var b = titik[i + 1];
+                    if (a.wl - b.wl < 1.2f) continue;
+                    var jp = new GameObject("JeramSungai_" + s + "_" + i);
+                    jp.transform.SetParent(go.transform, false);
+                    jp.transform.position = new Vector3((a.x + b.x) * 0.5f * WorldTerrainGenerator.SkalaXZ,
+                        (a.wl + b.wl) * 0.5f * WorldTerrainGenerator.SkalaTinggi + 0.15f,
+                        (a.z + b.z) * 0.5f * WorldTerrainGenerator.SkalaXZ);
+                    var ps = jp.AddComponent<ParticleSystem>();
+                    var pm = ps.main;
+                    pm.loop = true; pm.startLifetime = 0.75f; pm.startSpeed = 1.6f; pm.startSize = 0.85f;
+                    pm.maxParticles = 56; pm.gravityModifier = 0.25f; pm.startColor = new Color(0.90f, 0.96f, 1f, 0.42f);
+                    var em = ps.emission; em.rateOverTime = 22f;
+                    var sh = ps.shape; sh.shapeType = ParticleSystemShapeType.Box;
+                    sh.scale = new Vector3(Mathf.Max(3f, a.w * 0.8f), 0.25f, 3.2f);
+                    var pr = jp.GetComponent<ParticleSystemRenderer>();
+                    pr.sharedMaterial = mJeram; pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
             }
         }
     }

@@ -36,6 +36,7 @@ Shader "AlasKeramat/Air"
             float _GunakanDepth, _TulisDepth, _Bayangan;
         CBUFFER_END
         float _AK_MatikanDepth;
+        float _AK_Basah;
         float3 _LightDirection, _LightPosition;
         struct Attributes
         {
@@ -108,6 +109,17 @@ Shader "AlasKeramat/Air"
             const float FrekuensiKetiga = 4.17, BobotKetiga = 0.35;
             float3 c = NoiseGrad(p * FrekuensiKetiga - float2(11.4,23.1) + flow * 1.28);
             float2 slope = (a.yz + b.yz * BobotKedua + c.yz * BobotKetiga) * (_KuatNormal * 1.35);
+            // Riak lingkaran tetesan hujan dinamis di permukaan sungai & laut saat cuaca basah (_AK_Basah > 0).
+            if (_AK_Basah > 0.05)
+            {
+                float2 rGrid = i.positionWS.xz * 2.1;
+                float2 rCell = floor(rGrid), rFrac = frac(rGrid) - 0.5;
+                float rSeed = Hash(rCell);
+                float rAge = frac(_Time.y * 1.45 + rSeed * 6.3);
+                float rDist = length(rFrac);
+                float rWave = sin((rDist - rAge * 0.48) * 34.0) * (1.0 - rAge) * smoothstep(0.48, 0.05, rDist);
+                slope += (rFrac / max(rDist, 0.02)) * (rWave * _AK_Basah * 0.24);
+            }
             noise = (a.x + b.x * 0.75 + c.x * 0.45) / 2.2;
             half3 n = NormalizeNormalPerPixel(i.normalWS);
             half3 ripple = half3(-slope.x, 0, -slope.y);
@@ -146,11 +158,13 @@ Shader "AlasKeramat/Air"
             half ring = 0.72h + 0.28h * sin(depth * 14.0 - _Time.y * 3.2);
             half depthFoam = smoothstep(0.22, 0.68, noise + edge * 0.48) * edge * ring * _KuatBuih;
             depthFoam *= _GunakanDepth * (1.0h - saturate(_AK_MatikanDepth));
+            half noDepthFoam = saturate(_AK_MatikanDepth) * smoothstep(0.54, 0.86, noise) * _KuatBuih * 0.48h;
             half tepiUV = 1.0h - saturate(min(i.uv.x, 1.0 - i.uv.x) / 0.14);
             half bankFoam = smoothstep(0.26, 0.72, noise + tepiUV * 0.52) * tepiUV * _KuatBuih * 0.85h;
             half crestFoam = smoothstep(0.62, 0.86, noise) * _KuatBuih * 0.55h;
-            half foam = saturate(max(depthFoam, max(bankFoam, crestFoam)));
-            half3 albedo = lerp(water.rgb, _WarnaBuih.rgb, foam);
+            half foam = saturate(max(max(depthFoam, noDepthFoam), max(bankFoam, crestFoam)));
+            half kaustik = pow(saturate(noise * 1.18h), 2.8h) * (1.0h - absorption) * (1.0h - foam) * 0.32h;
+            half3 albedo = lerp(water.rgb + half3(kaustik * 0.88h, kaustik * 1.12h, kaustik * 0.92h), _WarnaBuih.rgb, foam);
             half opacity = saturate(lerp(water.a, _WarnaBuih.a, foam));
             // Fresnel air (IOR 1.333), refleksi dipertahankan pada sudut mendatar.
             const half F0 = 0.0204h;
@@ -167,6 +181,9 @@ Shader "AlasKeramat/Air"
             float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS);
             Light sun = GetMainLight(shadowCoord, i.positionWS, half4(1,1,1,1));
             half3 color = LightingPhysicallyBased(brdf, sun, n, view);
+            half glint = pow(saturate(dot(reflect(-sun.direction, n), view)), 96.0h) * (1.0h - foam);
+            half kilauLebar = pow(saturate(dot(reflect(-sun.direction, n), view)), 22.0h) * (1.0h - foam) * 0.22h;
+            color += sun.color * ((glint * 1.45h + kilauLebar) * sun.distanceAttenuation * sun.shadowAttenuation);
             #if defined(_ADDITIONAL_LIGHTS)
             #if USE_FORWARD_PLUS
             [loop] for (uint lightIndex = 0; lightIndex < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); lightIndex++)

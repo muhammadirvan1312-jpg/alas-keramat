@@ -99,6 +99,24 @@ namespace AlasKeramat.EditorTools
                 Langkah("7z5. Indikator luka", 0.9898f, LangkahIndikatorLuka);
                 Langkah("7z6. Ikon kontrol & joystick", 0.9899f, LangkahIkonKontrol);
                 Langkah("7z7. Hewan model asli", 0.99f, LangkahHewanAsli);
+                Langkah("7z8. Props desa CC0 & lampu minyak", 0.991f, LangkahPropDesa);
+                Langkah("7z9. Ekspansi besar SOTF (props 2K, biota, perangkap & HUD)", 0.992f, LangkahEkspansiSOTF);
+                Langkah("7z10. Ekspansi Dunia 2 (24 model 4K, jemuran, air hujan, bubu, suar, musim & sekte)", 0.994f, LangkahEkspansiDunia2);
+                Langkah("7z11. Fitur Baru SOTF (Zipline, Perahu Dayung, Rumah Pohon, Sarang, Boss Buto Ijo & Suar)", 0.996f, LangkahFiturBaruSOTF);
+                Langkah("7z12. Overhaul Visual & Mega-Landmark (Air Terjun, Candi, Jembatan Gantung, Kapal, Pendopo)", 0.998f, LangkahOverhaulVisualDunia);
+                Langkah("7z13. Sistem Lanjutan SOTF (Kombo, Level Survival, Radio Darurat, Sesajen & Audio Spasial)", 0.999f, LangkahSistemLanjutan);
+                Langkah("7z14. Overhaul Kontrol Mobile Android & Pengayaan Jalur/Bunga Dunia", 0.9995f, LangkahOverhaulKontrolDanDunia);
+                Langkah("7z15. Ekspansi Penuh 4 Kuadran Pulau 4 km2 & Ekosistem Kawanan", 0.9998f, LangkahEkspansiPulau4Km);
+                Langkah("7z16. Dunia Bernapas (Patroli Obor Sekte, Monyet/Kodok, Asap/Kain Angin & Pertemuan Spontan)", 0.9999f, LangkahDuniaBernapas);
+                Langkah("7z17. Revisi & Polish Terpadu (HUD Boss/Status/Kombo & Pos Latihan Awal)", 0.99995f, LangkahRevisiTerpadu);
+                Langkah("7z18a. Mega Overhaul Visual & Dunia (7 Landmark Baru, God-Rays, Kabut Lembah, Kunang-Kunang & Vignette)", 0.99997f, LangkahOverhaulMegaVisual);
+                Langkah("7z18b. Mega Overhaul Gameplay (4 Glider Bambu, 6 Spot Pancing, 8 Peti Parasut, 5 Kuali Jamu, Kentongan & Jurnal 22 Lokasi)", 0.99999f, LangkahOverhaulMegaGameplay);
+                Langkah("7z19. Overhaul Karakter Visual & Dunia Hidup V6 (12 Lokasi, 64 Satwa, Aktivitas Karakter & Lentera Desa/Pantai)", 0.999995f, LangkahOverhaulDuniaHidupV6);
+                Langkah("7z20. Overhaul Dunia Hidup V7 Skala Penuh (22/22 Lokasi, Kurir Sekte, Anjing, Gagak, Ikan/Kepiting, Kincir & Roh Keramat)", 0.999998f, LangkahOverhaulDuniaHidupV7);
+                Langkah("7z21. Overhaul Dunia Hidup V8 (Migrasi Formasi-V, Rantai Makanan 24 Jam, 24 Interaksi Alam, Hayati Tropis & 22 Tugu Jalur)", 0.999999f, LangkahOverhaulDuniaHidupV8);
+                Langkah("7z22. Overhaul Dunia Nyata V9 (320+ Props 4K Scan di 22 Lokasi, 180+ Alam Scan, 12 NPC MakeHuman G3, 28 Satwa FBX & Suara 24 Jam)", 0.9999995f, LangkahOverhaulDuniaRealV9);
+                Langkah("7z23. Overhaul Arsitektur, Interior 4K, Sosial Companion & Cuaca Hidup V10 (12 Catatan Dunia & Petir Badai)", 0.9999998f, LangkahOverhaulArsitekturDanSosialV10);
+                Langkah("7z24. Overhaul Hero Camera, Senjata FP PBR & Gua Bioluminesens V11 (UG1-UG3 + 7 Sudut Hero)", 0.9999999f, LangkahOverhaulHeroDanGuaV11);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }
@@ -129,6 +147,16 @@ namespace AlasKeramat.EditorTools
                 _laporan.Add("[GAGAL] " + nama + ": " + e.Message);
                 Debug.LogError("[AK][Builder] Langkah " + nama + " gagal: " + e);
             }
+            LepasMemori();
+        }
+
+        // Pulau 4 km + ratusan tekstur foto CC0 (dibaca mentah RGBA32) menghabiskan RAM runner CI 16 GB (exit 137).
+        // Lepas aset yang tidak lagi dirujuk scene/kode HANYA di antara langkah: di tengah langkah, objek yang baru dibuat
+        // dan hanya dipegang variabel lokal (mis. VegetationData) ikut dihancurkan (MissingReferenceException).
+        public static void LepasMemori()
+        {
+            EditorUtility.UnloadUnusedAssetsImmediate(true);
+            GC.Collect();
         }
 
         public static bool LastBuildSucceeded { get { return _gagal.Count == 0; } }

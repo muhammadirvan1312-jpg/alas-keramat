@@ -9,7 +9,7 @@ namespace AlasKeramat.Core
         public const float LajuDaun = 7f, LajuDebu = 14f, BatasGua = -40f;
         public const float LajuKunangMalam = 18f, LajuSporaGua = 14f;
         [SerializeField] Material daun, debu;
-        ParticleSystem _daun, _debu, _percik, _kunang;
+        ParticleSystem _daun, _debu, _percik, _kunang, _uapNapas;
         public const float PercikGerimis = 110f, PercikBadai = 380f;
 
         // Percikan air di tanah sekitar pemain saat hujan (partikel/detik).
@@ -25,6 +25,12 @@ namespace AlasKeramat.Core
             bool malam = jam >= 17.5f || jam <= 5.8f;
             if (!malam || !hutan) return 0f;
             return w == WeatherState.Gerimis ? LajuKunangMalam * 0.45f : LajuKunangMalam;
+        }
+
+        public static float LajuUapNapas(float jam, WeatherState w, bool diGua)
+        {
+            bool dingin = diGua || jam >= 18.5f || jam <= 6.2f || w == WeatherState.HujanBadai || w == WeatherState.KabutPagi;
+            return dingin ? 4.5f : 0f;
         }
         TimeOfDayClock _jam;
         URPAtmosphereAndWeather _atmos;
@@ -46,6 +52,15 @@ namespace AlasKeramat.Core
             rDaun = siang && hutan && !basah ? LajuDaun : 0f;
             rDebu = siang && !basah && (w == WeatherState.Cerah || w == WeatherState.Berawan || w == WeatherState.KabutPagi) ? (hutan ? LajuDebu : LajuDebu * 0.4f) : 0f;
         }
+
+        // Partikel debu tetap tampak melayang dalam kerucut senter di malam hari atau dalam gua.
+        public static float LajuDebuSenter(WeatherState w, bool senterNyala)
+        {
+            if (!senterNyala || w == WeatherState.HujanBadai) return 0f;
+            return LajuDebu * 0.65f;
+        }
+
+        AlasKeramat.Player.SenterAndi _senter;
 
         ParticleSystem Buat(string nama, Material m, bool isDaun)
         {
@@ -82,7 +97,7 @@ namespace AlasKeramat.Core
             if (_gagal || daun == null || debu == null) return;
             try
             {
-                if (_daun == null) { _daun = Buat("DaunGugur", daun, true); _debu = Buat("DebuCahaya", debu, false); _percik = BuatPercik(); _kunang = BuatKunang(); }
+                if (_daun == null) { _daun = Buat("DaunGugur", daun, true); _debu = Buat("DebuCahaya", debu, false); _percik = BuatPercik(); _kunang = BuatKunang(); _uapNapas = BuatUapNapas(); }
                 if (_jam == null) _jam = GameServices.Get<TimeOfDayClock>();
                 if (_atmos == null) _atmos = GameServices.Get<URPAtmosphereAndWeather>();
                 var cam = Camera.main;
@@ -94,17 +109,42 @@ namespace AlasKeramat.Core
                 bool hutan = BiomaHutan(WorldTerrainGenerator.GetBiome(p.x, p.z));
                 bool diGua = p.y <= BatasGua;
                 if (!diGua) Laju(jamVal, w, hutan, out rd, out rb);
+                if (_senter == null) _senter = GameServices.Get<AlasKeramat.Player.SenterAndi>();
+                bool senterNyala = _senter != null && _senter.Nyala;
+                float rDebuSenter = LajuDebuSenter(w, senterNyala);
+                if (rDebuSenter > rb) rb = rDebuSenter;
                 float rp = !diGua ? LajuPercik(w) : 0f;
                 float rk = LajuKunang(jamVal, w, hutan, diGua);
                 _percik.transform.position = new Vector3(p.x, WorldTerrainGenerator.SampleHeight(p.x, p.z) + 0.04f, p.z) + cam.transform.forward * 4f;
                 Atur(_percik, rp);
                 _kunang.transform.position = p + cam.transform.forward * 6f + Vector3.up * 1.1f;
                 Atur(_kunang, rk);
+                _uapNapas.transform.position = p + cam.transform.forward * 0.34f - cam.transform.up * 0.14f;
+                Atur(_uapNapas, LajuUapNapas(jamVal, w, diGua));
                 _daun.transform.position = p + Vector3.up * 9f;
-                _debu.transform.position = p + cam.transform.forward * 5f;
+                _debu.transform.position = p + cam.transform.forward * (senterNyala ? 4f : 5f);
                 Atur(_daun, rd); Atur(_debu, rb);
             }
             catch (Exception e) { _gagal = true; Debug.LogError("[AK][PartikelAlam] Gagal: " + e.Message); }
+        }
+
+        ParticleSystem BuatUapNapas()
+        {
+            var go = new GameObject("UapNapasDingin");
+            go.transform.SetParent(transform, false);
+            var ps = go.AddComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var main = ps.main;
+            main.loop = true; main.simulationSpace = ParticleSystemSimulationSpace.World; main.playOnAwake = false;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.65f, 1.05f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.25f, 0.45f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.045f, 0.09f);
+            main.maxParticles = 24; main.gravityModifier = -0.05f;
+            main.startColor = new Color(0.88f, 0.92f, 0.96f, 0.22f);
+            var shape = ps.shape; shape.shapeType = ParticleSystemShapeType.Sphere; shape.radius = 0.05f;
+            var r = go.GetComponent<ParticleSystemRenderer>();
+            r.sharedMaterial = debu; r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; r.receiveShadows = false;
+            return ps;
         }
 
         ParticleSystem BuatKunang()

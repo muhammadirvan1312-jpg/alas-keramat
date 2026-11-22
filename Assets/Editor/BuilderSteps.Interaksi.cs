@@ -58,8 +58,8 @@ namespace AlasKeramat.EditorTools
             UnityEventTools.AddPersistentListener(bObor.onClick, tc.TekanObor);
             tc.PasangTangan(bTangan.GetComponent<Image>(), prompt, bObor.gameObject);
 
-            var dotGo = kanvas.Find("CrosshairDot") != null ? kanvas.Find("CrosshairDot").gameObject : UIGambar(kanvas.gameObject, "CrosshairDot", lingkaran, new Vector2(10f, 10f), new Vector2(0.5f, 0.5f), Vector2.zero);
-            var dotImg = dotGo.GetComponent<Image>(); dotImg.color = new Color(0.96f, 0.95f, 0.92f, 0.78f); dotImg.raycastTarget = false;
+            var dotGo = kanvas.Find("CrosshairDot") != null ? kanvas.Find("CrosshairDot").gameObject : UIGambar(kanvas.gameObject, "CrosshairDot", lingkaran, new Vector2(7f, 7f), new Vector2(0.5f, 0.5f), Vector2.zero);
+            var dotImg = dotGo.GetComponent<Image>(); dotImg.color = new Color(0.96f, 0.94f, 0.88f, 0.72f); dotImg.raycastTarget = false;
             var pBanner = Anak(kanvas.gameObject, "PromptTengah");
             pBanner.layer = GameLayers.UI;
             var prt = pBanner.AddComponent<RectTransform>();
@@ -79,14 +79,14 @@ namespace AlasKeramat.EditorTools
             th.Pasang(toast);
             EditorUtility.SetDirty(th);
 
-            // Radar kanan-atas.
-            var radar = UIGambar(kanvas.gameObject, "RadarGPS", lingkaran, new Vector2(300f, 300f), new Vector2(1f, 1f), new Vector2(-125f, -125f));
-            ((RectTransform)radar.transform).localScale = Vector3.one * 0.72f;
-            radar.GetComponent<Image>().color = new Color(0.043f, 0.102f, 0.059f, 0.55f);
+            // Radar taktis kanan-atas (kaca obsidian gelap + bingkai gading-emas elegan, bukan hijau neon).
+            var radar = UIGambar(kanvas.gameObject, "RadarGPS", lingkaran, new Vector2(300f, 300f), new Vector2(1f, 1f), new Vector2(-115f, -115f));
+            ((RectTransform)radar.transform).localScale = Vector3.one * 0.66f;
+            radar.GetComponent<Image>().color = new Color(0.04f, 0.06f, 0.08f, 0.76f);
             var ring = UIGambar(radar, "Cincin", cincin, new Vector2(300f, 300f), new Vector2(0.5f, 0.5f), Vector2.zero);
-            ring.GetComponent<Image>().color = new Color(0.235f, 1f, 0.478f, 0.8f);
-            var u = BuatTeks(radar, "Utara", "U", font, 28, new Vector2(0.5f, 0.5f), new Vector2(0f, 135f), new Vector2(40f, 40f));
-            u.color = ProcTex.Hex("#3CFF7A");
+            ring.GetComponent<Image>().color = new Color(0.84f, 0.78f, 0.64f, 0.78f);
+            var u = BuatTeks(radar, "Utara", "U", font, 26, new Vector2(0.5f, 0.5f), new Vector2(0f, 134f), new Vector2(40f, 40f));
+            u.color = new Color(0.95f, 0.90f, 0.76f, 0.96f);
             var isi = UIStretch(radar, "Isi", Vector2.zero, Vector2.one);
             var andiPanah = UIGambar(isi, "Andi", lingkaran, new Vector2(18f, 18f), new Vector2(0.5f, 0.5f), Vector2.zero);
             andiPanah.GetComponent<Image>().color = Color.white;

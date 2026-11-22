@@ -56,10 +56,14 @@ namespace AlasKeramat.Player
             Karbo = Mathf.Max(0f, Karbo - g); Protein = Mathf.Max(0f, Protein - g); Lemak = Mathf.Max(0f, Lemak - g); Vitamin = Mathf.Max(0f, Vitamin - g);
             Sanity = Mathf.Min(Maks, Sanity + Mathf.Min(30f, SanityTidur * detik));
             if (Fullness > 40f && Hydration > 40f) Health = Mathf.Min(TargetHealthCeiling, Health + RegenHPTidur * detik);
+            if (jam >= 2f) ObatiLukaTubuh();
             Stamina = MaxStaminaCap;
         }
 
         public void UbahSanity(float d) { Sanity = Mathf.Clamp(Sanity + d, 0f, Maks); }
+        // Pemulihan dari jamu/obat: dibatasi plafon stamina & HP saat ini (setter properti tetap privat).
+        public void TambahStamina(float d) { Stamina = Mathf.Clamp(Stamina + d, 0f, MaxStaminaCap); }
+        public void TambahHealth(float d) { Health = Mathf.Clamp(Health + d, 0f, Mathf.Max(Health, TargetHealthCeiling)); }
 
         public static float PlafonHP(float full, float haus, float rest)
         {
@@ -86,10 +90,15 @@ namespace AlasKeramat.Player
 
         void BayarLompat() { Pakai(BiayaLompat); }
 
+        LevelSurvivalAndi _level;
+        float _tXpLari;
+
         public bool Pakai(float biaya)
         {
             if (Stamina <= 0f) return false;
-            Stamina = Mathf.Max(0f, Stamina - biaya);
+            if (_level == null) _level = GameServices.Get<LevelSurvivalAndi>();
+            float hemat = _level != null ? _level.PenghematanStamina : 1f;
+            Stamina = Mathf.Max(0f, Stamina - biaya * PengaliBiayaStaminaLuka(LukaLengan) * hemat);
             _sejakBiaya = 0f;
             if (Stamina <= 0f) StaminaHabis = true;
             return true;
@@ -130,7 +139,21 @@ namespace AlasKeramat.Player
                     biome = _cacheBiome
                 };
                 Tick(k, Time.deltaTime);
-                if (_ctrl != null) _ctrl.LariDiblokir = StaminaHabis || Stamina < 1f;
+                if (k.sprint || k.renang)
+                {
+                    _tXpLari += Time.deltaTime;
+                    if (_tXpLari >= 5f)
+                    {
+                        _tXpLari = 0f;
+                        if (_level == null) _level = GameServices.Get<LevelSurvivalAndi>();
+                        if (_level != null) _level.TambahXP(LevelSurvivalAndi.Atribut.StaminaLari, 4f);
+                    }
+                }
+                if (_ctrl != null)
+                {
+                    _ctrl.LariDiblokir = StaminaHabis || Stamina < 1f;
+                    if (LukaKaki > 0f) _ctrl.PengaliKecepatan = Mathf.Min(_ctrl.PengaliKecepatan, PengaliKecepatanLuka(LukaKaki));
+                }
             }
             catch (Exception e) { Debug.LogError("[AK][AndiVitalsAndSanity] " + e.Message); }
         }
@@ -159,10 +182,11 @@ namespace AlasKeramat.Player
             float faktor = FaktorDingin(k.jam) * (kemarau ? 1f : 1.2f);
             ColdWet = k.dekatApi ? Mathf.Max(0f, ColdWet - DinginTurunApi * dt) : Wetness * faktor;
 
-            // Haus, istirahat, gizi
+            // Haus, istirahat, gizi (terhubung ke SistemMusimDinamis & LevelSurvivalAndi)
             float pHaus = (k.sprint ? 1.2f : 1f) * (kemarau && k.jam >= 10f && k.jam < 15f ? 1.4f : 1f) * (Tidur ? PengaliTidur : 1f) * (SuhuTubuh > SuhuKepanasan ? 1.8f : 1f);
+            pHaus *= SistemMusimDinamis.PengaliHidrasiMusim(SistemMusimDinamis.FaseHari(k.hari));
             if (k.cuaca == WeatherState.KabutAsap) pHaus *= 1.2f;
-            float pKesulitan = AI.EnemyDirector.Kesulitan == Difficulty.Damai ? 0.7f : AI.EnemyDirector.Kesulitan == Difficulty.Sulit ? 1.25f : 1f;
+            float pKesulitan = (AI.EnemyDirector.Kesulitan == Difficulty.Damai ? 0.7f : AI.EnemyDirector.Kesulitan == Difficulty.Sulit ? 1.25f : 1f) * PengaliModeSengsara(ModeSengsara || ModePantangMundur);
             Hydration = Mathf.Max(0f, Hydration - LajuHaus * pHaus * pKesulitan * dt);
             Rest = Tidur ? Mathf.Min(Maks, Rest + 1.5f * dt) : Mathf.Max(0f, Rest - LajuIstirahat * pKesulitan * dt);
             TickGizi(k.sprint, dt * pKesulitan);
@@ -171,8 +195,9 @@ namespace AlasKeramat.Player
 
             // Stamina (05 §3.2)
             _sejakBiaya += dt;
-            if (k.sprint) { Stamina = Mathf.Max(0f, Stamina - BiayaSprint * dt); _sejakBiaya = 0f; }
-            if (k.renang) { Stamina = Mathf.Max(0f, Stamina - (k.renangCepat ? BiayaRenangCepat : BiayaRenang) * dt); _sejakBiaya = 0f; }
+            float hematStam = _level != null ? _level.PenghematanStamina : 1f;
+            if (k.sprint) { Stamina = Mathf.Max(0f, Stamina - BiayaSprint * hematStam * dt); _sejakBiaya = 0f; }
+            if (k.renang) { Stamina = Mathf.Max(0f, Stamina - (k.renangCepat ? BiayaRenangCepat : BiayaRenang) * hematStam * dt); _sejakBiaya = 0f; }
             if (Stamina <= 0f) StaminaHabis = true;
             if (_sejakBiaya >= JedaPulih)
             {
@@ -225,6 +250,7 @@ namespace AlasKeramat.Player
             info.amount *= pDmg;
             float sisa = Serap(info);
             Health = Mathf.Max(0f, Health - sisa);
+            TerapkanLukaTubuh(info, sisa);
             _sejakDamage = 0f;
             GameEvents.RaisePlayerDamaged(info);
             if (Health <= 0f) Mati();
@@ -261,7 +287,8 @@ namespace AlasKeramat.Player
         {
             if (_tMati > 0f) return;
             Health = 0f; _tMati = RespawnDetik;
-            GameEvents.RaiseToast("Andi pingsan...");
+            if (ModePantangMundur) SaveSystem.HapusSlot(SaveSystem.SlotAktif);
+            GameEvents.RaiseToast(ModePantangMundur ? "Pantang Mundur: Andi tumbang! Simpanan dihapus..." : "Andi pingsan...");
             var h = OnMati; if (h != null) h();
         }
 

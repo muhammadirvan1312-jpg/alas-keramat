@@ -10,10 +10,18 @@ namespace AlasKeramat.Core
             public Mesh mesh;public Material material;public Bounds bounds;public Matrix4x4[] matriks;
             [System.NonSerialized] public Bounds[] batasInstance;
         }
-        public const float JarakGambar=56f;
+        public const float JarakGambar=56f,LebarPudar=8f;
         public KelompokSerasah[] kelompok=new KelompokSerasah[0];
         public float Kepadatan = 1f;
+        public float JarakTarik = JarakGambar;
         public bool BayanganPadat = true;
+
+        public static float FaktorSkalaJarak(float jarak,float batas)
+        {
+            if(batas<=LebarPudar)return jarak<=batas?1f:0f;
+            float t=Mathf.Clamp01((batas-jarak)/LebarPudar);
+            return t*t*(3f-2f*t);
+        }
         readonly Matrix4x4[] _tampak = new Matrix4x4[1023];
         readonly Plane[] _bidang=new Plane[6];
         RenderParams[] _rp, _rpNoShadow;
@@ -68,8 +76,9 @@ namespace AlasKeramat.Core
             if(_rp==null || _rp.Length!=kelompok.Length)SiapkanRp();
             GeometryUtility.CalculateFrustumPlanes(cam,_bidang);
             Vector3 cp=cam.transform.position;
-            float kep=Mathf.Clamp01(Kepadatan), radius=JarakGambar*Mathf.Lerp(0.55f,1f,kep), radiusSq=radius*radius;
-            float maxDist=JarakGambar+40f, maxSq=JarakGambar*JarakGambar;
+            float kep=Mathf.Clamp01(Kepadatan), batasJarak=Mathf.Max(20f,JarakTarik), radius=batasJarak*Mathf.Lerp(0.75f,1f,kep), radiusSq=radius*radius;
+            float mulaiPudar=Mathf.Max(0f,radius-LebarPudar), mulaiPudarSq=mulaiPudar*mulaiPudar;
+            float maxDist=radius+40f, maxSq=batasJarak*batasJarak;
             int gx0=Mathf.Clamp(Mathf.FloorToInt((cp.x-maxDist-MinGrid)/UkuranGrid),0,SisiGrid-1);
             int gx1=Mathf.Clamp(Mathf.FloorToInt((cp.x+maxDist-MinGrid)/UkuranGrid),0,SisiGrid-1);
             int gz0=Mathf.Clamp(Mathf.FloorToInt((cp.z-maxDist-MinGrid)/UkuranGrid),0,SisiGrid-1);
@@ -89,7 +98,16 @@ namespace AlasKeramat.Core
                     for(int i=0;i<batas && jumlah<_tampak.Length;i++)
                     {
                         Vector3 d=ps[i]-cp;
-                        if(d.x*d.x+d.y*d.y+d.z*d.z<=radiusSq && GeometryUtility.TestPlanesAABB(_bidang,bs[i]))_tampak[jumlah++]=k.matriks[i];
+                        float d2=d.x*d.x+d.y*d.y+d.z*d.z;
+                        if(d2>radiusSq || !GeometryUtility.TestPlanesAABB(_bidang,bs[i]))continue;
+                        if(d2<=mulaiPudarSq) { _tampak[jumlah++]=k.matriks[i]; continue; }
+                        float sk=FaktorSkalaJarak(Mathf.Sqrt(d2),radius);
+                        if(sk<0.05f)continue;
+                        Matrix4x4 m=k.matriks[i];
+                        m.m00*=sk;m.m10*=sk;m.m20*=sk;
+                        m.m01*=sk;m.m11*=sk;m.m21*=sk;
+                        m.m02*=sk;m.m12*=sk;m.m22*=sk;
+                        _tampak[jumlah++]=m;
                     }
                     if(jumlah==0)continue;
                     var rp=BayanganPadat?_rp[idx]:_rpNoShadow[idx]; rp.camera=cam;

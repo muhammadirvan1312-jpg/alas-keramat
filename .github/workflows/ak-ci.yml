@@ -21,15 +21,19 @@ permissions:
 jobs:
   unity:
     name: Unity — bangun, uji, APK
-    outputs:
-      snapshot: ${{ steps.scenefoto.outcome }}
     runs-on: ubuntu-latest
-    timeout-minutes: 140
+    # Pulau 4 km + Mega Overhaul: Builder & impor ulang tekstur jauh lebih lama; batas GitHub 360 menit.
+    timeout-minutes: 210
     steps:
       - name: Kosongkan disk runner
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
+
+      - name: Tambah swap 16 GB (pulau 4 km butuh RAM besar)
+        run: |
+          sudo fallocate -l 16G /swapfile_ak && sudo chmod 600 /swapfile_ak && sudo mkswap /swapfile_ak >/dev/null && sudo swapon /swapfile_ak
+          free -h
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -154,7 +158,7 @@ jobs:
         id: build
         if: steps.cekproyek.outputs.ada == '1'
         continue-on-error: true
-        timeout-minutes: 120
+        timeout-minutes: 190
         uses: game-ci/unity-builder@v4
         env:
           AK_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -185,23 +189,6 @@ jobs:
         with:
           path: Assets/ThirdParty
           key: imported-aset-${{ hashFiles('Tools/aset_cc0.lock.json', 'Tools/mocap.lock.json', 'Tools/karakter.lock.json', 'Tools/karakter/**', 'Tools/visual/**') }}-${{ github.run_id }}
-
-      - name: Simpan scene untuk audit foto
-        id: scenefoto
-        if: always() && steps.build.outcome != 'cancelled' && hashFiles('Assets/Generated/foto_commit.txt') != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: scene-foto-${{ github.run_id }}
-          path: |
-            Assets
-            ProjectSettings
-            !Assets/Mixamo
-            !Assets/Mixamo.meta
-            !Assets/MixamoKarakter
-            !Assets/MixamoKarakter.meta
-            !Assets/HewanAsli
-            !Assets/HewanAsli.meta
-          retention-days: 2
 
       - name: Susun laporan CI (selalu)
         if: always() && steps.cekproyek.outputs.ada == '1'
@@ -251,18 +238,25 @@ jobs:
 
   # Foto kualitas dipisah dari build: render perangkat lunak (llvmpipe) bisa sangat lambat untuk terrain besar.
   # Job ini TIDAK menentukan lulus/gagal CI (continue-on-error) dan dibatasi waktunya.
+  # Percepatan: berjalan PARALEL dengan job unity (FotoSaja membangun scene sendiri bila belum ada),
+  # jadi total CI ~ waktu job terlama, bukan jumlah keduanya. Lewati foto dengan label PR "tanpa-foto".
   foto:
     name: Foto kualitas (tidak memblokir)
-    needs: unity
-    if: always() && needs.unity.outputs.snapshot == 'success' && github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'tanpa-foto')
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    # Builder sendiri (+-17 menit) + foto llvmpipe: beri ruang waktu lebih karena tidak lagi memakai scene job unity.
+    timeout-minutes: 160
     continue-on-error: true
     steps:
       - name: Kosongkan disk runner
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
+
+      - name: Tambah swap 16 GB (pulau 4 km butuh RAM besar)
+        run: |
+          sudo fallocate -l 16G /swapfile_ak && sudo chmod 600 /swapfile_ak && sudo mkswap /swapfile_ak >/dev/null && sudo swapon /swapfile_ak
+          free -h
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -302,12 +296,6 @@ jobs:
             Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-
             Library-Android-
 
-      - name: Ambil scene hasil build yang sama
-        uses: actions/download-artifact@v4
-        with:
-          name: scene-foto-${{ github.run_id }}
-          path: .
-
       - name: Ambil animasi Mixamo (repo aset privat)
         shell: bash
         env:
@@ -333,7 +321,7 @@ jobs:
       - name: Unity — Builder + Foto
         id: foto
         continue-on-error: true
-        timeout-minutes: 35
+        timeout-minutes: 140
         uses: game-ci/unity-builder@v4
         env:
           AK_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -354,6 +342,7 @@ jobs:
         shell: bash
         run: |
           python3 -m pip install --quiet Pillow
+          sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true  # folder Logs dibuat root oleh container Unity
           python3 Tools/cek_foto.py --commit "${{ github.event.pull_request.head.sha || github.sha }}"
           python3 Tools/cek_uji_main.py --commit "${{ github.event.pull_request.head.sha || github.sha }}"
 

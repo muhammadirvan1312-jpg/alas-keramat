@@ -34,6 +34,52 @@ namespace AlasKeramat.AI
         bool _kena, _fase3Gelap;
         Vector3 _arahAmuk, _posAkar, _arahAkar;
         float _jarakAkar = -1f;
+        Light _lampuAuraBoss;
+        ParticleSystem _abuAuraBoss;
+
+        public static float HitungIntensitasAuraBoss(int fase, AksiBoss aksi)
+        {
+            if (aksi == AksiBoss.Tidur || aksi == AksiBoss.Mati) return 0f;
+            return fase >= 3 ? 3.2f : fase == 2 ? 1.85f : 0.85f;
+        }
+
+        void PerbaruiAuraBoss()
+        {
+            float intAura = HitungIntensitasAuraBoss(Fase, Aksi);
+            if (intAura > 0f)
+            {
+                if (_lampuAuraBoss == null)
+                {
+                    var go = new GameObject("AuraBossGenderuwo");
+                    go.transform.SetParent(transform, false);
+                    go.transform.localPosition = new Vector3(0f, 1.45f, 0f);
+                    _lampuAuraBoss = go.AddComponent<Light>();
+                    _lampuAuraBoss.type = LightType.Point;
+                    _lampuAuraBoss.color = new Color(0.95f, 0.22f, 0.08f);
+                    _lampuAuraBoss.range = 8.5f;
+                    _lampuAuraBoss.shadows = LightShadows.None;
+                    _abuAuraBoss = go.AddComponent<ParticleSystem>();
+                    var m = _abuAuraBoss.main;
+                    m.loop = true; m.startLifetime = 1.4f; m.startSpeed = 0.75f; m.startSize = 0.07f;
+                    m.maxParticles = 36; m.gravityModifier = -0.18f; m.simulationSpace = ParticleSystemSimulationSpace.World;
+                    m.startColor = new Color(1f, 0.35f, 0.10f, 0.85f);
+                    var sh = _abuAuraBoss.shape; sh.shapeType = ParticleSystemShapeType.Sphere; sh.radius = 0.85f;
+                    var pr = go.GetComponent<ParticleSystemRenderer>();
+                    pr.sharedMaterial = SafeMaterialFactory.CreatePBR("M_AbuAuraBoss", new Color(1f, 0.36f, 0.12f), 0f, 0.3f, null, null, new Color(3.2f, 0.85f, 0.2f));
+                    pr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+                _lampuAuraBoss.enabled = true;
+                _lampuAuraBoss.intensity = intAura * (0.9f + 0.2f * Mathf.PerlinNoise(Time.time * 8f, 0.2f));
+                var em = _abuAuraBoss.emission;
+                em.rateOverTime = Fase * 7f;
+                if (!_abuAuraBoss.isPlaying) _abuAuraBoss.Play();
+            }
+            else
+            {
+                if (_lampuAuraBoss != null) _lampuAuraBoss.enabled = false;
+                if (_abuAuraBoss != null && _abuAuraBoss.isPlaying) _abuAuraBoss.Stop();
+            }
+        }
 
         public static int FaseUntuk(float sisa01) { return sisa01 > AmbangFase2 ? 1 : sisa01 > AmbangFase3 ? 2 : 3; }
         public static bool DariBelakang(Vector3 hadapBoss, Vector3 arahPukulan) { hadapBoss.y = 0f; arahPukulan.y = 0f; return Vector3.Dot(hadapBoss.normalized, arahPukulan.normalized) > 0.2f; }
@@ -70,6 +116,7 @@ namespace AlasKeramat.AI
             if (_bar == null) _bar = GameServices.Get<BarAtas>();
             if (_bar != null) _bar.Tampil("GENDERUWO", HP / HPMaks, new Color(0.62f, 0.08f, 0.06f));
             float dt = Time.deltaTime;
+            PerbaruiAuraBoss();
             TickFase(dt);
             TickAkar(dt);
             TickCincin(dt);
@@ -112,6 +159,7 @@ namespace AlasKeramat.AI
         void Kalah()
         {
             Aksi = AksiBoss.Mati;
+            PerbaruiAuraBoss();
             if (_anim != null) _anim.Pose = ProceduralAnimator.PoseTempur.Goyah;
             if (punggung != null) punggung.enabled = false;
             if (akarLempar != null) akarLempar.gameObject.SetActive(false);
