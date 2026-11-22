@@ -46,7 +46,7 @@ namespace AlasKeramat.World
             float malam = 0f;
             if (jam >= 17.2f) malam = Mathf.Clamp01((jam - 17.2f) / 1.1f);
             else if (jam <= 6.2f) malam = Mathf.Clamp01((6.2f - jam) / 1.1f);
-            float badai = cuaca == WeatherState.HujanBadai ? 0.65f : cuaca == WeatherState.HujanLebat ? 0.35f : 0f;
+            float badai = cuaca == WeatherState.HujanBadai ? 0.65f : cuaca == WeatherState.KabutDarah ? 0.55f : cuaca == WeatherState.Gerimis ? 0.35f : 0f;
             return Mathf.Clamp01(Mathf.Max(malam, badai));
         }
 
@@ -82,7 +82,7 @@ namespace AlasKeramat.World
             float jam = _jam != null ? _jam.Jam : 10f;
             WeatherState cuaca = _cuaca != null ? _cuaca.Cuaca : WeatherState.Cerah;
             float lampu = FaktorLampuMalam(jam, cuaca);
-            float angin = cuaca == WeatherState.HujanBadai ? 2.4f : cuaca == WeatherState.HujanLebat ? 1.7f : 1.0f;
+            float angin = cuaca == WeatherState.HujanBadai ? 2.4f : cuaca == WeatherState.Gerimis ? 1.55f : 1.0f;
             float t = Time.time;
 
             // Jendela rumah & lentera desa menyala hangat keemasan saat senja/malam.

@@ -64,7 +64,7 @@ namespace AlasKeramat.AI
 
         public static bool SeranggaAktifSiang(float jam, WeatherState cuaca)
         {
-            bool hujan = cuaca == WeatherState.HujanLebat || cuaca == WeatherState.HujanBadai;
+            bool hujan = cuaca == WeatherState.Gerimis || cuaca == WeatherState.HujanBadai;
             return !hujan && jam >= 6.0f && jam <= 17.5f;
         }
 
@@ -93,7 +93,7 @@ namespace AlasKeramat.AI
             if (_cuaca == null) _cuaca = GameServices.Get<URPAtmosphereAndWeather>();
             float jam = _jam != null ? _jam.Jam : 10f;
             WeatherState cuaca = _cuaca != null ? _cuaca.Cuaca : WeatherState.Cerah;
-            float angin = cuaca == WeatherState.HujanBadai ? 2.5f : cuaca == WeatherState.HujanLebat ? 1.7f : 1.0f;
+            float angin = cuaca == WeatherState.HujanBadai ? 2.5f : cuaca == WeatherState.Gerimis ? 1.55f : 1.0f;
             bool siangCerah = SeranggaAktifSiang(jam, cuaca);
             float t = Time.time;
 

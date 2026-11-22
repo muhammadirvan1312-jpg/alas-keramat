@@ -58,8 +58,8 @@ namespace AlasKeramat.World
         public static float PengaliAnginCuaca(WeatherState w)
         {
             if (w == WeatherState.HujanBadai) return 2.8f;
-            if (w == WeatherState.HujanLebat) return 1.85f;
-            if (w == WeatherState.Gerimis) return 1.35f;
+            if (w == WeatherState.KabutDarah || w == WeatherState.KabutAsap) return 1.75f;
+            if (w == WeatherState.Gerimis) return 1.45f;
             return 1.0f;
         }
 

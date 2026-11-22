@@ -38,7 +38,7 @@ namespace AlasKeramat.AI
         public static string PilihSapaan(PeranTeman p, float jam, WeatherState cuaca, int urutan)
         {
             bool malam = jam >= 18.0f || jam <= 5.5f;
-            bool hujan = cuaca == WeatherState.HujanLebat || cuaca == WeatherState.HujanBadai;
+            bool hujan = cuaca == WeatherState.Gerimis || cuaca == WeatherState.HujanBadai;
             if (p == PeranTeman.KangDeden)
             {
                 if (hujan) return "Kang Deden: Badai makin kencang, Mas Andi! Merapat ke api unggun dulu!";

@@ -16,7 +16,7 @@ namespace AlasKeramat.World
         float[] _intJamur0, _intBoss0;
         Vector3[] _posSpora0;
         Transform _kamera;
-        bool _siap;
+        bool _siap, _sedangDiBawah = true;
 
         public int JumlahElemenGua
         {
@@ -63,7 +63,16 @@ namespace AlasKeramat.World
         {
             if (!_siap || !Application.isPlaying) return;
             if (_kamera == null) { var c = Camera.main; if (c != null) _kamera = c.transform; }
-            if (_kamera == null || !WorldTerrainGenerator.DiBawahTanah(_kamera.position.y)) return;
+            if (_kamera == null) return;
+
+            bool diBawah = WorldTerrainGenerator.DiBawahTanah(_kamera.position.y);
+            if (!diBawah)
+            {
+                // Matikan seluruh lampu gua saat pemain di permukaan agar hemat GPU cluster Android 4 GB.
+                if (_sedangDiBawah) { SetLampuGua(false); _sedangDiBawah = false; }
+                return;
+            }
+            if (!_sedangDiBawah) _sedangDiBawah = true;
 
             Vector3 cPos = _kamera.position;
             float t = Time.time;
@@ -71,23 +80,32 @@ namespace AlasKeramat.World
             for (int i = 0; i < lampuJamur.Length; i++)
             {
                 var l = lampuJamur[i];
-                if (l == null || (l.transform.position - cPos).sqrMagnitude > 80f * 80f) continue;
-                l.intensity = _intJamur0[i] * FaktorDenyutBio(t, i * 1.1f);
+                if (l == null) continue;
+                bool dekat = (l.transform.position - cPos).sqrMagnitude < 75f * 75f;
+                if (l.enabled != dekat) l.enabled = dekat;
+                if (dekat) l.intensity = _intJamur0[i] * FaktorDenyutBio(t, i * 1.1f);
             }
 
             for (int i = 0; i < lampuDaruratBunker.Length; i++)
             {
                 var l = lampuDaruratBunker[i];
-                if (l == null || (l.transform.position - cPos).sqrMagnitude > 80f * 80f) continue;
-                l.intensity = 2.6f * FaktorKedipBunker(t, i * 2.3f);
+                if (l == null) continue;
+                bool dekat = (l.transform.position - cPos).sqrMagnitude < 75f * 75f;
+                if (l.enabled != dekat) l.enabled = dekat;
+                if (dekat) l.intensity = 2.6f * FaktorKedipBunker(t, i * 2.3f);
             }
 
             for (int i = 0; i < lampuKubahBoss.Length; i++)
             {
                 var l = lampuKubahBoss[i];
-                if (l == null || (l.transform.position - cPos).sqrMagnitude > 90f * 90f) continue;
-                float bara = 0.84f + 0.16f * Mathf.Sin(t * 6.8f + i * 1.4f);
-                l.intensity = _intBoss0[i] * bara;
+                if (l == null) continue;
+                bool dekat = (l.transform.position - cPos).sqrMagnitude < 85f * 85f;
+                if (l.enabled != dekat) l.enabled = dekat;
+                if (dekat)
+                {
+                    float bara = 0.84f + 0.16f * Mathf.Sin(t * 6.8f + i * 1.4f);
+                    l.intensity = _intBoss0[i] * bara;
+                }
             }
 
             for (int i = 0; i < sporaGua.Length; i++)
@@ -97,6 +115,13 @@ namespace AlasKeramat.World
                 float ph = t * 0.75f + i * 1.37f;
                 tr.position = _posSpora0[i] + new Vector3(Mathf.Sin(ph) * 0.85f, Mathf.Sin(ph * 1.6f) * 0.55f, Mathf.Cos(ph * 0.9f) * 0.85f);
             }
+        }
+
+        void SetLampuGua(bool aktif)
+        {
+            for (int i = 0; i < lampuJamur.Length; i++) if (lampuJamur[i] != null) lampuJamur[i].enabled = aktif;
+            for (int i = 0; i < lampuDaruratBunker.Length; i++) if (lampuDaruratBunker[i] != null) lampuDaruratBunker[i].enabled = aktif;
+            for (int i = 0; i < lampuKubahBoss.Length; i++) if (lampuKubahBoss[i] != null) lampuKubahBoss[i].enabled = aktif;
         }
     }
 }

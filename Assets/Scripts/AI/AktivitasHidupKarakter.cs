@@ -33,7 +33,7 @@ namespace AlasKeramat.AI
         public static float FaktorDingin(float jam, WeatherState cuaca)
         {
             float malam = (jam >= 18.0f || jam <= 5.5f) ? 0.65f : 0f;
-            float hujan = cuaca == WeatherState.HujanBadai ? 0.9f : cuaca == WeatherState.HujanLebat ? 0.7f : cuaca == WeatherState.Gerimis ? 0.35f : 0f;
+            float hujan = cuaca == WeatherState.HujanBadai ? 0.9f : cuaca == WeatherState.KabutDarah ? 0.7f : cuaca == WeatherState.Gerimis ? 0.45f : 0f;
             return Mathf.Clamp01(Mathf.Max(malam, hujan));
         }
 

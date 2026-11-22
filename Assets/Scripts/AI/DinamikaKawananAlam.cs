@@ -82,7 +82,7 @@ namespace AlasKeramat.AI
 
         public static bool ReptilHarusMasukAir(float jarakPemainSq, WeatherState cuaca, float jam)
         {
-            bool hujan = cuaca == WeatherState.Gerimis || cuaca == WeatherState.HujanLebat || cuaca == WeatherState.HujanBadai;
+            bool hujan = cuaca == WeatherState.Gerimis || cuaca == WeatherState.HujanBadai || cuaca == WeatherState.KabutDarah;
             bool malam = jam >= 18.0f || jam < 7.0f;
             return hujan || malam || jarakPemainSq < 9.5f * 9.5f;
         }

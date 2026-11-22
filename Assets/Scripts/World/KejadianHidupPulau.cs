@@ -125,7 +125,7 @@ namespace AlasKeramat.World
             }
 
             // 2. Serbuk sari emas / kelopak / abu ringan melayang di sekitar pemain.
-            float angin = cuaca == WeatherState.HujanBadai ? 2.6f : cuaca == WeatherState.HujanLebat ? 1.7f : 0.85f;
+            float angin = cuaca == WeatherState.HujanBadai ? 2.6f : cuaca == WeatherState.Gerimis ? 1.55f : 0.85f;
             for (int i = 0; i < serbukAlam.Length; i++)
             {
                 var tr = serbukAlam[i];
