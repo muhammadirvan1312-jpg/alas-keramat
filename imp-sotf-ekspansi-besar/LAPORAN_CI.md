@@ -1,8 +1,8 @@
 # LAPORAN CI
-- Commit: 022b57c7259bb6c422bf890104700c16e93183c8
-- Hasil aset visual: skipped
-- Hasil langkah Unity: skipped
-- Waktu: 2026-11-21T22:54:59Z
+- Commit: dc0d318edaec0eb9bdde5fcda442320e349b4153
+- Hasil aset visual: success
+- Hasil langkah Unity: failure
+- Waktu: 2026-11-22T00:30:07Z
 
 Ringkasan dari NusantaraCI tidak ada (kemungkinan error kompilasi sebelum kode berjalan).
 
