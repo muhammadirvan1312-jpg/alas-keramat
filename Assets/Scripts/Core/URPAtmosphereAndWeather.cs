@@ -139,10 +139,10 @@ namespace AlasKeramat.Core
                 bool adaSenja = skybox.HasProperty("_DuskTex") && skybox.GetTexture("_DuskTex") != null;
                 float senja = adaSenja ? Senja01(jam) : 0f;
                 SafeMaterialFactory.SetF(skybox, "_DuskBlend", senja);
-                Color tint = maghrib ? new Color(1.18f, 0.62f, 0.42f) : Color.Lerp(new Color(0.95f, 0.98f, 1.0f), new Color(0.46f, 0.60f, 0.90f), m01);
+                Color tint = maghrib ? new Color(1.18f, 0.64f, 0.44f) : Color.Lerp(new Color(0.95f, 0.98f, 1.0f), new Color(0.19f, 0.27f, 0.42f), m01);
                 if (senja > 0f) tint = Color.Lerp(tint, new Color(1.0f, 0.92f, 0.86f), senja * 0.7f);
                 SafeMaterialFactory.SetC(skybox, "_Tint", tint);
-                SafeMaterialFactory.SetF(skybox, "_Exposure", hdriLangit ? (maghrib ? 0.86f : Mathf.Lerp(0.88f, 0.44f, m01)) : Mathf.Lerp(1.22f, 0.24f, m01));
+                SafeMaterialFactory.SetF(skybox, "_Exposure", hdriLangit ? (maghrib ? 0.88f : Mathf.Lerp(0.92f, 0.25f, m01)) : Mathf.Lerp(1.22f, 0.20f, m01));
                 SafeMaterialFactory.SetC(skybox, "_HorizonColor", RenderSettings.fogColor);
                 SafeMaterialFactory.SetF(skybox, "_HorizonHeight", maghrib ? 0.22f : Mathf.Lerp(0.14f, 0.24f, m01));
                 Light aktif = (sun != null && sun.enabled) ? sun : moon;

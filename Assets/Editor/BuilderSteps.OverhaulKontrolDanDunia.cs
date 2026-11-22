@@ -133,7 +133,7 @@ namespace AlasKeramat.EditorTools
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Jembatan Gantung", posisi = new Vector3(272f, 0f, -218f) },
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Bangkai Kapal", posisi = new Vector3(-115f, 0f, -865f) },
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Pabrik Gula", posisi = new Vector3(665f, 0f, -500f) },
-                new PenandaLandmarkHUD.TitikLandmark { nama = "Rumah Pohon Heli", posisi = new Vector3(46f, 0f, -418f) },
+                new PenandaLandmarkHUD.TitikLandmark { nama = "Rumah Pohon Heli", posisi = new Vector3(68f, 0f, -406f) },
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Desa Nelayan Timur", posisi = new Vector3(720f, 0f, -140f) },
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Pos Gunung Kapur", posisi = new Vector3(-580f, 0f, 620f) },
                 new PenandaLandmarkHUD.TitikLandmark { nama = "Perkebunan Timur Laut", posisi = new Vector3(590f, 0f, 560f) },

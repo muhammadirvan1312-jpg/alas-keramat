@@ -105,8 +105,8 @@ namespace AlasKeramat.EditorTools
             var t = go.GetComponent<Terrain>();
             t.materialTemplate = mat;
             t.drawInstanced = true;
-            t.heightmapPixelError = 7f;
-            t.basemapDistance = 220f;
+            t.heightmapPixelError = 3.5f;
+            t.basemapDistance = 520f;
             t.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             return t;
         }
@@ -129,13 +129,15 @@ namespace AlasKeramat.EditorTools
                     for (int i = 0; i < nL; i++) w[i] *= 1f - Mathf.Max(kTanah, kBatu);
                     w[L_Tanah] += kTanah * (1f - kBatu);
                     w[L_Batu] += kBatu;
+                    float makro = Mathf.PerlinNoise(wx * 0.014f + 11f, wz * 0.014f + 23f);
                     float variasi = Mathf.PerlinNoise(wx * 0.045f + 3f, wz * 0.045f + 7f);
                     float mikro = Mathf.PerlinNoise(wx * 0.18f + 19f, wz * 0.18f + 41f);
                     float lembap = Mathf.Clamp01((6f - WorldTerrainGenerator.SampleHeight(wx, wz)) * 0.08f);
-                    w[L_Daun] *= 0.65f + 0.70f * variasi + 0.25f * mikro;
-                    w[L_Rumput] *= 1.15f - 0.60f * variasi + 0.25f * (1f - mikro);
-                    w[L_Tanah] += 0.14f * Mathf.Clamp01(mikro - 0.52f);
-                    w[L_Lumpur] += 0.22f * lembap * (1f - kBatu);
+                    w[L_Daun] *= 0.55f + 0.55f * variasi + 0.22f * mikro;
+                    w[L_Rumput] *= 1.10f + 0.45f * makro - 0.35f * variasi + 0.25f * (1f - mikro);
+                    w[L_Tanah] += 0.10f * Mathf.Clamp01(mikro - 0.56f);
+                    w[L_Batu] += 0.16f * Mathf.Clamp01(makro - 0.68f) * WorldTerrainGenerator.S(14f, 28f, lereng);
+                    w[L_Lumpur] += 0.20f * lembap * (1f - kBatu);
                     float total = 0f;
                     for (int i = 0; i < nL; i++) total += w[i];
                     if (total < 1e-4f) { w[L_Tanah] = 1f; total = 1f; }
@@ -160,19 +162,19 @@ namespace AlasKeramat.EditorTools
             switch ((int)b)
             {
                 case (int)Biome.Laut: case (int)Biome.Pantai: w[L_Pasir] = 1f; break;
-                case (int)Biome.KawahBeringin: w[L_Tanah] = 0.25f; w[L_Daun] = 0.55f; w[L_Rumput] = 0.20f; break;
-                case (int)Biome.TebingKapur: w[L_Batu] = 0.65f; w[L_Rumput] = 0.25f; w[L_Tanah] = 0.10f; break;
+                case (int)Biome.KawahBeringin: w[L_Rumput] = 0.52f; w[L_Daun] = 0.34f; w[L_Tanah] = 0.14f; break;
+                case (int)Biome.TebingKapur: w[L_Batu] = 0.60f; w[L_Rumput] = 0.32f; w[L_Tanah] = 0.08f; break;
                 case (int)Biome.SawitTerbakar: w[L_Lumpur] = 0.5f; w[L_Tanah] = 0.5f; break;
-                case (int)Biome.Desa: w[L_Tanah] = 0.48f; w[L_Daun] = 0.20f; w[L_Rumput] = 0.32f; break;
-                case (int)Biome.HutanBambu: w[L_Daun] = 0.62f; w[L_Rumput] = 0.28f; w[L_Tanah] = 0.10f; break;
-                case (int)Biome.TepiSungai: w[L_Daun] = 0.46f; w[L_Lumpur] = 0.22f; w[L_Rumput] = 0.24f; w[L_Tanah] = 0.08f; break;
-                case (int)Biome.HutanJatiSelatan: w[L_Daun] = 0.54f; w[L_Rumput] = 0.30f; w[L_Tanah] = 0.16f; break;
-                case 11: w[L_Lumpur] = 0.8f; w[L_Daun] = 0.2f; break;      // Rawa Bakau
-                case 12: w[L_Tanah] = 0.7f; w[L_Batu] = 0.3f; break;       // Pabrik Gula
-                case 13: w[L_Batu] = 0.5f; w[L_Rumput] = 0.5f; break;      // Gunung Kapur
-                case 14: w[L_Rumput] = 0.6f; w[L_Tanah] = 0.4f; break;     // Ladang Tebu
-                case 15: w[L_Daun] = 0.7f; w[L_Lumpur] = 0.3f; break;      // Alas Wingit
-                default: w[L_Daun] = 0.58f; w[L_Rumput] = 0.30f; w[L_Tanah] = 0.12f; break;    // Hutan Campuran
+                case (int)Biome.Desa: w[L_Rumput] = 0.50f; w[L_Tanah] = 0.34f; w[L_Daun] = 0.16f; break;
+                case (int)Biome.HutanBambu: w[L_Rumput] = 0.52f; w[L_Daun] = 0.40f; w[L_Tanah] = 0.08f; break;
+                case (int)Biome.TepiSungai: w[L_Rumput] = 0.46f; w[L_Daun] = 0.30f; w[L_Lumpur] = 0.18f; w[L_Tanah] = 0.06f; break;
+                case (int)Biome.HutanJatiSelatan: w[L_Rumput] = 0.56f; w[L_Daun] = 0.34f; w[L_Tanah] = 0.10f; break;
+                case 11: w[L_Lumpur] = 0.68f; w[L_Rumput] = 0.20f; w[L_Daun] = 0.12f; break; // Rawa Bakau
+                case 12: w[L_Tanah] = 0.60f; w[L_Batu] = 0.25f; w[L_Rumput] = 0.15f; break;  // Pabrik Gula
+                case 13: w[L_Batu] = 0.48f; w[L_Rumput] = 0.52f; break;      // Gunung Kapur
+                case 14: w[L_Rumput] = 0.68f; w[L_Tanah] = 0.32f; break;     // Ladang Tebu
+                case 15: w[L_Rumput] = 0.42f; w[L_Daun] = 0.42f; w[L_Lumpur] = 0.16f; break; // Alas Wingit
+                default: w[L_Rumput] = 0.56f; w[L_Daun] = 0.34f; w[L_Tanah] = 0.10f; break;  // Hutan Campuran
             }
         }
 

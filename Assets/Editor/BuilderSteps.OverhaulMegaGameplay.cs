@@ -242,7 +242,7 @@ namespace AlasKeramat.EditorTools
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Jembatan Gantung Rimba", posisiXZ = new Vector2(272f, -218f), radius = 28f },
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Bangkai Kapal Pantai", posisiXZ = new Vector2(-115f, -865f), radius = 32f },
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Pabrik Gula Sinar Tebu", posisiXZ = new Vector2(665f, -500f), radius = 44f },
-                new JurnalEksplorasiPulau.ZonaTemu { nama = "Rumah Pohon Heli", posisiXZ = new Vector2(46f, -418f), radius = 18f },
+                new JurnalEksplorasiPulau.ZonaTemu { nama = "Rumah Pohon Heli", posisiXZ = new Vector2(68f, -406f), radius = 18f },
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Desa Nelayan Timur", posisiXZ = new Vector2(720f, -140f), radius = 40f },
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Pos Gunung Kapur", posisiXZ = new Vector2(-580f, 620f), radius = 38f },
                 new JurnalEksplorasiPulau.ZonaTemu { nama = "Perkebunan Timur Laut", posisiXZ = new Vector2(590f, 560f), radius = 44f },

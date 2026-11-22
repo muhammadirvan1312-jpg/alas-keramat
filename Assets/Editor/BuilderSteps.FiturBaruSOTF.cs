@@ -99,22 +99,43 @@ namespace AlasKeramat.EditorTools
         static void BangunRumahPohonAman(GameObject induk)
         {
             var grup = Anak(induk, "RumahPohonAman");
-            var kayu = AmbilMat("M_Kayu"); var kulit = AmbilMat("M_KulitPohon") ?? kayu;
+            var kayu = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_KayuLapuk2K.mat") ?? AmbilMat("M_Kayu");
+            var kulit = AmbilMat("M_KulitPohon") ?? kayu;
+            var daun = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_DaunAsli.mat") ?? AmbilMat("M_DaunPohon");
+            var genteng = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_GentengLumut.mat") ?? kayu;
+            var mTajuk = MuatPropScan("PohonScan_LOD0") ?? MuatPropScan("PohonScanC_LOD0");
             var kain = MatPolos("M_TikarKasur", "#7A6A4A");
-            Vector2[] pos = { new Vector2(46f, -418f), new Vector2(-120f, -80f), new Vector2(-595f, -535f) };
+            // RumahPohon_0 dipindah ke (68, -406) agar tidak menghalangi kamera v1_hewan_barisan (45.2, -423.5)
+            Vector2[] pos = { new Vector2(68f, -406f), new Vector2(-120f, -80f), new Vector2(-595f, -535f) };
 
             for (int i = 0; i < pos.Length; i++)
             {
                 float y = WorldTerrainGenerator.SampleHeight(pos[i].x, pos[i].y);
                 var rp = Anak(grup, "RumahPohon_" + i);
                 rp.transform.position = new Vector3(pos[i].x, y, pos[i].y);
-                // Batang pohon raksasa + dek 6 m di atas tanah
-                Hias(rp, PrimitiveType.Cylinder, "BatangInduk", new Vector3(0f, 4.5f, 0f), new Vector3(1.1f, 4.5f, 1.1f), kulit, true);
-                Hias(rp, PrimitiveType.Cube, "DekAtas", new Vector3(0f, 6.0f, 0f), new Vector3(4.6f, 0.25f, 4.6f), kayu, true);
-                Hias(rp, PrimitiveType.Cube, "AtapDek", new Vector3(0f, 8.6f, 0f), new Vector3(5.0f, 0.18f, 5.0f), kayu, false);
-                Hias(rp, PrimitiveType.Cube, "PagarA", new Vector3(0f, 6.6f, 2.2f), new Vector3(4.6f, 0.9f, 0.12f), kayu, true);
-                Hias(rp, PrimitiveType.Cube, "PagarB", new Vector3(2.2f, 6.6f, 0f), new Vector3(0.12f, 0.9f, 4.6f), kayu, true);
-                Hias(rp, PrimitiveType.Cube, "PagarC", new Vector3(-2.2f, 6.6f, 0f), new Vector3(0.12f, 0.9f, 4.6f), kayu, true);
+                // Batang pohon raksasa + 4 penyangga diagonal + dek 6 m + atap pelana miring + tajuk pohon scan asli
+                Hias(rp, PrimitiveType.Cylinder, "BatangInduk", new Vector3(0f, 5.2f, 0f), new Vector3(1.15f, 5.2f, 1.15f), kulit, true);
+                for (int s = 0; s < 4; s++)
+                {
+                    float sx = (s % 2 == 0 ? -1f : 1f) * 1.15f, sz = (s < 2 ? -1f : 1f) * 1.15f;
+                    var br = Hias(rp, PrimitiveType.Cylinder, "Penyangga_" + s, new Vector3(sx, 4.9f, sz), new Vector3(0.14f, 1.55f, 0.14f), kayu, false);
+                    br.transform.localRotation = Quaternion.Euler(sz > 0 ? 34f : -34f, 0f, sx > 0 ? -34f : 34f);
+                }
+                Hias(rp, PrimitiveType.Cube, "DekAtas", new Vector3(0f, 6.0f, 0f), new Vector3(4.8f, 0.25f, 4.8f), kayu, true);
+                Hias(rp, PrimitiveType.Cube, "AtapMiringL", new Vector3(-1.35f, 8.85f, 0f), new Vector3(3.1f, 0.16f, 5.2f), genteng, false).transform.localRotation = Quaternion.Euler(0f, 0f, 22f);
+                Hias(rp, PrimitiveType.Cube, "AtapMiringR", new Vector3(1.35f, 8.85f, 0f), new Vector3(3.1f, 0.16f, 5.2f), genteng, false).transform.localRotation = Quaternion.Euler(0f, 0f, -22f);
+                Hias(rp, PrimitiveType.Cube, "PagarA", new Vector3(0f, 6.6f, 2.25f), new Vector3(4.7f, 0.9f, 0.12f), kayu, true);
+                Hias(rp, PrimitiveType.Cube, "PagarB", new Vector3(2.25f, 6.6f, 0f), new Vector3(0.12f, 0.9f, 4.7f), kayu, true);
+                Hias(rp, PrimitiveType.Cube, "PagarC", new Vector3(-2.25f, 6.6f, 0f), new Vector3(0.12f, 0.9f, 4.7f), kayu, true);
+                if (mTajuk != null)
+                {
+                    var tj = Anak(rp, "TajukRumahPohon");
+                    tj.transform.localPosition = new Vector3(0f, 3.8f, 0f);
+                    tj.transform.localScale = Vector3.one * 0.95f;
+                    tj.AddComponent<MeshFilter>().sharedMesh = mTajuk;
+                    var mr = tj.AddComponent<MeshRenderer>();
+                    mr.sharedMaterials = mTajuk.subMeshCount >= 2 ? new[] { kulit, daun } : new[] { daun };
+                }
 
                 // Tangga naik (bawah) & tangga turun (atas)
                 var naik = Hias(rp, PrimitiveType.Cube, "TanggaNaik", new Vector3(0f, 3.0f, -2.35f), new Vector3(0.7f, 6.0f, 0.22f), kayu, true);

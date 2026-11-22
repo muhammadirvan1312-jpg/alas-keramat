@@ -69,20 +69,47 @@ namespace AlasKeramat.EditorTools
             var kolam = Hias(go, PrimitiveType.Cylinder, "KolamZamrud", new Vector3(0f, 0.18f, -3.5f), new Vector3(11.5f, 0.12f, 9.5f), matAirTerjun, false);
             kolam.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
 
-            // Batu lumut scan mengapit kolam
+            // Batu lumut scan & pakis rimba mengapit kolam air terjun + kabut buih halus
             var meshBatu = MuatPropScan("BatuBesarScan") ?? MuatPropScan("BatuLumutA");
+            var meshPakis = MuatPropScan("PakisScan_LOD0") ?? MuatPropScan("KeladiScan");
+            var matDaun = AssetDatabase.LoadAssetAtPath<Material>(FolderMat + "/M_PakisAsli.mat") ?? AmbilMat("M_DaunPohon");
             if (meshBatu != null)
             {
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < 10; i++)
                 {
-                    float a = (i / 7f) * Mathf.PI + Mathf.PI;
+                    float a = (i / 9f) * Mathf.PI + Mathf.PI;
                     var b = Anak(go, "BatuKolam_" + i);
                     b.transform.localPosition = new Vector3(Mathf.Cos(a) * 6.4f, -0.2f, -3.5f + Mathf.Sin(a) * 4.8f);
-                    b.transform.localScale = Vector3.one * (1.2f + (i % 3) * 0.45f);
+                    b.transform.localScale = Vector3.one * (1.25f + (i % 3) * 0.55f);
                     b.transform.localRotation = Quaternion.Euler(0f, i * 47f, 0f);
                     b.AddComponent<MeshFilter>().sharedMesh = meshBatu;
                     b.AddComponent<MeshRenderer>().sharedMaterial = batu;
                 }
+            }
+            if (meshPakis != null && matDaun != null)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    float sx = (i % 2 == 0 ? -1f : 1f) * (3.8f + (i % 3) * 1.1f);
+                    var fk = Anak(go, "PakisTebing_" + i);
+                    fk.transform.localPosition = new Vector3(sx, 0.35f + (i / 2) * 2.1f, -0.8f + (i % 2) * 0.6f);
+                    fk.transform.localScale = Vector3.one * (1.3f + (i % 3) * 0.35f);
+                    fk.transform.localRotation = Quaternion.Euler(14f, i * 52f, 0f);
+                    fk.AddComponent<MeshFilter>().sharedMesh = meshPakis;
+                    var mr = fk.AddComponent<MeshRenderer>(); mr.sharedMaterial = matDaun; mr.shadowCastingMode = ShadowCastingMode.Off;
+                }
+            }
+            var shKabut = Shader.Find("AlasKeramat/KabutLembut");
+            if (shKabut != null)
+            {
+                var matBuih = new Material(shKabut) { name = "M_BuihAirTerjun" };
+                SafeMaterialFactory.SetC(matBuih, "_BaseColor", new Color(0.88f, 0.96f, 0.96f, 0.28f));
+                SafeMaterialFactory.SetF(matBuih, "_Mode", 0f);
+                SafeMaterialFactory.SetF(matBuih, "_Kecepatan", 0.22f);
+                SafeMaterialFactory.SetF(matBuih, "_SkalaNoise", 3.6f);
+                matBuih = SimpanMat(matBuih);
+                var qBuih = Hias(go, PrimitiveType.Quad, "BuihDasarAirTerjun", new Vector3(0f, 1.35f, -1.2f), new Vector3(11.5f, 4.8f, 1f), matBuih, false);
+                qBuih.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
             }
             JumlahMegaLandmark++;
             return new Vector3(x, y + 0.8f, z - 0.5f);
@@ -95,10 +122,13 @@ namespace AlasKeramat.EditorTools
             var go = Anak(induk, "CandiRuntuhNusantara");
             go.transform.position = new Vector3(x, y, z);
 
-            // 3 undakan teras candi gaya Majapahit
+            // 3 undakan teras candi gaya Majapahit + lis pelipit batu + tumbuhan pakis reruntuhan
             Hias(go, PrimitiveType.Cube, "Teras1", new Vector3(0f, 0.6f, 0f), new Vector3(16f, 1.2f, 16f), batu, true);
+            Hias(go, PrimitiveType.Cube, "Pelipit1", new Vector3(0f, 1.18f, 0f), new Vector3(16.5f, 0.16f, 16.5f), batu, false);
             Hias(go, PrimitiveType.Cube, "Teras2", new Vector3(0f, 1.65f, 0f), new Vector3(11.5f, 1.1f, 11.5f), batu, true);
+            Hias(go, PrimitiveType.Cube, "Pelipit2", new Vector3(0f, 2.18f, 0f), new Vector3(12.0f, 0.16f, 12.0f), batu, false);
             Hias(go, PrimitiveType.Cube, "Teras3", new Vector3(0f, 2.65f, 0f), new Vector3(7.2f, 1.0f, 7.2f), batu, true);
+            Hias(go, PrimitiveType.Cube, "Pelipit3", new Vector3(0f, 3.14f, 0f), new Vector3(7.7f, 0.16f, 7.7f), batu, false);
             // Tangga batu depan
             for (int t = 0; t < 6; t++)
                 Hias(go, PrimitiveType.Cube, "TanggaCandi_" + t, new Vector3(0f, 0.25f + t * 0.45f, -8.5f + t * 0.85f), new Vector3(3.8f, 0.48f, 1.1f), batu, true);
@@ -226,6 +256,18 @@ namespace AlasKeramat.EditorTools
                 Hias(g, PrimitiveType.Cylinder, "TiangR", new Vector3(2.4f, 2.1f, 0f), new Vector3(0.18f, 2.1f, 0.18f), kayu, true);
                 Hias(g, PrimitiveType.Cube, "PalangAtas", new Vector3(0f, 4.0f, 0f), new Vector3(5.6f, 0.28f, 0.35f), kayu, false);
                 lentera.Add(BuatLenteraGantung(g, "LenteraGerbang_" + i, new Vector3(0f, 3.55f, 0f), kayu));
+            }
+            // Pagar kayu belah pedesaan & tumpukan kayu bakar di pinggir alun-alun Desa Mati (bebas jalur & rumah)
+            var pagarInduk = Anak(induk, "PagarDanKayuDesa");
+            for (int i = 0; i < 8; i++)
+            {
+                float px = 502f + i * 3.4f, pz = 172f + (i % 2) * 0.4f;
+                float py = WorldTerrainGenerator.SampleHeight(px, pz);
+                var seg = Anak(pagarInduk, "PagarDesa_" + i);
+                seg.transform.position = new Vector3(px, py, pz);
+                Hias(seg, PrimitiveType.Cylinder, "TiangPagar", new Vector3(0f, 0.62f, 0f), new Vector3(0.09f, 0.62f, 0.09f), kayu, false);
+                Hias(seg, PrimitiveType.Cube, "PalangAtas", new Vector3(1.7f, 0.92f, 0f), new Vector3(3.4f, 0.09f, 0.07f), kayu, false);
+                Hias(seg, PrimitiveType.Cube, "PalangBawah", new Vector3(1.7f, 0.48f, 0f), new Vector3(3.4f, 0.09f, 0.07f), kayu, false);
             }
             JumlahMegaLandmark++;
         }
