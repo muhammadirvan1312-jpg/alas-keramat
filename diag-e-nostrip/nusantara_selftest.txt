@@ -1,0 +1,316 @@
+[LULUS] Builder pertama tanpa langkah gagal
+[LULUS] Builder kedua tanpa langkah gagal
+[LULUS] Idempoten: jumlah objek sama (5712 = 5712)
+[LULUS] Layer 6-18 terdaftar
+[LULUS] Semua tag terdaftar
+[LULUS] Aset URP terpasang di semua level Quality
+[LULUS] Tekstur >= 10 (48)
+[LULUS] Material >= 5 (250)
+[LULUS] Tidak ada material ber-shader error
+[LULUS] GetSafeFont() tidak null
+[LULUS] WAV >= 8 (62)
+[LULUS] Scene tersimpan & terdaftar di Build Settings
+[LULUS] Synth punya klip dipanggang
+[LULUS] EventSystem ada
+[LULUS] Kamera utama ada
+[LULUS] 16 tile terrain (16)
+[LULUS] Terrain punya 6 lapisan & material URP
+[LULUS] Laut ada
+[LULUS] Sungai ada
+[LULUS] Tinggi (0,-440) = 10.50 ~ 10.5 +- 0.75
+[LULUS] Tinggi (0,-18) = 9.00 ~ 9 +- 0.75
+[LULUS] Tinggi (0,690) = 76.50 ~ 76.5 +- 1.5
+[LULUS] Tinggi (0,-840) = 2.40 ~ 2.4 +- 0.6
+[LULUS] Tinggi (-560,290) = 5.10 ~ 5.1 +- 0.45
+[LULUS] Jurang (0,648) < 30
+[LULUS] Dasar rawa merah (-470,190) < 3
+[LULUS] Laut di tepi (3 titik) < 0
+[LULUS] Bioma Kawah (0,0)
+[LULUS] Bioma Sawit (-520,240)
+[LULUS] Bioma Tebing (0,700)
+[LULUS] Bioma Pabrik Gula (660,-500)
+[LULUS] Bioma Gunung Kapur (-600,660)
+[LULUS] Bioma Ladang Tebu (620,620)
+[LULUS] Bioma Alas Wingit (-760,-40)
+[LULUS] Bioma Laut (-990,0)
+[LULUS] Gunung Kapur menjulang > 120 m
+[LULUS] Jam dunia maju
+[LULUS] Atmosfer & langit terpasang
+[LULUS] Pohon 8.000-45.000 (25584)
+[LULUS] Semak/pakis >= 10.000 (89420)
+[LULUS] VegetationManager & data terpasang
+[LULUS] Semua 7 cuaca bisa diset
+[LULUS] Landmark >= 35 (97)
+[LULUS] Beringin Agung & altar & cerobong ada
+[LULUS] AmbienceDirector ada
+[LULUS] Emitter ambien >= 1000 (1130)
+[LULUS] Klip ambien 23/23
+[LULUS] Bed: pantai siang
+[LULUS] Bed: hutan dini hari
+[LULUS] Bed: Alas Wingit
+[LULUS] Bed: hutan Maghrib -> malam
+[LULUS] Shader AlasKeramat/Daun ada & tanpa error
+[LULUS] Shader AlasKeramat/Kulit ada & tanpa error
+[LULUS] Shader AlasKeramat/Air ada & tanpa error
+[LULUS] Daun pakai shader AK
+[LULUS] Sungai pakai shader air AK
+[LULUS] AKAngin ada
+[LULUS] Andi ada dengan CharacterController
+[LULUS] Andi spawn dekat heli (-4,-424)
+[LULUS] Kamera Andi = MainCamera
+[LULUS] Tepat 1 AudioListener aktif (1)
+[LULUS] Tur pratinjau mati saat Andi ada
+[LULUS] TouchControls & joystick & area geser
+[LULUS] Semua tombol HUD punya handler (40)
+[LULUS] 3 koper berisi item sesuai 03 §9 (3)
+[LULUS] Inventaris menghormati Maks (golok 3 -> 1)
+[LULUS] Radar, toast, interaksi, tangan kiri ada
+[LULUS] Radar: depan = atas (saat menghadap utara & timur)
+[LULUS] Volume global + ACES + bloom
+[LULUS] Kamera utama pakai pasca-proses
+[LULUS] Pasca-proses malam lebih gelap & dingin dari siang
+[LULUS] Vital Andi & bar HUD ada
+[LULUS] Laju vital 60 s sesuai 05 (haus -5.10, kenyang -3.30, istirahat -2.10)
+[LULUS] Plafon HP 05 §3.1 (lapar 10, haus 10 -> 58)
+[LULUS] Suhu udara: siang kemarau > malam
+[LULUS] Klip foley 20/20
+[LULUS] Permukaan langkah: pantai=pasir, air=air, struktur=kayu
+[LULUS] Foley, subtitle, sabuk cepat ada
+[LULUS] Subtitle: lama tampil min 2,5 s
+[LULUS] Karakter: 1 SkinnedMeshRenderer (Andi 2), segitiga sesuai anggaran (real <=30000), 24 sendi bernama (32/32)
+[LULUS] Tahi lalat Andi di bawah mata kiri (02 §2)
+[LULUS] Deden di heli & Ningsih di Sarang
+[LULUS] Pohon rebah menjauhi takikan (tebang dari selatan -> rebah ke utara)
+[LULUS] Takikan seri -> rebah menjauhi Andi
+[LULUS] Hasil kayu 07 §1 (jati 4, aren 3, kelapa 2; HP jati 120)
+[LULUS] Senjata terbaik (golok saja -> tebang 20; + kapak batu -> 28)
+[LULUS] Pool pohon, melee, senjata FP, tombol TEBAS
+[LULUS] Hasil buruan 03 §8 (rusa daging 3/kulit 1/tulang 2; babi + tengkorak)
+[LULUS] 5 template hewan (1 SMR, 17 sendi, collider) (13)
+[LULUS] Rusa cocok di hutan jati, tidak di pantai
+[LULUS] Titik pungut deterministik (7860, 7 jenis ada)
+[LULUS] Pungutan: indeks sel sama dengan scan penuh, memeriksa kurang dari 10 persen titik
+[LULUS] Pungutan: hasil panen tidak muncul kembali setelah muat
+[LULUS] Rakit di tikar: Bambu + Tali (+ golok) -> Tombak Bambu
+[LULUS] Zirah daun (8) menyerap 8 dari 10 damage
+[LULUS] Panggung tikar, layar tikar, tombol TAS
+[LULUS] Snap tiang -> balok -> papan valid (HP 200/120)
+[LULUS] Integritas BFS: satu tiang hilang tetap berdiri, kedua hilang -> balok & papan runtuh (0/2)
+[LULUS] Pemanggul kayu & tombol LEMPAR/MODE
+[LULUS] 26 blueprint, biaya sesuai 07 §7 (api: ranting 6 + batu 4; saung: kayu 10/ranting 8/daun 16)
+[LULUS] Masak: ikan mentah 30 s = matang, 50 s = gosong
+[LULUS] Jemuran: ikan matang -> ikan kering
+[LULUS] Simpan -> muat menghasilkan state identik
+[LULUS] Buku Panduan, SaveSystem, penempatan
+[LULUS] Atap 20-45 derajat, tangga 25-40 derajat
+[LULUS] Batu HP 500 dan hasil bongkar atap adalah papan
+[LULUS] Bidang atap menghadap atas dari delapan arah
+[LULUS] M02 perlu Jamu DAN Catatan
+[LULUS] M04 menunggu pagi
+[LULUS] Urutan M01 -> M02 -> M03 -> M04, tanpa event ganda
+[LULUS] M03 boleh selesai paralel sementara HUD tetap M01
+[LULUS] Peti memindahkan item tanpa menggandakan
+[LULUS] Simpan -> muat struktur, graf, HP dan isi blueprint identik
+[LULUS] Muat dua kali tidak menggandakan bangunan
+[LULUS] Simpan dunia: hasil kerja Deden dibuat kembali beserta isinya
+[LULUS] Bongkar wajib tahan satu detik
+[LULUS] Bongkar benar-benar menghasilkan KayuFisik papan
+[LULUS] Semua blueprint v3 menghasilkan objek dan collider
+[LULUS] QuestManager, HUD misi, SimpanDunia dan peti tersambung
+[LULUS] Rakit memiliki kecepatan 2,5 m/s
+[LULUS] Statistik 13 archetype sesuai 06 §4 (Abdi 80 HP, Buto 300, Kuntilanak 220, Genderuwo 1500)
+[LULUS] SurfaceGrid 250000 sel, darat bisa dilalui 95% (>= 70%)
+[LULUS] A* bertingkat Heli -> Desa ditemukan dengan 1522 node (< 4.000), 89 titik, koridor dilebarkan 0x, 139 ms
+[LULUS] A* jarak pendek selesai cepat (3 node)
+[LULUS] Maks musuh aktif <= 12 (simulasi spawn 30, puncak 12)
+[LULUS] Token penyerang Normal 2 / Sulit 3
+[LULUS] Persepsi 06 §5: jongkok malam 0,3; obor malam 1,5; laju 40/(jarak/10); turun 8/s; kerucut 110 derajat
+[LULUS] Parry 0,25 s (Keris 0,35) dalam kerucut 70, blok -60%, penghabisan x2,5, jatuh bila kena >= 25
+[LULUS] Keputusan Sekte 06 §6 (isyarat pemimpin, intai, serang, gertak, menyerah, lari, reaksi kena)
+[LULUS] Pendengaran: lari 20 / jalan 8 / jongkok 3 / tebang 45 m
+[LULUS] Suara tempur prosedural (13 klip)
+[LULUS] EnemyDirector + 5 prefab Sekte (AI, CharacterController, animasi, layer Enemy)
+[LULUS] GridPathfinder, TANGKIS, ReaksiAndi, TandaTempur, diorama
+[LULUS] Malam Darah Hari 3, 7, 11 (malam 19:00-05:00)
+[LULUS] Raid 06 §7: komposisi 0/2-3/4-5/6-7/8 per Kemarahan, peluang clamp(K/100+0,2)
+[LULUS] Hantu 06 §8: indra Pocong 30/45, api & Keris x2, rentan x1,5, Banaspati padam hujan/air, Pocong 2/4
+[LULUS] Penangkal: Obor Tengkorak 15 m (hantu) terdaftar & dilepas
+[LULUS] Lintasan bambu lempar mendarat tepat (sisa tinggi 0.00 m)
+[LULUS] Prefab hantu (Pocong, Kuntilanak, Banaspati), jarahan, bambu
+[LULUS] 6 Totem Topeng & MusikTempur
+[LULUS] Batas gore 14 §10: decal 64, luka 6, ragdoll 4, prop 12, mayat 12, partikel 300
+[LULUS] Tetes darah 6 + damage/4 (maks 40)
+[LULUS] Tingkat gore: Mati tanpa darah/mayat, Sedang tanpa mutilasi, Penuh semua
+[LULUS] Zona kena 14 §4: kepala x1,8 (melee x1,5), anggota x0,7; tulang putus per zona
+[LULUS] Pendarahan: hanya tebasan Sekte (peluang 25%)
+[LULUS] Mutilasi 5 varian: tulang tersembunyi, prop dari segitiga subtree, sisa utuh (Head:10708 L_UpperArm:3888 R_Forearm:3531 L_Thigh:1549 R_Calf:1389)
+[LULUS] Ragdoll 11 tulang & 10 sendi (11/10)
+[LULUS] GoreSystem + partikel + material percikan/genangan/luka/tutup
+[LULUS] Layar peringatan 18+ & pilihan gore
+[LULUS] Busur: damage 30 + 0-20 menurut tarikan 0,4-1,2 s, laju 35-55 m/s
+[LULUS] Tabel senjata: 10 jarak + 7 melee, ID unik & terdaftar
+[LULUS] Bunuh senyap hanya dari belakang (sudut <= 60 derajat)
+[LULUS] Elak 2,5 m / kebal 0,25 s / stamina 12; lumpur x0,7
+[LULUS] Prefab proyektil x5 & model FP senjata jarak
+[LULUS] Tombol GANTI, cincin suara, 3 titik lumpur
+[LULUS] 15 perintah Kang Deden lengkap; tiap penolakan punya alasan
+[LULUS] Syarat perintah: kemah, penampung, rak, cetak biru, struktur rusak, kayu pagar 12
+[LULUS] Jadwal buka perintah: M02 (umum), M04 (kumpul dasar), M05 (semua)
+[LULUS] Teleport hanya di luar pandangan kamera; titik ikuti 4 m di belakang-kiri
+[LULUS] Simulasi Trust Ningsih: tahap 31/70, +2/s maks 15 per perjumpaan, tabel kejadian 08 §3.3
+[LULUS] Pagar keliling: 24 tiang r 12 m dengan celah gerbang
+[LULUS] Hadiah harian Ningsih (sirih x2 / kelapa / ikan x2 / kemenyan)
+[LULUS] Kang Deden & Ningsih: AI + CharacterController
+[LULUS] Buku Catatan (15 tombol) & menu Ningsih (7 tombol)
+[LULUS] Tension 13 §2.1: malam+gelap+Malam Darah+Sanity 50 = 82.5
+[LULUS] Simulasi 20 menit malam: Ringan 9 (>= 6), Sedang 1, Keras 0 (<= 2), tanpa ulang
+[LULUS] Intensitas Ringan: tanpa kejutan Keras (0)
+[LULUS] Katalog 37 kejadian unik dengan syarat
+[LULUS] Jadwal Sekte 24 jam (16 §4.1)
+[LULUS] 20 Catatan Kang Deden: teks & pemicu valid (Hari 1 belum ada catatan)
+[LULUS] Tawa terbalik 13 §4.1 (dekat pelan, jauh keras)
+[LULUS] Kejadian dunia: Hari 4 pesawat terskrip, maks 2 per pagi, jenazah maks 5
+[LULUS] TerrorDirector (sosok, layar kedip) & WorldEventScheduler di scene
+[LULUS] Suara teror prosedural (12 klip)
+[LULUS] M05 butuh pemicu (Lore #1 / Hari 2) sebelum selesai
+[LULUS] M05 selesai -> semua perintah Deden (m05)
+[LULUS] M09 terkunci sebelum M07 (Lore #3)
+[LULUS] M11 butuh boss kalah + Paku 3
+[LULUS] M12 menunggu siege selesai
+[LULUS] 13 misi selesai berurutan tanpa event ganda (13)
+[LULUS] Misi awal: HUD M01, M06/M13 belum aktif
+[LULUS] Teks HUD 13 misi ada
+[LULUS] 12 lore: judul & isi tidak kosong
+[LULUS] Lore #1-#6 sesuai 04 §6.1
+[LULUS] Kompleks UG1_GuaSungai punya pintu masuk & keluar
+[LULUS] Kompleks UG2_Bunker punya pintu masuk & keluar
+[LULUS] Kompleks UG3_KuilAkar punya pintu masuk & keluar
+[LULUS] WorldCaveAndSaveManager ada
+[LULUS] Air gua terdaftar (kolam R3, R4, terowongan U1)
+[LULUS] Gerbang: gali, kartu, reruntuhan, angin, zipline, akar
+[LULUS] Reruntuhan T2 hanya didorong dari sisi R4
+[LULUS] KompleksDi: permukaan None, (-600,-80,-600) UG1
+[LULUS] Fase boss 06 §10: 100-60% = 1, 60-25% = 2, < 25% = 3
+[LULUS] Titik lemah punggung hanya dari belakang
+[LULUS] Teka-teki Akar (Damai): urutan I-II-III-IV
+[LULUS] Siege: semua gelombang muncul tepat sekali (16 musuh)
+[LULUS] Siege 06 §11: 0 s 4 Abdi + 1 Pemimpin, 15 s 3 Pocong, 25 s 2 Wanita + 1 Buto, 35 s Kunti, 45 s 2 Banaspati + 2 Pocong
+[LULUS] Titik spawn siege di cincin 35-45 m
+[LULUS] Arena: Genderuwo, Ki Rogo, 8 tungku, altar ritual
+[LULUS] WaypointGraph 3 kompleks; UG1 R0 -> R4 lewat jalan pintas (13 titik)
+[LULUS] Audio gua per kompleks
+[LULUS] Statistik 04 §7.10 (9 baris, km 1 desimal)
+[LULUS] Heli SAR hanya datang setelah siege & sebelum ending
+[LULUS] Teks ending A/B 04 §7.8-7.9
+[LULUS] Scene: Heli SAR, layar sinema, statistik
+[LULUS] Malam Darah tambahan: malam berikutnya setelah paku
+[LULUS] Mixamo: diam/jalan/lari/serang/gertak memetakan klip yang benar
+[LULUS] Mixamo: klip berulang vs sekali
+[LULUS] Audio: rekaman CC0 Kenney terpasang (14/14)
+[LULUS] Audio: rekaman CC0 OpenGameArt terpasang (22/22)
+[LULUS] Audio: musik jelajah siang/malam terpasang
+[LULUS] Audio: suara hujan ikut cuaca
+[LULUS] Mixamo: peta model karakter (Deden=Remy, Ningsih=Peasant_Girl, KiRogo=Peasant_Man, Genderuwo=Warrok)
+[LULUS] Visual V2: material kulit Indonesia, rambut, LookAt/klip monster & bayangan kontak preset Rendah
+[LULUS] Hewan asli: peta model & pilihan klip
+[LULUS] Gua & atmosfer: kelelawar gua terbang & god rays sinar tajuk
+[LULUS] Dunia & gameplay SOTF v2: kunang/spora, ayun senjata FP, suara hewan 3D & properti desa/pantai
+[LULUS] SOTF v3: suar mercusuar malam, tarik busur FP & mesin pabrik gula
+[LULUS] SOTF v4: senter taktis, lentera companion malam, suara sungai/pantai & gapura keramat
+[LULUS] SOTF v5: percikan parry, cipratan hujan/langkah & jembatan/dermaga/tenda
+[LULUS] SOTF v6: obor patroli sekte malam, aberasi kromatik pasca-proses, crosshair bidik/kena & menara pantau
+[LULUS] SOTF v7: jeram sungai berbuih, mata pemangsa malam, aura hantu & uap napas dingin
+[LULUS] SOTF v8: denyut vinyet pendarahan/bakar, bara obor/kompor bangunan & emitter ambien landmark
+[LULUS] SOTF v9: model 3D tikar berlapis, takikan & timpaan pohon, basuh senjata/isi botol sungai & uap panci masak
+[LULUS] SOTF v10: alat/senjata 3D companion, asap kemenyan sakral, permukaan air penampung & rambu petunjuk hutan
+[LULUS] SOTF v11: ayun ombak & buih rakit, jejak proyektil & kilat laras, peti/ransel dunia & serpihan runtuh
+[LULUS] SOTF v12: aura bara fase Boss Genderuwo, asap panggangan api unggun & totem perbatasan sekte
+[LULUS] SOTF v13: kurva & percikan zipline, semburan gali cangkul, pusaran debu Heli SAR & paku 3D altar
+[LULUS] SOTF v14: tumbuh tanaman kebun 3D, tangkapan bubu/jerat, percikan batu asah & pos pengintai sekte
+[LULUS] SOTF v15: Makam Tua/Kemah Rawa/Watu Ireng, stealth semak hutan & kejadian dunia W02-W10
+[LULUS] SOTF v16: luka per bagian tubuh Andi, singkirkan mayat sekte & misi sampingan S01-S04
+[LULUS] SOTF v17: katalog penuh 37 kejadian teror, mekanik curi Tuyul & sergapan Hantu Air
+[LULUS] SOTF v18: 13 lokasi Peta Survei, indikator HUD luka/semak & burung rangkong/elang kanopi
+[LULUS] SOTF v19: Ending C ketiga, kapsul Rendra UG2 R2 & 12 objek cerita PERIKSA
+[LULUS] SOTF v20: mode tantangan Sengsara, blip companion Radar GPS & tekuk kamera mendarat
+[LULUS] SOTF v21: Mixamo Deden duduk sejak awal heli & guncangan guruh petir dekat
+[LULUS] SOTF v22: pengaturan mode tantangan Sengsara/Pantang Mundur & jembatan papan Kemah Rawa
+[LULUS] SOTF v23: senter kedip hantu, bara obor, pasca-proses selam/hipotermia, jejak pusaka & predator takut api
+[LULUS] Visual V1: tur foto diperluas (>= 12 shot audit) & seluruh sprite HUD berjenis Sprite
+[LULUS] V3 Cahaya & RAM 4GB: SinarTajuk, debu senter, kilau mata malam, batas EV, anggaran mipmap
+[LULUS] V4 Dunia & Vegetasi: scale-fade serasah & jarak tarik per preset
+[LULUS] V5 Langit, Air & VFX: shader langit/air & filter bioma gua
+[LULUS] Hewan asli: templat memakai model FBX (12)
+[LULUS] Mixamo: prefab musuh memakai model karakter asli (8)
+[LULUS] Mixamo: bank animasi ada (>= 40 klip)
+[LULUS] Mixamo: semua klip legacy (H1)
+[LULUS] Mixamo: proksi berkerangka mixamorig tanpa renderer
+[LULUS] Mixamo: klip wajib tersedia 
+[LULUS] Mixamo: retarget terpasang di Deden/Ningsih
+[LULUS] Lantai hutan: batch dekorasi valid dan bounds meliputi posisi instance
+[LULUS] Pasca-proses: HP kritis memudarkan warna & menggelapkan tepi
+[LULUS] HUD: tombol pakai ikon (15)
+[LULUS] HUD: indikator luka (vinyet & arah) terpasang, arah kanan positif
+[LULUS] Senter: cookie terpasang, pusat terang, tepi gelap
+[LULUS] Partikel alam: percikan hujan di tanah ikut intensitas
+[LULUS] Partikel alam: daun & debu siang cerah, mati malam & hujan, terpasang
+[LULUS] Langit: HDRI senja terpasang dan memuncak saat maghrib
+[LULUS] Lantai hutan: scan baru tunggul, ranting, batu lumut B terpasang
+[LULUS] G3b: 10 permukaan foto PBR 2K, normal GL, mask linear & mip streaming
+[LULUS] G3c: kulit kedua lengan bawah Ningsih tidak terhapus bersama torso (1482/1482)
+[LULUS] G3c: 4 MakeHuman berpakaian, <=30rb tris, 24 tulang, bobot normal, 13 bentuk wajah
+[LULUS] G3c: model nyata tersambung ke scene, material & kendali wajah
+[LULUS] G3b: pohon & pakis pemindaian tersambung ke instancing dengan LOD
+[LULUS] G3 shader AlasKeramat/KabutLokal tanpa error
+[LULUS] G3 shader AlasKeramat/KulitManusia tanpa error
+[LULUS] G3a: kabut lokal tetap, basah cuaca, malam & gua terbaca
+[LULUS] T11: MenuScreens & TombolJeda terpasang di scene
+[LULUS] T11: Preset grafis 11 §7.2 (Rendah 0.7/0m, Sedang 0.95/35m, Tinggi 1.0/60m, Ultra 90m)
+[LULUS] T11: Pengali kesulitan 05 §9 (Damai laju 0.7/dmg 0.5, Normal 1/1, Sulit 1.25/1.4)
+[LULUS] T11: Vital haus turun lebih lambat di Damai daripada Sulit
+[LULUS] T11: 6 kartu Cara Bermain & teks Kredit lengkap
+[LULUS] T11: Pengaturan tersimpan & dimuat kembali dari PlayerPrefs
+[LULUS] T11: 3 slot simpan mandiri (simpan, ringkasan, hapus)
+[LULUS] T11: Ketuk pojok 5x membuka Panel Debug HP
+[LULUS] T11: Getar haptik >= 20 dmg, AKTexturePostprocessor, & NusantaraAndroidBuild
+[LULUS] Jeda: satu panel ditutup, panel lain tetap menjeda
+[LULUS] Jeda: hit-stop saat panel tidak meninggalkan slow motion
+[LULUS] Jongkok: tidak berdiri menembus atap rendah, bisa berdiri setelah bebas
+[LULUS] Lompat: benturan kepala menghentikan gerak naik tanpa menghentikan jatuh
+[LULUS] Respawn: jatuh lama dan analog dibersihkan sehingga tidak mati berulang saat mendarat
+[LULUS] Analog: basis tidak keluar zona di tepi layar
+[LULUS] Langkah: jalan dan sprint tidak menjadi rentetan 5-7 bunyi per detik
+[LULUS] Culling: bounds instance mencakup mesh yang diputar dan diskalakan
+[LULUS] Pose nyata: kedua lengan bawah Ningsih berada di luar bahu, bukan terlipat masuk torso [MakeHuman_Ningsih | vertex 1482/1482 | X -0.203/0.202 | bahu -0.153/0.148]
+[LULUS] Tas: perban dapat dipakai saat berdarah meskipun kategorinya alat
+[LULUS] Simpan: struktur dan peristiwa memakai kunci berbeda dan keduanya pulih
+[LULUS] Muat: event stok ditandai sebagai restore dan penanda dilepas setelah selesai
+[LULUS] Simpan: dua entri dunia versi lama dimigrasikan tanpa saling menimpa
+[LULUS] Simpan: kunci ganda dan berkas kosong ditolak; restore gagal memulihkan state
+[LULUS] Simpan: semua pemilik snapshot scene memiliki kunci unik
+[LULUS] Rakit: output tidak muat seluruhnya tidak memakan bahan
+[LULUS] Muat inventaris: penghapusan item mengirim event untuk menyegarkan HUD
+[LULUS] Tas: seluruh jenis item dapat dijangkau melalui halaman, termasuk sesudah item 36
+[LULUS] Analog: setengah rentang menghasilkan setengah laju tanpa redaman kedua
+[LULUS] Analog: diagonal dinormalisasi dan nol tidak bergerak
+[LULUS] Sentuh: jari kedua tidak merebut kamera
+[LULUS] Sentuh: reset membuang delta dan kepemilikan jari
+[LULUS] Panel: membatalkan elak tidak meninggalkan kebal permanen atau serangan
+[LULUS] LOD: dua pohon dalam satu petak tetap memilih detail berdasarkan jaraknya sendiri
+[LULUS] Preset otomatis konservatif & tidak menganggap RAM sebagai bukti Ultra
+[LULUS] Preset: rumput bertingkat dan Ultra 30 FPS
+[LULUS] Peta: koordinat dunia dua kilometer pulang-pergi & utara benar
+[LULUS] HUD: 14 tombol aksi/tas/buku/simpan tidak bertumpuk pada skala 85 sampai 130 persen
+[LULUS] HUD: simpan, muat, dan panggul batu tidak menutup slot cepat
+[LULUS] Peta: panel, gambar, GPS, tujuan & kompas tersambung
+[LULUS] Spawn dan koper darurat tidak tertutup dekorasi tinggi
+[LULUS] Diagnostik main & safe area kontrol terpasang
+[LULUS] Audio: rekaman pelan diangkat ke RMS sasaran tanpa clipping
+[LULUS] Audio: normalisasi membatasi peak dan menolak hening
+[LULUS] Audio: rekaman CC0 dinormalisasi ke aset panggang dan bed streaming
+[LULUS] Audio: master dan kategori dikalikan tepat sekali
+[LULUS] Audio: kategori ambien dapat dimatikan
+[LULUS] HUDInfo ada
+[LULUS] Gerak: jalan 3,4 / lari 6,2 / jongkok 1,8 m/s
+[LULUS] Sprint: joystick penuh ke atas
+[LULUS] Label waktu: 18:30 = MAGHRIB
