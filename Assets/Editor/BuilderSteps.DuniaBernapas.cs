@@ -111,8 +111,8 @@ namespace AlasKeramat.EditorTools
 
             var kayu = AmbilMat("M_Kayu");
             var kainDasar = AmbilMat("M_Kain");
-            var kainMerah = SimpanMat(SafeMaterialFactory.CreatePBR("M_UmbulSekte", new Color(0.56f, 0.14f, 0.11f), 0f, 0.15f, kainDasar != null ? kainDasar.mainTexture : null));
-            var kainPutih = SimpanMat(SafeMaterialFactory.CreatePBR("M_UmbulDesa", new Color(0.78f, 0.72f, 0.58f), 0f, 0.15f, kainDasar != null ? kainDasar.mainTexture : null));
+            var kainMerah = SimpanMat(SafeMaterialFactory.CreatePBR("M_UmbulSekte", new Color(0.56f, 0.14f, 0.11f), 0f, 0.15f, kainDasar != null ? kainDasar.mainTexture as Texture2D : null));
+            var kainPutih = SimpanMat(SafeMaterialFactory.CreatePBR("M_UmbulDesa", new Color(0.78f, 0.72f, 0.58f), 0f, 0.15f, kainDasar != null ? kainDasar.mainTexture as Texture2D : null));
             var daftarKain = new Transform[18];
             for (int i = 0; i < 18; i++)
             {
