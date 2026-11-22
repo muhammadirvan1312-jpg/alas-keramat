@@ -1,0 +1,16 @@
+# Cek kemampuan runner ARM64: KVM, modul binder (untuk redroid), kernel.
+name: AK ARM Cek
+on:
+  push:
+    branches: ['emu-*']
+jobs:
+  cek:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
+    steps:
+      - run: |
+          uname -a; nproc; free -h; ls -la /dev/kvm || echo "TIDAK ADA KVM"
+          ls /lib/modules/$(uname -r)/kernel/drivers/android 2>/dev/null || echo "tak ada folder android modul"
+          sudo modprobe binder_linux devices="binder,hwbinder,vndbinder" && echo "BINDER OK" || echo "BINDER GAGAL"
+          ls -la /dev/binderfs 2>/dev/null; grep -i binder /proc/filesystems || true
+          docker info --format '{{.Architecture}} {{.OperatingSystem}}'
