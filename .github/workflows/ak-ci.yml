@@ -342,6 +342,7 @@ jobs:
         shell: bash
         run: |
           python3 -m pip install --quiet Pillow
+          sudo chown -R "$(id -u):$(id -g)" Logs 2>/dev/null || true  # folder Logs dibuat root oleh container Unity
           python3 Tools/cek_foto.py --commit "${{ github.event.pull_request.head.sha || github.sha }}"
           python3 Tools/cek_uji_main.py --commit "${{ github.event.pull_request.head.sha || github.sha }}"
 

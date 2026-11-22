@@ -223,11 +223,16 @@ namespace AlasKeramat.EditorTools
             g.transform.localPosition = localPos;
             var matApi = SimpanMat(SafeMaterialFactory.CreatePBR("M_ApiLenteraGantung", new Color(1f, 0.64f, 0.25f), 0f, 0.1f, null, null, new Color(4.8f, 2.4f, 0.7f)));
             Hias(g, PrimitiveType.Cylinder, "Tali", new Vector3(0f, -0.15f, 0f), new Vector3(0.025f, 0.16f, 0.025f), rangka, false);
-            var bola = Hias(g, PrimitiveType.Sphere, "Lampion", new Vector3(0f, -0.38f, 0f), new Vector3(0.24f, 0.30f, 0.24f), matApi, false);
-            var mr = bola.GetComponent<MeshRenderer>(); mr.shadowCastingMode = ShadowCastingMode.Off;
+            // Badan lampion kertas selalu terlihat; hanya api di dalamnya yang menyala malam (LampuMinyak.Api).
+            var matKertas = SimpanMat(SafeMaterialFactory.CreatePBR("M_KertasLampion", new Color(0.62f, 0.22f, 0.12f), 0f, 0.2f));
+            var bola = Hias(g, PrimitiveType.Sphere, "Lampion", new Vector3(0f, -0.38f, 0f), new Vector3(0.24f, 0.30f, 0.24f), matKertas, false);
+            bola.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
+            var apiL = Hias(g, PrimitiveType.Sphere, "ApiLampion", new Vector3(0f, -0.38f, 0f), new Vector3(0.26f, 0.32f, 0.26f), matApi, false);
+            var mr = apiL.GetComponent<MeshRenderer>(); mr.shadowCastingMode = ShadowCastingMode.Off; mr.receiveShadows = false; mr.enabled = false;
             var lGo = Anak(g, "Cahaya"); lGo.transform.localPosition = new Vector3(0f, -0.38f, 0f);
-            var l = lGo.AddComponent<Light>(); l.type = LightType.Point; l.range = 6.5f; l.intensity = 1.6f; l.color = new Color(1f, 0.62f, 0.26f); l.shadows = LightShadows.None; l.enabled = false;
+            var l = lGo.AddComponent<Light>(); l.type = LightType.Point; l.range = 6.0f; l.intensity = 1.6f; l.color = new Color(1f, 0.62f, 0.26f); l.shadows = LightShadows.None; l.enabled = false;
             var lm = g.AddComponent<LampuMinyak>(); lm.Api = mr; lm.Cahaya = l; lm.Intensitas = 1.6f;
+            lm.Laron = BuatLaron(g, -0.38f);
             EditorUtility.SetDirty(lm);
             return g.transform;
         }

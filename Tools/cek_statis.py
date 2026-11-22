@@ -56,6 +56,29 @@ for akar, _, files in os.walk("Assets"):
 for k, daftar in kelas.items():
     if len(daftar) > 1 and not all(x[1] for x in daftar):
         masalah.append("%s: nama ganda %s (juga %s)" % (daftar[1][0], k, daftar[0][0]))
+# Komponen/aset Unity (turunan MonoBehaviour/ScriptableObject) WAJIB di file bernama sama dengan kelasnya.
+# Bila tidak, Unity tidak membuat MonoScript; data komponen tetap tersimpan di scene dan player Android crash
+# "level0 is corrupted / Position out of bounds" setelah logo Unity (kasus ForagingExtraNode, Samsung A16).
+DASAR_UNITY = {"MonoBehaviour", "ScriptableObject", "Graphic", "MaskableGraphic", "BaseMeshEffect", "Image", "Text",
+               "RawImage", "Selectable", "UIBehaviour", "Button", "Shadow", "Outline", "ScrollRect", "StateMachineBehaviour"}
+turunan = {}
+for akar, _, fs in os.walk("Assets"):
+    if "ThirdParty" in akar or os.sep + "Editor" in akar: continue
+    for n in fs:
+        if not n.endswith(".cs"): continue
+        pth = os.path.join(akar, n)
+        t = open(pth, encoding="utf-8", errors="ignore").read()
+        for m in re.finditer(r"\bclass\s+(\w+)\s*(?:<[^>]*>)?\s*:\s*([\w\.]+)", t):
+            turunan.setdefault(m.group(1), []).append((pth, m.group(2).split(".")[-1]))
+def komponen(c, jejak=()):
+    if c in DASAR_UNITY: return True
+    if c in jejak or c not in turunan: return False
+    return any(komponen(b, jejak + (c,)) for _, b in turunan[c])
+for c, daftar in turunan.items():
+    if not komponen(c): continue
+    nama_file = {os.path.basename(f).split(".")[0] for f, _ in daftar}
+    if c not in nama_file:
+        masalah.append("%s: komponen %s harus di file %s.cs (crash level0 corrupted di Android)" % (daftar[0][0], c, c))
 for m in masalah: print("[AK][GAGAL]", m)
 print("[AK] cek statis: %d masalah" % len(masalah))
 sys.exit(1 if masalah else 0)

@@ -196,8 +196,8 @@ namespace AlasKeramat.EditorTools
                 var kd = new AlasKeramat.Player.AndiVitalsAndSanity.Keadaan { jam = 9f, hari = 7, cuaca = WeatherState.Berawan, biome = Biome.HutanCampuran };
                 for (int i = 0; i < 600; i++) v.Tick(kd, 0.1f);
                 float dh = h0 - v.Hydration, dk = k0 - v.Fullness, dr = r0 - v.Rest;
-                cek("Laju vital 60 s sesuai 05 (haus -" + dh.ToString("0.00") + ", kenyang -" + dk.ToString("0.00") + ", istirahat -" + dr.ToString("0.00") + ")",
-                    Mathf.Abs(dh - 5.1f) < 0.2f && Mathf.Abs(dk - 3.3f) < 0.2f && Mathf.Abs(dr - 2.1f) < 0.2f);
+                cek("Laju vital 60 s sesuai 05 x musim (haus -" + dh.ToString("0.00") + ", kenyang -" + dk.ToString("0.00") + ", istirahat -" + dr.ToString("0.00") + ")",
+                    Mathf.Abs(dh - 5.1f * SistemMusimDinamis.PengaliHidrasiMusim(SistemMusimDinamis.FaseHari(kd.hari))) < 0.2f && Mathf.Abs(dk - 3.3f) < 0.2f && Mathf.Abs(dr - 2.1f) < 0.2f);
             }
             finally { Object.DestroyImmediate(vGo); }
             cek("Plafon HP 05 §3.1 (lapar 10, haus 10 -> " + AlasKeramat.Player.AndiVitalsAndSanity.PlafonHP(10f, 10f, 50f).ToString("0") + ")", Mathf.Approximately(AlasKeramat.Player.AndiVitalsAndSanity.PlafonHP(10f, 10f, 50f), 100f - 18f - 24f));

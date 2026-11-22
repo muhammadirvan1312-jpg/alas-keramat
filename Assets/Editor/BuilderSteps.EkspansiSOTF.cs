@@ -243,6 +243,7 @@ namespace AlasKeramat.EditorTools
             l.shadows = LightShadows.None; l.enabled = false;
             var lm = induk.AddComponent<LampuMinyak>();
             lm.Api = mr; lm.Cahaya = l; lm.Intensitas = intensitas;
+            lm.Laron = BuatLaron(induk, Mathf.Max(0.18f, tinggiApi));
             EditorUtility.SetDirty(lm);
         }
 
