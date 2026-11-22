@@ -365,6 +365,7 @@ namespace AlasKeramat.EditorTools
             PemeriksaanDuniaHidupV6.Jalankan(cek);
             PemeriksaanDuniaHidupV7.Jalankan(cek);
             PemeriksaanDuniaHidupV8.Jalankan(cek);
+            PemeriksaanDuniaRealV9.Jalankan(cek);
             PemeriksaanG3.Jalankan(cek);
             PemeriksaanT11.Jalankan(cek);
             PemeriksaanUjiMain.Jalankan(cek);

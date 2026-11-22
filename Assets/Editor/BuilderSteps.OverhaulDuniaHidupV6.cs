@@ -528,29 +528,26 @@ namespace AlasKeramat.EditorTools
                 EditorUtility.SetDirty(ak); JumlahKarakterHidupV6++;
             }
 
-            // 2. 6 pemuja sekte beraktivitas ritual mengelilingi tungku alun-alun Desa Mati (516, 198).
+            // 2. 6 pemuja sekte beraktivitas ritual (model MakeHuman G3 asli bertulang, bukan silinder primitif) mengelilingi alun-alun Desa Mati.
             var grup = Anak(induk, "PemujaRitualDesaMati");
-            var jubah = SimpanMat(SafeMaterialFactory.CreatePBR("M_JubahPemujaV6", new Color(0.38f, 0.22f, 0.16f), 0f, 0.14f, kainTex, kainNorm));
-            var topeng = SimpanMat(SafeMaterialFactory.CreatePBR("M_TopengPemujaV6", new Color(0.78f, 0.68f, 0.52f), 0f, 0.22f, AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kayu.png"), AssetDatabase.LoadAssetAtPath<Texture2D>(FolderTex + "/kayu_n.png")));
             Vector3 apiDesa = new Vector3(516f, WorldTerrainGenerator.SampleHeight(516f, 198f) + 0.6f, 198f);
+            var jenisPemuja = new[]
+            {
+                ResepKarakter.JenisKarakter.AbdiSekte, ResepKarakter.JenisKarakter.AbdiWanita,
+                ResepKarakter.JenisKarakter.AbdiLumpur, ResepKarakter.JenisKarakter.AbdiSekte,
+                ResepKarakter.JenisKarakter.PemimpinPatroli, ResepKarakter.JenisKarakter.AbdiWanita
+            };
             for (int i = 0; i < 6; i++)
             {
                 float ang = i * Mathf.PI / 3f + 0.25f;
                 float x = 516f + Mathf.Cos(ang) * 4.8f, z = 198f + Mathf.Sin(ang) * 4.8f;
                 float y = WorldTerrainGenerator.SampleHeight(x, z);
-                var p = Anak(grup, "PemujaDesa_" + i);
+                var p = BuatKarakter(jenisPemuja[i], "PemujaDesa_" + i, ProceduralAnimator.Mode.Normal, false);
+                p.transform.SetParent(grup.transform, false);
                 p.transform.position = new Vector3(x, y, z);
                 p.transform.LookAt(new Vector3(516f, y, 198f));
-                var tubuh = Anak(p, "Tubuh");
-                Hias(tubuh, PrimitiveType.Cylinder, "Jubah", new Vector3(0f, 0.62f, 0f), new Vector3(0.46f, 0.62f, 0.42f), jubah, false);
-                Hias(tubuh, PrimitiveType.Cube, "Bahu", new Vector3(0f, 1.36f, 0f), new Vector3(0.56f, 0.34f, 0.28f), jubah, false);
-                var kep = Anak(tubuh, "Kepala"); kep.transform.localPosition = new Vector3(0f, 1.74f, 0f);
-                Hias(kep, PrimitiveType.Sphere, "Tudung", Vector3.zero, new Vector3(0.30f, 0.32f, 0.30f), jubah, false);
-                Hias(kep, PrimitiveType.Cube, "Topeng", new Vector3(0f, -0.02f, 0.14f), new Vector3(0.21f, 0.26f, 0.06f), topeng, false);
-                var lKiri = Anak(tubuh, "LeftArm"); lKiri.transform.localPosition = new Vector3(-0.32f, 1.36f, 0.12f);
-                Hias(lKiri, PrimitiveType.Cylinder, "LenganL", new Vector3(0f, -0.22f, 0.14f), new Vector3(0.10f, 0.28f, 0.10f), jubah, false).transform.localRotation = Quaternion.Euler(52f, 0f, 0f);
-                var lKanan = Anak(tubuh, "RightArm"); lKanan.transform.localPosition = new Vector3(0.32f, 1.36f, 0.12f);
-                Hias(lKanan, PrimitiveType.Cylinder, "LenganR", new Vector3(0f, -0.22f, 0.14f), new Vector3(0.10f, 0.28f, 0.10f), jubah, false).transform.localRotation = Quaternion.Euler(52f, 0f, 0f);
+                var pa = p.GetComponent<ProceduralAnimator>();
+                if (pa != null) { pa.Pose = ProceduralAnimator.PoseTempur.Tari; pa.TerapkanPoseFoto(0.3f + i * 0.4f); }
                 var ak = p.AddComponent<AktivitasHidupKarakter>();
                 ak.Pasang(AktivitasHidupKarakter.Rutinitas.PemujaSekte, apiDesa, true, i * 1.15f);
                 EditorUtility.SetDirty(ak);

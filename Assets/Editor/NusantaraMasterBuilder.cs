@@ -114,6 +114,7 @@ namespace AlasKeramat.EditorTools
                 Langkah("7z19. Overhaul Karakter Visual & Dunia Hidup V6 (12 Lokasi, 64 Satwa, Aktivitas Karakter & Lentera Desa/Pantai)", 0.999995f, LangkahOverhaulDuniaHidupV6);
                 Langkah("7z20. Overhaul Dunia Hidup V7 Skala Penuh (22/22 Lokasi, Kurir Sekte, Anjing, Gagak, Ikan/Kepiting, Kincir & Roh Keramat)", 0.999998f, LangkahOverhaulDuniaHidupV7);
                 Langkah("7z21. Overhaul Dunia Hidup V8 (Migrasi Formasi-V, Rantai Makanan 24 Jam, 24 Interaksi Alam, Hayati Tropis & 22 Tugu Jalur)", 0.999999f, LangkahOverhaulDuniaHidupV8);
+                Langkah("7z22. Overhaul Dunia Nyata V9 (320+ Props 4K Scan di 22 Lokasi, 180+ Alam Scan, 12 NPC MakeHuman G3, 28 Satwa FBX & Suara 24 Jam)", 0.9999995f, LangkahOverhaulDuniaRealV9);
                 Langkah("7d. Pasca-proses kamera", 0.93f, AktifkanPasca);
                 Langkah("9. Simpan scene", 0.95f, LangkahSimpan);
             }

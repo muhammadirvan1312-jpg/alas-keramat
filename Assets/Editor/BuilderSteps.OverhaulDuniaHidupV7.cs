@@ -46,8 +46,6 @@ namespace AlasKeramat.EditorTools
         static void BangunAktivitasDesaSekteV7(GameObject induk, Material kayu, Texture2D kainTex, Texture2D kainNorm)
         {
             var go = Anak(induk, "AktivitasDesaSekteV7");
-            var jubah = SimpanMat(SafeMaterialFactory.CreatePBR("M_JubahKurirV7", new Color(0.36f, 0.20f, 0.15f), 0f, 0.15f, kainTex, kainNorm));
-            var topeng = MatPolos("M_TopengKurirV7", "#C6AE8A");
             var apiMat = SimpanMat(SafeMaterialFactory.CreatePBR("M_ApiKurirV7", new Color(1f, 0.62f, 0.18f), 0f, 0.1f, null, null, new Color(5.2f, 2.3f, 0.5f)));
             var anjingMatA = MatPolos("M_AnjingKampungA", "#8B5A32");
             var anjingMatB = MatPolos("M_AnjingKampungB", "#3A2C22");
@@ -56,29 +54,31 @@ namespace AlasKeramat.EditorTools
 
             var daftar = new List<AktivitasDesaSekte.AgenHidup>();
 
-            // 1. 6 kurir/warga sekte berjalan bolak-balik di Desa Mati & Pasar Hantu membawa kayu & obor.
+            // 1. 6 kurir/warga sekte (model MakeHuman G3 asli bertulang, bukan silinder primitif) berjalan bolak-balik di Desa Mati & Pasar Hantu.
             Vector2[] rA = { new Vector2(512f, 196f), new Vector2(552f, 224f), new Vector2(582f, 180f), new Vector2(534f, 148f), new Vector2(474f, 174f), new Vector2(462f, 186f) };
             Vector2[] rB = { new Vector2(546f, 212f), new Vector2(526f, 232f), new Vector2(558f, 200f), new Vector2(562f, 168f), new Vector2(492f, 192f), new Vector2(484f, 166f) };
+            var jenisKurir = new[]
+            {
+                ResepKarakter.JenisKarakter.AbdiSekte, ResepKarakter.JenisKarakter.AbdiWanita,
+                ResepKarakter.JenisKarakter.AbdiSekte, ResepKarakter.JenisKarakter.AbdiLumpur,
+                ResepKarakter.JenisKarakter.PemimpinPatroli, ResepKarakter.JenisKarakter.AbdiWanita
+            };
             for (int i = 0; i < rA.Length; i++)
             {
                 float yA = WorldTerrainGenerator.SampleHeight(rA[i].x, rA[i].y);
                 float yB = WorldTerrainGenerator.SampleHeight(rB[i].x, rB[i].y);
-                var ag = Anak(go, "KurirSekte_" + i);
+                var ag = BuatKarakter(jenisKurir[i], "KurirSekte_" + i, ProceduralAnimator.Mode.Normal, false);
+                ag.transform.SetParent(go.transform, false);
                 ag.transform.position = new Vector3(rA[i].x, yA, rA[i].y);
-                Hias(ag, PrimitiveType.Cylinder, "Jubah", new Vector3(0f, 0.65f, 0f), new Vector3(0.45f, 0.65f, 0.40f), jubah, false);
-                Hias(ag, PrimitiveType.Cube, "Bahu", new Vector3(0f, 1.38f, 0f), new Vector3(0.56f, 0.34f, 0.28f), jubah, false);
-                var kep = Anak(ag, "Kepala"); kep.transform.localPosition = new Vector3(0f, 1.74f, 0f);
-                Hias(kep, PrimitiveType.Sphere, "Tudung", Vector3.zero, new Vector3(0.30f, 0.32f, 0.30f), jubah, false);
-                Hias(kep, PrimitiveType.Cube, "Topeng", new Vector3(0f, -0.02f, 0.14f), new Vector3(0.20f, 0.25f, 0.06f), topeng, false);
-                // Beban kayu bakar di bahu kiri & batang obor di tangan kanan.
-                Hias(ag, PrimitiveType.Cylinder, "BebanKayu", new Vector3(-0.34f, 1.48f, 0f), new Vector3(0.10f, 0.55f, 0.10f), kayu, false).transform.localRotation = Quaternion.Euler(78f, 0f, 12f);
+                Transform kep = null;
+                foreach (var t in ag.GetComponentsInChildren<Transform>(true)) if (t.name == "Head" || t.name.EndsWith(":Head")) { kep = t; break; }
                 Hias(ag, PrimitiveType.Cylinder, "BatangObor", new Vector3(0.36f, 1.24f, 0.24f), new Vector3(0.05f, 0.52f, 0.05f), kayu, false);
                 Hias(ag, PrimitiveType.Sphere, "ApiObor", new Vector3(0.36f, 1.78f, 0.24f), new Vector3(0.14f, 0.22f, 0.14f), apiMat, false).GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
                 var lGo = Anak(ag, "LampuObor"); lGo.transform.localPosition = new Vector3(0.36f, 1.88f, 0.24f);
                 var l = lGo.AddComponent<Light>(); l.type = LightType.Point; l.range = 9f; l.intensity = 2.0f; l.color = new Color(1f, 0.58f, 0.22f); l.shadows = LightShadows.None; l.enabled = false;
                 daftar.Add(new AktivitasDesaSekte.AgenHidup
                 {
-                    tr = ag.transform, kepala = kep.transform, obor = l, tipe = AktivitasDesaSekte.TipeAgen.KurirSekte,
+                    tr = ag.transform, kepala = kep, obor = l, tipe = AktivitasDesaSekte.TipeAgen.KurirSekte,
                     titikA = new Vector3(rA[i].x, yA, rA[i].y), titikB = new Vector3(rB[i].x, yB, rB[i].y),
                     laju = 0.065f + (i % 3) * 0.015f, fasa = i * 0.42f
                 });

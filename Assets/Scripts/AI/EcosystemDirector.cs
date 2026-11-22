@@ -18,6 +18,12 @@ namespace AlasKeramat.AI
 
         public int Aktif { get { return _hidup.Count; } }
         public void Pasang(GameObject[] t) { template = t; }
+        public GameObject AmbilTemplate(JH j)
+        {
+            int idx = (int)j;
+            if (template == null || idx < 0 || idx >= template.Length) return null;
+            return template[idx];
+        }
 
         void Awake() { GameServices.Register(this); }
 
